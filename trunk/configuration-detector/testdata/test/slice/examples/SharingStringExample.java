@@ -11,8 +11,13 @@ public class SharingStringExample {
 	
 	public static void main(String[] args) {
 		List<String> list = new ArrayList<String>();
-		list.add(str1 + "again");
-		list.add(str2 + " I come.");
+		String r = str1 + "again";
+		String x = str1;// + str2;
+		if(x != null) {
+			String q = r;
+		}
+		String p = str2 + " I come.";
+		String w = p;
 	}
 	
 }

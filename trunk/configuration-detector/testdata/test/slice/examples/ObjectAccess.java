@@ -6,8 +6,15 @@ public class ObjectAccess {
 	
 	public static void main(String[] args) {
 		ObjectWrapper w1 = new ObjectWrapper();
-		v = "world";
-		w1.access(v);
+		//v = "world";
+		//w1.access(v);
+		String u = v;// + " world";
+		String x = u;
+		if(x != null) {
+			w1.access(u);
+		}
+		//String y = v + " world";
+		w1.access(u);
 		w1.doSomething();
 		ObjectWrapper w2 = new ObjectWrapper();
 		//w2.access("hello");

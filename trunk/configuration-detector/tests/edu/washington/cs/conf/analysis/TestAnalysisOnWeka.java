@@ -15,6 +15,7 @@ import com.ibm.wala.ipa.slicer.thin.CISlicer;
 import com.ibm.wala.ipa.slicer.thin.ThinSlicer;
 import com.ibm.wala.ssa.SSAConditionalBranchInstruction;
 import com.ibm.wala.util.CancelException;
+import com.ibm.wala.util.graph.traverse.DFSFinishTimeIterator;
 
 import edu.washington.cs.conf.analysis.SlicingHelper.CG;
 import edu.washington.cs.conf.experiments.WekaExpUtils;
@@ -42,7 +43,7 @@ public class TestAnalysisOnWeka extends TestCase {
 		
 //		ConfEntity entity1 = new ConfEntity("weka.classifiers.trees.J48", "m_root", false);
 		
-		
+//		DFSFinishTimeIterator.DIRTY_HACK = true;
 		Log.logConfig("./weka-option-output.txt");
 		
 		List<ConfEntity> list = WekaExpUtils.getWekaConfList();

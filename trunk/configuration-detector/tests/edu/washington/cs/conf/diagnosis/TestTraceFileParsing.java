@@ -53,7 +53,19 @@ public class TestTraceFileParsing extends TestCase {
 		ProfileComparator comparator = new ProfileComparator(goodProfiles, badProfiles);
 //		comparator.findDeviatedProfiles();
 		comparator.findProfilesByTfIdf();
+	}
+	
+	public void testParseSynotpic2pc3nodes() {
+		String goodTrace = "./output/trace_dump_2pc_3nodes_good.txt";
+//		String badTrace = "./output/trace_dump_2pc_3nodes_bad.txt";
+		String badTrace = "./output/trace_dump_2pc_3nodes_5x_bad.txt";
+		TraceAnalyzer analyzer = new TraceAnalyzer(goodTrace, badTrace);
+		Collection<PredicateProfile> goodProfiles = analyzer.getGoodProfiles();
+		Collection<PredicateProfile> badProfiles = analyzer.getBadProfiles();
 		
+		ProfileComparator comparator = new ProfileComparator(goodProfiles, badProfiles);
+//		comparator.findDeviatedProfiles();
+		comparator.findProfilesByTfIdf();
 	}
 	
 }

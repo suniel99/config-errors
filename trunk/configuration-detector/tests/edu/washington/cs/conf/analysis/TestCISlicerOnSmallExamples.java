@@ -15,6 +15,7 @@ import com.ibm.wala.ipa.slicer.Statement;
 import com.ibm.wala.ipa.slicer.StatementWithInstructionIndex;
 import com.ibm.wala.ipa.slicer.thin.CISlicer;
 import com.ibm.wala.ipa.slicer.thin.ThinSlicer;
+import com.ibm.wala.util.graph.traverse.DFSFinishTimeIterator;
 
 import edu.washington.cs.conf.analysis.SlicingHelper.CG;
 import edu.washington.cs.conf.util.WALAUtils;
@@ -113,6 +114,8 @@ public class TestCISlicerOnSmallExamples extends TestCase {
 		Statement seed = helper.extractConfStatement(entity);
 		
 		System.out.println("--- forward ---");
+		
+//		DFSFinishTimeIterator.DIRTY_HACK = true;
 		
 		Collection<Statement> slice = slicer.computeForwardThinSlice(seed);
 		
