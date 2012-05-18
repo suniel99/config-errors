@@ -14,6 +14,7 @@ import com.ibm.wala.ipa.slicer.Statement;
 import com.ibm.wala.ipa.slicer.thin.CISlicer;
 import com.ibm.wala.ipa.slicer.thin.ThinSlicer;
 import com.ibm.wala.util.CancelException;
+import com.ibm.wala.util.graph.traverse.DFSFinishTimeIterator;
 
 import edu.washington.cs.conf.analysis.SlicingHelper.CG;
 import edu.washington.cs.conf.experiments.RandoopExpUtils;
@@ -97,6 +98,7 @@ public void testRandoopOptionsISlicer() throws IllegalArgumentException, CancelE
 				ControlDependenceOptions.NONE);
 		
 		Log.logConfig("./option-output.txt");
+//		DFSFinishTimeIterator.DIRTY_HACK = true;
 		
 		List<ConfEntity> randoopConfList = RandoopExpUtils.getRandoopConfList();
 		

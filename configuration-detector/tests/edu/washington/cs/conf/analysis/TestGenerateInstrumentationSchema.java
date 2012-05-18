@@ -12,13 +12,14 @@ import com.ibm.wala.util.CancelException;
 
 import edu.washington.cs.conf.analysis.SlicingHelper.CG;
 import edu.washington.cs.conf.experiments.RandoopExpUtils;
+import edu.washington.cs.conf.experiments.SynopticExpUtils;
 import edu.washington.cs.conf.experiments.WekaExpUtils;
 import edu.washington.cs.conf.instrument.InstrumentSchema;
 import edu.washington.cs.conf.util.WALAUtils;
 
 import junit.framework.TestCase;
 
-public class TestSlicingHelper extends TestCase {
+public class TestGenerateInstrumentationSchema extends TestCase {
 	
 	public void testSlice1() throws IllegalArgumentException, CancelException {
 		String path = "D:\\research\\configurations\\workspace\\configuration-detector\\bin\\test\\slice\\depfield";
@@ -71,6 +72,7 @@ public class TestSlicingHelper extends TestCase {
 		
 		Collection<ConfPropOutput> outputs = new LinkedList<ConfPropOutput>();
 		for(ConfEntity entity : randoopConfList) {
+//		  helper.setExcludeStringBuilder(true); //FIXME
 			ConfPropOutput output = helper.outputSliceConfOption(entity);
 			outputs.add(output);
 			System.out.println(" - " + output.statements.size());
@@ -127,5 +129,45 @@ public class TestSlicingHelper extends TestCase {
 		//recover from the file
 		InstrumentSchema newSchema = ConfOutputSerializer.deserializeAsSchema(filePath);
 		assertEquals(schema.toString(), newSchema.toString());
+	}
+	
+	public void testSliceSynopticCheaply() {
+		String path = "./subjects/synoptic/synoptic.jar;"
+			+ "./subjects/synoptic/libs/plume.jar;"
+			+ "./subjects/synoptic/libs/commons-io-2.0.1.jar;"
+			+ "./subjects/synoptic/libs/commons-fileupload-1.2.2.jar;"
+			+ "./subjects/synoptic/libs/junit-4.9b2.jar";
+	    String mainClass = "Lsynoptic/main/Main";
+	    SlicingHelper helper = new SlicingHelper(path, mainClass);
+	    helper.setCGType(CG.ZeroCFA);
+	    helper.setExclusionFile("JavaAllExclusions.txt");
+	    helper.setDataDependenceOptions(DataDependenceOptions.NO_BASE_NO_HEAP_NO_EXCEPTIONS);
+	    helper.setControlDependenceOptions(ControlDependenceOptions.NONE);
+	    helper.setContextSensitive(false); //context-insensitive
+	    helper.buildAnalysis();
+	
+	    List<ConfEntity> synotpicConfList = SynopticExpUtils.getSynopticList();
+	
+	    Collection<ConfPropOutput> outputs = new LinkedList<ConfPropOutput>();
+	    for(ConfEntity entity : synotpicConfList) {
+		    ConfPropOutput output = helper.outputSliceConfOption(entity);
+		    outputs.add(output);
+		    System.out.println(" - " + output.statements.size());
+	    }
+
+	    System.out.println("size: " + outputs.size());
+	    assertEquals(synotpicConfList.size(), outputs.size());
+	
+	    //save as configuration schema
+	    InstrumentSchema schema = new InstrumentSchema();
+	    schema.addInstrumentationPoint(outputs);
+	
+	    String filePath = "./synoptic_option_instr_ser.dat";
+	    ConfOutputSerializer.serializeSchema(schema, filePath);
+	    ConfOutputSerializer.writeToFileAsText(schema, "./synoptic_option_instr.txt");
+	
+	    //recover from the file
+	    InstrumentSchema newSchema = ConfOutputSerializer.deserializeAsSchema(filePath);
+	    assertEquals(schema.toString(), newSchema.toString());
 	}
 }

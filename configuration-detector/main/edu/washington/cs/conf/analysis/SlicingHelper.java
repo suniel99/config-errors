@@ -1,6 +1,5 @@
 package edu.washington.cs.conf.analysis;
 
-import java.io.PrintWriter;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -28,7 +27,6 @@ import com.ibm.wala.ipa.slicer.Slicer.ControlDependenceOptions;
 import com.ibm.wala.ipa.slicer.Slicer.DataDependenceOptions;
 import com.ibm.wala.ipa.slicer.Statement.Kind;
 import com.ibm.wala.ipa.slicer.thin.CISlicer;
-import com.ibm.wala.ipa.slicer.thin.ThinSlicer;
 import com.ibm.wala.ipa.slicer.StatementWithInstructionIndex;
 import com.ibm.wala.ssa.SSAAbstractInvokeInstruction;
 import com.ibm.wala.ssa.SSAInstruction;
@@ -37,6 +35,7 @@ import com.ibm.wala.ssa.SSAPutInstruction;
 import com.ibm.wala.types.TypeReference;
 import com.ibm.wala.util.CancelException;
 import com.ibm.wala.util.config.AnalysisScopeReader;
+import com.ibm.wala.util.graph.traverse.DFSFinishTimeIterator;
 import com.ibm.wala.util.io.FileProvider;
 
 import edu.washington.cs.conf.util.Log;
@@ -91,6 +90,13 @@ public class SlicingHelper {
 		} catch (Throwable e) {
 			throw new Error(e);
 		}
+	}
+	
+	//only call this after building the CG
+	//Never call this
+	public void setExcludeStringBuilder(boolean exclude) {
+		System.err.println("+++ Do you really want to call this method to exclude the string.");
+		DFSFinishTimeIterator.DIRTY_HACK = exclude;
 	}
 	
 	public void setCGType(CG type) {

@@ -16,7 +16,7 @@ import edu.washington.cs.conf.util.Utils;
  * */
 public class ConfTracer {
 	
-	public static int context_length = 2;
+	public static int context_length = 0;
 	
 	public static ConfTracer tracer = new ConfTracer();
 	
@@ -52,10 +52,13 @@ public class ConfTracer {
 			//the format of line: PRE (or POST), config name, method as context
 			//we should record the call context, e.g, stacktrace
 			
-			String line = input
-			    + "XOXO"
-			    + ExecutionContext.getCurrentContextAsString(context_length)
-			    ;
+			String line = input;
+			if(context_length > 0) {
+			    line = input
+			        + "XOXO"
+			        + ExecutionContext.getCurrentContextAsString(context_length)
+			        ;
+			}
 			
 			if(traceMap.containsKey(line)) {
 				traceMap.put(line, traceMap.get(line) + 1);
