@@ -84,7 +84,7 @@ public class TestAnalysisOnRandoop extends TestCase {
 		System.out.println("Slice size: " + slice.size());
 	}
 	
-public void testRandoopOptionsISlicer() throws IllegalArgumentException, CancelException {
+    public void testRandoopOptionsISlicer() throws IllegalArgumentException, CancelException {
 		
 		String path = "./subjects/randoop-jamie.jar;./subjects/plume.jar";
 		String mainClass = "Lrandoop/main/Main";
