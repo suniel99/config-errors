@@ -68,4 +68,19 @@ public class TestTraceFileParsing extends TestCase {
 		comparator.findProfilesByTfIdf();
 	}
 	
+	public void testParseJChordRace() {
+//		String goodTrace = "./output/chord_trace_dump_has_race.txt";
+//		String badTrace = "./output/chord_trace_dump_no_race.txt";
+		
+		String goodTrace = "./output/chord_trace_dump_has_race_src_pre.txt";
+		String badTrace = "./output/chord_trace_dump_no_race_src_pre.txt";
+		
+		TraceAnalyzer analyzer = new TraceAnalyzer(goodTrace, badTrace);
+		Collection<PredicateProfile> goodProfiles = analyzer.getGoodProfiles();
+		Collection<PredicateProfile> badProfiles = analyzer.getBadProfiles();
+		
+		ProfileComparator comparator = new ProfileComparator(goodProfiles, badProfiles);
+//		comparator.findDeviatedProfiles();
+		comparator.findProfilesByTfIdf();
+	}
 }

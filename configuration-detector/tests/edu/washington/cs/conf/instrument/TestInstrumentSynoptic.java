@@ -15,4 +15,10 @@ public class TestInstrumentSynoptic extends TestCase {
 	
 	    InstrumentStats.showInstrumentationStats();
 	}
+	
+	/**
+	 * command to run:
+	 * java -cp ./synoptic-instrumented.jar;./libs/* synotpic.main.Main
+	 * -r "some tokens" -m ""  -o -d D:\tools\graphviz2.8\dot\bin\dot
+	*/
 }

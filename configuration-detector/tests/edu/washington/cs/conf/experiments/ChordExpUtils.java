@@ -174,9 +174,9 @@ public class ChordExpUtils {
 		list.add(entity70);
 		list.add(entity71);
 		list.add(entity72);
-		list.add(entity73);
+//		list.add(entity73);
 		list.add(entity74);
-		list.add(entity75);
+//		list.add(entity75);
 		list.add(entity76);
 		list.add(entity77);
 		list.add(entity78);

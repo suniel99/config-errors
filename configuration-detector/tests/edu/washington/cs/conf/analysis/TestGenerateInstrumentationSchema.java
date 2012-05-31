@@ -11,10 +11,12 @@ import com.ibm.wala.ipa.slicer.Statement;
 import com.ibm.wala.util.CancelException;
 
 import edu.washington.cs.conf.analysis.SlicingHelper.CG;
+import edu.washington.cs.conf.experiments.ChordExpUtils;
 import edu.washington.cs.conf.experiments.RandoopExpUtils;
 import edu.washington.cs.conf.experiments.SynopticExpUtils;
 import edu.washington.cs.conf.experiments.WekaExpUtils;
 import edu.washington.cs.conf.instrument.InstrumentSchema;
+import edu.washington.cs.conf.instrument.InstrumentSchema.TYPE;
 import edu.washington.cs.conf.util.WALAUtils;
 
 import junit.framework.TestCase;
@@ -165,6 +167,45 @@ public class TestGenerateInstrumentationSchema extends TestCase {
 	    String filePath = "./synoptic_option_instr_ser.dat";
 	    ConfOutputSerializer.serializeSchema(schema, filePath);
 	    ConfOutputSerializer.writeToFileAsText(schema, "./synoptic_option_instr.txt");
+	
+	    //recover from the file
+	    InstrumentSchema newSchema = ConfOutputSerializer.deserializeAsSchema(filePath);
+	    assertEquals(schema.toString(), newSchema.toString());
+	}
+	
+	public void testSliceJChordCheaply() {
+		String path = "./subjects/jchord/chord.jar";
+		String mainClass = "Lchord/project/Main";
+		
+		SlicingHelper helper = new SlicingHelper(path, mainClass);
+	    helper.setCGType(CG.ZeroCFA);
+	    helper.setExclusionFile("ChordExclusions.txt");
+	    helper.setDataDependenceOptions(DataDependenceOptions.NO_BASE_NO_HEAP_NO_EXCEPTIONS);
+	    helper.setControlDependenceOptions(ControlDependenceOptions.NONE);
+	    helper.setContextSensitive(false); //context-insensitive
+	    helper.buildAnalysis();
+	
+	    List<ConfEntity> jchordConfList = ChordExpUtils.getChordConfList();
+	
+	    Collection<ConfPropOutput> outputs = new LinkedList<ConfPropOutput>();
+	    for(ConfEntity entity : jchordConfList) {
+		    ConfPropOutput output = helper.outputSliceConfOption(entity);
+		    outputs.add(output);
+		    System.out.println(entity);
+		    System.out.println(" - " + output.statements.size());
+	    }
+
+	    System.out.println("size: " + outputs.size());
+	    assertEquals(jchordConfList.size(), outputs.size());
+	
+	    //save as configuration schema
+	    InstrumentSchema schema = new InstrumentSchema();
+	    schema.setType(TYPE.SOURCE_PREDICATE); //change the option here
+	    schema.addInstrumentationPoint(outputs);
+	
+	    String filePath = "./chord_option_instr_ser.dat";
+	    ConfOutputSerializer.serializeSchema(schema, filePath);
+	    ConfOutputSerializer.writeToFileAsText(schema, "./chord_option_instr.txt");
 	
 	    //recover from the file
 	    InstrumentSchema newSchema = ConfOutputSerializer.deserializeAsSchema(filePath);
