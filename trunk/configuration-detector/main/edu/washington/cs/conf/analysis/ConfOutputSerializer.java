@@ -30,11 +30,11 @@ public class ConfOutputSerializer {
 		}
 	}
 	
-	public static void serializeAsSchema(Collection<ConfPropOutput> outputs, String fileName) {
-		InstrumentSchema schema = new InstrumentSchema();
-		schema.addInstrumentationPoint(outputs);
-		serializeSchema(schema, fileName);
-	}
+//	public static void serializeAsSchema(Collection<ConfPropOutput> outputs, String fileName) {
+//		InstrumentSchema schema = new InstrumentSchema();
+//		schema.addInstrumentationPoint(outputs);
+//		serializeSchema(schema, fileName);
+//	}
 	
 	public static void serializeSchema(InstrumentSchema schema, String fileName) {
 		try {

@@ -5,9 +5,17 @@ import instrument.Globals;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.LinkedHashSet;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Set;
 
+import com.ibm.wala.ipa.callgraph.CGNode;
+import com.ibm.wala.ipa.slicer.NormalStatement;
+import com.ibm.wala.ssa.SSAConditionalBranchInstruction;
+import com.ibm.wala.ssa.SSAInstruction;
+
 import edu.washington.cs.conf.util.Utils;
+import edu.washington.cs.conf.util.WALAUtils;
 
 public class ConfPropOutput implements Serializable {
 	private static final long serialVersionUID = 2670541082578233016L;
@@ -51,8 +59,75 @@ public class ConfPropOutput implements Serializable {
 		return branches;
 	}
 	
+	public Set<IRStatement> getNumberedBranchesInSource() {
+		Set<IRStatement> branches = new LinkedHashSet<IRStatement>();
+		for(IRStatement ir : statements) {
+			if(ir.hasLineNumber() && ir.isBranchInSource()) {
+				branches.add(ir);
+			}
+		}
+		return branches;
+	}
+	
 	public Set<ShrikePoint> getNumberedBranchShrikePoints() {
 		return this.getShrikePoints(this.getNumberedBranches());
+	}
+	
+	public Set<ShrikePoint> getNumberedBranchShrikePointsInSource() {
+		//return this.getShrikePoints(this.getNumberedBranchesInSource());
+		Set<IRStatement> irs = new LinkedHashSet<IRStatement>();
+		
+		for(IRStatement ir : this.statements) {
+			if(!ir.hasLineNumber()) {
+				continue;
+			}
+			if(ir.isBranch()) {
+				irs.add(ir);
+			} else {
+				List<IRStatement> mappedIRs = this.getMappedBranchInSource(ir);
+				if(!mappedIRs.isEmpty()) {
+				    irs.addAll(mappedIRs);
+				}
+			}
+		}
+		Set<ShrikePoint> retPoints = this.getShrikePoints(irs);
+		
+		return retPoints;
+	}
+	
+	private List<IRStatement> getMappedBranchInSource(IRStatement ir) {
+		CGNode node = ir.getStatement().getNode();
+		int lineNum = ir.getLineNumber();
+		Utils.checkTrue(lineNum != -1);
+		List<IRStatement> matchedStmts = new LinkedList<IRStatement>();
+		for(int index = 0; index < node.getIR().getInstructions().length; index++) {
+			SSAInstruction ssa = node.getIR().getInstructions()[index];
+			if(ssa instanceof SSAConditionalBranchInstruction) {
+				NormalStatement stmt = new NormalStatement(node, index);
+				int sNum = WALAUtils.getStatementLineNumber(stmt);
+				if(sNum == lineNum) {
+					IRStatement irs = new IRStatement(stmt);
+					matchedStmts.add(irs);
+				}
+			}
+		}
+		
+		return matchedStmts;
+		
+		//FIXME prune out the StringBuilder, example in RelMclsValAsgnInst, visitMoveInst
+		
+//		if(matchedStmts.size() > 1) {
+//			System.err.println("In node: " + node);
+//			System.err.println("ir: " + ir);
+//			System.err.println("matched stmts: " + matchedStmts);
+//			throw new Error("ir: " + ir + ", matched stmts: " + matchedStmts);
+//		}
+//		
+//		if(matchedStmts.isEmpty()) {
+//			return null;
+//		} else {
+//			return matchedStmts.get(0);
+//		}
 	}
 	
 	//has a corresponding line number mapping to the source code

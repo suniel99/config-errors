@@ -22,6 +22,7 @@ public class ShrikePoint implements Serializable {
 	//for debugging purpose
 	public final int lineNum;
 	public final int bcIndex;
+	public final String instructStr;
 	
 	public ShrikePoint(IRStatement ir) {
 		Statement s = ir.getStatement();
@@ -31,6 +32,7 @@ public class ShrikePoint implements Serializable {
 		this.instructionIndex = ir.getInstructionIndex();
 		this.lineNum = ir.getLineNumber();
 		this.bcIndex = ir.getBcIndex();
+		instructStr = ir.getStatement().toString();
 	}
 	
 	private ShrikePoint(int instructionIndex, int bcIndex,
@@ -41,6 +43,7 @@ public class ShrikePoint implements Serializable {
 		//empty
 		this.method = null;
 		this.lineNum = -1;
+		instructStr = null;
 	}
 	
 	public static ShrikePoint createMockPoint(int instructionIndex,
@@ -50,6 +53,10 @@ public class ShrikePoint implements Serializable {
 	
 	public String getMethodSig() {
 		return this.methodSig;
+	}
+	
+	public String getInstructionStr() {
+		return this.instructStr;
 	}
 	
 	public int getInstructionIndex() {

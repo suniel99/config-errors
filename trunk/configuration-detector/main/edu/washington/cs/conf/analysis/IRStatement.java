@@ -2,11 +2,13 @@ package edu.washington.cs.conf.analysis;
 
 import java.io.PrintWriter;
 import java.util.Collection;
+import java.util.Iterator;
 
 import instrument.Globals;
 
 import com.ibm.wala.cfg.Util;
 import com.ibm.wala.classLoader.ShrikeBTMethod;
+import com.ibm.wala.ipa.callgraph.CGNode;
 import com.ibm.wala.ipa.slicer.Statement;
 import com.ibm.wala.ipa.slicer.StatementWithInstructionIndex;
 import com.ibm.wala.shrikeCT.InvalidClassFileException;
@@ -73,7 +75,37 @@ public class IRStatement {
 	}
 	
 	public boolean isBranch() {
-		return this.ssa instanceof SSAConditionalBranchInstruction;
+		return this.isSSABranch(this.ssa);
+	}
+	
+	private boolean isSSABranch(SSAInstruction ssa) {
+		return ssa instanceof SSAConditionalBranchInstruction;
+	}
+	
+	public boolean isBranchInSource() {
+		if(this.isBranch()) {
+			return true;
+		}
+		//get the source line
+		int lineNum = this.lineNumber;
+		CGNode node = this.s.getNode();
+		SSAInstruction[] ssas = node.getIR().getInstructions();
+		boolean hasSrcInPred = false;
+		for(int index = 0; index < ssas.length; index++) {
+			SSAInstruction inst = ssas[index];
+			if(inst == null) {
+				continue;
+			}
+			if(!this.isSSABranch(inst)) {
+				continue;
+			}
+			int src_line_number = node.getMethod().getLineNumber(index);
+			if(src_line_number != -1 && src_line_number == lineNum) {
+				hasSrcInPred = true;
+				break;
+			}
+		}
+		return hasSrcInPred;
 	}
 	
 	public boolean shouldIgnore() {
@@ -101,7 +133,8 @@ public class IRStatement {
 	public boolean equals(Object o) {
 		if(o instanceof IRStatement) {
 			IRStatement irs = (IRStatement)o;
-			return this.s.equals(irs.s) && this.ssa.equals(irs.ssa)
+			return this.s.equals(irs.s)
+			    && this.ssa.equals(irs.ssa)
 			    && this.instructionIndex == irs.instructionIndex
 			    && this.bcIndex == irs.bcIndex
 			    && this.lineNumber == irs.lineNumber;

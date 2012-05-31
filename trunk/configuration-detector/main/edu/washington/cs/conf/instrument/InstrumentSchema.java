@@ -24,7 +24,7 @@ import edu.washington.cs.conf.util.Utils;
  * */
 public class InstrumentSchema {
 
-	enum TYPE{PREDICATE, ALL}
+	public enum TYPE{PREDICATE, ALL, SOURCE_PREDICATE}
 	
 	private final Map<ConfEntity, Collection<ShrikePoint>> locations
 	    = new LinkedHashMap<ConfEntity, Collection<ShrikePoint>>();
@@ -42,6 +42,8 @@ public class InstrumentSchema {
 			    points = output.getNumberedBranchShrikePoints();
 			} else if(type.equals(TYPE.ALL)) {
 				points = output.getNumberedShrikePoints();
+			} else if (type.equals(TYPE.SOURCE_PREDICATE)) {
+				points = output.getNumberedBranchShrikePointsInSource();
 			}
 			Utils.checkNotNull(points);
 			Utils.checkTrue(!locations.containsKey(entity));
@@ -101,11 +103,13 @@ public class InstrumentSchema {
 		for(ConfEntity entity : this.locations.keySet()) {
 			out.write(entity.toString());
 			out.write(Globals.lineSep);
-			out.write("Num of locations: " + this.locations.get(entity).size());
+			out.write("  Num of locations: " + this.locations.get(entity).size());
 			out.write(Globals.lineSep);
 			for(ShrikePoint p : this.locations.get(entity)) {
-				out.write("   ");
+				out.write("     ");
 				out.write(p.toString());
+				out.write("   ->  ");
+				out.write(p.getInstructionStr());
 				out.write(Globals.lineSep);
 			}
 		}

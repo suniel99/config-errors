@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.Map;
 
 import edu.washington.cs.conf.util.Files;
-import edu.washington.cs.conf.util.Utils;
 
 /**
  * An instrumentation class
