@@ -228,17 +228,17 @@ public class SlicingHelper {
 		
 		for(CGNode node : cg) {
 			String fullMethodName = WALAUtils.getFullMethodName(node.getMethod());
-			Log.logln("full method name: " + fullMethodName + ",  className: " + className);
+			//Log.logln("full method name: " + fullMethodName + ",  className: " + className);
 			if(fullMethodName.equals(className + "." + targetMethod)) {
 				Iterator<SSAInstruction> ssaIt = node.getIR().iterateAllInstructions();
 				while(ssaIt.hasNext()) {
 					SSAInstruction inst = ssaIt.next();
 					if(inst instanceof SSAPutInstruction) {
-						Log.logln("In method: " + fullMethodName + "put inst: " + inst);
+						//Log.logln("In method: " + fullMethodName + "put inst: " + inst);
 						SSAPutInstruction putInst = (SSAPutInstruction)inst;
 						if(putInst.isStatic() == isStatic) {
 							//FIXME ugly below
-							Log.logln("put inst with same modifier: " + putInst);
+							//Log.logln("put inst with same modifier: " + putInst);
 							if(putInst.toString().indexOf(confName) != -1) {
 								//find it
 								Statement s = new NormalStatement(node, WALAUtils.getInstructionIndex(node, inst));
