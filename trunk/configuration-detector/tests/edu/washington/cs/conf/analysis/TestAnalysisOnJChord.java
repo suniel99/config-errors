@@ -33,9 +33,10 @@ public class TestAnalysisOnJChord extends TestCase {
 		
 		int count = 0;
 		for(CGNode node : helper.getCallGraph()) {
-			if(WALAUtils.getFullMethodName(node.getMethod()).startsWith("chord.")) {
+			String fullMethodName = WALAUtils.getFullMethodName(node.getMethod()); 
+			if(fullMethodName.startsWith("chord.analyses.datarace.RelExcludeSameThread")) {
 				count++;
-				//System.out.println(node);
+				System.out.println(node);
 			}
 		}
 		System.out.println(count);
@@ -70,6 +71,10 @@ public class TestAnalysisOnJChord extends TestCase {
 			System.out.println("--- forward slicing of entity: " + entity);
 			Log.logln("--- forward slicing of entity: " + entity);
 			
+//			if(!entity.getClassName().equals("chord.analyses.datarace.RelExcludeSameThread")) {
+//				continue;
+//			}
+			
 			slice = slicer.computeForwardThinSlice(seed);
 			
 			int count = 0;
@@ -92,11 +97,16 @@ public class TestAnalysisOnJChord extends TestCase {
 				Log.logln("Too many affected statements: " + entity);
 			} else {
 				for(Statement s : pruned) {
-					Log.logln("   " + s + " : " + WALAUtils.getStatementLineNumber(s));
+					Log.logln("   " + s + " : " + WALAUtils.getStatementLineNumber(s) + ",  " + s.getKind());
 				}
 			}
 			
 			System.out.println("Slice size: " + count);
+//			if(entity.getClassName().startsWith("chord.analyses.datarace.RelExcludeSameThread")) {
+//				for(Statement s : pruned) {
+//					Log.logln("   " + s + " : " + WALAUtils.getStatementLineNumber(s));
+//				}
+//			}
 			Log.logln("Slice size: " + count);
 			
 			System.out.println("------------");
