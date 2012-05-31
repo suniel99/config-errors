@@ -1,3 +1,4 @@
+joeq\/*
 edu\/berkeley\/confspell\/.*
 de\/java2html\/.*
 com\/java2html\/.*
