@@ -1,0 +1,66 @@
+\section{Related Work}
+
+Here is a reasonably complete list of recent related work.
+
+\textbf{Configuration error diagnosis approaches.} Existing approaches include
+pure slicing-based technique~\cite{Rabkin:2011:PPC}, binary search-based
+technique~\cite{Whitaker:2004:CDS}, dynamic information flow-based
+technique~\cite{Attariyan:2010:ACT}, template-based technique~\cite{Yuan:2011:COC},
+invariant-based technique~\cite{Zhou:2007:DMD}, decision-tree-based approach~\cite{Mickens:2007:SID}, and
+causality-based technique~\cite{Attariyan:2008:UCD}.
+problem shooting~\cite{Su:2009:AGP, Wang:2004:AMT}. 
+This work is significantly different than the existing ones. First,
+almost all existing approaches implicitly assume a visible \textit{crashing} error,
+while our approach does not have this assumption. In fact, crashing
+errors are often much easier to localize than other silent failures.
+Second, almost all existing approach assume the existence of an oracle
+which can safely identify the potential errors, such as the timing
+threshold for a web server performance. However, such error-revealing
+oracles are often absent in practice.
+Third, some approaches assume the existence of a configuration model, which
+helps in narrowing down possible errors.
+
+\textbf{Better configuration management approaches.} Researchers
+have designed many techniques to reduce the burden of configuration
+management, and prevent possible errors from happening. Typical
+approaches include easy configuration management interfaces
+for non-professional end-users~\cite{Kushman:2010:ECA},
+OS-supported configuration management~\cite{Su:2007:AIC},
+automated configuration recommendations~\cite{Zheng:2007:ACI},
+learning good configurations from historical data~\cite{Rao:2009:VRL}, and
+leveraging community users' knowledge for configuration tuning~\cite{Zheng:2011:MAC}.
+The above approaches focus on general configuration management issues, instead
+of error localizations.
+
+
+\textbf{Configuration-aware software analysis and testing.} Ways to understand
+configurable software and find configuration errors by testing. Representative work along this
+research line includes improving regression testing of configurable software~\cite{Qu:2008:CRT},
+using symbolic execution to understand configurable software~\cite{Reisner:2010:USE},
+white-box approaches~\cite{whiteboxconf},
+finding high-coverage configurations for testing~\cite{itrees}. Those approaches
+can serve as alternative ways to find configuration errors.
+
+\textbf{The use of execution spectrum to localize bugs.} There is a rich body of
+work in software engineering community in using execution spectrum for error diagnosis.
+Typical work includes~\cite{Liblit:2005:SSBI, Santelices:2009:LFU, Reps:1997:UPP,
+Yilmaz:2008:TTF}. However, our work has a different abstraction than theirs.
+
+\textbf{Software error isolation techniques.} Many techniques have been developed
+in the software engineering community. Representative work include delta debugging~\cite{Zeller:2002:ICC},
+dynamic slicing~\cite{Zhang:2006:LFT},
+capture and replay-based technique~\cite{Qi:2011:LFE}, approaches permitting
+users to ask program behaviors~\cite{Ko:2008:DRA},
+clustering-based~\cite{Dickinson:2001:FFC},
+error explanation~\cite{Groce:2006:EED},
+and approach combining static and dynamic information~\cite{Holmes:2011:IPT, Zhang:2008:EIF}.
+
+
+\textbf{Other related work.} This category includes inferring configuration options
+from source code with static analysis~\cite{Rabkin:2011:SEP}, 
+reverse engineering of software configurations~\cite{Wang:2008:TAR}, automatically
+fixing certain configuration errors by constraint solving~\cite{rangefix},
+empirical studies of configuration errors in practice~\cite{Yin:2011:ESC, Hubaux:2012},
+change impact analysis for configuration options~\cite{configimpact},
+and using program profiling and statistical analysis to solve
+other problems (e.g., critical program region identification)~\cite{Carbin:2010:AIC}.

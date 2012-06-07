@@ -1,0 +1,74 @@
+
+\section{Introduction}
+\label{sec:introduction}
+
+Modern software is extraordinarily complex. Many applications have a large
+number of configuration options that offer users great flexibility to
+customize their behaviors. This flexibility has a cost: when something
+goes wrong, fixing a configuration problem can be both time-consuming
+and frustrating. 
+Technical support contributes 17\% of the total cost of ownership of
+today's desktop computers~\cite{confevidence}, and troubleshooting misconfigurations
+is a large part of technical support.
+
+Misconfigurations are often exhibited by an application unexpectedly terminating
+or producing undesirable output. While an ideal application would always
+output a helpful error message when such events occur, it is unfortunately
+the case that such messages are often cryptic, misleading, or even non-existent.
+Thus, users must search manuals, FAQs, and online forums to find potential
+solutions to the problem. $\blacksquare$ this process is frustrating..
+
+$\blacksquare$ also lead to spurious bug reports.
+
+The process of explaining configuration errors can be divided into two
+separate tasks: diagnosing which specific configuration option is
+responsible for the unexpected behavior, and determining how to fix that
+configuration option. In this paper, we address the former task: finding
+the root cause of a configuration error.
+
+We are focusing specifically on configuration errors, in which the application
+code is correct, but the program is inappropriately configured so that
+it does not behave as desired. For instance, a mistake in a configuration
+option passed in command line may lead software to crash, or simply produce
+incorrect output.
+
+
+\vspace{1mm}
+\noindent \textbf{\textit{Our technique.}} 
+
+$\blacksquare$ We assume that the error is know, i.e., the error has
+been previously encountered ... Thus, the problem of explaining a
+configuration error on a different environment can be reduced to
+identifying that the xxx is in a state similar to a xxx good state
+on the reference computer for which a solution is known.
+
+\ourtool helps mitigate such problems.
+
+
+Most prior work on configuration debugging has relied
+on large user communities or on modifying the program’s execution
+environment $\blacksquare$ focusing on crashing errors.
+
+The core of our approach is to xxx. 
+We envision this being done by the developers
+at release time. When a user encounters an error, they can
+use the error message to query this database, perhaps via a web
+service.
+
+The developers provide a profile database, which users can use
+to query. The users can also enrich the database, providing their
+own examples. even a single run
+
+$\blacksquare$ our technique is lightweighted.
+Our technique requires no alterations to
+the JVM or standard library. This distinguishes our work from
+competing techniques such as dynamic taint tracking.
+
+\vspace{1mm}
+\noindent \textbf{\textit{Evaluations.}} 
+
+\vspace{1mm}
+\noindent \textbf{\textit{Contributions.}} This paper makes
+the following contributions:
+
+

@@ -1,0 +1,96 @@
+%\documentclass{acm_proc_article-sp}
+\documentclass{sig-alternate}
+%\usepackage{fancyheadings}
+%\documentclass[times, 10pt,twocolumn]{article}
+%\documentclass[conference]{IEEEtran-website}
+%\usepackage{latex8}
+
+\usepackage{algorithmic}
+\usepackage{multirow}
+\usepackage{amssymb, amsmath}
+\usepackage{xspace}
+\input{macros.tex}
+
+\usepackage{indentfirst}
+\usepackage{listings, algorithm, algorithmic, graphicx, listing}
+\usepackage{color}
+\usepackage{ulem}
+\usepackage{url}
+\usepackage{xspace}
+
+\newcommand{\ie}{i.e.}
+\newcommand{\eg}{e.g.}
+\newcommand{\ea}{et al.\xspace}
+\newcommand{\aka}{a.k.a.}
+
+\newcommand{\tool}[1]{#1}
+\newcommand{\FailureDoc}{\tool{Failure\-Doc}\xspace}
+\newcommand{\ourtool}{\tool{Our\-Tool}\xspace}
+\newcommand{\smallstep}{\relax}
+\newcommand{\tinystep}{\relax}
+
+% Add line between figure and text
+\makeatletter
+\def\topfigrule{\kern3\p@ \hrule \kern -3.4\p@} % the \hrule is .4pt high
+\def\botfigrule{\kern-3\p@ \hrule \kern 2.6\p@} % the \hrule is .4pt high
+\def\dblfigrule{\kern3\p@ \hrule \kern -3.4\p@} % the \hrule is .4pt high
+\makeatother \addtolength{\textfloatsep}{-.5\textfloatsep}
+\addtolength{\dbltextfloatsep}{-.5\dbltextfloatsep}
+\addtolength{\floatsep}{-.5\floatsep}
+\addtolength{\dblfloatsep}{-.5\dblfloatsep}
+
+%\newcommand{\CodeIn}[1]{{\small\texttt{#1}}}
+\newcommand{\edit}[2]{\sout{#1}{#2}}
+
+%\newcommand{\ie}{i.e.}
+%\newcommand{\eg}{e.g.}
+%\newcommand{\ea}{et al.\xspace}
+%\newcommand{\aka}{a.k.a.}
+
+% \|name| or \mathid{name} denotes identifiers and slots in formulas
+\def\|#1|{\mathid{#1}}
+\newcommand{\mathid}[1]{\ensuremath{\mathit{#1}}}
+% \<name> or \codeid{name} denotes computer code identifiers
+\def\<#1>{\codeid{#1}}
+\newcommand{\codeid}[1]{\ifmmode{\mbox{\ttfamily{#1}}}\else{\ttfamily #1}\fi}
+
+\newcommand{\cut}[1]{}
+\newcommand{\todo}[1]{{\bfseries [[{#1}]]}}
+
+\newcommand{\ttlcb}{\texttt{\char "7B}}
+\newcommand{\ttrcb}{\texttt{\char "7D}}
+
+
+\begin{document}
+\normalem
+
+\title{Explaining Software Configuration Errors}
+
+
+%\author{\IEEEauthorblockN{Sai Zhang \quad Michael D. Ernst}
+%\author{\IEEEauthorblockN{Sai Zhang}
+%\IEEEauthorblockA{University of Washington\\
+%szhang@cs.washington.edu} \and \IEEEauthorblockN{Cheng
+%\IEEEauthorblockA{Shanghai Jiao Tong University\\
+%cheng.zhang.stap@sjtu.edu.cn} }
+
+
+\maketitle \sloppy
+
+\input{abstract}
+
+\input{introduction}
+
+\input{technique}
+
+\input{evaluation}
+
+\input{related}
+
+\input{conclusion}
+
+
+\bibliographystyle{plain}
+%\scriptsize
+\bibliography{confbib}
+\end{document}
