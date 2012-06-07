@@ -1,0 +1,78 @@
+\section{Evaluation}
+
+\subsection{Research Questions}
+
+We aim to answer the following research questions:
+
+\begin{itemize}
+\item Is our technique useful in explaining software misconfiguration errors?
+\item Is the information provided by our technique more useful than the statement-level
+profiling and the method-level dynamic invariant detection?
+\item Which factors (how much) can affect our technique's accuracy?
+\end{itemize}
+
+\subsection{Subject Programs}
+
+We collected a number of subject programs and their mis-configuration problems in
+Table~\ref{tab:subjects}.
+
+\begin{table}[t]
+\setlength{\tabcolsep}{.94\tabcolsep}
+\begin{tabular}{|c|c|}
+\hline
+ program & Description of misconfiguration problem \\
+ \hline
+ \hline
+ Randoop &  No tests generated \\
+\hline
+ Weka &  Poor performance of the decision tree \\
+\hline
+ Chord &  No datarace reported \\
+\hline
+ Synoptic &  Produce an incorrect model \\
+\hline
+ Soot &  Source code line number is missing \\
+\hline
+\end{tabular}
+
+\Caption{{\label{tab:subjects} Subject programs and their configuration problems.}}
+\end{table}
+
+\subsubsection{Crashing Errors}
+
+\subsubsection{Non-Crashing Errors}
+
+\subsubsection{Injected Errors}
+
+Use injected errors to test the technique's reliability
+
+\subsection{Experiment Design}
+
+
+
+\subsubsection{Accuracy in Localizing Configuration Options}
+
+
+Are the ranked configurations useful for misconfiguration error diagnosis?
+
+\subsubsection{Sensitivy to the Inputs}
+
+What would the technique produce when feeding it with different inputs (e.g.,
+radically different inputs instead of similar ones)?
+
+\subsubsection{Comparison with Using Classic Slicing}
+
+How would the results change if traditional slicing~\cite{Horwitz:1988} is used
+in Section~\ref{sec:prop}?
+
+\subsubsection{Comparison with Statement-level Profiling and Method-level Invariant Detection}
+
+Our technique is at the \textit{predicate}-level. What about using
+\textit{statement}-level instrumentation and \textit{method}-level dynamic invariant detection~\cite{Ernst:1999}?
+
+Is our \textit{predicate}-level granularity a suitable one?
+
+\subsubsection{The Effects of Increasing Context Sensitivity}
+
+When recording configuration profiles (Section~\ref{sec:profiling}), is it useful
+to increase the length of calling context? Would that help improve our technique's accuracy?
