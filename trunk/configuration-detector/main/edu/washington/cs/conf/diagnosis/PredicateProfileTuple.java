@@ -12,10 +12,14 @@ import java.util.List;
  * */
 public class PredicateProfileTuple {
 
+	/**use which run to get the following profiles */
+	public final String name;
+	
 	private final List<PredicateProfile> profiles
 	    = new LinkedList<PredicateProfile>();
 	
-	public PredicateProfileTuple(Collection<PredicateProfile> coll) {
+	public PredicateProfileTuple(String name, Collection<PredicateProfile> coll) {
+		this.name = name;
 		this.profiles.addAll(coll);
 	}
 	

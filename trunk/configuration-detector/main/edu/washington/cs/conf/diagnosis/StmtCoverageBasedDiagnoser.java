@@ -11,9 +11,14 @@ import edu.washington.cs.conf.instrument.AbstractInstrumenter;
 
 public class StmtCoverageBasedDiagnoser extends AbstractBaselineDiagnoser {
 	
+    //all statement executed
+//	public final Collection<StmtExecuted> stmts;
+	
 	public StmtCoverageBasedDiagnoser(Collection<ConfPropOutput> confs,
-			Collection<StmtExecuted> stmts, Map<String, Float> sigMap) {
-		super(confs, stmts, sigMap);
+//			Collection<StmtExecuted> stmts, 
+			Map<String, Float> sigMap) {
+		super(confs, sigMap);
+//		this.stmts = stmts;
 	}
 
 	@Override

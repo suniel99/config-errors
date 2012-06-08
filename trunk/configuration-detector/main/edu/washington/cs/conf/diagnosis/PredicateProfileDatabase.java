@@ -8,10 +8,13 @@ import edu.washington.cs.conf.diagnosis.ProfileDistanceCalculator.DistanceType;
 
 public class PredicateProfileDatabase {
 	
+	public final String databaseName;
+	
 	private final List<PredicateProfileTuple> tuples
 	    = new LinkedList<PredicateProfileTuple>();
 	
-	public PredicateProfileDatabase(Collection<PredicateProfileTuple> coll) {
+	public PredicateProfileDatabase(String dbName, Collection<PredicateProfileTuple> coll) {
+		this.databaseName = dbName;
 		this.tuples.addAll(coll);
 	}
 	
