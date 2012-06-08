@@ -29,17 +29,11 @@ import com.ibm.wala.shrikeCT.ClassWriter;
 
 import edu.washington.cs.conf.util.Utils;
 
-public class ConfInstrumenter {
-	  private final boolean disasm = true;
-	  private final boolean verify = true;
-	  private OfflineInstrumenter instrumenter;
-	  private boolean branch = true;
+public class ConfInstrumenter extends AbstractInstrumenter {
 
+	  protected boolean branch = true;
 	  static final String fieldName = "_Conf_enable_trace";
 	  
-	  public static String PRE = "evaluating";
-	  public static String POST = "entering";
-	  public static String SEP = "#";
 
 	  // Keep these commonly used instructions around
 //	  static final Instruction getSysErr = Util.makeGet(System.class, "err");
@@ -53,23 +47,9 @@ public class ConfInstrumenter {
 	  public ConfInstrumenter(InstrumentSchema schema) {
 		  this.schema = schema;
 	  }
-
-	  public void instrument(String inputElement, String outputJar) throws Exception {
-	      instrumenter = new OfflineInstrumenter();
-	      Writer w = new BufferedWriter(new FileWriter("report", false));
-	      instrumenter.addInputElement(inputElement);
-	      instrumenter.setOutputJar(new File(outputJar));
-	      instrumenter.setPassUnmodifiedClasses(true);
-	      instrumenter.beginTraversal();
-	      ClassInstrumenter ci;
-	      //do the instrumentation
-	      while ((ci = instrumenter.nextClass()) != null) {
-	        doClass(ci, w);
-	      }
-	      instrumenter.close();
-	  }
 	  
-	  private void doClass(final ClassInstrumenter ci, Writer w) throws Exception {
+	  @Override
+	  protected void doClass(final ClassInstrumenter ci, Writer w) throws Exception {
 	    final String className = ci.getReader().getName();
 	    w.write("Class: " + className + "\n");
 	    w.flush();
@@ -156,16 +136,6 @@ public class ConfInstrumenter {
 	      cw.addField(ClassReader.ACC_PUBLIC | ClassReader.ACC_STATIC, fieldName, Constants.TYPE_boolean, new ClassWriter.Element[0]);
 	      instrumenter.outputModifiedClass(ci, cw);
 	    }
-	  }
-	  
-	  private String getMethodSignature(MethodData d) {
-		  String sig = d.getSignature();
-		  String name = d.getName();
-		  String jvmClassName = d.getClassType();
-		  Utils.checkTrue(jvmClassName.startsWith("L"));
-		  Utils.checkTrue(jvmClassName.endsWith(";"));
-		  String javaClassName =  Utils.translateSlashToDot(jvmClassName.substring(1, jvmClassName.length() - 1));
-		  return javaClassName + "." + name + sig;
 	  }
 	  
 	  private Map<Integer, Set<String>> getConfAffectedIndices(Map<String, Set<Integer>> confMap) {
