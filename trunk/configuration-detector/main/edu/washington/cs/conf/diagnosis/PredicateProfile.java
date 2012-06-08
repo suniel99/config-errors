@@ -2,6 +2,13 @@ package edu.washington.cs.conf.diagnosis;
 
 import edu.washington.cs.conf.util.Utils;
 
+/**
+ * It represents a single predicate profile datapoint, such as
+ *   configuration option: maxsize
+ *   context: createNewSequence
+ *   evaluation count:  100
+ *   entering count: 20
+ * */
 public class PredicateProfile {
 	
 	enum POINT{EVALUATING, ENTERING};
