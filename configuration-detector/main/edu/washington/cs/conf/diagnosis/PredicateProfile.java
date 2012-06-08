@@ -72,6 +72,12 @@ public class PredicateProfile {
 		return Math.max(r, 1 - r);
 	}
 	
+	public float importanceValue() {
+		float ratio = this.absoluteValue();
+		float importance = 2 / ( (1/(float)ratio) + (1/(float)this.evaluating_count));
+		return importance;
+	}
+	
 	public String getUniqueKey() {
 		return confId + "@" + context;
 	}
