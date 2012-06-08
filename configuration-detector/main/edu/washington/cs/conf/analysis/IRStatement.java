@@ -36,6 +36,7 @@ public class IRStatement {
 	
 	public final StatementWithInstructionIndex s;
 	public final SSAInstruction ssa;
+	public final String methodSig;
 	public final int instructionIndex;
 	public final int bcIndex;
 	public final int lineNumber;
@@ -43,6 +44,7 @@ public class IRStatement {
 	public IRStatement(StatementWithInstructionIndex stmt) {
 		this.s = stmt;
 		this.ssa = stmt.getInstruction();
+		this.methodSig = this.s.getNode().getMethod().getSignature();
 		this.instructionIndex = stmt.getInstructionIndex();
 		this.bcIndex = this.getBytecodeIndex(stmt, this.instructionIndex);
 		this.lineNumber = WALAUtils.getStatementLineNumber(this.s);
@@ -60,6 +62,10 @@ public class IRStatement {
 	
 	public int getInstructionIndex() {
 		return this.instructionIndex;
+	}
+	
+	public String getMethodSig() {
+		 return this.methodSig;
 	}
 	
 	public int getLineNumber() {

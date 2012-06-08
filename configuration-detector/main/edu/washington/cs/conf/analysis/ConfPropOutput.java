@@ -39,6 +39,24 @@ public class ConfPropOutput implements Serializable {
 		return conf;
 	}
 	
+	public boolean containStatement(String methodSig, int instructIndex) {
+		for(IRStatement irs : this.statements) {
+			if(irs.getInstructionIndex() == instructIndex && irs.getMethodSig().equals(methodSig)) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	public boolean containStatement(String methodSig) {
+		for(IRStatement irs : this.statements) {
+			if(irs.getMethodSig().equals(methodSig)) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
 	public Set<IRStatement> getNumberedStatements() {
 		Set<IRStatement> numbered = new LinkedHashSet<IRStatement>();
 		for(IRStatement ir : statements) {
