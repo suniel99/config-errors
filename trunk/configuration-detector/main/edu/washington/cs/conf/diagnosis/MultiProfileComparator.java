@@ -6,6 +6,7 @@ import java.util.List;
 
 import edu.washington.cs.conf.util.Utils;
 
+@Deprecated
 public class MultiProfileComparator {
 
 	//compare multiple good profiles with a single bad profile

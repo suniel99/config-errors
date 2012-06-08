@@ -12,6 +12,7 @@ import java.util.Map;
 import edu.washington.cs.conf.util.Log;
 import edu.washington.cs.conf.util.Utils;
 
+@Deprecated
 public class ProfileComparator {
 
 	public static boolean DEBUG = true;
