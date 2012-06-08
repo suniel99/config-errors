@@ -11,7 +11,7 @@ import edu.washington.cs.conf.util.Utils;
  * */
 public class PredicateProfile {
 	
-	enum POINT{EVALUATING, ENTERING};
+//	enum POINT{EVALUATING, ENTERING};
 	
 	public final String confId;
 	public final String context;
@@ -32,6 +32,7 @@ public class PredicateProfile {
 		this(confId, context);
 		Utils.checkTrue(evaluating_count > -1);
 		Utils.checkTrue(entering_count > -1);
+		Utils.checkTrue(evaluating_count >= entering_count);
 		this.evaluating_count = evaluating_count;
 		this.entering_count = entering_count;
 	}
@@ -52,6 +53,23 @@ public class PredicateProfile {
 	
 	public int getEnteringCount() {
 		return this.entering_count;
+	}
+	
+	public float getRatio() {
+		Utils.checkTrue(this.evaluating_count >= this.entering_count);
+		return (float)this.entering_count/(float)this.evaluating_count;
+	}
+	
+	/**
+	 * return a default value when comparing to Zero, for example,
+	 * when comparing:
+	 * p1: evaluating count: 80
+	 *     entering count: 20
+	 * to p2, which even does not evaluate the predicate
+	 * */
+	public float absoluteValue() {
+		float r = this.getRatio();
+		return Math.max(r, 1 - r);
 	}
 	
 	public String getUniqueKey() {
