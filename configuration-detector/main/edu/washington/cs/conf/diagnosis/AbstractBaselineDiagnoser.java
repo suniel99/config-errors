@@ -11,14 +11,13 @@ import edu.washington.cs.conf.util.Utils;
 public abstract class AbstractBaselineDiagnoser {
     public final Collection<ConfPropOutput> confs;
 	
-	public final Collection<StmtExecuted> stmts;
-	
+	//this can be a statement signature map or a method signature map
 	public final Map<String, Float> sigMap;
 	
 	public AbstractBaselineDiagnoser(Collection<ConfPropOutput> confs,
-			Collection<StmtExecuted> stmts, Map<String, Float> sigMap) {
+			Map<String, Float> sigMap) {
 		this.confs = confs;
-		this.stmts = stmts;
+//		this.stmts = stmts;
 		this.sigMap = Utils.sortByValue(sigMap, false);
 	}
 	

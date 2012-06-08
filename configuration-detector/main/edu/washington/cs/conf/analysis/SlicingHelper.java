@@ -66,6 +66,8 @@ public class SlicingHelper {
 	private AnalysisOptions options = null;
 	private CallGraph cg = null;
 	
+	private String targetPackageName = null;
+	
 	public SlicingHelper(String classPath, String mainClass) {
 		this.classPath = classPath;
 		this.mainClass = mainClass;
@@ -119,6 +121,10 @@ public class SlicingHelper {
 		this.controlOption = op;
 	}
 	
+	public void setTargetPackageName(String packageName) {
+		this.targetPackageName = packageName;
+	}
+	
 	public ClassHierarchy getClassHierarchy() {
 		return this.cha;
 	}
@@ -134,7 +140,7 @@ public class SlicingHelper {
 	public ConfPropOutput outputSliceConfOption(ConfEntity entity) {
 		Collection<Statement> stmts = sliceConfOption(entity);
 		Collection<IRStatement> irs = convert(stmts);
-		ConfPropOutput output = new ConfPropOutput(entity, irs);
+		ConfPropOutput output = new ConfPropOutput(entity, irs, this.targetPackageName);
 		return output;
 	}
 	
@@ -320,7 +326,7 @@ public class SlicingHelper {
 	    }
 	  }
 	
-	public static Collection<IRStatement> convert(Collection<Statement> stmts) {
+	static Collection<IRStatement> convert(Collection<Statement> stmts) {
 		Collection<IRStatement> irs = new LinkedList<IRStatement>();
 		
 		for(Statement s : stmts) {

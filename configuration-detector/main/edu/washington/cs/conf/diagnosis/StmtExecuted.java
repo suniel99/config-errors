@@ -104,6 +104,8 @@ public class StmtExecuted {
 	 * @throws InvalidClassFileException 
 	 * */
 	//a method signature looks like: test.slice.depfield.SeeCoverage.main([Ljava/lang/String;)V
+	//
+	//for each StmtExecuted object, add the line number tag to it
 	public static void addSourceNumber(ClassHierarchy cha, Collection<StmtExecuted> stmts) throws InvalidClassFileException {
 		Set<String> allMethodSigs = new HashSet<String>();
 		for(StmtExecuted s : stmts) {
@@ -124,6 +126,7 @@ public class StmtExecuted {
 		//initialize the line number
 		for(StmtExecuted stmt : stmts) {
 			IR ir = irMap.get(stmt.methodSig);
+			Utils.checkNotNull(ir, "The method: " + stmt.methodSig + " does not exist! ");
 			IBytecodeMethod method = (IBytecodeMethod)ir.getMethod();
 		    int bytecodeIndex = method.getBytecodeIndex(stmt.instructionIndex);
 		    int sourceLineNum = method.getLineNumber(bytecodeIndex);

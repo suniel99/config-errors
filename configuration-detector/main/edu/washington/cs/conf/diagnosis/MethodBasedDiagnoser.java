@@ -11,8 +11,8 @@ import edu.washington.cs.conf.analysis.ConfPropOutput;
 public class MethodBasedDiagnoser extends AbstractBaselineDiagnoser {
 
 	public MethodBasedDiagnoser(Collection<ConfPropOutput> confs,
-			Collection<StmtExecuted> stmts, Map<String, Float> sigMap) {
-		super(confs, stmts, sigMap);
+			Map<String, Float> sigMap) {
+		super(confs, sigMap);
 	}
 
 	@Override

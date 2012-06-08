@@ -29,10 +29,28 @@ public class ConfPropOutput implements Serializable {
 	public final Set<IRStatement> statements;
 	
 	public ConfPropOutput(ConfEntity conf, Collection<IRStatement> stmts) {
+//		Utils.checkNotNull(conf);
+//		this.conf = conf;
+//		this.statements = new LinkedHashSet<IRStatement>();
+//		this.statements.addAll(stmts);
+		this(conf, stmts, null);
+	}
+	
+	public ConfPropOutput(ConfEntity conf, Collection<IRStatement> stmts,
+			String targetPackage) {
 		Utils.checkNotNull(conf);
 		this.conf = conf;
 		this.statements = new LinkedHashSet<IRStatement>();
-		this.statements.addAll(stmts);
+		if(targetPackage != null) {
+			for(IRStatement s : stmts) {
+				String fullMethod = WALAUtils.getFullMethodName(s.getStatement().getNode().getMethod());
+				if(fullMethod.startsWith(targetPackage)) {
+					this.statements.add(s);
+				}
+			}
+		} else {
+			this.statements.addAll(stmts);
+		}
 	}
 	
 	public ConfEntity getConfEntity() {
@@ -178,7 +196,7 @@ public class ConfPropOutput implements Serializable {
 		sb.append(Globals.lineSep);
 		sb.append(conf.toString());
 		sb.append(Globals.lineSep);
-		sb.append("Slicing results:");
+		sb.append("Slicing results, stmt no: " + this.statements.size());
 		sb.append(Globals.lineSep);
 		for(IRStatement s : statements) {
 		    sb.append(s.toString());
