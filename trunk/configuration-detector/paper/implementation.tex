@@ -1,0 +1,22 @@
+\section{Implementation}
+\label{sec:implementation}
+
+implement at bytecode level, use wala, store all profile in local files.
+
+Use code alignment to find missing predicates, consider the following code:
+
+\begin{CodeOut}
+\begin{alltt}
+  String eqth = ...; //a configuration option
+
+1. if (eqth.equals("true")) \ttlcb
+2.   add(1);
+3. \ttrcb
+\end{alltt}
+\end{CodeOut}
+
+It wont include  line 1, since in the translated bytecode.
+we align the bytecode with the source code by the line number to
+determine whether it is a branching statement
+
+
