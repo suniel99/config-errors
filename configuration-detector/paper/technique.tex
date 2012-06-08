@@ -28,7 +28,7 @@ configurations, if changed, may even fix the unexpected behavior.
 
 Given a configuration option, this step statically determines its affected program
 elements in the abstraction level of \textit{predicates}. Using predicates
-as the abstraction level makes our technique focus on program control flows, instead
+as the abstraction level makes our technique focus on program data flows, instead
 of all executed statements.
 
 To identify those affected program predicates, a straightforward way is using program
@@ -82,6 +82,60 @@ By contrast, a thin slice~\cite{Sridharan:2007}
 only contains line 13.
 }} %\vspace{-1.8mm}
 \end{figure}
+
+
+\textbf{justification of focusing on program control-flow
+alternation, rather than values inside.}
+
+The key insight here is that, having no knowledge of
+what inputs a user would provide, traditional slicing
+captures every single detail of the execution, much
+of which is not needed at all by the client.
+However, if the provided input changes the workflow,
+instead of all data flow into it. 
+
+Take the code exerpt in Figure~\ref{fig:example} as an example.
+When Randoop is used to generate tests for different inputs (here,
+input mean programs under test), the created tests (method-call
+sequence at line 12) would be dramatically different.
+However, for similar inputs, the program execution flow should
+be similar.
+
+\textbf{justification of focusing on thin slicing, rather
+than all affected parts}
+Tranditional slicing does not distinguish flows along
+pointers from flows along values.
+
+Thin slicing is a technique that focuses on statements
+that flow values to the seed, ignoring the uses of
+base pointers.
+
+A thin data dependence graph has exactly
+the same set of nodes as its corresponding data dependence
+graph. However, for an access \CodeIn{v.f}, the base pointer value
+in \CodeIn{v} is not considered to be used. 
+
+This property makes thin slicing
+especially attractive.
+
+Also Take the code in Figure~\ref{fig:example} as an example.
+Use traditional slicing to compute all affected statement,
+the configuration option \CodeIn{maxsize} would affect
+branching statement 6, 13, and 16. However, the
+statements 6 and 13 are incorrectly identified, since
+whether a sequence has an active flag (line 6) or
+whether a sequence has been executed before (line 16)
+has nothing to do with the \CodeIn{maxsize} configuration option.
+In fact, there is another configuration option $\blacksquare$
+that affect line 6.
+
+% improves the relevance
+%of the slice by focusing on the statements that compute
+%and copy a value to the seed.
+
+By separating pointer computations from value flow,
+this approach naturally connects configurations and its
+directly affected statements.
 
 
 \subsection{Configuration Behavior Profiling}
@@ -193,3 +247,12 @@ remains the same in both good and bad runs. Therefore, the behavior
 of predicate \CodeIn{newSequence.size() > maxsize} deviates most, and our technique
 selects the \CodeIn{maxsize} configuration as the responsible one, and displays it to the user, suggesting he/she
 to inspect its value and re-set it.
+
+\subsection{Discussion}
+Why dynamic slicing is not usable? No seed statement, and great overhead. Using JSlicer incurs
+a great overhead. It needs to track every instruction and
+perform synchronization when dependence graph is updated.
+
+Our technique can be seen as a way to reduce overhead,
+including selective profiling, and static pre-processing
+techniques.

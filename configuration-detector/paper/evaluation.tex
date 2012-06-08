@@ -38,6 +38,8 @@ Table~\ref{tab:subjects}.
 \Caption{{\label{tab:subjects} Subject programs and their configuration problems.}}
 \end{table}
 
+Need to say how to collect representative profiles
+
 \subsubsection{Crashing Errors}
 
 \subsubsection{Non-Crashing Errors}
@@ -54,16 +56,27 @@ Use injected errors to test the technique's reliability
 
 
 Are the ranked configurations useful for misconfiguration error diagnosis?
+We examine the ranked configurations to see how well they can explain the behavior.
 
 \subsubsection{Sensitivy to the Inputs}
 
 What would the technique produce when feeding it with different inputs (e.g.,
 radically different inputs instead of similar ones)?
 
-\subsubsection{Comparison with Using Classic Slicing}
+In our approach, we first select a set of similar profiles from the  database,
+and then to do comparison. What about just using a single trace, i.e., the
+most similar trace? the most dissimilar traces? or what about just using a set
+of random selected trace.
+
+Comparison of different distance metrics to find similar statements.
+
+\subsubsection{Comparison with Traditional Slicing}
 
 How would the results change if traditional slicing~\cite{Horwitz:1988} is used
 in Section~\ref{sec:prop}?
+
+What about using traditional slicing for configuration propagation analysis?
+full control and data-flow information.
 
 \subsubsection{Comparison with Statement-level Profiling and Method-level Invariant Detection}
 
@@ -72,7 +85,18 @@ Our technique is at the \textit{predicate}-level. What about using
 
 Is our \textit{predicate}-level granularity a suitable one?
 
+The first alternative is to instrument all statement, and record the different between a bad run and
+a set of good runs. Find out the statement covered most by good runs, but covered least by bad run.
+After then, querying the thin slicing info, to rank the configuration options that can affect them.
+
+
+The second alternative is to run the program, diff the dynamically-detected invariants. Ranked all
+methods that have the most different invariants between 2 runs. Then, querying thin slicing to
+figure out the configuration options.
+
 \subsubsection{The Effects of Increasing Context Sensitivity}
 
 When recording configuration profiles (Section~\ref{sec:profiling}), is it useful
 to increase the length of calling context? Would that help improve our technique's accuracy?
+
+The default length is 1, we increase it to 2, 3, and then observe the difference
