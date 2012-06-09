@@ -13,8 +13,8 @@ public class PredicateProfile {
 	
 //	enum POINT{EVALUATING, ENTERING};
 	
-	public final String confId;
-	public final String context;
+	private final String confId; //a full name
+	private final String context;
 //	public final POINT p;
 	
 	private int evaluating_count = 0;
@@ -81,6 +81,10 @@ public class PredicateProfile {
 	
 	public String getUniqueKey() {
 		return confId + "@" + context;
+	}
+	
+	public String getConfigFullName() {
+		return this.confId;
 	}
 	
 	public static String[] parseKey(String key) {
