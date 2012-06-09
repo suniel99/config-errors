@@ -67,13 +67,14 @@ public class PredicateProfile {
 	 *     entering count: 20
 	 * to p2, which even does not evaluate the predicate
 	 * */
-	public float absoluteValue() {
+	public float absoluteRatio() {
 		float r = this.getRatio();
 		return Math.max(r, 1 - r);
 	}
 	
 	public float importanceValue() {
-		float ratio = this.absoluteValue();
+		float ratio = this.getRatio();
+		ratio = (ratio == 0.0f) ? 1/(float)this.evaluating_count : ratio;
 		float importance = 2 / ( (1/(float)ratio) + (1/(float)this.evaluating_count));
 		return importance;
 	}
