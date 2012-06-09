@@ -369,6 +369,13 @@ public class Utils {
 	    return result;
 	}
 	
+	public static <K, V> List<K> sortByValueAndReturnKeys(Map<K, V> map, final boolean increase) {
+		Map<K, V> sorted = sortByValue(map, increase);
+		List<K> list = new LinkedList<K>();
+		list.addAll(sorted.keySet());
+		return list;
+	}
+	
 	public static String extractClassName(String fullElement) {
 		return fullElement.substring(0, fullElement.lastIndexOf("."));
 	}
