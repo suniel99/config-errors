@@ -87,6 +87,10 @@ public class PredicateProfile {
 		return this.confId;
 	}
 	
+	public String getContext() {
+		return this.context;
+	}
+	
 	public static String[] parseKey(String key) {
 		return key.split("@");
 	}

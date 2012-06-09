@@ -8,6 +8,7 @@ import java.util.Map;
 
 import edu.washington.cs.conf.analysis.ConfEntity;
 import edu.washington.cs.conf.analysis.ConfEntityRepository;
+import edu.washington.cs.conf.diagnosis.ConfDiagnosisEntity.ProfilePosition;
 import edu.washington.cs.conf.util.Utils;
 
 public class PredicateProfileBasedDiagnoser {
@@ -31,58 +32,106 @@ public class PredicateProfileBasedDiagnoser {
 	}
 	
 	public List<ConfEntity> computeResponsibleOptions(RankType type) {
+		Collection<List<ConfDiagnosisEntity>> coll = summarizeAllDiagnosisEntity(this.goodRuns,
+				this.badRun, this.repository);
 		if(type.equals(RankType.TFIDF)) {
-			return rankOptionsByTfidf(this.goodRuns, this.badRun, this.repository);
+			return rankOptionsByTfidf(coll);
 		} else if (type.equals(RankType.PURERATIO)) {
-			return rankOptionsByRatio(this.goodRuns, this.badRun, this.repository);
+			return rankOptionsByRatio(coll);
 		} else if (type.equals(RankType.RATIOSUM)) {
-			return rankOptionsByRatioSum(this.goodRuns, this.badRun, this.repository);
+			return rankOptionsByRatioSum(coll);
 		}else {
 			throw new Error("Unrecognized type: " + type);
 		}
 	}
 	
-	static List<ConfEntity>  rankOptionsByTfidf(Collection<PredicateProfileTuple> goodRuns,
+	/**********
+	 * All static methods below
+	 * *******/
+	static Collection<List<ConfDiagnosisEntity>> summarizeAllDiagnosisEntity(
+			Collection<PredicateProfileTuple> goodRuns,
+			PredicateProfileTuple badRun,
+			ConfEntityRepository repository) {
+		Collection<List<ConfDiagnosisEntity>> coll = new LinkedList<List<ConfDiagnosisEntity>>();
+		
+		for(PredicateProfileTuple goodRun : goodRuns) {
+			List<ConfDiagnosisEntity> list = summarizeDiagnosisEntity(goodRun, badRun, repository);
+			coll.add(list);
+		}
+		Utils.checkTrue(goodRuns.size() == coll.size());
+		return coll;
+	}
+	
+	static List<ConfDiagnosisEntity> summarizeDiagnosisEntity(PredicateProfileTuple goodRun,
 			PredicateProfileTuple badRun, ConfEntityRepository repository) {
-		//use tf-idf
+		List<ConfDiagnosisEntity> retList = new LinkedList<ConfDiagnosisEntity>();
+		//go through both good profile and bad profile
+		for(PredicateProfile goodProfile : goodRun.getAllProfiles()) {
+			String uniqueKey = goodProfile.getUniqueKey();
+			PredicateProfile badProfile = badRun.lookUpByUniqueKey(uniqueKey);
+			ConfDiagnosisEntity result
+			    = new ConfDiagnosisEntity(goodProfile.getConfigFullName(), goodProfile.getContext());
+			//save attributes
+			result.saveScore(ProfilePosition.GOOD_EVAL_COUNT.toString(), goodProfile.getEvaluatingCount());
+			result.saveScore(ProfilePosition.GOOD_ENTER_COUNT.toString(), goodProfile.getEnteringCount());
+			result.saveScore(ProfilePosition.GOOD_RATIO.toString(), goodProfile.getRatio());
+			result.saveScore(ProfilePosition.GOOD_IMPORT.toString(), goodProfile.importanceValue());
+			//see the bad profile
+			if(badProfile != null) {
+				result.saveScore(ProfilePosition.BAD_EVAL_COUNT.toString(), badProfile.getEvaluatingCount());
+				result.saveScore(ProfilePosition.BAD_ENTER_COUNT.toString(), badProfile.getEnteringCount());
+				result.saveScore(ProfilePosition.BAD_RATIO.toString(), badProfile.getRatio());
+				result.saveScore(ProfilePosition.BAD_IMPORT.toString(), badProfile.importanceValue());
+			}
+			//add to the result
+			retList.add(result);
+		}
+		
+		for(PredicateProfile badProfile : badRun.getAllProfiles()) {
+			String uniqueKey = badProfile.getUniqueKey();
+			if(goodRun.lookUpByUniqueKey(uniqueKey) != null) {
+				continue;
+			}
+			ConfDiagnosisEntity result = new ConfDiagnosisEntity(badProfile.getConfigFullName(), badProfile.getContext());
+			result.saveScore(ProfilePosition.BAD_EVAL_COUNT.toString(), badProfile.getEvaluatingCount());
+			result.saveScore(ProfilePosition.BAD_ENTER_COUNT.toString(), badProfile.getEnteringCount());
+			result.saveScore(ProfilePosition.BAD_RATIO.toString(), badProfile.getRatio());
+			result.saveScore(ProfilePosition.BAD_IMPORT.toString(), badProfile.importanceValue());
+			//add to the result
+			retList.add(result);
+		}
+		
+		//associate with the entity
+		for(ConfDiagnosisEntity result : retList) {
+			result.setConfEntity(repository);
+		}
+		
+		return retList;
+	}
+	
+	
+	//for each list of diagnosis entity, compute a ranked conf-entity, then
+	//average the ranking,
+	
+	/**
+	 * Rank by tf-idf
+	 * */
+	static List<ConfEntity>  rankOptionsByTfidf(Collection<List<ConfDiagnosisEntity>> coll) {
 		return null;
 	}
 	
 	/**
 	 * Rank by the single highest importance value
 	 * */
-	static List<ConfEntity> rankOptionsByRatio(Collection<PredicateProfileTuple> goodRuns,
-			PredicateProfileTuple badRun, ConfEntityRepository repository) {
+	static List<ConfEntity> rankOptionsByRatio(Collection<List<ConfDiagnosisEntity>> coll) {
 		
 		return null;
-	}
-	//FIXME, probably not correct
-	static List<ConfEntity> rankOptionsByRatio(PredicateProfileTuple goodRun,
-			PredicateProfileTuple badRun, ConfEntityRepository repository) {
-		Map<ConfEntity, Float> entities = new HashMap<ConfEntity, Float>();
-		
-		//compare a good run with a bad run to see which config deviates most
-		for(PredicateProfile p : goodRun.getAllProfiles()) {
-			ConfEntity config = repository.lookupConfEntity(p.getConfigFullName());
-			Utils.checkNotNull(config, "Null? : " + config.getFullConfName());
-			PredicateProfile pBad = badRun.lookUpByUniqueKey(p.getUniqueKey());
-			if(pBad == null) {
-				
-			} else {
-				
-			}
-		}
-		
-		//sort the entity and then return all its key
-		List<ConfEntity> rankedConfigs = Utils.sortByValueAndReturnKeys(entities, false);
-		return rankedConfigs;
 	}
 	
 	/**
 	 * Rank by the highest importance value summation
 	 * */
-	static List<ConfEntity> rankOptionsByRatioSum(Collection<PredicateProfileTuple> goodRuns,
-			PredicateProfileTuple badRun, ConfEntityRepository repository) {
+	static List<ConfEntity> rankOptionsByRatioSum(Collection<List<ConfDiagnosisEntity>> coll) {
 		return null;
 	}
 }

@@ -12,14 +12,19 @@ import edu.washington.cs.conf.analysis.ConfEntity;
 import edu.washington.cs.conf.analysis.ConfEntityRepository;
 import edu.washington.cs.conf.util.Utils;
 
-public class ConfDiagnosisResult {
+public class ConfDiagnosisEntity {
+	
+	public enum ProfilePosition{GOOD_EVAL_COUNT, GOOD_ENTER_COUNT, GOOD_IMPORT, GOOD_RATIO,
+		BAD_EVAL_COUNT, BAD_ENTER_COUNT, BAD_IMPORT, BAD_RATIO};
 	
 	private final String configFullName;
 	private final String context;
 	//store different scoring criteria and the corresponding score
-	private final Map<String, Float> scores = new HashMap<String, Float>();
+	private final Map<String, Object> scores = new HashMap<String, Object>();
+	
+	private ConfEntity entity = null;
 
-    public ConfDiagnosisResult(String configFullName, String context) {
+    public ConfDiagnosisEntity(String configFullName, String context) {
     	Utils.checkNotNull(configFullName);
     	Utils.checkNotNull(context);
     	this.configFullName = configFullName;
@@ -34,17 +39,21 @@ public class ConfDiagnosisResult {
     	return this.context;
     }
 
-    public ConfEntity getConfEntity(ConfEntityRepository repo) {
-    	return repo.lookupConfEntity(this.configFullName);
+    public void setConfEntity(ConfEntityRepository repo) {
+    	this.entity = repo.lookupConfEntity(this.configFullName);
     }
     
-    public void saveScore(String criteria, Float score) {
+    public ConfEntity getConfEntity() {
+    	return this.entity;
+    }
+    
+    public void saveScore(String criteria, Object score) {
     	Utils.checkTrue(!this.scores.containsKey(criteria));
     	this.scores.put(criteria, score);
     }
     
     public Float getScore(String criteria) {
-    	return scores.get(criteria);
+    	return Float.parseFloat(scores.get(criteria).toString());
     }
     
     public boolean hasScore(String critera) {
@@ -53,10 +62,10 @@ public class ConfDiagnosisResult {
     
     @Override
     public boolean equals(Object obj) {
-    	if(!(obj instanceof ConfDiagnosisResult)) {
+    	if(!(obj instanceof ConfDiagnosisEntity)) {
     		return false;
     	}
-    	ConfDiagnosisResult confE = (ConfDiagnosisResult)obj;
+    	ConfDiagnosisEntity confE = (ConfDiagnosisEntity)obj;
     	return this.configFullName.equals(confE.configFullName)
     	    && this.context.equals(confE.context)
     	    && this.scores.equals(confE.scores);
@@ -75,17 +84,17 @@ public class ConfDiagnosisResult {
     /**
      * A utility method for sorting config by its score
      * */
-    public static List<ConfDiagnosisResult> rankByCriteria(Collection<ConfDiagnosisResult> results, String criteria,
+    public static List<ConfDiagnosisEntity> rankByCriteria(Collection<ConfDiagnosisEntity> results, String criteria,
     		boolean increase) {
     	//check the existence of the criteria
-    	for(ConfDiagnosisResult result : results) {
+    	for(ConfDiagnosisEntity result : results) {
     		Utils.checkTrue(result.hasScore(criteria));
     	}
-    	Map<ConfDiagnosisResult, Float> scoreMap = new LinkedHashMap<ConfDiagnosisResult, Float>();
-    	for(ConfDiagnosisResult result : results) {
+    	Map<ConfDiagnosisEntity, Float> scoreMap = new LinkedHashMap<ConfDiagnosisEntity, Float>();
+    	for(ConfDiagnosisEntity result : results) {
     		scoreMap.put(result, result.getScore(criteria));
     	}
-    	List<ConfDiagnosisResult> rankedList = Utils.sortByValueAndReturnKeys(scoreMap, increase);
+    	List<ConfDiagnosisEntity> rankedList = Utils.sortByValueAndReturnKeys(scoreMap, increase);
     	return rankedList;
     }
 }
