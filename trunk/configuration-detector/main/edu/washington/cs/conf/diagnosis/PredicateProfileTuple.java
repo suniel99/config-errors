@@ -32,6 +32,10 @@ public class PredicateProfileTuple {
 //		this.profiles.add(profile);
 //	}
 	
+	public List<PredicateProfile> getAllProfiles() {
+		return this.profiles;
+	}
+	
 	public PredicateProfile lookUpByUniqueKey(String key) {
 		Utils.checkNotNull(key);
 		for(PredicateProfile p : this.profiles) {

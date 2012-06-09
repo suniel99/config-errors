@@ -47,9 +47,9 @@ public class ProfileDistanceCalculator {
 			if(p1 != null && p2 != null) {
 				delta = Math.abs(p1.getRatio() - p2.getRatio());
 			} else if (p1 == null && p2 != null) {
-				delta = p2.absoluteValue();
+				delta = p2.absoluteRatio();
 			} else { //p1 != null && p2 == null
-				delta = p1.absoluteValue();
+				delta = p1.absoluteRatio();
 			}
 			distance += delta;
 		}
@@ -92,9 +92,9 @@ public class ProfileDistanceCalculator {
 			if(p1 != null && p2 != null) {
 				delta = Math.abs(p1.getRatio() - p2.getRatio());
 			} else if (p1 == null && p2 != null) {
-				delta = p2.absoluteValue();
+				delta = p2.absoluteRatio();
 			} else { //p1 != null && p2 == null
-				delta = p1.absoluteValue();
+				delta = p1.absoluteRatio();
 			}
 			float d = delta*delta; //compute the square
 			distance += d;
