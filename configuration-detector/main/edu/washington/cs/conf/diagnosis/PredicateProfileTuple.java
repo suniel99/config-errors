@@ -19,13 +19,28 @@ public class PredicateProfileTuple {
 	/**use which run to get the following profiles */
 	public final String name;
 	
+	public final boolean isGoodRun;
+	
 	private final List<PredicateProfile> profiles
 	    = new LinkedList<PredicateProfile>();
 	
-	public PredicateProfileTuple(String name, Collection<PredicateProfile> coll) {
+	public static PredicateProfileTuple createGoodRun(String name, Collection<PredicateProfile> coll) {
+		return new PredicateProfileTuple(name, coll, true);
+	}
+	
+	public static PredicateProfileTuple createBadRun(String name, Collection<PredicateProfile> coll) {
+		return new PredicateProfileTuple(name, coll, false);
+	}
+	
+	PredicateProfileTuple(String name, Collection<PredicateProfile> coll, boolean isGoodRun) {
 		this.name = name;
 		this.profiles.addAll(coll);
+		this.isGoodRun = isGoodRun;
 		this.checkValidity();
+	}
+	
+	public boolean isGoodRun() {
+		return this.isGoodRun;
 	}
 	
 //	public void addProfile(PredicateProfile profile) {
