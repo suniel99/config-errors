@@ -18,14 +18,14 @@ public class TestProfileDistanceCalculator extends TestCase {
 		PredicateProfile p3 = new PredicateProfile("conf3", "context3", 100, 70);
 		PredicateProfile p4 = new PredicateProfile("conf4", "context4", 100, 80);
 		PredicateProfile p5 = new PredicateProfile("conf5", "context5", 100, 90);
-		t1 = new PredicateProfileTuple("tuple1", Arrays.asList(p1, p2, p3, p4, p5));
+		t1 = PredicateProfileTuple.createGoodRun("tuple1", Arrays.asList(p1, p2, p3, p4, p5));
 		
 		PredicateProfile p11 = new PredicateProfile("conf1", "context1", 100, 50);
 		PredicateProfile p21 = new PredicateProfile("conf21", "context2", 100, 90);
 		PredicateProfile p31 = new PredicateProfile("conf3", "context3", 100, 70);
 		PredicateProfile p41 = new PredicateProfile("conf4", "context4", 100, 50);
 		PredicateProfile p51 = new PredicateProfile("conf51", "context5", 100, 90);
-		t2 = new PredicateProfileTuple("tuple2", Arrays.asList(p11, p21, p31, p41, p51));
+		t2 = PredicateProfileTuple.createGoodRun("tuple2", Arrays.asList(p11, p21, p31, p41, p51));
 	}
 	
 	public void test1() {

@@ -9,10 +9,14 @@ public class TestPredicateProfile extends TestCase {
 				1, 0);
 		PredicateProfile p1 = new PredicateProfile("option1", "context1",
 				1, 1);
+		PredicateProfile p20 = new PredicateProfile("option2", "context2",
+				5, 5);
 		PredicateProfile p2 = new PredicateProfile("option2", "context2",
 				5, 4);
 		PredicateProfile p21 = new PredicateProfile("option2", "context2",
 				5, 3);
+		PredicateProfile p31 = new PredicateProfile("option2", "context2",
+				100, 100);
 		PredicateProfile p3 = new PredicateProfile("option2", "context2",
 				100, 90);
 		PredicateProfile p30 = new PredicateProfile("option2", "context2",
@@ -22,14 +26,34 @@ public class TestPredicateProfile extends TestCase {
 		assertEquals(1.0f, p0.importanceValue());
 		System.out.println(p1.importanceValue());
 		assertEquals(1.0f, p1.importanceValue());
+		assertEquals(1.6666666f, p20.importanceValue());
 		System.out.println(p2.importanceValue());
 		assertEquals(1.3793103f, p2.importanceValue());
 		System.out.println(p21.importanceValue());
 		assertEquals(1.0714285f, p21.importanceValue());
 		System.out.println(p3.importanceValue());
+		assertEquals(1.980198f, p31.importanceValue());
 		assertEquals(1.7839445f, p3.importanceValue());
 		System.out.println(p30.importanceValue());
 		assertEquals(0.019998f, p30.importanceValue());
+	}
+	
+	public void testAbsoluteImportanceValue() {
+		PredicateProfile p1 = new PredicateProfile("option1", "context1",
+				1, 0);
+		System.out.println(p1.absImportanceValue());
+		PredicateProfile p2 = new PredicateProfile("option1", "context1",
+				100, 0);
+		System.out.println(p2.absImportanceValue());
+		PredicateProfile p3 = new PredicateProfile("option1", "context1",
+				100, 50);
+		System.out.println(p3.absImportanceValue());
+		PredicateProfile p4 = new PredicateProfile("option1", "context1",
+				5, 2);
+		System.out.println(p4.absImportanceValue());
+		PredicateProfile p5 = new PredicateProfile("option1", "context1",
+				100, 60);
+		System.out.println(p5.absImportanceValue());
 	}
 	
 	public void testImportanceValueDiff() {
