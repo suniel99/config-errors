@@ -71,9 +71,33 @@ public class PredicateProfile {
 		float r = this.getRatio();
 		return Math.max(r, 1 - r);
 	}
+
+	/**
+	 * return a default value when comparing to zero using importance value:
+	 * how about reflecting the importance of comparing:
+	 * p1: evaluation count 100
+	 *     entering count: 0
+	 * to p2
+	 * 
+	 * p1: evaluating count 1
+	 *     entering count 0
+	 * to p2
+	 * */
+	public float absImportanceValue() {
+		float ratio = this.absoluteRatio();
+		return importanceValue(ratio);
+	}
 	
 	public float importanceValue() {
 		float ratio = this.getRatio();
+//		ratio = (ratio == 0.0f) ? 1/(float)this.evaluating_count : ratio;
+//		float importance = 2 / ( (1/(float)ratio) + (1/(float)this.evaluating_count));
+//		return importance;
+		return importanceValue(ratio);
+	}
+	
+	
+	public float importanceValue(float ratio) {
 		ratio = (ratio == 0.0f) ? 1/(float)this.evaluating_count : ratio;
 		float importance = 2 / ( (1/(float)ratio) + (1/(float)this.evaluating_count));
 		return importance;
