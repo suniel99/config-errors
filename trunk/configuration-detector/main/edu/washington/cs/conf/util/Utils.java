@@ -347,6 +347,15 @@ public class Utils {
 		return sb.toString();
 	}
 	
+	public static Float average(Collection<Integer> ts) {
+		Utils.checkTrue(ts.size() > 0);
+		Float sum = 0.0f;
+		for(Integer t : ts) {
+			sum += (float)t;
+		}
+		return sum/ts.size();
+	}
+	
 	public static <K, V> Map<K, V> sortByValue(Map<K, V> map, final boolean increase) {
 	     List<Entry<K, V>> list = new LinkedList<Entry<K, V>>(map.entrySet());
 	     Collections.sort(list, new Comparator() {
