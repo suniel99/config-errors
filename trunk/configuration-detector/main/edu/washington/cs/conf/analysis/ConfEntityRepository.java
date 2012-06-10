@@ -16,6 +16,10 @@ public class ConfEntityRepository {
 		}
 	}
 	
+	public int size() {
+		return entities.size();
+	}
+	
 	public ConfEntity lookupConfEntity(String fullName) {
 		for(ConfEntity entity : entities) {
 			if(entity.getFullConfName().equals(fullName)) {
