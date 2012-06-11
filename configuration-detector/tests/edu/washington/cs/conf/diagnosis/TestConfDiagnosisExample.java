@@ -9,7 +9,33 @@ import edu.washington.cs.conf.analysis.TestConfEntityRepository;
 import edu.washington.cs.conf.diagnosis.ConfDiagnosisEntity.RawDataType;
 import junit.framework.TestCase;
 
-public class TestConfDiagnosisEntity extends TestCase {
+
+/***
+ * Good run            evaluation       enter
+ * -------------------------------------------
+ * c1@context1         100              80
+ * c2@context2         5                4
+ * c2@context4         40               20
+ * c3@context3         1                0
+ * c3@context4         25               5
+ * c4@cotnext4         25               20
+ * c4@context1         50               15
+ * 
+ * 
+ * Bad run
+ * --------------------------------------------
+ * c1@context1         100              30
+ * c2@context2         5                0
+ * c4@context4         25               10
+ * c4@context6         6                5
+ * c5@context5         4                0
+ * c6@context2         30               15
+ * c6@context3         80               60
+ * c6@cotnext6         1                0
+ * 
+ * */
+
+public class TestConfDiagnosisExample extends TestCase {
 	
 	public void testGoodRun() {
 		assertNotNull(getGoodRun());
