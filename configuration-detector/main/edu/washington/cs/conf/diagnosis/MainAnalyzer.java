@@ -27,7 +27,7 @@ import edu.washington.cs.conf.util.Utils;
 public class MainAnalyzer {
 	
 	private float threshold = 0.8f;
-	private DistanceType distanceType = DistanceType.EUCLIDEAN;
+	private DistanceType distanceType = DistanceType.INTERPRODUCT;
 	private RankType rankType = RankType.TFIDF_IMPORT;
 	private CrossRunRank crossRank = CrossRunRank.HIGHEST_RANK_AVG;
 	private final ConfEntityRepository repository;

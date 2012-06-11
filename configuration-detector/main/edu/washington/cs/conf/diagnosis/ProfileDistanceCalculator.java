@@ -10,12 +10,16 @@ import edu.washington.cs.conf.util.Utils;
  * */
 public class ProfileDistanceCalculator {
 	
-	public enum DistanceType {MANHATTAN, LEVENSHTEIN, EUCLIDEAN, JACCARD}
+	public enum DistanceType {MANHATTAN, LEVENSHTEIN, EUCLIDEAN, JACCARD, INTERPRODUCT, SUBTRACTION}
 	
 	public static float computeDistance(PredicateProfileTuple t1,
 			PredicateProfileTuple t2, DistanceType type) {
 		if(type.equals(DistanceType.MANHATTAN)) {
 			return computeManhattanDistance(t1, t2);
+		} else if (type.equals(DistanceType.INTERPRODUCT)) {
+			return computeInterproductDistance(t1, t2);
+		} else if (type.equals(DistanceType.SUBTRACTION)) {
+			return computeSubstractionDistance(t1, t2);
 		} else if (type.equals(DistanceType.LEVENSHTEIN)) {
 			return computeLevenshteinDistance(t1, t2);
 		} else if (type.equals(DistanceType.EUCLIDEAN)) {
@@ -25,6 +29,67 @@ public class ProfileDistanceCalculator {
 		} else {
 			throw new Error("Unsupported type: " + type);
 		}
+	}
+	
+	public static float computeInterproductDistance(PredicateProfileTuple t1,
+			PredicateProfileTuple t2) {
+		Utils.checkNotNull(t1);
+		Utils.checkNotNull(t2);
+		if(t1.equals(t2)) {
+			return 0.0f;
+		}
+		
+		Set<String> allKeys = getAllUniqueKeys(t1, t2);
+		Float similarity_sum = 0.0f;
+		for(String key : allKeys) {
+			PredicateProfile p1 = t1.lookUpByUniqueKey(key);
+			PredicateProfile p2 = t2.lookUpByUniqueKey(key);
+			Utils.checkTrue(p1 != null || p2 != null);
+			float delta = 0.0f;
+			if(p1 != null && p2 != null) {
+//				delta = Math.abs(p1.getRatio() - p2.getRatio());
+				float singleSimilar = p1.getRatio() > p2.getRatio() ? p2.getRatio()/p1.getRatio() : p1.getRatio() / p2.getRatio();
+				delta = singleSimilar;
+			} else if (p1 == null && p2 != null) {
+				delta = p2.absoluteRatio();
+			} else { //p1 != null && p2 == null
+				delta = p1.absoluteRatio();
+			}
+			similarity_sum += delta*delta;
+		}
+		
+		Float distance = 1 - (similarity_sum / allKeys.size());
+//		Float distance = (float) (1 - (Math.sqrt((double)similarity_sum) / allKeys.size()));
+		return distance;
+	}
+	
+	public static float computeSubstractionDistance(PredicateProfileTuple t1,
+			PredicateProfileTuple t2) {
+		Utils.checkNotNull(t1);
+		Utils.checkNotNull(t2);
+		if(t1.equals(t2)) {
+			return 0.0f;
+		}
+		
+		Set<String> allKeys = getAllUniqueKeys(t1, t2);
+		Float total = 0.0f;
+		for(String key : allKeys) {
+			PredicateProfile p1 = t1.lookUpByUniqueKey(key);
+			PredicateProfile p2 = t2.lookUpByUniqueKey(key);
+			Utils.checkTrue(p1 != null || p2 != null);
+			float delta = 0.0f;
+			if(p1 != null && p2 != null) {
+				delta = Math.abs(p1.getRatio() - p2.getRatio());
+			} else if (p1 == null && p2 != null) {
+				delta = p2.absoluteRatio();
+			} else { //p1 != null && p2 == null
+				delta = p1.absoluteRatio();
+			}
+			total += delta;
+		}
+		
+		Float distance = total / allKeys.size();
+		return distance;
 	}
 	
 	/**
