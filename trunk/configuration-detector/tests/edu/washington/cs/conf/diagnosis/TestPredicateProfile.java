@@ -109,4 +109,36 @@ public class TestPredicateProfile extends TestCase {
 		
 		System.out.println("------------------");
 	}
+	
+	//really limitation?
+	public void testImportanceMetricLimitations() {
+		PredicateProfile p1 = new PredicateProfile("option1", "context1",
+				1, 0);
+		System.out.println(p1.importanceValue());
+		PredicateProfile p2 = new PredicateProfile("option1", "context1",
+				1, 1);
+		System.out.println(p2.importanceValue());
+		System.out.println("delta: " + (p2.importanceValue() - p1.importanceValue()));
+		System.out.println("absolute value p1: " + p1.absImportanceValue());
+		System.out.println("absolute value p2: " + p2.absImportanceValue());
+		System.out.println();
+		PredicateProfile p3 = new PredicateProfile("option1", "context1",
+				100, 90);
+		System.out.println(p3.importanceValue());
+		PredicateProfile p4 = new PredicateProfile("option1", "context1",
+				100, 30);
+		System.out.println(p4.importanceValue());
+		System.out.println("delta: " + (p4.importanceValue() - p3.importanceValue()));
+		System.out.println("absolute value p3: " + p3.absImportanceValue());
+		System.out.println("absolute value p4: " + p4.absImportanceValue());
+		PredicateProfile p5 = new PredicateProfile("option1", "context1",
+				100, 50);
+		System.out.println(p5.importanceValue());
+		PredicateProfile p6 = new PredicateProfile("option1", "context1",
+				100, 30);
+		System.out.println(p6.importanceValue());
+		System.out.println("delta: " + (p5.importanceValue() - p6.importanceValue()));
+		System.out.println("absolute value p5: " + p5.absImportanceValue());
+		System.out.println("absolute value p6: " + p6.absImportanceValue());
+	}
 }
