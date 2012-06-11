@@ -42,7 +42,8 @@ public class PredicateProfileDatabase {
 		
 		for(PredicateProfileTuple tuple : tuples) {
 			float distance = ProfileDistanceCalculator.computeDistance(tuple, target, t);
-			if(distance >= threashold) {
+			System.err.println("distance: " + distance);
+			if(distance <= threashold) {
 				retList.add(tuple);
 			}
 		}
