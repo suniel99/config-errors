@@ -14,6 +14,10 @@ import edu.washington.cs.conf.diagnosis.ConfDiagnosisEntity.RawDataType;
 import edu.washington.cs.conf.diagnosis.ConfDiagnosisEntity.ScoreType;
 import edu.washington.cs.conf.util.Utils;
 
+/**
+ * Given a set of bad runs and one good run, find out which
+ * configuration options should be responsible for.
+ * */
 public class PredicateProfileBasedDiagnoser {
 	
 	public enum RankType {TFIDF_RATIO, TFIDF_IMPORT, SINGLE_RATIO, SINGLE_IMPORT, RATIO_SUM, IMPORT_SUM};

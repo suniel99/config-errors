@@ -4,7 +4,7 @@ import java.util.Collection;
 
 import edu.washington.cs.conf.util.Files;
 
-public class TraceFileReader {
+class TraceFileReader {
 	
 	public final String goodTrace;
 	

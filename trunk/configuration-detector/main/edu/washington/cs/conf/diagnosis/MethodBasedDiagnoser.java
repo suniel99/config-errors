@@ -8,6 +8,15 @@ import java.util.Map;
 import edu.washington.cs.conf.analysis.ConfEntity;
 import edu.washington.cs.conf.analysis.ConfPropOutput;
 
+/**
+ * This class is for experimental comparison with method-level invariant
+ * analysis. The basic idea is: observe the invariant difference between
+ * a good run and a bad run, and find out all methods that have different
+ * invariants. Then, identify configurations that could affect such methods.
+ * 
+ * Compared to the configuration profiling, this method is at a coarser
+ * granularity.
+ * */
 public class MethodBasedDiagnoser extends AbstractBaselineDiagnoser {
 
 	public MethodBasedDiagnoser(Collection<ConfPropOutput> confs,
