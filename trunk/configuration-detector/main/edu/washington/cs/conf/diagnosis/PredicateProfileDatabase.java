@@ -21,6 +21,10 @@ public class PredicateProfileDatabase {
 		this.tuples.addAll(coll);
 	}
 	
+	public PredicateProfileDatabase(Collection<PredicateProfileTuple> coll) {
+		this("profile-db", coll);
+	}
+	
 	public void addTuple(PredicateProfileTuple tuple) {
 		this.tuples.add(tuple);
 	}

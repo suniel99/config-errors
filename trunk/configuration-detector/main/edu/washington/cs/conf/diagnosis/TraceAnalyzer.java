@@ -6,6 +6,7 @@ import java.util.LinkedHashSet;
 import java.util.Map;
 
 import edu.washington.cs.conf.instrument.ConfInstrumenter;
+import edu.washington.cs.conf.util.Files;
 import edu.washington.cs.conf.util.Utils;
 
 public class TraceAnalyzer {
@@ -19,27 +20,31 @@ public class TraceAnalyzer {
 	}
 	
 	public TraceAnalyzer(String goodTraceFileName, String badTraceFileName) {
-		TraceFileReader reader = new TraceFileReader(goodTraceFileName, badTraceFileName);
-		this.goodTraces = reader.getGoodTraces();
-		this.badTraces = reader.getBadTraces();
+		this.goodTraces = Files.readWholeNoExp(goodTraceFileName);
+		this.badTraces = Files.readWholeNoExp(badTraceFileName);
 	}
 	
 	public Collection<PredicateProfile> getGoodProfiles() {
-		return this.createProfiles(this.goodTraces);
+		return createProfiles(this.goodTraces);
 	}
 	
 	public Collection<PredicateProfile> getBadProfiles() {
-		return this.createProfiles(this.badTraces);
+		return createProfiles(this.badTraces);
 	}
 	
-	public Collection<PredicateProfile> createProfiles(Collection<String> traces) {
+	public static Collection<PredicateProfile> createProfiles(String traceFileName) {
+		Collection<String> traces = Files.readWholeNoExp(traceFileName);
+		return createProfiles(traces);
+	}
+	
+	public static Collection<PredicateProfile> createProfiles(Collection<String> traces) {
 		Collection<PredicateProfile> profiles = new LinkedHashSet<PredicateProfile>();
 		
 		//a data structure to memorize the already processed parts
 		Map<String, PredicateProfile> profileMap = new LinkedHashMap<String, PredicateProfile>();
 		
 		for(String trace : traces) {
-			String[] splits = this.splitLines(trace);
+			String[] splits = splitLines(trace);
 			String confId = splits[1];
 			String context = splits[2];
 			String point = splits[0];
@@ -66,7 +71,7 @@ public class TraceAnalyzer {
 		return profiles;
 	}
 	
-	private String[] splitLines(String line) {
+	private static String[] splitLines(String line) {
 		String[] splits = line.split(ConfInstrumenter.SEP);
 		Utils.checkTrue(splits.length == 4, "Length: " + splits.length);
 		return splits;
