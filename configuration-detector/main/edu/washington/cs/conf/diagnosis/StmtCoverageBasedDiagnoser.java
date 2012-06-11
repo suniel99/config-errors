@@ -9,6 +9,12 @@ import edu.washington.cs.conf.analysis.ConfEntity;
 import edu.washington.cs.conf.analysis.ConfPropOutput;
 import edu.washington.cs.conf.instrument.AbstractInstrumenter;
 
+/**
+ * The code for experimental comparison with statement-level profiling.
+ * The idea is: first collect all statement executed by good run and bad
+ * run, and rank thhose statements based on the Tarantula metrics. For
+ * each ranked statement, find out which configuration may affect them.
+ * */
 public class StmtCoverageBasedDiagnoser extends AbstractBaselineDiagnoser {
 	
     //all statement executed

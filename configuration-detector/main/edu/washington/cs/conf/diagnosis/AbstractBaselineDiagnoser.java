@@ -8,6 +8,9 @@ import edu.washington.cs.conf.analysis.ConfEntity;
 import edu.washington.cs.conf.analysis.ConfPropOutput;
 import edu.washington.cs.conf.util.Utils;
 
+/**
+ * An abstract class for baseline comparison. Not for our own technique.
+ * */
 public abstract class AbstractBaselineDiagnoser {
     public final Collection<ConfPropOutput> confs;
 	

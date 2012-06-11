@@ -6,6 +6,9 @@ import java.util.List;
 
 import edu.washington.cs.conf.diagnosis.ProfileDistanceCalculator.DistanceType;
 
+/**
+ * Store a list of predicate profile tuples
+ * */
 public class PredicateProfileDatabase {
 	
 	public final String databaseName;
