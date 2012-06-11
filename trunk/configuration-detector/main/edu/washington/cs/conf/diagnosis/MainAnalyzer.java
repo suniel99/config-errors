@@ -1,5 +1,7 @@
 package edu.washington.cs.conf.diagnosis;
 
+import instrument.Globals;
+
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
@@ -66,11 +68,33 @@ public class MainAnalyzer {
 	}
 	
 	public List<ConfDiagnosisOutput> computeResponsibleOptions() {
+		this.showParameters(); //for debugging purpose
 		List<PredicateProfileTuple> similarProfiles
 		   = selectSimilarProfileTuples(this.goodRunDb, this.badRun, this.distanceType, this.threshold);
+		System.err.println("Number of similar profiles: " + similarProfiles.size());
 		PredicateProfileBasedDiagnoser diagnoser = createDiagnoser(similarProfiles, this.badRun, this.repository);
 		List<ConfDiagnosisOutput> rankedOutput = diagnoser.computeResponsibleOptions(this.rankType);
 		return rankedOutput;
+	}
+	
+	private void showParameters() {
+		StringBuilder sb = new StringBuilder();
+		sb.append("Basic info:");
+		sb.append(Globals.lineSep);
+		sb.append("  number of good runs: " + this.goodRunDb.getAllTuples().size());
+		sb.append("Selecting similar traces: ");
+		sb.append(Globals.lineSep);
+		sb.append("  distance type: " + this.distanceType);
+		sb.append(Globals.lineSep);
+		sb.append("  threshold: " + this.threshold);
+		sb.append(Globals.lineSep);
+		sb.append("For configuration option ranking: ");
+		sb.append(Globals.lineSep);
+		sb.append("  rank type: " + this.rankType);
+		sb.append(Globals.lineSep);
+		sb.append("  cross run ranking: " + this.crossRank);
+		sb.append(Globals.lineSep);
+		System.err.println(sb.toString());
 	}
 	
 	static PredicateProfileBasedDiagnoser createDiagnoser(Collection<PredicateProfileTuple> similarProfiles,
