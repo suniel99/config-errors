@@ -16,7 +16,7 @@ public class TestMainAnalyzer extends TestCase {
 		ConfEntityRepository repository = TestConfEntityRepository.getSampleConfEntityRepository();
 		
 		MainAnalyzer analyzer = new MainAnalyzer(badRunTrace, Arrays.asList(goodRunTrace), repository);
-		analyzer.setThreshold(3.0f);
+		analyzer.setThreshold(0.5f);
 		
 		List<ConfDiagnosisOutput> outputs = analyzer.computeResponsibleOptions();
 		

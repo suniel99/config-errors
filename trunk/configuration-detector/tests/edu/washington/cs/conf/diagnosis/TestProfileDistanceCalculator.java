@@ -45,4 +45,12 @@ public class TestProfileDistanceCalculator extends TestCase {
 		assertEquals(0.65999997f, jaccardDistance);
 	}
 	
+	public void test2() {
+		float interprodDistance = ProfileDistanceCalculator.computeDistance(t1, t2, DistanceType.INTERPRODUCT);
+		System.out.println("interproduction distance: " + interprodDistance);
+		
+		float substractDistance = ProfileDistanceCalculator.computeDistance(t1, t2, DistanceType.SUBTRACTION);
+		System.out.println("substraction distance: " + substractDistance);
+	}
+	
 }
