@@ -48,16 +48,21 @@ public class ProfileDistanceCalculator {
 			float delta = 0.0f;
 			if(p1 != null && p2 != null) {
 //				delta = Math.abs(p1.getRatio() - p2.getRatio());
-				float singleSimilar = p1.getRatio() > p2.getRatio() ? p2.getRatio()/p1.getRatio() : p1.getRatio() / p2.getRatio();
-				delta = singleSimilar;
+				if(p1.getRatio() == 0 && p2.getRatio() ==0) {
+					delta = 1.0f;
+				} else {
+				    float singleSimilar = p1.getRatio() > p2.getRatio() ? p2.getRatio()/p1.getRatio() : p1.getRatio() / p2.getRatio();
+				    delta = singleSimilar;
+				}
 			} else if (p1 == null && p2 != null) {
 				delta = p2.absoluteRatio();
 			} else { //p1 != null && p2 == null
 				delta = p1.absoluteRatio();
 			}
+//			System.out.println(delta);
 			similarity_sum += delta*delta;
 		}
-		
+//		System.out.println(similarity_sum);
 		Float distance = 1 - (similarity_sum / allKeys.size());
 //		Float distance = (float) (1 - (Math.sqrt((double)similarity_sum) / allKeys.size()));
 		return distance;
