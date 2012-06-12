@@ -37,6 +37,16 @@ public class TraceAnalyzer {
 		return createProfiles(traces);
 	}
 	
+	public static PredicateProfileTuple createGoodProfileTuple(String traceFileName, String tupleName) {
+		Collection<PredicateProfile> ps = createProfiles(traceFileName);
+		return PredicateProfileTuple.createGoodRun(tupleName, ps);
+	}
+	
+	public static PredicateProfileTuple createBadProfileTuple(String traceFileName, String tupleName) {
+		Collection<PredicateProfile> ps = createProfiles(traceFileName);
+		return PredicateProfileTuple.createBadRun(tupleName, ps);
+	}
+	
 	public static Collection<PredicateProfile> createProfiles(Collection<String> traces) {
 		Collection<PredicateProfile> profiles = new LinkedHashSet<PredicateProfile>();
 		
