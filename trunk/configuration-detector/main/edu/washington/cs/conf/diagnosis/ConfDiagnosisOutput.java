@@ -42,6 +42,16 @@ public class ConfDiagnosisOutput {
 		return this.explanations;
 	}
 	
+	public String getBriefExplanation() {
+		return "Number of explanations: " + this.explanations.size()
+		    + Globals.lineSep
+		    + "     , with the first piece: "
+		    + (explanations.isEmpty() ? "N/A" : explanations.get(0) )
+		    + Globals.lineSep
+		    + "     , with the last piece: "
+		    + (explanations.isEmpty() ? "N/A" : explanations.get(explanations.size() - 1) );
+	}
+	
 	public Float getFinalScore() {
 		return this.finalScore;
 	}
@@ -94,7 +104,7 @@ public class ConfDiagnosisOutput {
 				}
 				Utils.checkTrue(outputAndRanks.size() == selfMapping.size());
 				outputAndRanks.get(output).add(rank);
-				selfMapping.get(output).addExplain("From the: " + listNo + ", trace");
+				//selfMapping.get(output).addExplain("From the: " + listNo + ", trace");
 				selfMapping.get(output).addAllExplain(output.getExplanations());
 			}
 		}
