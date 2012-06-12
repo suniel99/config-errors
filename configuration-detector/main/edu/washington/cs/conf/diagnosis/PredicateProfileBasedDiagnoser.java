@@ -76,7 +76,14 @@ public class PredicateProfileBasedDiagnoser {
 		//summarize a list of diagnosis entities for between the bad run with each good run
 		for(PredicateProfileTuple goodRun : goodRuns) {
 			List<ConfDiagnosisEntity> list = summarizeDiagnosisEntity(goodRun, badRun, repository);
-			coll.add(list);
+			//do filtering
+			if(MainAnalyzer.doFiltering) {
+			    List<ConfDiagnosisEntity> filteredList = ProfileFilters.filter(list);
+			    coll.add(filteredList);
+			    System.err.println("Filtered diagnosis entities number: " + (list.size() - filteredList.size()));
+			} else {
+				coll.add(list);
+			}
 		}
 		Utils.checkTrue(goodRuns.size() == coll.size());
 		return coll;
@@ -283,14 +290,16 @@ public class PredicateProfileBasedDiagnoser {
 				if(visitedConfigs.containsKey(configName)) {
 					visitedConfigs.get(configName).addExplain("Omit Rank: " + ranking
 							+ ": " + configName + " at context : " + rankedEntity.getContext()
-							+ ",  " + t.name() + ": " + rankedEntity.getScore(t));
+							+ ",  " + t.name() + ": " + rankedEntity.getScore(t)
+							+ ", its provence: " + rankedEntity.getScoreProvenance(t));
 				} else {
 					//initially create and add the output
 					ConfDiagnosisOutput output = new ConfDiagnosisOutput(rankedEntity.getConfEntity());
 					visitedConfigs.put(configName, output);
 					output.addExplain("Choose Rank: " + ranking
 							+ ": " + configName + " at context : " + rankedEntity.getContext()
-							+ ",  " + t.name() + ": " + rankedEntity.getScore(t));
+							+ ",  " + t.name() + ": " + rankedEntity.getScore(t)
+							+ ", its provence: " + rankedEntity.getScoreProvenance(t));
 					rankedOutput.add(output);
 				}
 			}

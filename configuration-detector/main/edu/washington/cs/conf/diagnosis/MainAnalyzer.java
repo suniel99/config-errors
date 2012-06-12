@@ -26,6 +26,9 @@ import edu.washington.cs.conf.util.Utils;
  * */
 public class MainAnalyzer {
 	
+	public static boolean doFiltering = false;
+	public static boolean amortizeNoise = false;
+	
 	private float threshold = 0.8f;
 	private DistanceType distanceType = DistanceType.INTERPRODUCT;
 	private RankType rankType = RankType.TFIDF_IMPORT;

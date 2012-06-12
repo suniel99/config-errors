@@ -5,6 +5,7 @@ import instrument.Globals;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -27,6 +28,8 @@ public class ConfDiagnosisEntity {
 	private final Map<RawDataType, Object> rawData = new HashMap<RawDataType, Object>();
 	//all computed scores
 	private final Map<ScoreType, Float> scores = new HashMap<ScoreType, Float>();
+	//keep the original data of a score
+	private final Map<ScoreType, String> scoreProvenance = new HashMap<ScoreType, String>();
 	
 	private ConfEntity entity = null;
 
@@ -88,6 +91,14 @@ public class ConfDiagnosisEntity {
     	return this.scores.containsKey(type);
     }
     
+    public String getScoreProvenance(ScoreType type) {
+    	return this.scoreProvenance.get(type);
+    }
+    
+    public boolean hasScoreProvenence(ScoreType type) {
+    	return this.scoreProvenance.containsKey(type);
+    }
+    
     public void computeAllScores() {
     	this.computeScore(ScoreType.RATIO_DELTA);
     	this.computeScore(ScoreType.IMPORT_DELTA);
@@ -101,12 +112,26 @@ public class ConfDiagnosisEntity {
     		if(hasGoodRatio && hasBadRatio ) {
     			float score = Math.abs(this.getRawData(RawDataType.GOOD_RATIO) - this.getRawData(RawDataType.BAD_RATIO));
     			this.scores.put(ScoreType.RATIO_DELTA, score);
+    			this.scoreProvenance.put(ScoreType.RATIO_DELTA, "Good ratio: "
+    					+ this.getRawData(RawDataType.GOOD_RATIO) + ", bad ratio: " + this.getRawData(RawDataType.BAD_RATIO)
+    					+ ", computed by, good-evaluation: " + this.getRawData(RawDataType.GOOD_EVAL_COUNT)
+    					+ ",  good-entering: " + this.getRawData(RawDataType.GOOD_ENTER_COUNT)
+    					+ ", also bad-evaluation: " + this.getRawData(RawDataType.BAD_EVAL_COUNT)
+    					+ ", bad-entering: " + this.getRawData(RawDataType.BAD_ENTER_COUNT));
     		} else if (hasGoodRatio && !hasBadRatio) {
     			float score = Math.abs(this.getRawData(RawDataType.GOOD_RATIO_ABS));
     			this.scores.put(ScoreType.RATIO_DELTA, score);
+    			this.scoreProvenance.put(ScoreType.RATIO_DELTA,
+    					"Good absolute ratio: " + this.getRawData(RawDataType.GOOD_RATIO_ABS)
+    					+ ", computed by, good-evaluation: " + this.getRawData(RawDataType.GOOD_EVAL_COUNT)
+    					+ ", good-entering: " + this.getRawData(RawDataType.GOOD_ENTER_COUNT));
     		} else if (!hasGoodRatio && hasBadRatio) {
     			float score = Math.abs(this.getRawData(RawDataType.BAD_RATIO_ABS));
     			this.scores.put(ScoreType.RATIO_DELTA, score);
+    			this.scoreProvenance.put(ScoreType.RATIO_DELTA,
+    					"Bad absolute ratio: " + this.getRawData(RawDataType.BAD_RATIO_ABS)
+    					+ ", computed by, bad-evaluation: " + this.getRawData(RawDataType.BAD_EVAL_COUNT)
+    					+ ", bad-entering: " + this.getRawData(RawDataType.BAD_ENTER_COUNT));
     		} else {
     			throw new Error();
     		}
@@ -116,18 +141,72 @@ public class ConfDiagnosisEntity {
             if(hasGoodImport && hasBadImport ) {
     			float score = Math.abs(this.getRawData(RawDataType.GOOD_IMPORT) - this.getRawData(RawDataType.BAD_IMPORT));
     			this.scores.put(ScoreType.IMPORT_DELTA, score);
+    			this.scoreProvenance.put(ScoreType.IMPORT_DELTA, "Good import: "
+    					+ this.getRawData(RawDataType.GOOD_IMPORT) + ", bad import: " + this.getRawData(RawDataType.BAD_IMPORT)
+    					+ ",  computed by: good-evaluation: " + this.getRawData(RawDataType.GOOD_EVAL_COUNT)
+    					+ ",  good ratio: " + this.getRawData(RawDataType.GOOD_RATIO)
+    					+ ",  bad-evaluation: " + this.getRawData(RawDataType.BAD_EVAL_COUNT)
+    					+ ",  bad ratio:  " + this.getRawData(RawDataType.BAD_RATIO));
     		} else if (hasGoodImport && !hasBadImport) {
     			float score = Math.abs(this.getRawData(RawDataType.GOOD_IMPORT_ABS));
     			this.scores.put(ScoreType.IMPORT_DELTA, score);
+    			this.scoreProvenance.put(ScoreType.IMPORT_DELTA,
+    					"Good absolute import: " + this.getRawData(RawDataType.GOOD_IMPORT_ABS)
+    					+ ", computed by, good-evaluation: " + this.getRawData(RawDataType.GOOD_EVAL_COUNT)
+    					+ ", good absolute ratio: " + this.getRawData(RawDataType.GOOD_RATIO_ABS));
     		} else if (!hasGoodImport && hasBadImport) {
     			float score = Math.abs(this.getRawData(RawDataType.BAD_IMPORT_ABS));
     			this.scores.put(ScoreType.IMPORT_DELTA, score);
+    			this.scoreProvenance.put(ScoreType.IMPORT_DELTA,
+    					"Bad absolute import: " + this.getRawData(RawDataType.BAD_IMPORT_ABS)
+    					+ ",  computed by, bad-evaluation: " + this.getRawData(RawDataType.BAD_EVAL_COUNT)
+    					+ ",  bad absolute ratio: " + this.getRawData(RawDataType.BAD_RATIO_ABS));
     		} else {
     			throw new Error();
     		}
     	} else {
     		throw new Error("Unrecognized: " + type);
     	}
+    }
+    
+    public boolean missedByOneRun() {
+    	boolean hasGoodEval = this.hasRawData(RawDataType.GOOD_EVAL_COUNT);
+    	boolean hasBadEval = this.hasRawData(RawDataType.BAD_EVAL_COUNT);
+    	Utils.checkTrue(hasGoodEval || hasBadEval);
+    	if(hasGoodEval && hasBadEval) {
+    		return false;
+    	}
+    	return true;
+    }
+    
+    public boolean isSingleOccurance() {
+    	boolean hasGoodEval = this.hasRawData(RawDataType.GOOD_EVAL_COUNT);
+    	boolean hasBadEval = this.hasRawData(RawDataType.BAD_EVAL_COUNT);
+    	Utils.checkTrue(hasGoodEval || hasBadEval);
+    	if(hasGoodEval && hasBadEval) {
+    		return false;
+    	}
+    	if(hasGoodEval && ! hasBadEval) {
+    		float goodCount = this.getRawData(RawDataType.GOOD_EVAL_COUNT);
+    		return ((int)goodCount) == 1;
+    	}
+    	if(!hasGoodEval && hasBadEval) {
+    		float badCount = this.getRawData(RawDataType.BAD_EVAL_COUNT);
+    		return ((int)badCount) == 1;
+    	}
+    	return false;
+    }
+    
+    public boolean hasSameRatio() {
+    	boolean hasGoodEval = this.hasRawData(RawDataType.GOOD_EVAL_COUNT);
+    	boolean hasBadEval = this.hasRawData(RawDataType.BAD_EVAL_COUNT);
+    	Utils.checkTrue(hasGoodEval || hasBadEval);
+    	if(hasGoodEval && hasBadEval) {
+    		float goodRatio = this.getRawData(RawDataType.GOOD_RATIO);
+    		float badRatio = this.getRawData(RawDataType.BAD_RATIO);
+    		return goodRatio == badRatio;
+    	} 
+    	return false;
     }
     
     @Override
@@ -173,6 +252,32 @@ public class ConfDiagnosisEntity {
     		scoreMap.put(result, result.getScore(scoreType));
     	}
     	List<ConfDiagnosisEntity> rankedList = Utils.sortByValueAndReturnKeys(scoreMap, increase);
+    	
+    	if(MainAnalyzer.amortizeNoise) {
+    		int threshold = 9;
+    		Map<Float, List<ConfDiagnosisEntity>> revMap = new LinkedHashMap<Float, List<ConfDiagnosisEntity>>();
+    		for(ConfDiagnosisEntity e : scoreMap.keySet()) {
+    			Float f = scoreMap.get(e);
+    			if(!revMap.containsKey(f)) {
+    				revMap.put(f, new LinkedList<ConfDiagnosisEntity>());
+    			}
+    			revMap.get(f).add(e);
+    		}
+    		Map<ConfDiagnosisEntity, Float> reweightMap = new LinkedHashMap<ConfDiagnosisEntity, Float>();
+    		for(Float score : revMap.keySet()) {
+    			Float amortize = score;
+    			if(revMap.get(score).size() > threshold) {
+    			    amortize = score / revMap.get(score).size();
+    			}
+    			for(ConfDiagnosisEntity e : revMap.get(score)) {
+    				reweightMap.put(e, amortize);
+    			}
+    		}
+    		Utils.checkTrue(reweightMap.size() == scoreMap.size());
+    		//resort
+    		rankedList = Utils.sortByValueAndReturnKeys(reweightMap, increase);
+    	}
+    	
     	return rankedList;
     }
 }
