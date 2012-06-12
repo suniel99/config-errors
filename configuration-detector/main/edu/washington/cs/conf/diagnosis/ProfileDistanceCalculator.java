@@ -1,5 +1,7 @@
 package edu.washington.cs.conf.diagnosis;
 
+import instrument.Globals;
+
 import java.util.HashSet;
 import java.util.Set;
 
@@ -55,9 +57,11 @@ public class ProfileDistanceCalculator {
 				    delta = singleSimilar;
 				}
 			} else if (p1 == null && p2 != null) {
-				delta = p2.absoluteRatio();
+//				delta = p2.absoluteRatio();
+				delta = 0f;
 			} else { //p1 != null && p2 == null
-				delta = p1.absoluteRatio();
+//				delta = p1.absoluteRatio();
+				delta = 0f;
 			}
 //			System.out.println(delta);
 			similarity_sum += delta*delta;
@@ -215,5 +219,30 @@ public class ProfileDistanceCalculator {
 		t.addAll(t1.getAllUniqueKeys());
 		t.addAll(t2.getAllUniqueKeys());
 		return t;
+	}
+	
+	public static void showAlignedVectors(PredicateProfileTuple t1,
+			PredicateProfileTuple t2) {
+		Utils.checkNotNull(t1);
+		Utils.checkNotNull(t2);
+		
+		StringBuilder sb = new StringBuilder();
+		
+		Set<String> allKeys = getAllUniqueKeys(t1, t2);
+		for(String key : allKeys) {
+			PredicateProfile p1 = t1.lookUpByUniqueKey(key);
+			PredicateProfile p2 = t2.lookUpByUniqueKey(key);
+			sb.append(key + Globals.lineSep + "   :");
+			Utils.checkTrue(p1 != null || p2 != null);
+			if(p1 != null && p2 != null) {
+				sb.append(p1.getRatio() + ", " + p1.getRatio());
+			} else if (p1 == null && p2 != null) {
+				sb.append("NaN, " + p2.absoluteRatio());
+			} else { //p1 != null && p2 == null
+				sb.append(p1.absoluteRatio() + ", NaN");
+			}
+			sb.append(Globals.lineSep);
+		}
+		System.out.println(sb.toString());
 	}
 }
