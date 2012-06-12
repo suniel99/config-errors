@@ -4,6 +4,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import edu.washington.cs.conf.analysis.ConfEntity;
+import edu.washington.cs.conf.analysis.ConfEntityRepository;
 
 //java -cp ./randoop-instrumented.jar;../bin;../subjects/plume.jar;
 //../subjects/binarytree.jar randoop.main.Main gentests
@@ -16,6 +17,11 @@ import edu.washington.cs.conf.analysis.ConfEntity;
 //--test-classes=gco.DumpXmlRandoop
 
 public class RandoopExpUtils {
+	
+	public static ConfEntityRepository getRandoopConfRepository(){
+		ConfEntityRepository repo = new ConfEntityRepository(getRandoopConfList());
+		return repo;
+	}
 
 	public static List<ConfEntity> getRandoopConfList() {
 		ConfEntity entity1 = new ConfEntity("randoop.main.GenInputsAbstract", "classlist", true);
