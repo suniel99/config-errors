@@ -1,0 +1,20 @@
+1. run examples on Randoop's manual TreeSet
+
+   java -classpath ../bin;../subjects/plume.jar;./randoop-instrumented.jar
+        randoop.main.Main gentests --testclass=java.util.TreeSet --testlimit=60000
+        --dont-output-tests=true
+        
+   java -classpath ../bin;../subjects/plume.jar;./randoop-instrumented.jar
+        randoop.main.Main gentests --testclass=java.util.ArrayList --testlimit=60000
+        --dont-output-tests=true
+        
+   //show help
+   java -classpath ../bin;../subjects/plume.jar;./randoop-instrumented.jar
+        randoop.main.Main help
+   
+   
+2. run the nanoxml
+   java -cp ./randoop-instrumented.jar;../bin;../subjects/plume.jar;
+   ../subjects/nanoxml.jar randoop.main.Main gentests
+   --classlist=../subjects/nano-classlist.txt --timelimit=100 --dont-output-tests=true
+   --test-classes=gco.DumpXmlRandoop
