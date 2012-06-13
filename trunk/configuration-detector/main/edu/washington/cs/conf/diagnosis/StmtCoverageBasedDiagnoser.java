@@ -38,6 +38,11 @@ public class StmtCoverageBasedDiagnoser extends AbstractBaselineDiagnoser {
 			//find all configuration that is responsible for it.
 			List<ConfEntity> options = this.findConfEntities(methodSig, instructionIndex, this.confs);
 			entityList.addAll(options);
+			
+			System.out.println("size: " + entityList.size());
+			if(entityList.size() > 100) {
+				return entityList;
+			}
 		}
 		
 		return entityList;

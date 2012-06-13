@@ -60,7 +60,9 @@ public class EveryStmtInstrumenter extends AbstractInstrumenter {
 	        int length = me.getInstructions().length;
 	        for(int i = 0; i < length; i++) {
 	        	IInstruction inst = me.getInstructions()[i];
-	        	final String msg = methodSig + SEP + inst.toString() +  SEP  + i;  //a unique encoding
+	        	String instStr = inst.toString();
+	        	//FIXME do sanitize, remove SEP and line break
+	        	final String msg = methodSig + SEP + instStr +  SEP  + i;  //a unique encoding
 	        	me.insertBefore(i, new MethodEditor.Patch() {
                     @Override
                     public void emitTo(MethodEditor.Output w) {
