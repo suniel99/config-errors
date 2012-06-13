@@ -119,6 +119,17 @@ public class PredicateProfile {
 		return importanceValue(ratio);
 	}
 	
+	public float logRunImportanceValue() {
+		float ratio = this.getRatio();
+		ratio = (ratio == 0.0f) ? 1/(float)this.evaluating_count : ratio;
+		float logRun = (float) Math.log(this.evaluating_count);
+		if(logRun < 0) {
+			logRun = 1.0f;
+		}
+		float importance = 2 / ( (1/(float)ratio) + (1/logRun));
+		return importance;
+	}
+	
 	
 	public float importanceValue(float ratio) {
 		ratio = (ratio == 0.0f) ? 1/(float)this.evaluating_count : ratio;

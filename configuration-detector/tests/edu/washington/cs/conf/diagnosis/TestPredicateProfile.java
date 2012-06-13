@@ -141,4 +141,58 @@ public class TestPredicateProfile extends TestCase {
 		System.out.println("absolute value p5: " + p5.absImportanceValue());
 		System.out.println("absolute value p6: " + p6.absImportanceValue());
 	}
+	
+	public void testStatisticProperties1() {
+		PredicateProfile p1 = new PredicateProfile("option1", "context1",
+				50, 22);
+		PredicateProfile p2 = new PredicateProfile("option1", "context1",
+				50, 24);
+		System.out.println(p2.importanceValue() - p1.importanceValue());
+		
+		PredicateProfile p3 = new PredicateProfile("option1", "context1",
+				50, 26);
+		System.out.println(p3.importanceValue() - p2.importanceValue());
+		
+		PredicateProfile p4 = new PredicateProfile("option1", "context1",
+				500, 22);
+		PredicateProfile p5 = new PredicateProfile("option1", "context1",
+				500, 24);
+		System.out.println(p5.importanceValue() - p4.importanceValue());
+		PredicateProfile p6 = new PredicateProfile("option1", "context1",
+				500, 26);
+		System.out.println(p6.importanceValue() - p5.importanceValue());
+	}
+	
+	public void testStatisticProperties2() {
+		PredicateProfile p1 = new PredicateProfile("option1", "context1",
+				500, 220);
+		PredicateProfile p2 = new PredicateProfile("option1", "context1",
+				500, 240);
+		System.out.println(p2.importanceValue() - p1.importanceValue());
+		assertEquals(0.07985288f, p2.importanceValue() - p1.importanceValue());
+		
+		PredicateProfile p3 = new PredicateProfile("option1", "context1",
+				500, 260);
+		System.out.println(p3.importanceValue() - p2.importanceValue());
+		assertEquals(0.0798403f, p3.importanceValue() - p2.importanceValue());
+		
+		//the following
+		PredicateProfile p4 = new PredicateProfile("option1", "context1",
+				50, 22);
+		PredicateProfile p5 = new PredicateProfile("option1", "context1",
+				50, 24);
+		System.out.println(p5.importanceValue() - p4.importanceValue());
+		assertEquals(0.078548014f, p5.importanceValue() - p4.importanceValue());
+		PredicateProfile p6 = new PredicateProfile("option1", "context1",
+				50, 26);
+		System.out.println(p6.importanceValue() - p5.importanceValue());
+		assertEquals(0.07842374f, p6.importanceValue() - p5.importanceValue());
+		
+		System.out.println("----------------");
+		System.out.println(p2.logRunImportanceValue() - p1.logRunImportanceValue());
+		System.out.println(p3.logRunImportanceValue() - p2.logRunImportanceValue());
+		System.out.println(p5.logRunImportanceValue() - p4.logRunImportanceValue());
+		System.out.println(p6.logRunImportanceValue() - p5.logRunImportanceValue());
+		
+	}
 }
