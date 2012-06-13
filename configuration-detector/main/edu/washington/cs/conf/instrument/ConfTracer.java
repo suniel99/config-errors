@@ -4,9 +4,8 @@ import instrument.Globals;
 
 import java.io.IOException;
 import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
+import java.util.Stack;
 
 import edu.washington.cs.conf.util.Files;
 
@@ -15,8 +14,9 @@ import edu.washington.cs.conf.util.Files;
  * */
 public class ConfTracer {
 	
-	public static int context_length = 0;
+	private static String CONTEXT_SEP = "%%CONTEXT%%";
 	
+	public static int context_length = 0;
 	public static ConfTracer tracer = new ConfTracer();
 	
 	private ConfTracer() {
@@ -40,10 +40,35 @@ public class ConfTracer {
 	    });
 	}
 	
-	List<String> traces = new LinkedList<String>();
-	long count = 0;
-	
 	Map<String, Long> traceMap = new LinkedHashMap<String, Long>();
+	Stack<String> methodOnStack = new Stack<String>();
+	
+	//push a method call to the stack
+	public void pushEntry(String input) {
+		methodOnStack.push(input);
+		//System.out.println("push " + input + ":" + this.methodOnStack.toString());
+	}
+	
+	//pop the method on the stack
+	public void popExit(String input) {
+		String topMethod = methodOnStack.peek();
+		if(topMethod.equals(input)) {
+			methodOnStack.pop();
+		} else {
+			System.err.println("Wrong in instrumentation, method not in stack: " + input);
+			while(!methodOnStack.isEmpty()) {
+				String top = methodOnStack.pop();
+				if(top.equals(input)) {
+					break;
+				}
+			}
+		}
+		//System.out.println("leave " + input + ":" + this.methodOnStack.toString());
+	}
+	
+	public void popExceptionExit(String input) {
+		this.popExit(input);
+	}
 	
 	public void trace(String input) {
 		synchronized(traceMap) {
@@ -53,8 +78,9 @@ public class ConfTracer {
 			String line = input;
 			if(context_length > 0) {
 			    line = input
-			        + "XOXO"
-			        + ExecutionContext.getCurrentContextAsString(context_length)
+			        + CONTEXT_SEP
+			        //+ ExecutionContext.getCurrentContextAsString(context_length)
+			        + this.getTopContexts(context_length);
 			        ;
 			}
 			
@@ -63,6 +89,14 @@ public class ConfTracer {
 			} else {
 				traceMap.put(line, 1L);
 			}
+		}
+	}
+	
+	private String getTopContexts(int length) {
+		if(this.methodOnStack.size() < length) {
+			return this.methodOnStack.toString();
+		} else {
+			return this.methodOnStack.subList(this.methodOnStack.size() - length, this.methodOnStack.size()).toString();
 		}
 	}
 }
