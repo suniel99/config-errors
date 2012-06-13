@@ -20,6 +20,19 @@ public class TestInstrumentRandoop extends TestCase {
 		InstrumentStats.showInstrumentationStats();
 	}
 	
+	public void testInstrumentWithContext() throws Exception {
+		String filePath = "./randoop_option_instr_ser.dat";
+		String randoopSrcDir = "./subjects/randoop/randoop-src/"; //NOT used yet
+		InstrumentSchema schema = ConfOutputSerializer.deserializeAsSchema(filePath);
+		
+		ConfInstrumenter instrumenter = new ConfInstrumenter(schema);
+		instrumenter.turnOnContextInstrumentation();
+		
+		instrumenter.instrument("./subjects/randoop-jamie.jar", "./output/randoop-context-instrumented.jar");
+		
+		InstrumentStats.showInstrumentationStats();
+	}
+	
 	public void testStmtInstrumentation() throws Exception {
 		EveryStmtInstrumenter instrumenter = new EveryStmtInstrumenter();
         instrumenter.instrument("./subjects/randoop-jamie.jar", "./output/randoop-everystmt.jar");
