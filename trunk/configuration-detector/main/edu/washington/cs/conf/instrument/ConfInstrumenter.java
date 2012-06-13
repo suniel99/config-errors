@@ -2,17 +2,13 @@ package edu.washington.cs.conf.instrument;
 
 import instrument.Globals;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.PrintStream;
 import java.io.Writer;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 
-import com.ibm.wala.shrikeBT.ConditionalBranchInstruction;
 import com.ibm.wala.shrikeBT.ConstantInstruction;
 import com.ibm.wala.shrikeBT.Constants;
 import com.ibm.wala.shrikeBT.Disassembler;
@@ -20,18 +16,22 @@ import com.ibm.wala.shrikeBT.IInstruction;
 import com.ibm.wala.shrikeBT.Instruction;
 import com.ibm.wala.shrikeBT.MethodData;
 import com.ibm.wala.shrikeBT.MethodEditor;
+import com.ibm.wala.shrikeBT.ReturnInstruction;
+import com.ibm.wala.shrikeBT.ThrowInstruction;
 import com.ibm.wala.shrikeBT.Util;
+import com.ibm.wala.shrikeBT.MethodEditor.Output;
 import com.ibm.wala.shrikeBT.analysis.Verifier;
 import com.ibm.wala.shrikeBT.shrikeCT.ClassInstrumenter;
-import com.ibm.wala.shrikeBT.shrikeCT.OfflineInstrumenter;
 import com.ibm.wala.shrikeCT.ClassReader;
 import com.ibm.wala.shrikeCT.ClassWriter;
-
-import edu.washington.cs.conf.util.Utils;
 
 public class ConfInstrumenter extends AbstractInstrumenter {
 
 	  protected boolean branch = true;
+	  protected boolean entry = false;
+	  protected boolean exit = false;
+	  protected boolean exception = false;
+
 	  static final String fieldName = "_Conf_enable_trace";
 	  
 
@@ -42,10 +42,20 @@ public class ConfInstrumenter extends AbstractInstrumenter {
 	  static final Instruction getTracer = Util.makeGet(ConfTracer.class, "tracer");
 	  static final Instruction callTrace = Util.makeInvoke(ConfTracer.class, "trace", new Class[] { String.class });
 	  
+	  static final Instruction pushEntry = Util.makeInvoke(ConfTracer.class, "pushEntry", new Class[] { String.class });
+	  static final Instruction popExit = Util.makeInvoke(ConfTracer.class, "popExit", new Class[] { String.class });
+	  static final Instruction popExcepExit = Util.makeInvoke(ConfTracer.class, "popExceptionExit", new Class[] { String.class });
+	  
 	  private final InstrumentSchema schema;
 	  
 	  public ConfInstrumenter(InstrumentSchema schema) {
 		  this.schema = schema;
+	  }
+	  
+	  public void turnOnContextInstrumentation() {
+		  this.entry = true;
+		  this.exit = true;
+		  this.exception = true;
 	  }
 	  
 	  public ConfInstrumenter(InstrumentSchema schema, String sourceDir) {
@@ -80,18 +90,22 @@ public class ConfInstrumenter extends AbstractInstrumenter {
 	        MethodEditor me = new MethodEditor(d);
 	        me.beginPass();
 
-        	String methodSig = this.getMethodSignature(d);
+        	final String methodSig = this.getMethodSignature(d);
+        	Map<String, Set<Integer>> confInstPoints = null;
         	if(this.schema == null) {
-        		continue; //go to the next method
-        	}
-        	Map<String, Set<Integer>> confInstPoints = schema.getInstrumentationPoints(methodSig);
-        	if(confInstPoints.isEmpty()) {
-        		continue;
+//        		continue; //go to the next method
+        		confInstPoints = Collections.emptyMap();
+        	} else {
+        	    confInstPoints = schema.getInstrumentationPoints(methodSig);
         	}
         	Map<Integer, Set<String>> confIndices = getConfAffectedIndices(confInstPoints);
 	        
 	        //profiling the predicates
 	        if(branch) {
+	        	//skip it
+//	        	if(confIndices.isEmpty()) {
+//	        		continue;
+//	        	}
 	        	int length = me.getInstructions().length;
 	        	for(int i = 0; i < length; i++) {
 	        		IInstruction inst = me.getInstructions()[i];
@@ -132,6 +146,48 @@ public class ConfInstrumenter extends AbstractInstrumenter {
 
 	        	}
 	        }
+	        
+	        //insert Tracer.pushEntry() to method entry points
+	        //insert Tracer.popExit() to both method return, and exception handling points
+	        if (entry) {
+		        me.insertAtStart(new MethodEditor.Patch() {
+		        @Override
+		        public void emitTo(MethodEditor.Output w) {
+		        	w.emit(getTracer);
+                    w.emit(ConstantInstruction.makeString(methodSig));
+                    w.emit(pushEntry);
+                    InstrumentStats.addInsertedInstructions(1);
+		        }
+		        });
+		    }
+		    if (exit) {
+		       IInstruction[] instr = me.getInstructions();
+		       for (int i = 0; i < instr.length; i++) {
+		       if (instr[i] instanceof ReturnInstruction) {
+		           me.insertBefore(i, new MethodEditor.Patch() {
+		           @Override
+		           public void emitTo(MethodEditor.Output w) {
+		               w.emit(getTracer);
+	                   w.emit(ConstantInstruction.makeString(methodSig));
+	                   w.emit(popExit);
+	                   InstrumentStats.addInsertedInstructions(1);
+		            }
+		           });
+		       }
+		       }
+		    }
+		    if (exception) {
+		        me.addMethodExceptionHandler(null, new MethodEditor.Patch() {
+		        @Override
+		        public void emitTo(Output w) {
+		            w.emit(getTracer);
+                    w.emit(ConstantInstruction.makeString(methodSig));
+                    w.emit(popExcepExit);
+		            w.emit(ThrowInstruction.make(false));
+		            InstrumentStats.addInsertedInstructions(1);
+		        }});
+		    }
+	        
 	        // this updates the data d
 	        me.applyPatches();
 	        if (disasm) {
