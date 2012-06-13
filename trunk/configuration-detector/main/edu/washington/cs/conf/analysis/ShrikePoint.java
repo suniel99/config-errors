@@ -1,12 +1,18 @@
 package edu.washington.cs.conf.analysis;
 
+import java.io.File;
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.List;
 
+import com.ibm.wala.classLoader.IClass;
 import com.ibm.wala.classLoader.ShrikeBTMethod;
 import com.ibm.wala.ipa.slicer.Statement;
 
+import edu.washington.cs.conf.util.Files;
+import edu.washington.cs.conf.util.Globals;
 import edu.washington.cs.conf.util.Utils;
+import edu.washington.cs.conf.util.WALAUtils;
 
 /**
  * Uniquely represent a point in Shrinke by ShrinkeMethod + instructionIndex
@@ -23,6 +29,9 @@ public class ShrikePoint implements Serializable {
 	public final int lineNum;
 	public final int bcIndex;
 	public final String instructStr;
+	
+	//keep the source text
+	private String sourceText = null;
 	
 	public ShrikePoint(IRStatement ir) {
 		Statement s = ir.getStatement();
@@ -61,6 +70,43 @@ public class ShrikePoint implements Serializable {
 	
 	public int getInstructionIndex() {
 		return this.instructionIndex;
+	}
+	
+	public int getSourceLineNum() {
+		return this.lineNum;
+	}
+	
+	public void setSourceText(String sourceDir) {
+		Utils.checkTrue(Files.checkDirExistence(sourceDir));
+		if(this.lineNum <= 0) {
+			this.sourceText = "Source_Not_Available line num < 0";
+			return;
+		}
+		String fullClassName = this.methodSig.substring(0, this.methodSig.lastIndexOf("."));
+//		IClass c = this.method.getDeclaringClass();
+//		String fullClassName = WALAUtils.getJavaFullClassName(c);
+		if(fullClassName.indexOf("$") != -1) {
+			this.sourceText = "Source_Not_Available for anonymous class: " + fullClassName;
+			return; //inner class
+		}
+		String filePath = sourceDir + Globals.fileSep + fullClassName.replace('.', File.separatorChar) + ".java";
+		File f = new File(filePath);
+		if(!f.exists()) {
+			this.sourceText = "File: " + filePath + " does not exist";
+			return; //inner class
+		}
+		List<String> content = Files.readWholeNoExp(filePath);
+		if(content.size() <= this.lineNum) {
+			this.sourceText = "There are: " + content.size() + " lines in: " + filePath + ", but you are requesting: " + this.lineNum;
+			return;
+		}
+		this.sourceText = content.get(this.lineNum);
+		//reclaim the memory
+		//content.clear();
+	}
+	
+	public String getSourceText() {
+		return this.sourceText;
 	}
 	
 	@Override
