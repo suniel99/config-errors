@@ -59,7 +59,7 @@ public class TestStmtExecutedDiffer extends TestCase {
 		computeScore(goodRuns, badRuns);
 	}
 	
-	static Map<String, Float> computeScore(Collection<Collection<StmtExecuted>> goodRuns,
+	public static Map<String, Float> computeScore(Collection<Collection<StmtExecuted>> goodRuns,
 			Collection<Collection<StmtExecuted>> badRuns) {
 		StmtExecutedDiffer differ = new StmtExecutedDiffer(goodRuns, badRuns);
 		differ.computeStmtScores();
