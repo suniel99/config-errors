@@ -2,6 +2,7 @@ package edu.washington.cs.conf.experiments.randoop;
 
 import edu.washington.cs.conf.analysis.ConfOutputSerializer;
 import edu.washington.cs.conf.instrument.ConfInstrumenter;
+import edu.washington.cs.conf.instrument.EveryStmtInstrumenter;
 import edu.washington.cs.conf.instrument.InstrumentSchema;
 import edu.washington.cs.conf.instrument.InstrumentStats;
 import junit.framework.TestCase;
@@ -15,6 +16,13 @@ public class TestInstrumentRandoop extends TestCase {
 		
 		ConfInstrumenter instrumenter = new ConfInstrumenter(schema);
 		instrumenter.instrument("./subjects/randoop-jamie.jar", "./output/randoop-instrumented.jar");
+		
+		InstrumentStats.showInstrumentationStats();
+	}
+	
+	public void testStmtInstrumentation() throws Exception {
+		EveryStmtInstrumenter instrumenter = new EveryStmtInstrumenter();
+        instrumenter.instrument("./subjects/randoop-jamie.jar", "./output/randoop-everystmt.jar");
 		
 		InstrumentStats.showInstrumentationStats();
 	}
