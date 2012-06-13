@@ -45,25 +45,35 @@ public class ConfTracer {
 	
 	//push a method call to the stack
 	public void pushEntry(String input) {
-		methodOnStack.push(input);
+		synchronized (this.methodOnStack) {
+		    methodOnStack.push(input);
+		}
 		//System.out.println("push " + input + ":" + this.methodOnStack.toString());
 	}
 	
 	//pop the method on the stack
 	public void popExit(String input) {
-		String topMethod = methodOnStack.peek();
-		if(topMethod.equals(input)) {
-			methodOnStack.pop();
-		} else {
-			System.err.println("Wrong in instrumentation, method not in stack: " + input);
-			while(!methodOnStack.isEmpty()) {
-				String top = methodOnStack.pop();
-				if(top.equals(input)) {
-					break;
+		synchronized (this.methodOnStack) {
+			if(methodOnStack.isEmpty()) {
+				return;
+			}
+			String topMethod = methodOnStack.peek();
+			if (topMethod.equals(input)) {
+				methodOnStack.pop();
+			} else {
+				System.err
+						.println("Wrong in instrumentation, method not in stack: "
+								+ input);
+				while (!methodOnStack.isEmpty()) {
+					String top = methodOnStack.pop();
+					if (top.equals(input)) {
+						break;
+					}
 				}
 			}
 		}
-		//System.out.println("leave " + input + ":" + this.methodOnStack.toString());
+		// System.out.println("leave " + input + ":" +
+		// this.methodOnStack.toString());
 	}
 	
 	public void popExceptionExit(String input) {
@@ -93,10 +103,14 @@ public class ConfTracer {
 	}
 	
 	private String getTopContexts(int length) {
-		if(this.methodOnStack.size() < length) {
-			return this.methodOnStack.toString();
-		} else {
-			return this.methodOnStack.subList(this.methodOnStack.size() - length, this.methodOnStack.size()).toString();
+		synchronized (this.methodOnStack) {
+			if (this.methodOnStack.size() < length) {
+				return this.methodOnStack.toString();
+			} else {
+				return this.methodOnStack.subList(
+						this.methodOnStack.size() - length,
+						this.methodOnStack.size()).toString();
+			}
 		}
 	}
 }
