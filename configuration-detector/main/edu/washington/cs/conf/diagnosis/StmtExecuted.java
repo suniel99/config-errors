@@ -47,7 +47,7 @@ public class StmtExecuted {
 		Utils.checkNotNull(line);
 		this.line = line;
 		String[] strs = line.split(AbstractInstrumenter.SEP);
-		Utils.checkTrue(strs.length == 3);
+		Utils.checkTrue(strs.length == 3, "It is: " + strs.length + ", in: " + line);
 		this.methodSig = strs[0];
 		this.bytecodeInstruction = strs[1];
 		this.instructionIndex = Integer.parseInt(strs[2]);
