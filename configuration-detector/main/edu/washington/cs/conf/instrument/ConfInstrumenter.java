@@ -48,6 +48,13 @@ public class ConfInstrumenter extends AbstractInstrumenter {
 		  this.schema = schema;
 	  }
 	  
+	  public ConfInstrumenter(InstrumentSchema schema, String sourceDir) {
+		  this(schema);
+		  if(sourceDir != null) {
+			  schema.setSourceTextForAllInstrumentationPoints(sourceDir);
+		  }
+	  }
+	  
 	  @Override
 	  protected void doClass(final ClassInstrumenter ci, Writer w) throws Exception {
 	    final String className = ci.getReader().getName();
@@ -91,8 +98,13 @@ public class ConfInstrumenter extends AbstractInstrumenter {
 	        		if(confIndices.containsKey(i)) {
 	        			System.out.println("inst: " + inst);
 	        			for(String conf : confIndices.get(i)) {
-	        				final String msg0 = PRE + SEP + conf + SEP + methodSig; //FIXME methodSig is not a distinguisable sig
-		        			final String msg1 = POST + SEP + conf + SEP + methodSig;
+	        				
+	        				//FIXME expensive operations
+//	        				int lineNumber = schema.getSourceLineNumber(conf, methodSig, i);
+//	        				String sourceTxt = schema.getSourceCodeText(conf, methodSig, i);
+	        				
+	        				final String msg0 = PRE + SEP + conf + SEP + /*lineNumber + SUB_SEP + sourceTxt + SUB_SEP +*/ methodSig + "_index_" + i; //FIXME methodSig is not a distinguisable sig
+		        			final String msg1 = POST + SEP + conf + SEP + /*+ lineNumber + SUB_SEP + sourceTxt + SUB_SEP +*/ methodSig + "_index_" + i;
 		            		me.insertBefore(i, new MethodEditor.Patch() {
 		                      @Override
 		                      public void emitTo(MethodEditor.Output w) {

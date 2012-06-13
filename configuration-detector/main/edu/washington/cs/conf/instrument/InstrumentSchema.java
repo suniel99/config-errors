@@ -29,6 +29,8 @@ public class InstrumentSchema {
 	private final Map<ConfEntity, Collection<ShrikePoint>> locations
 	    = new LinkedHashMap<ConfEntity, Collection<ShrikePoint>>();
 	
+	//a caching data structure for method getInstrumentationPoints
+	//methodSig <-> (conf <-> instruction-index)
 	private Map<String, Map<String, Set<Integer>>> internals = null;
 	
 	private TYPE type = TYPE.PREDICATE;
@@ -53,7 +55,7 @@ public class InstrumentSchema {
 	}
 	
 	//this is only for experimentation and debugging purpose.
-	public void addInstrumentationPoint(ConfEntity entity, Collection<ShrikePoint> pts) {
+	void addInstrumentationPoint(ConfEntity entity, Collection<ShrikePoint> pts) {
 		Utils.checkTrue(!locations.containsKey(entity));
 		locations.put(entity, pts);
 		//set the internals to null
@@ -79,11 +81,60 @@ public class InstrumentSchema {
 		if(needRebuild()) {
 			buildInternals();
 		}
-		Map<String, Set<Integer>> ret = Collections.EMPTY_MAP;
+		Map<String, Set<Integer>> ret = Collections.emptyMap();
 		if(internals.containsKey(methodSig)) {
 			ret = internals.get(methodSig);
 		}
 		return ret;
+	}
+	
+	public void setSourceTextForAllInstrumentationPoints(String sourceDir) {
+		for(Collection<ShrikePoint> ls : this.locations.values()) {
+			for(ShrikePoint s : ls) {
+				s.setSourceText(sourceDir);
+				if(s.getSourceText().indexOf("maxsize") != -1) {
+				    System.err.println(s.getSourceText());
+				}
+			}
+		}
+	}
+	
+	//FIXME can use cache for speed up
+	//need a cache
+	// fullConfName  <->  (methodSig <-> Map<int, ShrikePoint>)
+	public int getSourceLineNumber(String fullConfName, String methodSig, int instructionIndex) {
+		ConfEntity confEntity = this.lookupConfEntity(fullConfName);
+		Utils.checkNotNull(confEntity);
+		Collection<ShrikePoint> ptrs = this.locations.get(confEntity);
+		for(ShrikePoint pt : ptrs) {
+			if(pt.getMethodSig().equals(methodSig) && pt.getInstructionIndex() == instructionIndex) {
+				return pt.getSourceLineNum();
+			}
+		}
+		throw new Error("Not reachable!");
+	}
+	
+	public String getSourceCodeText(String fullConfName, String methodSig, int instructionIndex) {
+		ConfEntity confEntity = this.lookupConfEntity(fullConfName);
+		Utils.checkNotNull(confEntity);
+		Collection<ShrikePoint> ptrs = this.locations.get(confEntity);
+		for(ShrikePoint pt : ptrs) {
+			if(pt.getMethodSig().equals(methodSig) && pt.getInstructionIndex() == instructionIndex) {
+				return pt.getSourceText();
+			}
+		}
+		throw new Error("Not reachable!");
+	}
+	
+	private ConfEntity lookupConfEntity(String fullConfName) {
+		ConfEntity confEntity = null;
+		for(ConfEntity e : this.locations.keySet()) {
+			if(e.getFullConfName().equals(fullConfName)) {
+				confEntity = e;
+				break;
+			}
+		}
+		return confEntity;
 	}
 	
 	public Set<String> getInstrumentationPredicates(String methodSig, int instrIndex) {

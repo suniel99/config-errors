@@ -20,6 +20,10 @@ public class PredicateProfile {
 	private int evaluating_count = 0;
 	private int entering_count = 0;
 	
+	//for displaying to users
+	private int srcLineNumber = -1;
+	private String textPredicate = "N/A";
+	
 	public PredicateProfile(String confId, String context) {
 		Utils.checkTrue(confId != null && !confId.trim().isEmpty());
 		Utils.checkTrue(context != null && !context.trim().isEmpty());
@@ -35,6 +39,25 @@ public class PredicateProfile {
 		Utils.checkTrue(evaluating_count >= entering_count);
 		this.evaluating_count = evaluating_count;
 		this.entering_count = entering_count;
+	}
+	
+	/**
+	 * the source line number and the predicate text are used to display
+	 * for users.
+	 * */
+	public int getSourceLineNumber() {
+		return srcLineNumber;
+	}
+	public void setSourceLineNumber(int lineNum) {
+//		Utils.checkTrue(lineNum > 0);
+		this.srcLineNumber = lineNum;
+	}
+	public String getPredicateInSource() {
+		return textPredicate;
+	}
+	public void setPredicateInSource(String src) {
+		Utils.checkNotNull(src);
+		this.textPredicate = src;
 	}
 	
 	public void setEvaluatingCount(int count) {

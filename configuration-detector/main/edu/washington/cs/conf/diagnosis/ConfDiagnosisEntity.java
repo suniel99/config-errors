@@ -24,6 +24,9 @@ public class ConfDiagnosisEntity {
 	
 	private final String configFullName;
 	private final String context;
+	//the following two are for displaying to users
+	private final int srcLineNumber;
+	private final String predicateText;
 	//store different scoring criteria and the corresponding score
 	private final Map<RawDataType, Object> rawData = new HashMap<RawDataType, Object>();
 	//all computed scores
@@ -40,14 +43,10 @@ public class ConfDiagnosisEntity {
     	Utils.checkNotNull(context);
     	this.configFullName = configFullName;
     	this.context = context;
+    	//current empty
+    	this.srcLineNumber = profile.getSourceLineNumber();
+    	this.predicateText = profile.getPredicateInSource();
 	}
-	
-//    public ConfDiagnosisEntity(String configFullName, String context) {
-//    	Utils.checkNotNull(configFullName);
-//    	Utils.checkNotNull(context);
-//    	this.configFullName = configFullName;
-//    	this.context = context;
-//    }
     
     public String getConfigFullName() {
     	return this.configFullName;
@@ -78,10 +77,13 @@ public class ConfDiagnosisEntity {
     	return rawData.containsKey(critera);
     }
     
-//    public void saveScore(ScoreType type, Float score) {
-//    	Utils.checkTrue(!this.scores.containsKey(type));
-//    	this.scores.put(type, score);
-//    }
+    public int getLineNumber() {
+    	return this.srcLineNumber;
+    }
+    
+    public String getPredicateText() {
+    	return this.predicateText;
+    }
     
     public Float getScore(ScoreType type) {
     	return this.scores.get(type);
