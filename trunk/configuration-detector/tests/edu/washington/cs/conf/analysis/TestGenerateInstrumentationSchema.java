@@ -58,43 +58,7 @@ public class TestGenerateInstrumentationSchema extends TestCase {
 		System.out.println(output);
 	}
 
-	public void testSliceRandoopCheaply() {
-		String path = "./subjects/randoop-jamie.jar;./subjects/plume.jar";
-		String mainClass = "Lrandoop/main/Main";
-		SlicingHelper helper = new SlicingHelper(path, mainClass);
-		helper.setCGType(CG.ZeroCFA);
-//		helper.setCGType(CG.ZeroOneCFA);
-		helper.setExclusionFile("JavaAllExclusions.txt");
-		helper.setDataDependenceOptions(DataDependenceOptions.NO_BASE_NO_HEAP_NO_EXCEPTIONS);
-		helper.setControlDependenceOptions(ControlDependenceOptions.NONE);
-		helper.setContextSensitive(false); //context-insensitive
-		helper.buildAnalysis();
-		
-		List<ConfEntity> randoopConfList = RandoopExpUtils.getRandoopConfList();
-		
-		Collection<ConfPropOutput> outputs = new LinkedList<ConfPropOutput>();
-		for(ConfEntity entity : randoopConfList) {
-//		  helper.setExcludeStringBuilder(true); //FIXME
-			ConfPropOutput output = helper.outputSliceConfOption(entity);
-			outputs.add(output);
-			System.out.println(" - " + output.statements.size());
-		}
-
-		System.out.println("size: " + outputs.size());
-		assertEquals(randoopConfList.size(), outputs.size());
-		
-		//save as configuration schema
-		InstrumentSchema schema = new InstrumentSchema();
-		schema.addInstrumentationPoint(outputs);
-		
-		String filePath = "./randoop_option_instr_ser.dat";
-		ConfOutputSerializer.serializeSchema(schema, filePath);
-		ConfOutputSerializer.writeToFileAsText(schema, "./randoop_option_instr.txt");
-		
-		//recover from the file
-		InstrumentSchema newSchema = ConfOutputSerializer.deserializeAsSchema(filePath);
-		assertEquals(schema.toString(), newSchema.toString());
-	}
+	
 	
 	public void testSliceWekaCheaply() {
 		String path = "./subjects/weka/weka.jar;./subjects/weka/JFlex.jar;" +
