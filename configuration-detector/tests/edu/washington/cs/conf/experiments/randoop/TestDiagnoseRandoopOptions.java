@@ -10,7 +10,7 @@ import edu.washington.cs.conf.diagnosis.PredicateProfileBasedDiagnoser.RankType;
 import edu.washington.cs.conf.experiments.RandoopExpUtils;
 import junit.framework.TestCase;
 
-public class TestRandoopOptions extends TestCase {
+public class TestDiagnoseRandoopOptions extends TestCase {
 	
 	@Override
 	public void tearDown() {

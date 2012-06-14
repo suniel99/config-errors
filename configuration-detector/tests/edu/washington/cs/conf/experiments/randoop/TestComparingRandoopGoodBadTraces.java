@@ -6,7 +6,7 @@ import edu.washington.cs.conf.diagnosis.ProfileDistanceCalculator.DistanceType;
 import edu.washington.cs.conf.diagnosis.TraceAnalyzer;
 import junit.framework.TestCase;
 
-public class TestRandoopTraces extends TestCase {
+public class TestComparingRandoopGoodBadTraces extends TestCase {
 	
 	public void test1() {
 		//compare the same
