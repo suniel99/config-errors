@@ -48,4 +48,18 @@ public class MethodBasedDiagnoser extends AbstractBaselineDiagnoser {
 		
 		return matched;
 	}
+	
+	/**
+	 * integrate with Daikon
+	 * */
+	public static List<ConfEntity> computeResponsibleOptions(Collection<String> goodInvFiles, String goodInvFile,
+			Collection<ConfPropOutput> confs) {
+		//get method scores
+		InvariantDiffAnalyzer analyzer = new InvariantDiffAnalyzer(goodInvFiles, goodInvFile);
+		Map<String, Float> scores = analyzer.getMethodsWithDiffInvariants();
+		//find responsbile options
+		MethodBasedDiagnoser diagnoser = new MethodBasedDiagnoser(confs, scores);
+		List<ConfEntity> entityList = diagnoser.computeResponsibleOptions();
+		return entityList;
+	}
 }
