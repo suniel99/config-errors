@@ -30,6 +30,14 @@ public final class Files {
 	  return f.exists();
   }
   
+  public static boolean checkFileExistence(String path) {
+	  File f = new File(path);
+	  if(f.isDirectory()) {
+		  return false;
+	  }
+	  return f.exists();
+  }
+  
   public static boolean createIfNotExist(String path) throws IOException {
 	  return createIfNotExist(new File(path));
   }
