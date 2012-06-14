@@ -64,3 +64,12 @@ empirical studies of configuration errors in practice~\cite{Yin:2011:ESC, Hubaux
 change impact analysis for configuration options~\cite{configimpact},
 and using program profiling and statistical analysis to solve
 other problems (e.g., critical program region identification)~\cite{Carbin:2010:AIC}.
+
+
+In contrast, current industrial practice uses stack traces to cluster
+failure reports into equivalence classes. Two crash reports showing
+the same stack trace, or perphas only the same top-of-stack function,
+are presumed to be two reports of the same failure. This heuristic
+works to the extent that a single cause corresponds to a single point
+of failure, but our experience with xxx suggests that this
+assumption may not often hold.
