@@ -8,8 +8,8 @@ import junit.framework.TestCase;
 public class TestInvariantDiffInArStack extends TestCase {
 	
 	public void testArStack() throws Exception {
-		String filename1 = "D:\\research\\configurations\\daikon\\bin\\java-examples\\StackAr\\StackArTester.inv.gz";
-		String filename2 = "D:\\research\\configurations\\daikon\\bin\\java-examples\\StackAr\\StackArTester.inv-backup.gz";
+		String filename1 = "./tests/edu/washington/cs/conf/experiments/daikon/StackArTester.inv.gz";
+		String filename2 = "./tests/edu/washington/cs/conf/experiments/daikon/StackArTester.inv-backup.gz";
 		Set<String> sets = InvariantUtils.fetchMethodsWithDiffInvariants(filename1, filename2);
 		
 		System.out.println(sets);
