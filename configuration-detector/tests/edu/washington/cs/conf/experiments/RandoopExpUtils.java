@@ -22,6 +22,14 @@ public class RandoopExpUtils {
 		ConfEntityRepository repo = new ConfEntityRepository(getRandoopConfList());
 		return repo;
 	}
+	
+	public static List<ConfEntity> getSampleList() {
+		List<ConfEntity> list = new LinkedList<ConfEntity>();
+		ConfEntity entity6 = new ConfEntity("randoop.main.GenInputsAbstract", "init_routine", true);
+		ConfEntity entity7 = new ConfEntity("randoop.main.GenInputsAbstract", "maxsize", true);
+		list.add(entity6);
+		return list;
+	}
 
 	public static List<ConfEntity> getRandoopConfList() {
 		ConfEntity entity1 = new ConfEntity("randoop.main.GenInputsAbstract", "classlist", true);
