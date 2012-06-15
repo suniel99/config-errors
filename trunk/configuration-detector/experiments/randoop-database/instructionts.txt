@@ -1,11 +1,11 @@
 1. run examples on Randoop's manual TreeSet
 
    java -classpath ../bin;../subjects/plume.jar;./randoop-instrumented.jar
-        randoop.main.Main gentests --testclass=java.util.TreeSet --testlimit=60000
+        randoop.main.Main gentests --testclass=java.util.TreeSet --timelimit=60
         --dont-output-tests=true
         
    java -classpath ../bin;../subjects/plume.jar;./randoop-instrumented.jar
-        randoop.main.Main gentests --testclass=java.util.ArrayList --testlimit=60000
+        randoop.main.Main gentests --testclass=java.util.ArrayList --timelimit=60
         --dont-output-tests=true
         
    //show help
