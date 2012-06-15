@@ -13,9 +13,13 @@ public class ProfileFilters {
 		List<ConfDiagnosisEntity> filtered = filterSingleOccurance(entities);
 		filtered = filterOneOccurance(filtered);
 		filtered = filterSameRatio(filtered);
+		filtered = filterSameCountDelta(filtered);
 		return filtered;
 	}
 	
+	/**
+	 * Each individual filters
+	 * */
 	public static List<ConfDiagnosisEntity> filterSingleOccurance(Collection<ConfDiagnosisEntity> entities) {
 		List<ConfDiagnosisEntity> retList = new LinkedList<ConfDiagnosisEntity>();
 		for(ConfDiagnosisEntity entity : entities) {
@@ -40,6 +44,16 @@ public class ProfileFilters {
 		List<ConfDiagnosisEntity> retList = new LinkedList<ConfDiagnosisEntity>();
 		for(ConfDiagnosisEntity entity : entities) {
 			if(!entity.hasSameRatio()) {
+				retList.add(entity);
+			}
+		}
+		return retList;
+	}
+	
+	public static List<ConfDiagnosisEntity> filterSameCountDelta(Collection<ConfDiagnosisEntity> entities) {
+		List<ConfDiagnosisEntity> retList = new LinkedList<ConfDiagnosisEntity>();
+		for(ConfDiagnosisEntity entity : entities) {
+			if(!entity.hasSameCountDelta()) {
 				retList.add(entity);
 			}
 		}

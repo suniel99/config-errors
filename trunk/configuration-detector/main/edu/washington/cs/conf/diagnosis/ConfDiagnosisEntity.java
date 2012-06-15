@@ -223,6 +223,20 @@ public class ConfDiagnosisEntity {
     	return false;
     }
     
+    public boolean hasSameCountDelta() {
+    	boolean hasGoodEval = this.hasRawData(RawDataType.GOOD_EVAL_COUNT);
+    	boolean hasBadEval = this.hasRawData(RawDataType.BAD_EVAL_COUNT);
+    	Utils.checkTrue(hasGoodEval || hasBadEval);
+    	if(hasGoodEval && hasBadEval) {
+    		float goodEnterCount = this.getRawData(RawDataType.GOOD_ENTER_COUNT);
+    		float goodEvalCount = this.getRawData(RawDataType.GOOD_EVAL_COUNT);
+    		float badEnterCount = this.getRawData(RawDataType.BAD_ENTER_COUNT);
+    		float badEvalCount = this.getRawData(RawDataType.BAD_EVAL_COUNT);
+    		return (goodEvalCount - goodEnterCount) == (badEvalCount - badEnterCount);  //filter cases like time
+    	} 
+    	return false;
+    }
+    
     @Override
     public boolean equals(Object obj) {
     	if(!(obj instanceof ConfDiagnosisEntity)) {
