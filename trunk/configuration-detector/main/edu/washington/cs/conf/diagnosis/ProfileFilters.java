@@ -1,8 +1,12 @@
 package edu.washington.cs.conf.diagnosis;
 
 import java.util.Collection;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Implements some heuristic to filter unlikely (or likely not useful) profiles.
@@ -14,6 +18,7 @@ public class ProfileFilters {
 		filtered = filterOneOccurance(filtered);
 		filtered = filterSameRatio(filtered);
 		filtered = filterSameCountDelta(filtered);
+		filtered = filterLikelySliceImprecision(filtered);
 		return filtered;
 	}
 	
@@ -57,6 +62,34 @@ public class ProfileFilters {
 				retList.add(entity);
 			}
 		}
+		return retList;
+	}
+	
+	//it is unlikely that a predicate is directly affected by > 3 configuration options
+	public static List<ConfDiagnosisEntity> filterLikelySliceImprecision(Collection<ConfDiagnosisEntity> entities) {
+		//the map of <context, set<config>>
+		Map<String, Set<String>> contextMap = new LinkedHashMap<String, Set<String>>();
+		for(ConfDiagnosisEntity entity : entities) {
+			//if a context is shared by many configs, that context (i.e., predicate) may be
+			//an imprecise output by slicing
+			String context = entity.getContext();
+			String config = entity.getConfigFullName();
+			if(!contextMap.containsKey(context)) {
+				contextMap.put(context, new LinkedHashSet<String>());
+			}
+			contextMap.get(context).add(config);
+		}
+		//see which entity should be kept
+		List<ConfDiagnosisEntity> retList = new LinkedList<ConfDiagnosisEntity>();
+		for(ConfDiagnosisEntity entity : entities) {
+			String context = entity.getContext();
+			if(contextMap.get(context).size() >= MainAnalyzer.thresholdcount) {
+				continue;
+			} else {
+				retList.add(entity);
+			}
+		}
+		
 		return retList;
 	}
 

@@ -28,6 +28,7 @@ public class MainAnalyzer {
 	
 	public static boolean doFiltering = false;
 	public static boolean amortizeNoise = false;
+	public static int thresholdcount = 3;
 	
 	private float threshold = 0.8f;
 	private DistanceType distanceType = DistanceType.INTERPRODUCT;
