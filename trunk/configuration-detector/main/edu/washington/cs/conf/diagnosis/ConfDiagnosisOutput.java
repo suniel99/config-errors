@@ -2,6 +2,8 @@ package edu.washington.cs.conf.diagnosis;
 
 import instrument.Globals;
 
+import java.io.OutputStream;
+import java.io.PrintStream;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
@@ -60,12 +62,12 @@ public class ConfDiagnosisOutput {
 		this.finalScore = score;
 	}
 	
-	public void showExplanations() {
+	public void showExplanations(PrintStream out) {
 		String s = "";
 		for(String ex : this.getExplanations()) {
 			s =  s + ex + Globals.lineSep;
 		}
-		System.out.println(s);
+		out.println(s);
 	}
 	
 	@Override

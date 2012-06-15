@@ -64,6 +64,11 @@ public class IRStatement {
 		return this.instructionIndex;
 	}
 	
+	public String getUniqueSignature() {
+		return this.getMethodSig() + "#"
+		    + this.ssa.toString() + "#" + this.getInstructionIndex();
+	}
+	
 	public String getMethodSig() {
 		 return this.methodSig;
 	}
