@@ -320,7 +320,8 @@ public class PredicateProfileBasedDiagnoser {
 					e.saveRawData(RawDataType.BAD_RANK, (float)indexInBad);
 					e.setScoreProvence(t, "In good run, rank: " + i + ", in bad run, rank: " + indexInBad + "(in good run: " + e.getRawData(RawDataType.GOOD_ENTER_COUNT)
 							+ "/" + e.getRawData(RawDataType.GOOD_EVAL_COUNT)+ ", in bad run: "
-							+ e.getRawData(RawDataType.BAD_ENTER_COUNT) + "/" + e.getRawData(RawDataType.BAD_EVAL_COUNT) + ")");
+							+ e.getRawData(RawDataType.BAD_ENTER_COUNT) + "/" + e.getRawData(RawDataType.BAD_EVAL_COUNT) + ")"
+							+ ",  line num: " + e.getLineNumber() + ", text: " + e.getPredicateText());
 					rankDeltaMap.put(e, delta);
 				}
 			}

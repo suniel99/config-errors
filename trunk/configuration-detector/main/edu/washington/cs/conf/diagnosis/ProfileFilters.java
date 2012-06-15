@@ -16,6 +16,7 @@ public class ProfileFilters {
 	public static List<ConfDiagnosisEntity> filter(Collection<ConfDiagnosisEntity> entities) {
 		List<ConfDiagnosisEntity> filtered = filterSingleOccurance(entities);
 		filtered = filterOneOccurance(filtered);
+		filtered = filterSingleOccuranceBothRuns(filtered);
 		filtered = filterSameRatio(filtered);
 		filtered = filterSameCountDelta(filtered);
 		filtered = filterLikelySliceImprecision(filtered);
@@ -24,6 +25,7 @@ public class ProfileFilters {
 	
 	/**
 	 * Each individual filters
+	 * just 1 observation either in the good run, or the bad run
 	 * */
 	public static List<ConfDiagnosisEntity> filterSingleOccurance(Collection<ConfDiagnosisEntity> entities) {
 		List<ConfDiagnosisEntity> retList = new LinkedList<ConfDiagnosisEntity>();
@@ -35,6 +37,20 @@ public class ProfileFilters {
 		return retList;
 	}
 	
+	/**
+	 * only 1 observaton in both runs
+	 * */
+	public static List<ConfDiagnosisEntity> filterSingleOccuranceBothRuns(Collection<ConfDiagnosisEntity> entities) {
+		List<ConfDiagnosisEntity> retList = new LinkedList<ConfDiagnosisEntity>();
+		for(ConfDiagnosisEntity entity : entities) {
+			if(!entity.isSingleOccuranceInBothRuns()) {
+				retList.add(entity);
+			}
+		}
+		return retList;
+	}
+	
+	//a predicate only occurs in good run or bad run
 	public static List<ConfDiagnosisEntity> filterOneOccurance(Collection<ConfDiagnosisEntity> entities) {
 		List<ConfDiagnosisEntity> retList = new LinkedList<ConfDiagnosisEntity>();
 		for(ConfDiagnosisEntity entity : entities) {
@@ -55,6 +71,7 @@ public class ProfileFilters {
 		return retList;
 	}
 	
+	//like a timer count
 	public static List<ConfDiagnosisEntity> filterSameCountDelta(Collection<ConfDiagnosisEntity> entities) {
 		List<ConfDiagnosisEntity> retList = new LinkedList<ConfDiagnosisEntity>();
 		for(ConfDiagnosisEntity entity : entities) {

@@ -131,7 +131,8 @@ public class ConfDiagnosisEntity {
     					+ ", computed by, good-evaluation: " + this.getRawData(RawDataType.GOOD_EVAL_COUNT)
     					+ ",  good-entering: " + this.getRawData(RawDataType.GOOD_ENTER_COUNT)
     					+ ", also bad-evaluation: " + this.getRawData(RawDataType.BAD_EVAL_COUNT)
-    					+ ", bad-entering: " + this.getRawData(RawDataType.BAD_ENTER_COUNT));
+    					+ ", bad-entering: " + this.getRawData(RawDataType.BAD_ENTER_COUNT)
+    					+ ",  line num: " + getLineNumber() + ", text: " + getPredicateText());
     		} else if (hasGoodRatio && !hasBadRatio) {
     			float score = Math.abs(this.getRawData(RawDataType.GOOD_RATIO_ABS));
     			this.scores.put(ScoreType.RATIO_DELTA, score);
@@ -145,7 +146,8 @@ public class ConfDiagnosisEntity {
     			this.scoreProvenance.put(ScoreType.RATIO_DELTA,
     					"Bad absolute ratio: " + this.getRawData(RawDataType.BAD_RATIO_ABS)
     					+ ", computed by, bad-evaluation: " + this.getRawData(RawDataType.BAD_EVAL_COUNT)
-    					+ ", bad-entering: " + this.getRawData(RawDataType.BAD_ENTER_COUNT));
+    					+ ", bad-entering: " + this.getRawData(RawDataType.BAD_ENTER_COUNT)
+    					+ ",  line num: " + getLineNumber() + ", text: " + getPredicateText());
     		} else {
     			throw new Error();
     		}
@@ -209,6 +211,19 @@ public class ConfDiagnosisEntity {
     		return ((int)badCount) == 1;
     	}
     	return false;
+    }
+    
+    public boolean isSingleOccuranceInBothRuns() {
+    	boolean hasGoodEval = this.hasRawData(RawDataType.GOOD_EVAL_COUNT);
+    	boolean hasBadEval = this.hasRawData(RawDataType.BAD_EVAL_COUNT);
+    	Utils.checkTrue(hasGoodEval || hasBadEval);
+    	if(hasGoodEval && hasBadEval) {
+    		float goodCount = this.getRawData(RawDataType.GOOD_EVAL_COUNT);
+    		float badCount = this.getRawData(RawDataType.BAD_EVAL_COUNT);
+    		return (int)goodCount == 1 && (int)badCount ==1;
+    	} else {
+    		return false;
+    	}
     }
     
     public boolean hasSameRatio() {
