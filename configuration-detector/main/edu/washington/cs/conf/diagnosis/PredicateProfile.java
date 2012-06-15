@@ -22,7 +22,7 @@ public class PredicateProfile {
 	
 	//for displaying to users
 	private int srcLineNumber = -1;
-	private String textPredicate = "N/A";
+	private String textPredicate = "NOT_SET";
 	
 	public PredicateProfile(String confId, String context) {
 		Utils.checkTrue(confId != null && !confId.trim().isEmpty());

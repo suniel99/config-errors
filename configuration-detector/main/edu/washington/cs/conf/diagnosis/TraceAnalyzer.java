@@ -64,7 +64,7 @@ public class TraceAnalyzer {
 			String[] items = fullRecordedContext.split(ConfInstrumenter.SUB_SEP);
 			int srcLineNum = -1;
 			String context = fullRecordedContext;
-			String predicateTxt = "N/A";
+			String predicateTxt = "\"N/A in creating Profiles\"";
 			if(items.length > 1) {
 			    Utils.checkTrue(items.length == 3);
 			    srcLineNum = Integer.parseInt(items[0]);
