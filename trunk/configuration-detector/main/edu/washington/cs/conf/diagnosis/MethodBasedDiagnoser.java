@@ -41,7 +41,7 @@ public class MethodBasedDiagnoser extends AbstractBaselineDiagnoser {
 		List<ConfEntity> matched = new LinkedList<ConfEntity>();
 		
 		for(ConfPropOutput conf : confs) {
-			if(conf.containStatement(methodSig)) {
+			if(conf.findStatementByMethod(methodSig)) {
 				matched.add(conf.getConfEntity());
 			}
 		}
