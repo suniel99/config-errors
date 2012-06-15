@@ -15,7 +15,8 @@ public class TestInstrumentRandoop extends TestCase {
 		InstrumentSchema schema = ConfOutputSerializer.deserializeAsSchema(filePath);
 		
 		ConfInstrumenter instrumenter = new ConfInstrumenter(schema);
-		instrumenter.instrument("./subjects/randoop-jamie.jar", "./output/randoop-instrumented.jar");
+//		instrumenter.instrument("./subjects/randoop-jamie.jar", "./output/randoop-instrumented.jar");
+		instrumenter.instrument("./subjects/randoop-jamie-no-trace.jar", "./output/randoop-instrumented-no-trace.jar");
 		
 		InstrumentStats.showInstrumentationStats();
 	}

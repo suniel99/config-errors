@@ -8,6 +8,7 @@ import edu.washington.cs.conf.diagnosis.ConfDiagnosisOutput;
 import edu.washington.cs.conf.diagnosis.MainAnalyzer;
 import edu.washington.cs.conf.diagnosis.PredicateProfileBasedDiagnoser.RankType;
 import edu.washington.cs.conf.experiments.RandoopExpUtils;
+import edu.washington.cs.conf.util.Log;
 import junit.framework.TestCase;
 
 public class TestDiagnoseRandoopOptions extends TestCase {
@@ -57,6 +58,40 @@ public class TestDiagnoseRandoopOptions extends TestCase {
 		    System.out.println("   " + output.getBriefExplanation());
 //		    output.showExplanations();
 		}
+	}
+	
+	public void test2_basedOn1CFA() {
+		MainAnalyzer.amortizeNoise = true;
+		MainAnalyzer.doFiltering = true;
+		
+		ConfEntityRepository repo = RandoopExpUtils.getRandoopConfRepository();
+		
+		String goodRunTrace = "./experiments/randoop-database/good-treeset-60s-1-cfa-dump.txt";
+		String badRunTrace = "./experiments/randoop-database/bad-nano-xml-100s-1-cfa-dump.txt";
+		
+		MainAnalyzer analyzer = new MainAnalyzer(badRunTrace, Arrays.asList(goodRunTrace), repo);
+		analyzer.setRankType(RankType.IMPORT_RANK_CHANGE); //use single import is OK
+		analyzer.setThreshold(0.4f);
+		
+		List<ConfDiagnosisOutput> outputs = analyzer.computeResponsibleOptions();
+		
+		Log.logConfig("./config_output.txt");
+		for(ConfDiagnosisOutput output : outputs) {
+		    System.out.println(output);
+//		    output.
+		    System.out.println("   " + output.getBriefExplanation());
+		    System.out.println();
+		    
+		    Log.logln(output.toString());
+		    Log.logln("exp num: " + output.getExplanations().size());
+		    for(String exp : output.getExplanations()) {
+		    	Log.logln("    " + exp);
+		    }
+		    Log.logln("");
+//		    output.showExplanations();
+		}
+		
+		Log.removeLogging();
 	}
 	
 	public void test3() {

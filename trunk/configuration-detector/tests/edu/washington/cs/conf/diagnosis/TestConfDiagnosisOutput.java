@@ -37,7 +37,7 @@ public class TestConfDiagnosisOutput extends TestCase {
 		List<ConfDiagnosisOutput> ranking = ConfDiagnosisOutput.rankByAvgRanking(coll);
 		for(ConfDiagnosisOutput r : ranking) {
 			System.out.println(r);
-			r.showExplanations();
+			r.showExplanations(System.out);
 		}
 		assertEquals(ranking.get(0).getConfEntity().getClassName(), "c3");
 		assertEquals(ranking.get(1).getConfEntity().getClassName(), "c5");
