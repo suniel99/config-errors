@@ -109,6 +109,10 @@ public class SlicingHelper {
 		this.exclusionFile = fileName;
 	}
 	
+	public void setCFAPrecision(int length) {
+		this.cfaprecision = length;
+	}
+	
 	public void setContextSensitive(boolean cs) {
 		this.contextSensitive = cs;
 	}

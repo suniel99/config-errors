@@ -16,11 +16,12 @@ import edu.washington.cs.conf.util.Utils;
 public class ConfDiagnosisEntity {
 	
 	public enum RawDataType{GOOD_EVAL_COUNT, GOOD_ENTER_COUNT, GOOD_IMPORT, GOOD_RATIO, GOOD_RATIO_ABS, GOOD_IMPORT_ABS,
-		BAD_EVAL_COUNT, BAD_ENTER_COUNT, BAD_IMPORT, BAD_RATIO, BAD_RATIO_ABS, BAD_IMPORT_ABS};
+		BAD_EVAL_COUNT, BAD_ENTER_COUNT, BAD_IMPORT, BAD_RATIO, BAD_RATIO_ABS, BAD_IMPORT_ABS,
+		GOOD_RANK, BAD_RANK};
 		
 	//ratio only calcuates the percentage of passing / all
 	//import metric only balances sensitivty and specificity
-	public enum ScoreType {RATIO_DELTA, IMPORT_DELTA}
+	public enum ScoreType {RATIO_DELTA, IMPORT_DELTA, IMPORT_RANK_CHANGE, RATIO_RANK_CHANGE}
 	
 	private final String configFullName;
 	private final String context;
@@ -93,12 +94,23 @@ public class ConfDiagnosisEntity {
     	return this.scores.containsKey(type);
     }
     
+    //experimental, only in rank change
+    public void saveScore(ScoreType t, Float score) {
+    	Utils.checkTrue(!this.scores.containsKey(t));
+    	this.scores.put(t, score);
+    }
+    
     public String getScoreProvenance(ScoreType type) {
     	return this.scoreProvenance.get(type);
     }
     
     public boolean hasScoreProvenence(ScoreType type) {
     	return this.scoreProvenance.containsKey(type);
+    }
+    
+    public void setScoreProvence(ScoreType type, String provenance) {
+    	Utils.checkTrue(!this.scoreProvenance.containsKey(type));
+    	this.scoreProvenance.put(type, provenance);
     }
     
     public void computeAllScores() {

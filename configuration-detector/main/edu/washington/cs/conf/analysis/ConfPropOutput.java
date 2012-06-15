@@ -29,10 +29,6 @@ public class ConfPropOutput implements Serializable {
 	public final Set<IRStatement> statements;
 	
 	public ConfPropOutput(ConfEntity conf, Collection<IRStatement> stmts) {
-//		Utils.checkNotNull(conf);
-//		this.conf = conf;
-//		this.statements = new LinkedHashSet<IRStatement>();
-//		this.statements.addAll(stmts);
 		this(conf, stmts, null);
 	}
 	
@@ -57,16 +53,16 @@ public class ConfPropOutput implements Serializable {
 		return conf;
 	}
 	
-	public boolean containStatement(String methodSig, int instructIndex) {
+	public boolean containStatement(String methodSig, int instructionIndex) {
 		for(IRStatement irs : this.statements) {
-			if(irs.getInstructionIndex() == instructIndex && irs.getMethodSig().equals(methodSig)) {
+			if(irs.getInstructionIndex() == instructionIndex && irs.getMethodSig().equals(methodSig)) {
 				return true;
 			}
 		}
 		return false;
 	}
 	
-	public boolean containStatement(String methodSig) {
+	public boolean findStatementByMethod(String methodSig) {
 		for(IRStatement irs : this.statements) {
 			if(irs.getMethodSig().equals(methodSig)) {
 				return true;
@@ -129,6 +125,26 @@ public class ConfPropOutput implements Serializable {
 		Set<ShrikePoint> retPoints = this.getShrikePoints(irs);
 		
 		return retPoints;
+	}
+	
+	public static Set<IRStatement> excludeIgnorableStatements(Collection<IRStatement> set) {
+		Set<IRStatement> filteredSet = new LinkedHashSet<IRStatement>();
+		for(IRStatement s : set) {
+			if(!s.shouldIgnore()) {
+				filteredSet.add(s);
+			}
+		}
+		return filteredSet;
+	}
+	
+	public static Set<IRStatement> extractBranchStatements(Collection<IRStatement> set) {
+		Set<IRStatement> branchSet = new LinkedHashSet<IRStatement>();
+		for(IRStatement s : set) {
+			if(s.isBranch()) {
+				branchSet.add(s);
+			}
+		}
+		return branchSet;
 	}
 	
 	private List<IRStatement> getMappedBranchInSource(IRStatement ir) {

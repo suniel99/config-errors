@@ -20,7 +20,8 @@ import edu.washington.cs.conf.util.Utils;
  * */
 public class PredicateProfileBasedDiagnoser {
 	
-	public enum RankType {TFIDF_RATIO, TFIDF_IMPORT, SINGLE_RATIO, SINGLE_IMPORT, RATIO_SUM, IMPORT_SUM};
+	public enum RankType {TFIDF_RATIO, TFIDF_IMPORT, SINGLE_RATIO, SINGLE_IMPORT, RATIO_SUM, IMPORT_SUM,
+		IMPORT_RANK_CHANGE, RATIO_RANK_CHANGE};
 	
 	public enum CrossRunRank {HIGHEST_RANK_AVG, SCORE_SUM_RANK};
 
@@ -63,6 +64,10 @@ public class PredicateProfileBasedDiagnoser {
 			return rankOptionsByRatioSum(coll);
 		} else if (type.equals(RankType.IMPORT_SUM)) {
 			return rankOptionsByImportanceSum(coll);
+		} else if (type.equals(RankType.IMPORT_RANK_CHANGE)) {
+			return rankOptionsByRankChanges(coll, ScoreType.IMPORT_RANK_CHANGE);
+		} else if (type.equals(RankType.RATIO_RANK_CHANGE)) {
+			return rankOptionsByRankChanges(coll, ScoreType.RATIO_RANK_CHANGE);
 		} else {
 			throw new Error("Unrecognized type: " + type);
 		}
@@ -260,6 +265,83 @@ public class PredicateProfileBasedDiagnoser {
 		List<ConfDiagnosisOutput> finalRankedList = ConfDiagnosisOutput.rankByAvgRanking(rankedOutputs);
 		
 		return finalRankedList;
+	}
+	
+	/**
+	 * Rank by relative rank changes
+	 * */
+	static List<ConfDiagnosisOutput> rankOptionsByRankChanges(Collection<List<ConfDiagnosisEntity>> coll, ScoreType t) {
+		Collection<List<ConfDiagnosisEntity>> rankedListsByRankChange = new LinkedList<List<ConfDiagnosisEntity>>();
+ 		for(List<ConfDiagnosisEntity> list : coll) {
+			Map<ConfDiagnosisEntity, Float> goodRunValues = new LinkedHashMap<ConfDiagnosisEntity, Float>();
+			Map<ConfDiagnosisEntity, Float> badRunValues = new LinkedHashMap<ConfDiagnosisEntity, Float>();
+			
+			for (ConfDiagnosisEntity entity : list) {
+				if (t.equals(ScoreType.IMPORT_RANK_CHANGE)) {
+					if(entity.hasRawData(RawDataType.GOOD_IMPORT)) {
+						goodRunValues.put(entity, entity.getRawData(RawDataType.GOOD_IMPORT));
+					} else {
+						//goodRunValues.put(entity, 0.0f);
+					}
+					if(entity.hasRawData(RawDataType.BAD_IMPORT)) {
+						badRunValues.put(entity, entity.getRawData(RawDataType.BAD_IMPORT));
+					} else {
+						//badRunValues.put(entity, 0.0f);
+					}
+					
+				} else if (t.equals(ScoreType.RATIO_RANK_CHANGE)) {
+					if(entity.hasRawData(RawDataType.GOOD_RATIO)) {
+						goodRunValues.put(entity, entity.getRawData(RawDataType.GOOD_RATIO));
+					} else {
+						//goodRunValues.put(entity, 0.0f);
+					}
+					if(entity.hasRawData(RawDataType.BAD_RATIO)) {
+						badRunValues.put(entity, entity.getRawData(RawDataType.BAD_RATIO));
+					} else {
+						//badRunValues.put(entity, 0.0f);
+					}
+				} else {
+					throw new Error(t.toString());
+				}
+			}
+			
+			List<ConfDiagnosisEntity> goodRuns = Utils.sortByValueAndReturnKeys(goodRunValues, false);
+			List<ConfDiagnosisEntity> badRuns = Utils.sortByValueAndReturnKeys(badRunValues, false);
+			
+			Map<ConfDiagnosisEntity, Integer> rankDeltaMap = new LinkedHashMap<ConfDiagnosisEntity, Integer>();
+			
+			for(int i = 0; i < goodRuns.size(); i++) {
+				ConfDiagnosisEntity e = goodRuns.get(i);
+				int indexInBad = badRuns.indexOf(e);
+				if(indexInBad != -1) {
+					int delta = Math.abs(indexInBad - i);
+					e.saveScore(t, (float)delta);
+					e.saveRawData(RawDataType.GOOD_RANK, (float)i);
+					e.saveRawData(RawDataType.BAD_RANK, (float)indexInBad);
+					e.setScoreProvence(t, "In good run, rank: " + i + ", in bad run, rank: " + indexInBad + "(in good run: " + e.getRawData(RawDataType.GOOD_ENTER_COUNT)
+							+ "/" + e.getRawData(RawDataType.GOOD_EVAL_COUNT)+ ", in bad run: "
+							+ e.getRawData(RawDataType.BAD_ENTER_COUNT) + "/" + e.getRawData(RawDataType.BAD_EVAL_COUNT) + ")");
+					rankDeltaMap.put(e, delta);
+				}
+			}
+			
+			List<ConfDiagnosisEntity> rankedList = Utils.sortByValueAndReturnKeys(rankDeltaMap, false);
+			rankedListsByRankChange.add(rankedList);
+			
+		}
+		
+//		Collection<List<ConfDiagnosisEntity>> rankedListsByImportRankChange = new LinkedList<List<ConfDiagnosisEntity>>();
+
+// 		
+// 		//it convert ConfDiagnosisEntity to ConfDiagnosisOutput
+ 		
+ 		Collection<List<ConfDiagnosisOutput>> rankedOutputs = getRankedCollectionsBySingleScore(rankedListsByRankChange, t);
+// 		
+		List<ConfDiagnosisOutput> finalRankedList = ConfDiagnosisOutput.rankByAvgRanking(rankedOutputs);
+//		
+		
+		return finalRankedList;
+//		throw new Error();
 	}
 	
 	/** ***************************************
