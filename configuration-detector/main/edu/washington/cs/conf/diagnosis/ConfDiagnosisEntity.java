@@ -282,7 +282,6 @@ public class ConfDiagnosisEntity {
     	List<ConfDiagnosisEntity> rankedList = Utils.sortByValueAndReturnKeys(scoreMap, increase);
     	
     	if(MainAnalyzer.amortizeNoise) {
-    		int threshold = 9;
     		Map<Float, List<ConfDiagnosisEntity>> revMap = new LinkedHashMap<Float, List<ConfDiagnosisEntity>>();
     		for(ConfDiagnosisEntity e : scoreMap.keySet()) {
     			Float f = scoreMap.get(e);
@@ -294,7 +293,7 @@ public class ConfDiagnosisEntity {
     		Map<ConfDiagnosisEntity, Float> reweightMap = new LinkedHashMap<ConfDiagnosisEntity, Float>();
     		for(Float score : revMap.keySet()) {
     			Float amortize = score;
-    			if(revMap.get(score).size() > threshold) {
+    			if(revMap.get(score).size() >= MainAnalyzer.thresholdcount) {
     			    amortize = score / revMap.get(score).size();
     			}
     			for(ConfDiagnosisEntity e : revMap.get(score)) {
