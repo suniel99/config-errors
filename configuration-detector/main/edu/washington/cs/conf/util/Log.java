@@ -37,6 +37,10 @@ public final class Log {
   }
   }
   
+  public static void removeLogging() {
+	  Log.log = null;
+  }
+  
   public static void logln(String s, boolean flag) {
 	  if(flag) {
 		  logln(s);
