@@ -28,6 +28,47 @@ import daikon.inv.Invariant;
 import edu.washington.cs.conf.util.Utils;
 
 public class InvariantUtils {
+	
+	public static String translateDaikonMethodSignatureToWALAs(String methodSig) {
+		//e.g., DataStructures.StackArTester.push_noobserve(int)
+		//      DataStructures.StackAr.push(java.lang.Object)
+		//to: randoop.main.GenTests.handle([Ljava/lang/String;)Z_index_91
+	    //   or. randoop.util.MultiMap.add(Ljava/lang/Object;Ljava/lang/Object;)V
+		return methodSig;
+	}
+	
+	public static boolean stringEquals(String daikonMethod, String jvmMethod) {
+		Utils.checkTrue(daikonMethod.endsWith(")"), "illegal daikon method: " + daikonMethod);
+		Utils.checkTrue(!jvmMethod.endsWith(")"), "illegal jvm method: " + jvmMethod);
+		
+		int daikonLP = daikonMethod.indexOf("(");
+		int daikonRP = daikonMethod.indexOf(")");
+		
+		int jvmLP = jvmMethod.indexOf("(");
+		int jvmRP = jvmMethod.indexOf(")");
+		
+		//ignore the return type of jvm method
+		jvmMethod = jvmMethod.substring(0, jvmRP + 1);
+		
+		Utils.checkTrue(daikonLP != -1 && daikonRP != -1 && jvmLP != -1 && jvmRP != -1
+				&& daikonRP > daikonLP && jvmRP > jvmLP, "input are not legal: " + daikonMethod + ", "
+				+ jvmMethod);
+		
+		String daikonMethodName = daikonMethod.substring(0, daikonLP);
+		String jvmMethodName = jvmMethod.substring(0, jvmLP);
+		
+		if(!daikonMethodName.equals(jvmMethodName)) {
+			return false;
+		}
+		
+		String daikonArgs = daikonMethod.substring(daikonLP + 1, daikonRP);
+		String jvmArgs = jvmMethod.substring(jvmLP + 1, jvmRP);
+		
+		//FIXME
+		//need to deal with arrays, object, and primitive types
+		
+		return true;
+	}
 
 	public static Set<String> fetchMethodsWithDiffInvariants(String filename1, String filename2) throws Exception {
 		Diff diff = new Diff(false, false);
