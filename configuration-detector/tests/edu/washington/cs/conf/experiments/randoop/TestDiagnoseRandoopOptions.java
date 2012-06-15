@@ -61,7 +61,7 @@ public class TestDiagnoseRandoopOptions extends TestCase {
 	}
 	
 	public void test2_basedOn1CFA() {
-		MainAnalyzer.amortizeNoise = true;
+		MainAnalyzer.amortizeNoise = false;
 		MainAnalyzer.doFiltering = true;
 		
 		ConfEntityRepository repo = RandoopExpUtils.getRandoopConfRepository();
@@ -70,7 +70,7 @@ public class TestDiagnoseRandoopOptions extends TestCase {
 		String badRunTrace = "./experiments/randoop-database/bad-nano-xml-100s-1-cfa-dump.txt";
 		
 		MainAnalyzer analyzer = new MainAnalyzer(badRunTrace, Arrays.asList(goodRunTrace), repo);
-		analyzer.setRankType(RankType.IMPORT_RANK_CHANGE); //use single import is OK
+		analyzer.setRankType(RankType.SINGLE_IMPORT); //use single import is OK
 		analyzer.setThreshold(0.4f);
 		
 		List<ConfDiagnosisOutput> outputs = analyzer.computeResponsibleOptions();
