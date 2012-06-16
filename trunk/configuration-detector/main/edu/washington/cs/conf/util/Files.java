@@ -370,4 +370,28 @@ public final class Files {
     }
     return lines;
   }
+  
+  /**
+   * Fetch a certain line
+   * */
+  public static String fetchLineInFile(String sourceDir, String fullClassName, int lineNum) {
+		Utils.checkTrue(Files.checkDirExistence(sourceDir));
+		if(lineNum <= 0) {
+			return "Source_Not_Available line num <= 0";
+		}
+		if(fullClassName.indexOf("$") != -1) {
+			return "Source_Not_Available for anonymous class: " + fullClassName;
+		}
+		String filePath = sourceDir + Globals.fileSep + fullClassName.replace('.', File.separatorChar) + ".java";
+		File f = new File(filePath);
+		if(!f.exists()) {
+			return "File: " + filePath + " does not exist";
+		}
+		List<String> content = Files.readWholeNoExp(filePath);
+		if(content.size() <= lineNum) {
+			return "There are: " + content.size() + " lines in: " + filePath + ", but you are requesting: " + lineNum;
+		}
+		return content.get(lineNum - 1).trim();
+		//FIXME, may have memory leak here, cannot clear content
+	}
 }

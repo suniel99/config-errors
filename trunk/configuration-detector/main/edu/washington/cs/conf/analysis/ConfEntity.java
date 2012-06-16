@@ -93,33 +93,4 @@ public class ConfEntity implements Serializable {
 		return className + " : " + confName + " @ " + assignMethod
 		    + ", " + type + ", static: " + isStatic;
 	}
-	
-	public static String sep = ";";
-	
-	public static Collection<ConfEntity> parseConfEntities(String fileName) {
-		Collection<ConfEntity> all = new LinkedHashSet<ConfEntity>();
-		List<String> lines = Files.readWholeNoExp(fileName);
-		for(String line : lines) {
-			if(line.trim().isEmpty()) {
-				continue;
-			}
-			ConfEntity entity = parseConfEntity(line);
-			if(all.contains(entity)) {
-				System.err.println("Duplicated entity: " + entity);
-			} else {
-				all.add(entity);
-			}
-		}
-		return all;
-	}
-	
-	public static ConfEntity parseConfEntity(String line) {
-		String[] splits = line.split(sep);
-		Utils.checkTrue(splits.length == 4, "Incorrect length: " + splits.length);
-		String className = splits[0].trim();
-		String confName = splits[1].trim();
-		String affMethod = splits[2].trim().isEmpty() ? null : splits[2].trim();
-		boolean isStatic = Boolean.parseBoolean(splits[3].trim());
-		return new ConfEntity(className, confName, affMethod, isStatic);
-	}
 }

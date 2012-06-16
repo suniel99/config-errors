@@ -92,9 +92,9 @@ public class InstrumentSchema {
 		for(Collection<ShrikePoint> ls : this.locations.values()) {
 			for(ShrikePoint s : ls) {
 				s.setSourceText(sourceDir);
-				if(s.getSourceText().indexOf("maxsize") != -1) {
-				    System.err.println(s.getSourceText());
-				}
+//				if(s.getSourceText().indexOf("maxsize") != -1) {
+//				    System.err.println(s.getSourceText());
+//				}
 			}
 		}
 	}

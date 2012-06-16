@@ -60,8 +60,8 @@ public class TestSliceRandoopConfigOptions extends TestCase {
 		helper.buildAnalysis();
 		
 		List<ConfEntity> randoopConfList =
-			//RandoopExpUtils.getSampleList();
-			RandoopExpUtils.getRandoopConfList();
+			RandoopExpUtils.getSampleList();
+			//RandoopExpUtils.getRandoopConfList();
 		
 		Collection<ConfPropOutput> outputs = new LinkedList<ConfPropOutput>();
 		for(ConfEntity entity : randoopConfList) {

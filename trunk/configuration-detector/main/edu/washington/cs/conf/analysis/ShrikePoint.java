@@ -78,31 +78,9 @@ public class ShrikePoint implements Serializable {
 	
 	public void setSourceText(String sourceDir) {
 		Utils.checkTrue(Files.checkDirExistence(sourceDir));
-		if(this.lineNum <= 0) {
-			this.sourceText = "Source_Not_Available line num < 0";
-			return;
-		}
 		String fullClassName = this.methodSig.substring(0, this.methodSig.lastIndexOf("."));
-//		IClass c = this.method.getDeclaringClass();
-//		String fullClassName = WALAUtils.getJavaFullClassName(c);
-		if(fullClassName.indexOf("$") != -1) {
-			this.sourceText = "Source_Not_Available for anonymous class: " + fullClassName;
-			return; //inner class
-		}
-		String filePath = sourceDir + Globals.fileSep + fullClassName.replace('.', File.separatorChar) + ".java";
-		File f = new File(filePath);
-		if(!f.exists()) {
-			this.sourceText = "File: " + filePath + " does not exist";
-			return; //inner class
-		}
-		List<String> content = Files.readWholeNoExp(filePath);
-		if(content.size() <= this.lineNum) {
-			this.sourceText = "There are: " + content.size() + " lines in: " + filePath + ", but you are requesting: " + this.lineNum;
-			return;
-		}
-		this.sourceText = content.get(this.lineNum);
-		//reclaim the memory
-		//content.clear();
+		String text = Files.fetchLineInFile(sourceDir, fullClassName, this.lineNum);
+		this.sourceText = text;
 	}
 	
 	public String getSourceText() {

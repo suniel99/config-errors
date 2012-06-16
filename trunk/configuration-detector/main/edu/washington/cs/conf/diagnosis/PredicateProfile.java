@@ -1,5 +1,7 @@
 package edu.washington.cs.conf.diagnosis;
 
+import edu.washington.cs.conf.analysis.ConfUtils;
+import edu.washington.cs.conf.instrument.AbstractInstrumenter;
 import edu.washington.cs.conf.util.Utils;
 
 /**
@@ -22,13 +24,19 @@ public class PredicateProfile {
 	
 	//for displaying to users
 	private int srcLineNumber = -1;
+	private final int instructionIndex;
+	private final String methodSig; /**the declaring method sig*/
 	private String textPredicate = "NOT_SET";
 	
-	public PredicateProfile(String confId, String context) {
+	//avoid use this constructor, just for experiment
+	PredicateProfile(String confId, String context) {
 		Utils.checkTrue(confId != null && !confId.trim().isEmpty());
 		Utils.checkTrue(context != null && !context.trim().isEmpty());
 		this.confId = confId;
 		this.context = context;
+//		this.setInstructionIndex(context);
+		this.instructionIndex = this.parseInstructionIndex(context);
+		this.methodSig = this.parseMethodSig(context);
 	}
 	
 	public PredicateProfile(String confId, String context, 
@@ -39,12 +47,53 @@ public class PredicateProfile {
 		Utils.checkTrue(evaluating_count >= entering_count);
 		this.evaluating_count = evaluating_count;
 		this.entering_count = entering_count;
+		//parse the context text to get the instruction index
+//		this.setInstructionIndex(context);
+		//this.instructionIndex = this.parseInstructionIndex(context);
+	}
+	
+//	private void setInstructionIndex(String context) {
+//		int instIndex = parseInstructionIndex(context);
+//		if(instIndex != -1) {
+//			this.instructionIndex = instIndex;
+//		}
+//	}
+	
+	//looks like: methodSig + INDEX_SEP + i + SUB_SEP ... ;
+	//we want to fetch: i
+	private int parseInstructionIndex(String context) {
+		int index = context.indexOf(AbstractInstrumenter.INDEX_SEP);
+		int sepIndex = context.indexOf(AbstractInstrumenter.SUB_SEP);
+		Utils.checkTrue(index != -1, "invalid: " + context);
+		if(sepIndex == -1) {
+			String str = context.substring(index + AbstractInstrumenter.INDEX_SEP.length());
+			return Integer.parseInt(str);
+		} else {
+			String str = context.substring(index + AbstractInstrumenter.INDEX_SEP.length(), sepIndex);
+			return Integer.parseInt(str);
+		}
+	}
+	
+	private String parseMethodSig(String context) {
+		int index = context.indexOf(AbstractInstrumenter.INDEX_SEP);
+		Utils.checkTrue(index != -1, "invalid: " + context);
+		return context.substring(0, index);
 	}
 	
 	/**
 	 * the source line number and the predicate text are used to display
 	 * for users.
 	 * */
+	public int getInstructionIndex() {
+		return this.instructionIndex;
+	}
+	public String getMethodSig() {
+		return this.methodSig;
+	}
+	public String getFullDeclaringClassName() {
+		return ConfUtils.extractFullClassName(this.methodSig);
+		//this.methodSig.substring(0, this.methodSig.lastIndexOf("."));
+	}
 	public int getSourceLineNumber() {
 		return srcLineNumber;
 	}

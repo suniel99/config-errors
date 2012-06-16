@@ -28,6 +28,7 @@ public class RandoopExpUtils {
 		ConfEntity entity6 = new ConfEntity("randoop.main.GenInputsAbstract", "init_routine", true);
 		ConfEntity entity7 = new ConfEntity("randoop.main.GenInputsAbstract", "maxsize", true);
 		list.add(entity6);
+		list.add(entity7);
 		return list;
 	}
 
