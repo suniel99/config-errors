@@ -54,12 +54,16 @@ public class ConfPropOutput implements Serializable {
 	}
 	
 	public boolean containStatement(String methodSig, int instructionIndex) {
+		return this.getStatement(methodSig, instructionIndex) != null;
+	}
+	
+	public IRStatement getStatement(String methodSig, int instructionIndex) {
 		for(IRStatement irs : this.statements) {
 			if(irs.getInstructionIndex() == instructionIndex && irs.getMethodSig().equals(methodSig)) {
-				return true;
+				return irs;
 			}
 		}
-		return false;
+		return null;
 	}
 	
 	public boolean findStatementByMethod(String methodSig) {

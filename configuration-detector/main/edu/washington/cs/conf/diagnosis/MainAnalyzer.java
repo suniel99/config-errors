@@ -7,6 +7,8 @@ import java.util.LinkedList;
 import java.util.List;
 
 import edu.washington.cs.conf.analysis.ConfEntityRepository;
+import edu.washington.cs.conf.analysis.ConfPropOutput;
+import edu.washington.cs.conf.analysis.ConfUtils;
 import edu.washington.cs.conf.diagnosis.PredicateProfileBasedDiagnoser.CrossRunRank;
 import edu.washington.cs.conf.diagnosis.PredicateProfileBasedDiagnoser.RankType;
 import edu.washington.cs.conf.diagnosis.ProfileDistanceCalculator.DistanceType;
@@ -36,6 +38,9 @@ public class MainAnalyzer {
 	private CrossRunRank crossRank = CrossRunRank.HIGHEST_RANK_AVG;
 	private final ConfEntityRepository repository;
 	
+	private String sourceDir = null;
+	private Collection<ConfPropOutput> outputs = null;
+
 	public final PredicateProfileTuple badRun;
 	private final List<PredicateProfileTuple> goodRuns
 	    = new LinkedList<PredicateProfileTuple>();
@@ -54,21 +59,39 @@ public class MainAnalyzer {
 	
 	public MainAnalyzer(String badRunTraceFile, Collection<String> goodRunTraceFiles,
 			ConfEntityRepository repository) {
+		this(badRunTraceFile, goodRunTraceFiles, repository, null, null);
+	}
+	
+	public MainAnalyzer(String badRunTraceFile, Collection<String> goodRunTraceFiles,
+			ConfEntityRepository repository, String srcDir, Collection<ConfPropOutput> propOutputs) {
 		Utils.checkNotNull(badRunTraceFile);
 		Utils.checkNotNull(goodRunTraceFiles);
 		Utils.checkTrue(goodRunTraceFiles.size() > 0);
+		
+		//set the dir
+		this.sourceDir = srcDir;
+		this.outputs = propOutputs;
+		
 		//create the bad run
 		Collection<PredicateProfile> badProfiles = TraceAnalyzer.createProfiles(badRunTraceFile);
+		this.setSrcLineAndText(badProfiles);
 		this.badRun = PredicateProfileTuple.createBadRun("badrun", badProfiles);
 		//create the good runs
 		int index = 0;
 		for(String goodRunTraceFile : goodRunTraceFiles) {
 			Collection<PredicateProfile> goodProfiles = TraceAnalyzer.createProfiles(goodRunTraceFile);
+			this.setSrcLineAndText(goodProfiles);
 			PredicateProfileTuple goodProfile = PredicateProfileTuple.createGoodRun("goodrun-" + (index++), goodProfiles);
 			this.goodRuns.add(goodProfile);
 		}
 		this.goodRunDb = new PredicateProfileDatabase(this.goodRuns);
 		this.repository = repository;
+	}
+	
+	private void setSrcLineAndText(Collection<PredicateProfile> profiles) {
+		if(this.sourceDir != null && this.outputs != null) {
+			ConfUtils.setUpLineNumberAndSource(this.sourceDir, this.outputs, profiles);
+		}
 	}
 	
 	public List<ConfDiagnosisOutput> computeResponsibleOptions() {
@@ -155,5 +178,22 @@ public class MainAnalyzer {
 	
 	public ConfEntityRepository getConfEntityRepository() {
 		return this.repository;
+	}
+	
+
+	public String getSourceDir() {
+		return sourceDir;
+	}
+
+	public void setSourceDir(String sourceDir) {
+		this.sourceDir = sourceDir;
+	}
+
+	public Collection<ConfPropOutput> getOutputs() {
+		return outputs;
+	}
+
+	public void setOutputs(Collection<ConfPropOutput> outputs) {
+		this.outputs = outputs;
 	}
 }

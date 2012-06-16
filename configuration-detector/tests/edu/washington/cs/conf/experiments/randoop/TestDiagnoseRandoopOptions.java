@@ -1,9 +1,12 @@
 package edu.washington.cs.conf.experiments.randoop;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 import edu.washington.cs.conf.analysis.ConfEntityRepository;
+import edu.washington.cs.conf.analysis.ConfPropOutput;
+import edu.washington.cs.conf.analysis.ConfUtils;
 import edu.washington.cs.conf.diagnosis.ConfDiagnosisOutput;
 import edu.washington.cs.conf.diagnosis.MainAnalyzer;
 import edu.washington.cs.conf.diagnosis.PredicateProfileBasedDiagnoser.RankType;
@@ -64,13 +67,20 @@ public class TestDiagnoseRandoopOptions extends TestCase {
 		MainAnalyzer.amortizeNoise = false;
 		MainAnalyzer.doFiltering = true;
 		
+		//ConfUtils.setUpLineNumberAndSource(sourceDir, propOutputs, profiles)
+		
 		ConfEntityRepository repo = RandoopExpUtils.getRandoopConfRepository();
 		
 		String goodRunTrace = "./experiments/randoop-database/good-treeset-60s-1-cfa-dump.txt";
 		String badRunTrace = "./experiments/randoop-database/bad-nano-xml-100s-1-cfa-dump.txt";
 		
-		MainAnalyzer analyzer = new MainAnalyzer(badRunTrace, Arrays.asList(goodRunTrace), repo);
-		analyzer.setRankType(RankType.SINGLE_IMPORT); //use single import is OK
+//		String sourceDir = "./subjects/randoop/randoop-src/";
+//		Collection<ConfPropOutput> configOutputs = TestSliceRandoopConfigOptions.getConfPropOutputs(); 
+		
+		MainAnalyzer analyzer = new MainAnalyzer(badRunTrace, Arrays.asList(goodRunTrace), repo);//, sourceDir, configOutputs);
+		analyzer.setRankType(RankType.IMPORT_RANK_CHANGE); //use single import is OK
+//		analyzer.setSourceDir(sourceDir);
+//		analyzer.setOutputs(configOutputs);
 		analyzer.setThreshold(0.4f);
 		
 		List<ConfDiagnosisOutput> outputs = analyzer.computeResponsibleOptions();

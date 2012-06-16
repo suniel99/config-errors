@@ -73,6 +73,10 @@ public class IRStatement {
 		 return this.methodSig;
 	}
 	
+	public String getDeclaringFullClassName() {
+		return ConfUtils.extractFullClassName(methodSig);
+	}
+	
 	public int getLineNumber() {
 		return this.lineNumber;
 	}

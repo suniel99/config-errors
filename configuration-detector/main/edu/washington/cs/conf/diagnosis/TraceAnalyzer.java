@@ -76,7 +76,7 @@ public class TraceAnalyzer {
 			//can not check this, since is an entering and an evaluation
 //			Utils.checkTrue(!profileMap.containsKey(key), "key is: " + key);
 			if(!profileMap.containsKey(key)) {
-				//FIXME this constructor should be replaced
+				//FIXME this constructor should be replaced, since the count is setting below
 				profileMap.put(key, new PredicateProfile(confId, context));
 			}
 			PredicateProfile p = profileMap.get(key);

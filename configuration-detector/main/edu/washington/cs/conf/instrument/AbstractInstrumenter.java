@@ -21,6 +21,7 @@ public abstract class AbstractInstrumenter {
 	  public static String POST = "entering";
 	  public static String SEP = "#";
 	  public static String SUB_SEP = "%%";
+	  public static String INDEX_SEP = "_index_";
 	  
 	  public void instrument(String inputElement, String outputJar) throws Exception {
 	      instrumenter = new OfflineInstrumenter();

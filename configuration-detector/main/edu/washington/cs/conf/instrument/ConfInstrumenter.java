@@ -117,8 +117,8 @@ public class ConfInstrumenter extends AbstractInstrumenter {
 //	        				int lineNumber = schema.getSourceLineNumber(conf, methodSig, i);
 //	        				String sourceTxt = schema.getSourceCodeText(conf, methodSig, i);
 	        				
-	        				final String msg0 = PRE + SEP + conf + SEP + /*lineNumber + SUB_SEP + sourceTxt + SUB_SEP +*/ methodSig + "_index_" + i; //FIXME methodSig is not a distinguisable sig
-		        			final String msg1 = POST + SEP + conf + SEP + /*+ lineNumber + SUB_SEP + sourceTxt + SUB_SEP +*/ methodSig + "_index_" + i;
+	        				final String msg0 = PRE + SEP + conf + SEP + /*lineNumber + SUB_SEP + sourceTxt + SUB_SEP +*/ methodSig + INDEX_SEP + i; //FIXME methodSig is not a distinguisable sig
+		        			final String msg1 = POST + SEP + conf + SEP + /*+ lineNumber + SUB_SEP + sourceTxt + SUB_SEP +*/ methodSig + INDEX_SEP + i; //it may follow some context in ConfTracer
 		            		me.insertBefore(i, new MethodEditor.Patch() {
 		                      @Override
 		                      public void emitTo(MethodEditor.Output w) {

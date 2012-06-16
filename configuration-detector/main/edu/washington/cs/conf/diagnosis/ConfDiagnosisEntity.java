@@ -279,6 +279,7 @@ public class ConfDiagnosisEntity {
     
     /**
      * A utility method for sorting config by its score
+     * FIXME this class may not be the right place to put
      * */
     public static List<ConfDiagnosisEntity> rankByCriteria(Collection<ConfDiagnosisEntity> results, ScoreType scoreType,
     		boolean increase) {
