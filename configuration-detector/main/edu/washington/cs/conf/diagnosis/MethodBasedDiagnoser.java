@@ -52,10 +52,10 @@ public class MethodBasedDiagnoser extends AbstractBaselineDiagnoser {
 	/**
 	 * integrate with Daikon
 	 * */
-	public static List<ConfEntity> computeResponsibleOptions(Collection<String> goodInvFiles, String goodInvFile,
+	public static List<ConfEntity> computeResponsibleOptions(Collection<String> goodInvFiles, String badInvFile,
 			Collection<ConfPropOutput> confs) {
 		//get method scores
-		InvariantDiffAnalyzer analyzer = new InvariantDiffAnalyzer(goodInvFiles, goodInvFile);
+		InvariantDiffAnalyzer analyzer = new InvariantDiffAnalyzer(goodInvFiles, badInvFile);
 		Map<String, Float> scores = analyzer.getMethodsWithDiffInvariants();
 		//find responsbile options
 		MethodBasedDiagnoser diagnoser = new MethodBasedDiagnoser(confs, scores);

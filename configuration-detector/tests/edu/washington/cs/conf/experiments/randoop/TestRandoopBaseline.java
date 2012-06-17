@@ -1,6 +1,7 @@
 package edu.washington.cs.conf.experiments.randoop;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -14,6 +15,7 @@ import edu.washington.cs.conf.analysis.ConfPropOutput;
 import edu.washington.cs.conf.analysis.ConfigurationSlicer;
 import edu.washington.cs.conf.analysis.ConfigurationSlicer.CG;
 import edu.washington.cs.conf.diagnosis.InvariantUtils;
+import edu.washington.cs.conf.diagnosis.MethodBasedDiagnoser;
 import edu.washington.cs.conf.diagnosis.StmtCoverageBasedDiagnoser;
 import edu.washington.cs.conf.diagnosis.StmtExecuted;
 import edu.washington.cs.conf.diagnosis.StmtFileReader;
@@ -62,8 +64,16 @@ public class TestRandoopBaseline extends TestCase {
 	public void testAffectedMethods() throws Exception {
 		String goodInvFile = "D:\\research\\configurations\\daikon\\bin\\randoop-examples\\randoop-arraylist-60s.inv.gz";
 		String badInvFile = "D:\\research\\configurations\\daikon\\bin\\randoop-examples\\nanoxml-60s.inv.gz";
-		Set<String> affectedMethods = getAffectedMethods(goodInvFile, badInvFile);
+		//Set<String> affectedMethods = getAffectedMethods(goodInvFile, badInvFile);
+		String path = "./subjects/randoop-jamie-no-trace.jar;./subjects/plume.jar";
+		Collection<ConfPropOutput> confs = TestSliceRandoopConfigOptions.getConfPropOutputs(path, RandoopExpUtils.getRandoopConfList());
 		
+		List<ConfEntity> entities = MethodBasedDiagnoser.computeResponsibleOptions(Collections.singletonList(goodInvFile), badInvFile, confs);
+		
+		System.out.println(entities.size());
+		for(ConfEntity entity : entities) {
+			System.out.println(entity);
+		}
 		
 	}
 	
