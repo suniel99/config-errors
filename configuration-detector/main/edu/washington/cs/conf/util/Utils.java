@@ -9,6 +9,9 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.lang.reflect.Field;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -403,6 +406,11 @@ public class Utils {
 	
 	public static Field lookupField(String className, String fieldName) {
 		Class<?> clz = Utils.lookupClass(className);
+		return lookupField(clz, fieldName);
+		
+	}
+	
+	public static Field lookupField(Class<?> clz, String fieldName) {
 		try {
 			Field[] fields = clz.getDeclaredFields();
 			for(Field f : fields) {
@@ -411,9 +419,37 @@ public class Utils {
 					return f;
 				}
 			}
-			throw new Error("Can not find field: " + fieldName + " in " + className);
+			throw new Error("Can not find field: " + fieldName + " in " + clz.toString());
 		} catch (Throwable e) {
 			throw new Error(e);
 		}
+	}
+	
+	public static Class<?> loadclass(String classPath, String  className) {
+		// Create a File object on the root of the directory containing the class file
+		String[] paths = classPath.split(Globals.pathSep);
+		File[] files = new File[paths.length];
+		for(int i = 0; i < paths.length; i++) {
+			files[i] = new File(paths[i]);
+		}
+
+		try {
+		    // Convert File to a URL
+			URL[] urls = new URL[files.length];
+			for(int i = 0; i < files.length; i++) {
+				urls[i] = files[i].toURL();
+			}
+
+		    // Create a new class loader with the directory
+		    ClassLoader cl = new URLClassLoader(urls);
+
+		    // Load in the class; MyClass.class should be located in
+		    // the directory file:/c:/myclasses/com/mycompany
+		    Class<?> cls = cl.loadClass(className);
+		    return cls;
+		} catch (MalformedURLException e) {
+		} catch (ClassNotFoundException e) {
+		}
+		return null;
 	}
 }
