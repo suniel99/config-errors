@@ -1,5 +1,7 @@
 1. run examples on Randoop's manual TreeSet
 
+//note always put daikon.jar at the beginning of a class file
+
    java -classpath ../bin;../subjects/plume.jar;./randoop-instrumented.jar
         randoop.main.Main gentests --testclass=java.util.TreeSet --timelimit=60
         --dont-output-tests=true
