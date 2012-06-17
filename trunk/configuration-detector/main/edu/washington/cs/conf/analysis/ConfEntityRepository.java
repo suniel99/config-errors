@@ -1,7 +1,11 @@
 package edu.washington.cs.conf.analysis;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.util.Collection;
 import java.util.LinkedHashSet;
+
+import edu.washington.cs.conf.util.Utils;
 
 
 public class ConfEntityRepository {
@@ -27,5 +31,22 @@ public class ConfEntityRepository {
 			}
 		}
 		return null;
+	}
+	
+	public void initializeTypesInConfEntities(String path) {
+		for(ConfEntity entity : entities) {
+			String fullClassName = entity.getClassName();
+			String fieldName = entity.getConfName();
+			boolean isStatic = entity.isStatic();
+			
+			Class<?> clz = Utils.loadclass(path, fullClassName);
+			Field f = Utils.lookupField(clz, fieldName);
+			Utils.checkNotNull(f);
+			
+			boolean isFieldStatic = Modifier.isStatic(f.getModifiers());
+			Utils.checkTrue(isStatic == isFieldStatic);
+			
+			entity.setType(f.getType().getName());
+		}
 	}
 }

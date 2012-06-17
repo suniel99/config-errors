@@ -23,7 +23,7 @@ public class ConfEntity implements Serializable {
 	private final String confName;
 	private final boolean isStatic;
 	
-	private Class<?> type = null;
+	private String type = null;
 	private String assignMethod = null; //null is the default
 	
 	public ConfEntity(String className, String confName, boolean isStatic) {
@@ -44,11 +44,11 @@ public class ConfEntity implements Serializable {
 //		this.isStatic = Modifier.isStatic(field.getModifiers());
 	}
 	
-	public Class<?> getType() {
+	public String getType() {
 		return type;
 	}
 
-	public void setType(Class<?> type) {
+	public void setType(String type) {
 		this.type = type;
 	}
 

@@ -1,8 +1,10 @@
 package edu.washington.cs.conf.analysis;
 
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 import edu.washington.cs.conf.diagnosis.PredicateProfile;
 import edu.washington.cs.conf.util.Files;
@@ -85,5 +87,22 @@ public class ConfUtils {
 	 * */
 	public static String extractFullClassName(String methodSig) {
 		return methodSig.substring(0, methodSig.lastIndexOf("."));
+	}
+	
+	/**
+	 * Removes all statements corresponding to the same statement
+	 * */
+	public static Set<IRStatement> removeSameStmtsInDiffContexts(Set<IRStatement> stmts) {
+		Set<String> existed = new HashSet<String>();
+		Set<IRStatement> filtered = new LinkedHashSet<IRStatement>();
+		for(IRStatement stmt : stmts) {
+			String sig = stmt.getUniqueSignature(); //method name + instruction string + instruction index
+			if(existed.contains(sig)) {
+				continue;
+			}
+			existed.add(sig);
+			filtered.add(stmt);
+		}
+		return filtered;
 	}
 }
