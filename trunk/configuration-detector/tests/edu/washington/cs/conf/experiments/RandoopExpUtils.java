@@ -23,6 +23,13 @@ public class RandoopExpUtils {
 		return repo;
 	}
 	
+	public static List<ConfEntity> getLargeSliceConfList() {
+		List<ConfEntity> list = new LinkedList<ConfEntity>();
+		ConfEntity entity6 = new ConfEntity("randoop.main.GenInputsAbstract", "init_routine", true);
+		list.add(entity6);
+		return list;
+	}
+	
 	public static List<ConfEntity> getSampleList() {
 		List<ConfEntity> list = new LinkedList<ConfEntity>();
 		ConfEntity entity6 = new ConfEntity("randoop.main.GenInputsAbstract", "init_routine", true);
