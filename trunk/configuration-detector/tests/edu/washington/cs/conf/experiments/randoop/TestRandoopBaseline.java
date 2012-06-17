@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import com.ibm.wala.ipa.slicer.Slicer.ControlDependenceOptions;
 import com.ibm.wala.ipa.slicer.Slicer.DataDependenceOptions;
@@ -12,6 +13,7 @@ import edu.washington.cs.conf.analysis.ConfEntity;
 import edu.washington.cs.conf.analysis.ConfPropOutput;
 import edu.washington.cs.conf.analysis.ConfigurationSlicer;
 import edu.washington.cs.conf.analysis.ConfigurationSlicer.CG;
+import edu.washington.cs.conf.diagnosis.InvariantUtils;
 import edu.washington.cs.conf.diagnosis.StmtCoverageBasedDiagnoser;
 import edu.washington.cs.conf.diagnosis.StmtExecuted;
 import edu.washington.cs.conf.diagnosis.StmtFileReader;
@@ -53,8 +55,31 @@ public class TestRandoopBaseline extends TestCase {
 		}
 	}
 	
-	public void testAffectedMethods() {
+	/**
+	 * The daikon invariant file is a little bit large, so I use absolute file path here
+	 * @throws Exception 
+	 * */
+	public void testAffectedMethods() throws Exception {
+		String goodInvFile = "D:\\research\\configurations\\daikon\\bin\\randoop-examples\\randoop-arraylist-60s.inv.gz";
+		String badInvFile = "D:\\research\\configurations\\daikon\\bin\\randoop-examples\\nanoxml-60s.inv.gz";
+		Set<String> affectedMethods = getAffectedMethods(goodInvFile, badInvFile);
 		
+		
+	}
+	
+	public Set<String> getAffectedMethods(String goodInvFile, String badInvFile) throws Exception {
+		Set<String> affectedMethods = InvariantUtils.fetchMethodsWithDiffInvariants(goodInvFile, badInvFile);
+		System.out.println("size: " + affectedMethods.size());
+		
+		System.out.println("------------ a list of methods -----------");
+		int count = 1;
+		for(String m : affectedMethods) {
+			if(m.startsWith("gco.") || m.startsWith("plume.")) {
+				continue;
+			}
+			System.out.println(count++ + ": " + m);
+		}
+		return affectedMethods;
 	}
 	
 	public Collection<ConfPropOutput> getRandoopConfOutputs() {
