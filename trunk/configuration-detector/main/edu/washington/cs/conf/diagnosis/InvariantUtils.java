@@ -91,8 +91,8 @@ public class InvariantUtils {
 			}
 		}
 		
-		System.out.println("t: " + transformedArgs.toString());
-		System.out.println("o: " + jvmArgs);
+//		System.out.println("t: " + transformedArgs.toString());
+//		System.out.println("o: " + jvmArgs);
 		
 		return transformedArgs.toString().equals(jvmArgs);
 	}
