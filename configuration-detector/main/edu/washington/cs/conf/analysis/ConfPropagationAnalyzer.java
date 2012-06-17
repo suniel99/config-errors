@@ -8,7 +8,7 @@ import com.ibm.wala.classLoader.IClass;
 import com.ibm.wala.classLoader.IField;
 import com.ibm.wala.ipa.cha.ClassHierarchy;
 
-import edu.washington.cs.conf.analysis.SlicingHelper.CG;
+import edu.washington.cs.conf.analysis.ConfigurationSlicer.CG;
 import edu.washington.cs.conf.util.Utils;
 import edu.washington.cs.conf.util.WALAUtils;
 
@@ -66,7 +66,7 @@ public class ConfPropagationAnalyzer {
 	public List<ConfPropOutput> doAnalysis() {
 		List<ConfPropOutput> outputList = new LinkedList<ConfPropOutput>();
 		
-		SlicingHelper helper = new SlicingHelper(this.analysisPath, this.mainClass);
+		ConfigurationSlicer helper = new ConfigurationSlicer(this.analysisPath, this.mainClass);
 		if(this.type != null) {
 			helper.setCGType(type);
 		}

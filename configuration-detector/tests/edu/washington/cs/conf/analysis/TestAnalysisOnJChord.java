@@ -14,7 +14,7 @@ import com.ibm.wala.ipa.slicer.thin.CISlicer;
 import com.ibm.wala.ipa.slicer.thin.ThinSlicer;
 import com.ibm.wala.util.CancelException;
 
-import edu.washington.cs.conf.analysis.SlicingHelper.CG;
+import edu.washington.cs.conf.analysis.ConfigurationSlicer.CG;
 import edu.washington.cs.conf.experiments.ChordExpUtils;
 import edu.washington.cs.conf.experiments.RandoopExpUtils;
 import edu.washington.cs.conf.util.Log;
@@ -26,7 +26,7 @@ public class TestAnalysisOnJChord extends TestCase {
 	public void testChordBuildCG() {
 		String path = "./subjects/jchord/chord.jar";
 		String mainClass = "Lchord/project/Main";
-		SlicingHelper helper = new SlicingHelper(path, mainClass);
+		ConfigurationSlicer helper = new ConfigurationSlicer(path, mainClass);
 		helper.setExclusionFile("ChordExclusions.txt");
 		helper.setCGType(CG.ZeroCFA);
 		helper.buildAnalysis();
@@ -45,7 +45,7 @@ public class TestAnalysisOnJChord extends TestCase {
     public void testJChordOptionsISlicer() throws IllegalArgumentException, CancelException {
     	String path = "./subjects/jchord/chord.jar";
 		String mainClass = "Lchord/project/Main";
-		SlicingHelper helper = new SlicingHelper(path, mainClass);
+		ConfigurationSlicer helper = new ConfigurationSlicer(path, mainClass);
 		helper.setCGType(CG.ZeroCFA);
 		helper.setExclusionFile("ChordExclusions.txt");
 		helper.buildAnalysis();

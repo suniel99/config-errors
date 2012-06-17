@@ -16,7 +16,7 @@ import com.ibm.wala.ipa.slicer.thin.ThinSlicer;
 import com.ibm.wala.util.CancelException;
 
 import junit.framework.TestCase;
-import edu.washington.cs.conf.analysis.SlicingHelper.CG;
+import edu.washington.cs.conf.analysis.ConfigurationSlicer.CG;
 import edu.washington.cs.conf.experiments.SynopticExpUtils;
 import edu.washington.cs.conf.util.Log;
 import edu.washington.cs.conf.util.WALAUtils;
@@ -29,7 +29,7 @@ public class TestAnalysisOnSynoptic extends TestCase {
 				"./subjects/synoptic/libs/commons-fileupload-1.2.2.jar;" +
 				"./subjects/synoptic/libs/junit-4.9b2.jar";
 		String mainClass = "Lsynoptic/main/Main";
-		SlicingHelper helper = new SlicingHelper(path, mainClass);
+		ConfigurationSlicer helper = new ConfigurationSlicer(path, mainClass);
 		helper.setCGType(CG.ZeroCFA);
 		helper.buildAnalysis();
 	}
@@ -42,7 +42,7 @@ public class TestAnalysisOnSynoptic extends TestCase {
 				+ "./subjects/synoptic/libs/commons-fileupload-1.2.2.jar;"
 				+ "./subjects/synoptic/libs/junit-4.9b2.jar";
 		String mainClass = "Lsynoptic/main/Main";
-		SlicingHelper helper = new SlicingHelper(path, mainClass);
+		ConfigurationSlicer helper = new ConfigurationSlicer(path, mainClass);
 		helper.setCGType(CG.ZeroCFA);
 		helper.setExclusionFile("JavaAllExclusions.txt");
 		helper.buildAnalysis();

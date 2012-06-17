@@ -11,8 +11,8 @@ import com.ibm.wala.ipa.slicer.Slicer.DataDependenceOptions;
 
 import edu.washington.cs.conf.analysis.ConfEntity;
 import edu.washington.cs.conf.analysis.ConfPropOutput;
-import edu.washington.cs.conf.analysis.SlicingHelper;
-import edu.washington.cs.conf.analysis.SlicingHelper.CG;
+import edu.washington.cs.conf.analysis.ConfigurationSlicer;
+import edu.washington.cs.conf.analysis.ConfigurationSlicer.CG;
 import edu.washington.cs.conf.instrument.EveryStmtInstrumenter;
 import junit.framework.TestCase;
 
@@ -43,7 +43,7 @@ public class TestTwoBaselineDiagnoser extends TestCase {
 		String path = originalJarPath;
 		String mainClass = "Ltest/baseline/diagnoser/Main";
 		
-		SlicingHelper helper = new SlicingHelper(path, mainClass);
+		ConfigurationSlicer helper = new ConfigurationSlicer(path, mainClass);
 	    helper.setCGType(CG.ZeroCFA);
 	    helper.setDataDependenceOptions(DataDependenceOptions.NO_BASE_NO_HEAP_NO_EXCEPTIONS);
 	    helper.setControlDependenceOptions(ControlDependenceOptions.NONE);

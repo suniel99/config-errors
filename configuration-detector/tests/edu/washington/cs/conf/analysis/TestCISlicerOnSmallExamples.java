@@ -17,7 +17,7 @@ import com.ibm.wala.ipa.slicer.thin.CISlicer;
 import com.ibm.wala.ipa.slicer.thin.ThinSlicer;
 import com.ibm.wala.util.graph.traverse.DFSFinishTimeIterator;
 
-import edu.washington.cs.conf.analysis.SlicingHelper.CG;
+import edu.washington.cs.conf.analysis.ConfigurationSlicer.CG;
 import edu.washington.cs.conf.util.WALAUtils;
 import junit.framework.TestCase;
 
@@ -99,7 +99,7 @@ public class TestCISlicerOnSmallExamples extends TestCase {
 	
 	private void forwardSliceOnSingleField(String path, String mainClass, String definedClass, String fieldName,
 			boolean isStatic) {
-		SlicingHelper helper = new SlicingHelper(path, mainClass);
+		ConfigurationSlicer helper = new ConfigurationSlicer(path, mainClass);
 		helper.setExclusionFile("JavaAllExclusions.txt");
 		helper.setCGType(CG.ZeroCFA);
 		if(type != null) {

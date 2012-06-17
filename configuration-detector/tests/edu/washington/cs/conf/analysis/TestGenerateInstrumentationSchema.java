@@ -10,7 +10,7 @@ import com.ibm.wala.ipa.slicer.Slicer.DataDependenceOptions;
 import com.ibm.wala.ipa.slicer.Statement;
 import com.ibm.wala.util.CancelException;
 
-import edu.washington.cs.conf.analysis.SlicingHelper.CG;
+import edu.washington.cs.conf.analysis.ConfigurationSlicer.CG;
 import edu.washington.cs.conf.experiments.ChordExpUtils;
 import edu.washington.cs.conf.experiments.RandoopExpUtils;
 import edu.washington.cs.conf.experiments.SynopticExpUtils;
@@ -26,7 +26,7 @@ public class TestGenerateInstrumentationSchema extends TestCase {
 	public void testSlice1() throws IllegalArgumentException, CancelException {
 		String path = "D:\\research\\configurations\\workspace\\configuration-detector\\bin\\test\\slice\\depfield";
 		String mainClass = "Ltest/slice/depfield/FieldDeps";
-		SlicingHelper helper = new SlicingHelper(path, mainClass);
+		ConfigurationSlicer helper = new ConfigurationSlicer(path, mainClass);
 		helper.setCGType(CG.ZeroCFA);
 		helper.setExclusionFile("JavaAllExclusions.txt");
 		helper.setContextSensitive(false);
@@ -49,7 +49,7 @@ public class TestGenerateInstrumentationSchema extends TestCase {
 			}
 		}
 		
-		Collection<IRStatement> irs = SlicingHelper.convert(slices);
+		Collection<IRStatement> irs = ConfigurationSlicer.convert(slices);
 		for(IRStatement ir : irs) {
 			System.out.println("  " + ir);
 		}
@@ -64,7 +64,7 @@ public class TestGenerateInstrumentationSchema extends TestCase {
 		String path = "./subjects/weka/weka.jar;./subjects/weka/JFlex.jar;" +
 		    "./subjects/weka/java-cup.jar";
 		String mainClass = "Lweka/classifiers/trees/J48";
-		SlicingHelper helper = new SlicingHelper(path, mainClass);
+		ConfigurationSlicer helper = new ConfigurationSlicer(path, mainClass);
 		helper.setCGType(CG.ZeroCFA);
 		helper.setExclusionFile("JavaAllExclusions.txt");
 		helper.setDataDependenceOptions(DataDependenceOptions.NO_BASE_NO_HEAP_NO_EXCEPTIONS);
@@ -104,7 +104,7 @@ public class TestGenerateInstrumentationSchema extends TestCase {
 			+ "./subjects/synoptic/libs/commons-fileupload-1.2.2.jar;"
 			+ "./subjects/synoptic/libs/junit-4.9b2.jar";
 	    String mainClass = "Lsynoptic/main/Main";
-	    SlicingHelper helper = new SlicingHelper(path, mainClass);
+	    ConfigurationSlicer helper = new ConfigurationSlicer(path, mainClass);
 	    helper.setCGType(CG.ZeroCFA);
 	    helper.setExclusionFile("JavaAllExclusions.txt");
 	    helper.setDataDependenceOptions(DataDependenceOptions.NO_BASE_NO_HEAP_NO_EXCEPTIONS);
@@ -141,7 +141,7 @@ public class TestGenerateInstrumentationSchema extends TestCase {
 		String path = "./subjects/jchord/chord.jar";
 		String mainClass = "Lchord/project/Main";
 		
-		SlicingHelper helper = new SlicingHelper(path, mainClass);
+		ConfigurationSlicer helper = new ConfigurationSlicer(path, mainClass);
 	    helper.setCGType(CG.ZeroCFA);
 	    helper.setExclusionFile("ChordExclusions.txt");
 	    helper.setDataDependenceOptions(DataDependenceOptions.NO_BASE_NO_HEAP_NO_EXCEPTIONS);

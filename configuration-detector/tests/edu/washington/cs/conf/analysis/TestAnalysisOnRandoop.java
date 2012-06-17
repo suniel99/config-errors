@@ -16,7 +16,7 @@ import com.ibm.wala.ipa.slicer.thin.ThinSlicer;
 import com.ibm.wala.util.CancelException;
 import com.ibm.wala.util.graph.traverse.DFSFinishTimeIterator;
 
-import edu.washington.cs.conf.analysis.SlicingHelper.CG;
+import edu.washington.cs.conf.analysis.ConfigurationSlicer.CG;
 import edu.washington.cs.conf.experiments.RandoopExpUtils;
 import edu.washington.cs.conf.util.Log;
 import edu.washington.cs.conf.util.Utils;
@@ -28,7 +28,7 @@ public class TestAnalysisOnRandoop extends TestCase {
 	public void testRandoopBuildCG() {
 		String path = "./subjects/randoop-jamie.jar;./subjects/plume.jar";
 		String mainClass = "Lrandoop/main/Main";
-		SlicingHelper helper = new SlicingHelper(path, mainClass);
+		ConfigurationSlicer helper = new ConfigurationSlicer(path, mainClass);
 		helper.setCGType(CG.ZeroCFA);
 		helper.buildAnalysis();
 	}
@@ -68,7 +68,7 @@ public class TestAnalysisOnRandoop extends TestCase {
 		
 		String path = "./subjects/randoop-jamie.jar;./subjects/plume.jar";
 		String mainClass = "Lrandoop/main/Main";
-		SlicingHelper helper = new SlicingHelper(path, mainClass);
+		ConfigurationSlicer helper = new ConfigurationSlicer(path, mainClass);
 		helper.setCGType(CG.ZeroCFA);
 		helper.setExclusionFile("JavaAllExclusions.txt");
 		helper.buildAnalysis();
@@ -88,7 +88,7 @@ public class TestAnalysisOnRandoop extends TestCase {
 		
 		String path = "./subjects/randoop-jamie.jar;./subjects/plume.jar";
 		String mainClass = "Lrandoop/main/Main";
-		SlicingHelper helper = new SlicingHelper(path, mainClass);
+		ConfigurationSlicer helper = new ConfigurationSlicer(path, mainClass);
 		helper.setCGType(CG.ZeroCFA);
 		helper.setExclusionFile("JavaAllExclusions.txt");
 		helper.buildAnalysis();

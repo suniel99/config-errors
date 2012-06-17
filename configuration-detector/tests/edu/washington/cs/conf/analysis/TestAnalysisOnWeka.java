@@ -17,7 +17,7 @@ import com.ibm.wala.ssa.SSAConditionalBranchInstruction;
 import com.ibm.wala.util.CancelException;
 import com.ibm.wala.util.graph.traverse.DFSFinishTimeIterator;
 
-import edu.washington.cs.conf.analysis.SlicingHelper.CG;
+import edu.washington.cs.conf.analysis.ConfigurationSlicer.CG;
 import edu.washington.cs.conf.experiments.WekaExpUtils;
 import edu.washington.cs.conf.util.Log;
 import edu.washington.cs.conf.util.WALAUtils;
@@ -32,7 +32,7 @@ public class TestAnalysisOnWeka extends TestCase {
 		String path = "./subjects/weka/weka.jar;./subjects/weka/JFlex.jar;" +
 				"./subjects/weka/java-cup.jar";
 		String mainClass = "Lweka/classifiers/trees/J48";
-		SlicingHelper helper = new SlicingHelper(path, mainClass);
+		ConfigurationSlicer helper = new ConfigurationSlicer(path, mainClass);
 		helper.setCGType(CG.ZeroCFA);
 		helper.setExclusionFile("JavaAllExclusions.txt");
 		helper.buildAnalysis();
