@@ -70,6 +70,28 @@ public class Utils {
 		return str.replace('.', '/');
 	}
 	
+	public static String getJVMDescriptorForPrimitiveType(String type) {
+		if (type.equals("boolean")) {
+			return "Z";
+		} else if (type.equals("char")) {
+			return "C";
+		} else if (type.equals("byte")) {
+			return "B";
+		} else if (type.equals("short")) {
+			return "S";
+		} else if (type.equals("int")) {
+			return "I";
+		} else if (type.equals("float")) {
+			return "F";
+		} else if (type.equals("long")) {
+			return "J";
+		} else if (type.equals("double")) {
+			return "D";
+		} else {
+			throw new RuntimeException("Unexpected primitive type: " + type);
+		}
+	}
+	
 	public static void checkDirExistence(String dir) {
 		File f = new File(dir);
 		if(!f.isDirectory()) {
