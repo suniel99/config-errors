@@ -57,6 +57,15 @@ public class ConfPropOutput implements Serializable {
 		return this.getStatement(methodSig, instructionIndex) != null;
 	}
 	
+	public boolean containStatement(String uniqueSig) {
+		for(IRStatement irs : this.statements) {
+			if(irs.getUniqueSignature().equals(uniqueSig)) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
 	public IRStatement getStatement(String methodSig, int instructionIndex) {
 		for(IRStatement irs : this.statements) {
 			if(irs.getInstructionIndex() == instructionIndex && irs.getMethodSig().equals(methodSig)) {

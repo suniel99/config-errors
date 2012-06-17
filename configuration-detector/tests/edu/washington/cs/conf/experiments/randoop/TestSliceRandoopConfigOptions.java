@@ -1,8 +1,6 @@
 package edu.washington.cs.conf.experiments.randoop;
 
 import java.util.Collection;
-import java.util.HashSet;
-import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
@@ -16,6 +14,7 @@ import edu.washington.cs.conf.analysis.ConfOutputSerializer;
 import edu.washington.cs.conf.analysis.ConfPropOutput;
 import edu.washington.cs.conf.analysis.ConfUtils;
 import edu.washington.cs.conf.analysis.IRStatement;
+import edu.washington.cs.conf.analysis.SlicePruner;
 import edu.washington.cs.conf.analysis.SlicingHelper;
 import edu.washington.cs.conf.analysis.SlicingHelper.CG;
 import edu.washington.cs.conf.experiments.RandoopExpUtils;
@@ -24,13 +23,40 @@ import junit.framework.TestCase;
 
 public class TestSliceRandoopConfigOptions extends TestCase {
 	
-	public void testRandoopOptionTypes() {
+	public void testInitRandoopOptionTypes() {
 		String path = "./subjects/randoop-jamie-no-trace.jar;./subjects/plume.jar";
 		List<ConfEntity> randoopConfList = RandoopExpUtils.getRandoopConfList();
 		ConfEntityRepository repo = new ConfEntityRepository(randoopConfList);
 		repo.initializeTypesInConfEntities(path);
 		for(ConfEntity conf : randoopConfList) {
 			System.out.println(conf);
+		}
+	}
+	
+	public void testPruneRandoopSlices() {
+		String path = "./subjects/randoop-jamie-no-trace.jar;./subjects/plume.jar";
+		Collection<ConfPropOutput> confOutputs = getConfPropOutputs(path, RandoopExpUtils.getRandoopConfList());
+		for(ConfPropOutput o : confOutputs) {
+			System.out.println(o.getConfEntity());
+			System.out.println("    size: " + o.statements.size());
+		}
+		System.out.println("------------");
+		confOutputs = SlicePruner.pruneSliceByOverlap(confOutputs);
+		for(ConfPropOutput o : confOutputs) {
+			System.out.println(o.getConfEntity());
+//			System.out.println(o.toString());
+			System.out.println("    size: " + o.statements.size());
+			
+			Set<IRStatement> filtered = ConfPropOutput.excludeIgnorableStatements(o.statements);
+			System.out.println("      statements after filtering: " + filtered.size());
+			
+			Set<IRStatement> sameStmts = ConfUtils.removeSameStmtsInDiffContexts(filtered);// filterSameStatements(filtered);
+			System.out.println("      filtered statements: " + sameStmts.size());
+			
+			Set<IRStatement> branchStmts = ConfPropOutput.extractBranchStatements(sameStmts);
+			System.out.println("      branching statements: " + branchStmts.size());
+			
+			dumpStatements(branchStmts);
 		}
 	}
 	
