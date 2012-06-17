@@ -64,10 +64,37 @@ public class InvariantUtils {
 		String daikonArgs = daikonMethod.substring(daikonLP + 1, daikonRP);
 		String jvmArgs = jvmMethod.substring(jvmLP + 1, jvmRP);
 		
-		//FIXME
 		//need to deal with arrays, object, and primitive types
+		String[] dArgs = daikonArgs.split(",");
+		StringBuilder transformedArgs = new StringBuilder();
+		for(String dArg : dArgs) {
+			dArg = dArg.trim();
+			if(Utils.isPrimitiveType(dArg)) {
+				transformedArgs.append(Utils.getJVMDescriptorForPrimitiveType(dArg));
+			} else {
+				//it is an object type
+				//check if it is an array type
+				int dim = 0;
+				while(dArg.endsWith("[]")) {
+					dArg = dArg.substring(0, dArg.length() - 2);
+					dim++;
+				}
+				//replace . to /
+				String type = Utils.translateDotToSlash(dArg);
+				type = "L" + type + ";";
+				if(dim != 0) {
+					for(int i = 0; i < dim; i++) {
+						type = "[" + type;
+					}
+				}
+				transformedArgs.append(type);
+			}
+		}
 		
-		return true;
+		System.out.println("t: " + transformedArgs.toString());
+		System.out.println("o: " + jvmArgs);
+		
+		return transformedArgs.toString().equals(jvmArgs);
 	}
 
 	public static Set<String> fetchMethodsWithDiffInvariants(String filename1, String filename2) throws Exception {

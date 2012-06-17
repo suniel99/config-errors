@@ -28,20 +28,20 @@ public class MethodBasedDiagnoser extends AbstractBaselineDiagnoser {
 	public List<ConfEntity> computeResponsibleOptions() {
 		List<ConfEntity> entityList = new LinkedList<ConfEntity>();
 		
-		for(String methodSig : this.sigMap.keySet()) {
-			List<ConfEntity> confs = this.findConfEntities(methodSig, this.confs);
+		for(String daikonMethod : this.sigMap.keySet()) {
+			List<ConfEntity> confs = this.findConfEntities(daikonMethod, this.confs);
 			entityList.addAll(confs);
 		}
 		
 		return entityList;
 	}
 	
-	private List<ConfEntity> findConfEntities(String methodSig,
+	private List<ConfEntity> findConfEntities(String daikonMethod,
 			Collection<ConfPropOutput> confs) {
 		List<ConfEntity> matched = new LinkedList<ConfEntity>();
 		
 		for(ConfPropOutput conf : confs) {
-			if(conf.findStatementByMethod(methodSig)) {
+			if(conf.findStatementByDaikonStyleMethod(daikonMethod)) {
 				matched.add(conf.getConfEntity());
 			}
 		}

@@ -14,6 +14,7 @@ import com.ibm.wala.ipa.slicer.NormalStatement;
 import com.ibm.wala.ssa.SSAConditionalBranchInstruction;
 import com.ibm.wala.ssa.SSAInstruction;
 
+import edu.washington.cs.conf.diagnosis.InvariantUtils;
 import edu.washington.cs.conf.util.Utils;
 import edu.washington.cs.conf.util.WALAUtils;
 
@@ -78,6 +79,15 @@ public class ConfPropOutput implements Serializable {
 	public boolean findStatementByMethod(String methodSig) {
 		for(IRStatement irs : this.statements) {
 			if(irs.getMethodSig().equals(methodSig)) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	public boolean findStatementByDaikonStyleMethod(String daikonMethod) {
+		for(IRStatement irs : this.statements) {
+			if(InvariantUtils.stringEquals(daikonMethod, irs.getMethodSig())) {
 				return true;
 			}
 		}
