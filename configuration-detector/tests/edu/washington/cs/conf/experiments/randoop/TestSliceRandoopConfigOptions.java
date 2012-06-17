@@ -23,6 +23,13 @@ import junit.framework.TestCase;
 
 public class TestSliceRandoopConfigOptions extends TestCase {
 	
+	public static boolean doPruning = false;
+	
+	@Override
+	public void tearDown() {
+		doPruning = false;
+	}
+	
 	public void testInitRandoopOptionTypes() {
 		String path = "./subjects/randoop-jamie-no-trace.jar;./subjects/plume.jar";
 		List<ConfEntity> randoopConfList = RandoopExpUtils.getRandoopConfList();
@@ -34,29 +41,34 @@ public class TestSliceRandoopConfigOptions extends TestCase {
 	}
 	
 	public void testPruneRandoopSlices() {
+		
+		doPruning = true;
+		
 		String path = "./subjects/randoop-jamie-no-trace.jar;./subjects/plume.jar";
 		Collection<ConfPropOutput> confOutputs = getConfPropOutputs(path, RandoopExpUtils.getRandoopConfList());
 		for(ConfPropOutput o : confOutputs) {
 			System.out.println(o.getConfEntity());
 			System.out.println("    size: " + o.statements.size());
 		}
-		System.out.println("------------");
-		confOutputs = SlicePruner.pruneSliceByOverlap(confOutputs);
-		for(ConfPropOutput o : confOutputs) {
-			System.out.println(o.getConfEntity());
+		if(doPruning) {
+		    System.out.println("------------");
+		    confOutputs = SlicePruner.pruneSliceByOverlap(confOutputs);
+		    for(ConfPropOutput o : confOutputs) {
+			    System.out.println(o.getConfEntity());
 //			System.out.println(o.toString());
-			System.out.println("    size: " + o.statements.size());
+			    System.out.println("    size: " + o.statements.size());
 			
-			Set<IRStatement> filtered = ConfPropOutput.excludeIgnorableStatements(o.statements);
-			System.out.println("      statements after filtering: " + filtered.size());
+			    Set<IRStatement> filtered = ConfPropOutput.excludeIgnorableStatements(o.statements);
+			    System.out.println("      statements after filtering: " + filtered.size());
 			
-			Set<IRStatement> sameStmts = ConfUtils.removeSameStmtsInDiffContexts(filtered);// filterSameStatements(filtered);
-			System.out.println("      filtered statements: " + sameStmts.size());
+			    Set<IRStatement> sameStmts = ConfUtils.removeSameStmtsInDiffContexts(filtered);// filterSameStatements(filtered);
+			    System.out.println("      filtered statements: " + sameStmts.size());
 			
-			Set<IRStatement> branchStmts = ConfPropOutput.extractBranchStatements(sameStmts);
-			System.out.println("      branching statements: " + branchStmts.size());
+			    Set<IRStatement> branchStmts = ConfPropOutput.extractBranchStatements(sameStmts);
+			    System.out.println("      branching statements: " + branchStmts.size());
 			
-			dumpStatements(branchStmts);
+			    dumpStatements(branchStmts);
+		    }
 		}
 	}
 	
@@ -75,6 +87,8 @@ public class TestSliceRandoopConfigOptions extends TestCase {
 	}
 	
 	public void testCreateInstrumentSchema() {
+		doPruning = true;
+		
 		String path = "./subjects/randoop-jamie-no-trace.jar;./subjects/plume.jar";
        Collection<ConfPropOutput> outputs = getConfPropOutputs(path, RandoopExpUtils.getRandoopConfList());
 		
@@ -136,6 +150,11 @@ public class TestSliceRandoopConfigOptions extends TestCase {
 
 		assertEquals(randoopConfList.size(), outputs.size());
 		
+		if(doPruning) {
+			System.out.println("pruning slices by overalp...");
+			outputs = SlicePruner.pruneSliceByOverlap(outputs);
+		}
+		
 		return outputs;
 	}
 	
@@ -143,7 +162,7 @@ public class TestSliceRandoopConfigOptions extends TestCase {
 	
 	static void dumpStatements(Collection<IRStatement> stmts) {
 		for(IRStatement stmt : stmts) {
-			System.err.println(" >> " + stmt.toString());
+			System.out.println("     >> " + stmt.toString());
 		}
 	}
 }

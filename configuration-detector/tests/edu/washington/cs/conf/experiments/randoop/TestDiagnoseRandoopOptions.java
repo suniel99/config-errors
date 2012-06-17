@@ -104,6 +104,37 @@ public class TestDiagnoseRandoopOptions extends TestCase {
 		Log.removeLogging();
 	}
 	
+	public void test2_1cfa_pruned() {
+//		MainAnalyzer.amortizeNoise = false;
+		MainAnalyzer.doFiltering = true;
+		
+		ConfEntityRepository repo = RandoopExpUtils.getRandoopConfRepository();
+		
+		String goodRunTrace = "./experiments/randoop-database/good-treeset-60s-pruned.txt";
+		String badRunTrace = "./experiments/randoop-database/bad-nano-xml-100s-pruned.txt";
+		
+		MainAnalyzer analyzer = new MainAnalyzer(badRunTrace, Arrays.asList(goodRunTrace), repo);//, sourceDir, configOutputs);
+		analyzer.setRankType(RankType.SINGLE_IMPORT); //use single import is OK
+		analyzer.setThreshold(0.4f);
+		
+		List<ConfDiagnosisOutput> outputs = analyzer.computeResponsibleOptions();
+		
+		for(ConfDiagnosisOutput output : outputs) {
+		    System.out.println(output);
+		    System.out.println("   " + output.getBriefExplanation());
+		    System.out.println();
+		    
+		    Log.logln(output.toString());
+		    Log.logln("exp num: " + output.getExplanations().size());
+		    for(String exp : output.getExplanations()) {
+		    	Log.logln("    " + exp);
+		    }
+		    Log.logln("");
+		}
+		
+		Log.removeLogging();
+	}
+	
 	public void test3() {
         ConfEntityRepository repo = RandoopExpUtils.getRandoopConfRepository();
         
