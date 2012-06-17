@@ -26,6 +26,15 @@ public class RandoopExpUtils {
 	public static List<ConfEntity> getLargeSliceConfList() {
 		List<ConfEntity> list = new LinkedList<ConfEntity>();
 		ConfEntity entity6 = new ConfEntity("randoop.main.GenInputsAbstract", "init_routine", true);
+		ConfEntity entity7 = new ConfEntity("randoop.main.GenInputsAbstract", "junit_classname", true);
+//		list.add(entity6);
+		list.add(entity7);
+		return list;
+	}
+	
+	public static List<ConfEntity> getFakeOptions() {
+		List<ConfEntity> list = new LinkedList<ConfEntity>();
+		ConfEntity entity6 = new ConfEntity("randoop.main.GenInputsAbstract", "fakeoption", true);
 		list.add(entity6);
 		return list;
 	}

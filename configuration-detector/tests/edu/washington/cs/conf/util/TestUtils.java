@@ -1,5 +1,6 @@
 package edu.washington.cs.conf.util;
 
+import java.lang.reflect.Field;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -32,4 +33,15 @@ public class TestUtils extends TestCase {
 		assertEquals(4.0f, Utils.average(fs));
 	}
 	
+	public void testLoadClassAndFields() {
+		String path = "./subjects/randoop-jamie-no-trace.jar;./subjects/plume.jar";
+		String className = "randoop.main.GenInputsAbstract";
+		Class<?> c = Utils.loadclass(path, className);
+		assertNotNull(c);
+		System.out.println(c);
+		
+		Field f = Utils.lookupField(c, "maxsize");
+		assertNotNull(f);
+		System.out.println(f);
+	}
 }
