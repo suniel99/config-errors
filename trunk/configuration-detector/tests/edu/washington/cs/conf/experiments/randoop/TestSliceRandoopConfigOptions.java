@@ -11,8 +11,10 @@ import com.ibm.wala.ipa.slicer.Slicer.ControlDependenceOptions;
 import com.ibm.wala.ipa.slicer.Slicer.DataDependenceOptions;
 
 import edu.washington.cs.conf.analysis.ConfEntity;
+import edu.washington.cs.conf.analysis.ConfEntityRepository;
 import edu.washington.cs.conf.analysis.ConfOutputSerializer;
 import edu.washington.cs.conf.analysis.ConfPropOutput;
+import edu.washington.cs.conf.analysis.ConfUtils;
 import edu.washington.cs.conf.analysis.IRStatement;
 import edu.washington.cs.conf.analysis.SlicingHelper;
 import edu.washington.cs.conf.analysis.SlicingHelper.CG;
@@ -22,12 +24,33 @@ import junit.framework.TestCase;
 
 public class TestSliceRandoopConfigOptions extends TestCase {
 	
+	public void testRandoopOptionTypes() {
+		String path = "./subjects/randoop-jamie-no-trace.jar;./subjects/plume.jar";
+		List<ConfEntity> randoopConfList = RandoopExpUtils.getRandoopConfList();
+		ConfEntityRepository repo = new ConfEntityRepository(randoopConfList);
+		repo.initializeTypesInConfEntities(path);
+		for(ConfEntity conf : randoopConfList) {
+			System.out.println(conf);
+		}
+	}
+	
 	public void testSliceRandoopCheaply() {
-		getConfPropOutputs();
+		String path = "./subjects/randoop-jamie-no-trace.jar;./subjects/plume.jar";
+		getConfPropOutputs(path, RandoopExpUtils.getRandoopConfList());
+	}
+	
+	public void testLargeSliceRandoopOptions() {
+		String randoopBin = "D:\\research\\configurations\\workspace\\nanoxml-jamie\\bin";
+		String plumeJar = "./subjects/plume.jar";
+		String path = "./subjects/randoop-jamie-no-trace.jar;./subjects/plume.jar";
+		path = randoopBin + ";" + plumeJar;
+		getConfPropOutputs(path, RandoopExpUtils.getLargeSliceConfList());
+//		getConfPropOutputs(path, RandoopExpUtils.getFakeOptions());
 	}
 	
 	public void testCreateInstrumentSchema() {
-       Collection<ConfPropOutput> outputs = getConfPropOutputs();
+		String path = "./subjects/randoop-jamie-no-trace.jar;./subjects/plume.jar";
+       Collection<ConfPropOutput> outputs = getConfPropOutputs(path, RandoopExpUtils.getRandoopConfList());
 		
 		//save as configuration schema
 		InstrumentSchema schema = new InstrumentSchema();
@@ -42,9 +65,9 @@ public class TestSliceRandoopConfigOptions extends TestCase {
 		assertEquals(schema.toString(), newSchema.toString());
 	}
 	
-	public static Collection<ConfPropOutput> getConfPropOutputs() {
+	public static Collection<ConfPropOutput> getConfPropOutputs(String path, List<ConfEntity> confList) {
 //		String path = "./subjects/randoop-jamie.jar;./subjects/plume.jar";
-		String path = "./subjects/randoop-jamie-no-trace.jar;./subjects/plume.jar";
+		
 		
 		String mainClass = "Lrandoop/main/Main";
 		SlicingHelper helper = new SlicingHelper(path, mainClass);
@@ -59,9 +82,11 @@ public class TestSliceRandoopConfigOptions extends TestCase {
 		helper.setContextSensitive(false); //context-insensitive
 		helper.buildAnalysis();
 		
-		List<ConfEntity> randoopConfList =
-			RandoopExpUtils.getSampleList();
-			//RandoopExpUtils.getRandoopConfList();
+		List<ConfEntity> randoopConfList = confList;
+		
+		//get all type info
+		ConfEntityRepository repo = new ConfEntityRepository(randoopConfList);
+		repo.initializeTypesInConfEntities(path);
 		
 		Collection<ConfPropOutput> outputs = new LinkedList<ConfPropOutput>();
 		for(ConfEntity entity : randoopConfList) {
@@ -72,7 +97,7 @@ public class TestSliceRandoopConfigOptions extends TestCase {
 			Set<IRStatement> filtered = ConfPropOutput.excludeIgnorableStatements(output.statements);
 			System.err.println("  statements after filtering: " + filtered.size());
 			
-			Set<IRStatement> sameStmts = filterSameStatements(filtered);
+			Set<IRStatement> sameStmts = ConfUtils.removeSameStmtsInDiffContexts(filtered);// filterSameStatements(filtered);
 			System.err.println("  filtered statements: " + sameStmts.size());
 			
 			Set<IRStatement> branchStmts = ConfPropOutput.extractBranchStatements(sameStmts);
@@ -88,20 +113,7 @@ public class TestSliceRandoopConfigOptions extends TestCase {
 		return outputs;
 	}
 	
-	static Set<IRStatement> filterSameStatements(Set<IRStatement> stmts) {
-		Set<String> existed = new HashSet<String>();
-		Set<IRStatement> filtered = new LinkedHashSet<IRStatement>();
-		for(IRStatement stmt : stmts) {
-			String sig = stmt.getUniqueSignature();
-			if(existed.contains(sig)) {
-				continue;
-			}
-			existed.add(sig);
-			filtered.add(stmt);
-			//System.err.println("   >>  "  + stmt.toString());
-		}
-		return filtered;
-	}
+	
 	
 	static void dumpStatements(Collection<IRStatement> stmts) {
 		for(IRStatement stmt : stmts) {
