@@ -70,6 +70,15 @@ public class Utils {
 		return str.replace('.', '/');
 	}
 	
+	public static boolean isPrimitiveType(String type) {
+		try {
+			getJVMDescriptorForPrimitiveType(type);
+			return true;
+		} catch (RuntimeException e) {
+			return false;
+		}
+	}
+	
 	public static String getJVMDescriptorForPrimitiveType(String type) {
 		if (type.equals("boolean")) {
 			return "Z";
