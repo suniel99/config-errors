@@ -20,7 +20,7 @@ public class TestCISlicer extends TestCase {
 	public void testField() {
 		String path = "D:\\research\\configurations\\workspace\\configuration-detector\\bin\\test\\slice\\depfield";
 		String mainClass = "Ltest/slice/depfield/FieldDeps";
-		SlicingHelper helper = new SlicingHelper(path, mainClass);
+		ConfigurationSlicer helper = new ConfigurationSlicer(path, mainClass);
 		helper.buildAnalysis();
 		
 		CISlicer slicer = new ThinSlicer(helper.getCallGraph(), helper.getPointerAnalysis());

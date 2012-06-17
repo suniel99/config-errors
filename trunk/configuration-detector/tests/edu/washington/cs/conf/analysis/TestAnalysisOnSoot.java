@@ -15,7 +15,7 @@ import com.ibm.wala.ipa.slicer.thin.CISlicer;
 import com.ibm.wala.ipa.slicer.thin.ThinSlicer;
 import com.ibm.wala.util.CancelException;
 
-import edu.washington.cs.conf.analysis.SlicingHelper.CG;
+import edu.washington.cs.conf.analysis.ConfigurationSlicer.CG;
 import edu.washington.cs.conf.experiments.SootExpUtils;
 import edu.washington.cs.conf.experiments.SynopticExpUtils;
 import edu.washington.cs.conf.util.Log;
@@ -34,7 +34,7 @@ public class TestAnalysisOnSoot extends TestCase {
 		        dir + "libs/polyglot.jar;" +
 		        dir + "libs/pth.jar";
 		String mainClass = "Lsoot/Main";
-		SlicingHelper helper = new SlicingHelper(path, mainClass);
+		ConfigurationSlicer helper = new ConfigurationSlicer(path, mainClass);
 		helper.setCGType(CG.ZeroCFA);
 		helper.setExclusionFile("JavaAllExclusions.txt");
 		helper.buildAnalysis();
@@ -52,7 +52,7 @@ public class TestAnalysisOnSoot extends TestCase {
 		        dir + "libs/polyglot.jar;" +
 		        dir + "libs/pth.jar";
 		String mainClass = "Lsoot/Main";
-		SlicingHelper helper = new SlicingHelper(path, mainClass);
+		ConfigurationSlicer helper = new ConfigurationSlicer(path, mainClass);
 		helper.setCGType(CG.ZeroCFA);
 		helper.setExclusionFile("JavaAllExclusions.txt");
 		helper.buildAnalysis();

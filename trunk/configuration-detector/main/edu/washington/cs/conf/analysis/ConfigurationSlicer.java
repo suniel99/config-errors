@@ -42,7 +42,7 @@ import edu.washington.cs.conf.util.Log;
 import edu.washington.cs.conf.util.Utils;
 import edu.washington.cs.conf.util.WALAUtils;
 
-public class SlicingHelper {
+public class ConfigurationSlicer {
 	
 	public enum CG {RTA, ZeroCFA, ZeroContainerCFA, VanillaZeroOneCFA, ZeroOneCFA, ZeroOneContainerCFA, OneCFA, TwoCFA, CFA, TempZeroCFA}
 	
@@ -68,7 +68,7 @@ public class SlicingHelper {
 	
 	private String targetPackageName = null;
 	
-	public SlicingHelper(String classPath, String mainClass) {
+	public ConfigurationSlicer(String classPath, String mainClass) {
 		this.classPath = classPath;
 		this.mainClass = mainClass;
 	}

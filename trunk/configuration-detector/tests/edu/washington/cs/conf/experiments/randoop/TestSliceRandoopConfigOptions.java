@@ -15,8 +15,8 @@ import edu.washington.cs.conf.analysis.ConfPropOutput;
 import edu.washington.cs.conf.analysis.ConfUtils;
 import edu.washington.cs.conf.analysis.IRStatement;
 import edu.washington.cs.conf.analysis.SlicePruner;
-import edu.washington.cs.conf.analysis.SlicingHelper;
-import edu.washington.cs.conf.analysis.SlicingHelper.CG;
+import edu.washington.cs.conf.analysis.ConfigurationSlicer;
+import edu.washington.cs.conf.analysis.ConfigurationSlicer.CG;
 import edu.washington.cs.conf.experiments.RandoopExpUtils;
 import edu.washington.cs.conf.instrument.InstrumentSchema;
 import junit.framework.TestCase;
@@ -96,7 +96,7 @@ public class TestSliceRandoopConfigOptions extends TestCase {
 		
 		
 		String mainClass = "Lrandoop/main/Main";
-		SlicingHelper helper = new SlicingHelper(path, mainClass);
+		ConfigurationSlicer helper = new ConfigurationSlicer(path, mainClass);
 //		helper.setCGType(CG.ZeroCFA);
 //		helper.setCGType(CG.CFA);
 //		helper.setCFAPrecision(2);

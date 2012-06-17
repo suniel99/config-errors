@@ -10,8 +10,8 @@ import com.ibm.wala.ipa.slicer.Slicer.DataDependenceOptions;
 
 import edu.washington.cs.conf.analysis.ConfEntity;
 import edu.washington.cs.conf.analysis.ConfPropOutput;
-import edu.washington.cs.conf.analysis.SlicingHelper;
-import edu.washington.cs.conf.analysis.SlicingHelper.CG;
+import edu.washington.cs.conf.analysis.ConfigurationSlicer;
+import edu.washington.cs.conf.analysis.ConfigurationSlicer.CG;
 import edu.washington.cs.conf.diagnosis.StmtCoverageBasedDiagnoser;
 import edu.washington.cs.conf.diagnosis.StmtExecuted;
 import edu.washington.cs.conf.diagnosis.StmtFileReader;
@@ -60,7 +60,7 @@ public class TestRandoopBaseline extends TestCase {
 	public Collection<ConfPropOutput> getRandoopConfOutputs() {
 		String path = "./subjects/randoop-jamie.jar;./subjects/plume.jar";
 		String mainClass = "Lrandoop/main/Main";
-		SlicingHelper helper = new SlicingHelper(path, mainClass);
+		ConfigurationSlicer helper = new ConfigurationSlicer(path, mainClass);
 		helper.setCGType(CG.ZeroCFA);
 //		helper.setCGType(CG.ZeroOneCFA);
 		helper.setExclusionFile("JavaAllExclusions.txt");
