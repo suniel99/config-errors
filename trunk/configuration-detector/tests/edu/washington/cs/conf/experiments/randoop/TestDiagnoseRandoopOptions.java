@@ -104,14 +104,48 @@ public class TestDiagnoseRandoopOptions extends TestCase {
 		Log.removeLogging();
 	}
 	
-	public void test2_1cfa_pruned() {
+	public void testTreeSet() {
+		String goodRunTrace = "./experiments/randoop-database/good-treeset-60s-pruned.txt";
+		String badRunTrace = "./experiments/randoop-database/bad-nano-xml-100s-pruned.txt";
+		this.test2_1cfa_pruned(goodRunTrace, badRunTrace);
+	}
+	
+	public void testBinarySearchTree() {
+		String goodRunTrace = "./experiments/randoop-database/good-binarysearchtree-60s-pruned.txt";
+		String badRunTrace = "./experiments/randoop-database/bad-nano-xml-100s-pruned.txt";
+		this.test2_1cfa_pruned(goodRunTrace, badRunTrace);
+	}
+	
+	public void testBinomialHeap() {
+		String goodRunTrace = "./experiments/randoop-database/good-binomialheap-60s-pruned.txt";
+		String badRunTrace = "./experiments/randoop-database/bad-nano-xml-100s-pruned.txt";
+		this.test2_1cfa_pruned(goodRunTrace, badRunTrace);
+	}
+	
+	public void testTreeSetCollections() {
+		String goodRunTrace = "./experiments/randoop-database/good-treeset-collections-60s-pruned.txt";
+		String badRunTrace = "./experiments/randoop-database/bad-nano-xml-100s-pruned.txt";
+		this.test2_1cfa_pruned(goodRunTrace, badRunTrace);
+	}
+	
+	public void testTreeSetCollectionsMyClass() {
+		String goodRunTrace = "./experiments/randoop-database/good-treeset-collections-60s-myclasses-pruned.txt";
+		String badRunTrace = "./experiments/randoop-database/bad-nano-xml-100s-pruned.txt";
+		this.test2_1cfa_pruned(goodRunTrace, badRunTrace);
+	}
+	
+	public void testShowHelp() {
+		String goodRunTrace = "./experiments/randoop-database/show_help-pruned.txt";
+		String badRunTrace = "./experiments/randoop-database/bad-nano-xml-100s-pruned.txt";
+		this.test2_1cfa_pruned(goodRunTrace, badRunTrace);
+	}
+	
+	public void test2_1cfa_pruned(String goodRunTrace, String badRunTrace) {
 //		MainAnalyzer.amortizeNoise = false;
 		MainAnalyzer.doFiltering = true;
 		
 		ConfEntityRepository repo = RandoopExpUtils.getRandoopConfRepository();
 		
-		String goodRunTrace = "./experiments/randoop-database/good-treeset-60s-pruned.txt";
-		String badRunTrace = "./experiments/randoop-database/bad-nano-xml-100s-pruned.txt";
 		
 		MainAnalyzer analyzer = new MainAnalyzer(badRunTrace, Arrays.asList(goodRunTrace), repo);//, sourceDir, configOutputs);
 		analyzer.setRankType(RankType.SINGLE_IMPORT); //use single import is OK
