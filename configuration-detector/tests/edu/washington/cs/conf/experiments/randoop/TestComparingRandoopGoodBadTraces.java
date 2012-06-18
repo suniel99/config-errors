@@ -54,6 +54,32 @@ public class TestComparingRandoopGoodBadTraces extends TestCase {
 		this.compareTraceDistance(goodRunTrace, badRunTrace, DistanceType.SUBTRACTION, 0.85133606f);
 	}
 	
+	public void test7() {
+		String goodRunTrace = "./experiments/randoop-database/good-binarysearchtree-60s-pruned.txt";
+		String badRunTrace = "./experiments/randoop-database/bad-nano-xml-100s-pruned.txt";
+		this.compareTraceDistance(goodRunTrace, badRunTrace, DistanceType.INTERPRODUCT, 0.11985898f);
+		
+		goodRunTrace = "./experiments/randoop-database/good-binomialheap-60s-pruned.txt";
+		badRunTrace = "./experiments/randoop-database/bad-nano-xml-100s-pruned.txt";
+		this.compareTraceDistance(goodRunTrace, badRunTrace, DistanceType.INTERPRODUCT, 0.12303108f);
+		
+		goodRunTrace = "./experiments/randoop-database/gentests_help-pruned.txt";
+		badRunTrace = "./experiments/randoop-database/bad-nano-xml-100s-pruned.txt";
+		this.compareTraceDistance(goodRunTrace, badRunTrace, DistanceType.INTERPRODUCT, 1.0f);
+		
+		goodRunTrace = "./experiments/randoop-database/good-treeset-collections-60s-pruned.txt";
+		badRunTrace = "./experiments/randoop-database/bad-nano-xml-100s-pruned.txt";
+		this.compareTraceDistance(goodRunTrace, badRunTrace, DistanceType.INTERPRODUCT, 0.14591342f);
+		
+		goodRunTrace = "./experiments/randoop-database/good-treeset-collections-60s-myclasses-pruned.txt";
+		badRunTrace = "./experiments/randoop-database/bad-nano-xml-100s-pruned.txt";
+		this.compareTraceDistance(goodRunTrace, badRunTrace, DistanceType.INTERPRODUCT, 0.17543972f);
+		
+		goodRunTrace = "./experiments/randoop-database/show_help-pruned.txt";
+		badRunTrace = "./experiments/randoop-database/bad-nano-xml-100s-pruned.txt";
+		this.compareTraceDistance(goodRunTrace, badRunTrace, DistanceType.INTERPRODUCT, 1.0f);
+	}
+	
 	private void compareTraceDistance(String goodRunTrace, String badRunTrace, DistanceType t, Float expected) {
 		PredicateProfileTuple good = TraceAnalyzer.createGoodProfileTuple(goodRunTrace, "good-run");
 		PredicateProfileTuple bad = TraceAnalyzer.createBadProfileTuple(badRunTrace, "bad-run");
