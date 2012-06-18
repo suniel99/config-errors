@@ -4,7 +4,7 @@ import edu.washington.cs.conf.diagnosis.ProfileDistanceCalculator.DistanceType;
 import edu.washington.cs.conf.experiments.CommonUtils;
 import junit.framework.TestCase;
 
-public class TestComparingTraces extends TestCase {
+public class TestComparingWekaTraces extends TestCase {
 	
 	public void test1() {
 	    String goodRunTrace = "./experiments/weka-database/good-iris.txt";
