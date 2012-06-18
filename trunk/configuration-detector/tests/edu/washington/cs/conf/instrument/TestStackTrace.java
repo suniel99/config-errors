@@ -13,6 +13,25 @@ public class TestStackTrace extends TestCase {
 		foo();
 	}
 	
+	/**
+	 * It is not possible to get a stack when the system exits/crashes.
+	 * */
+	public void testSeeStackTraceWhenCrashed() {
+		
+		Runtime.getRuntime().addShutdownHook(new Thread() {
+	        @Override
+	        public void run() {
+	                System.out.println("----------shutting down hook-------");
+	                
+	                for(StackTraceElement e : Thread.currentThread().getStackTrace()) {
+	                	System.out.println(e);
+	                }
+	                
+	        }
+	    });
+		crash1();
+	}
+	
 	void foo() {
 		bar();
 	}
@@ -21,6 +40,19 @@ public class TestStackTrace extends TestCase {
 		ExecutionContext c = ExecutionContext.createContext();
 		System.out.println("creating c: " + c);
 		System.out.println(c.getApplicationStackTrace());
+	}
+	
+	void crash1() {
+		crash2();
+	}
+	
+	void crash2() {
+		crash3();
+	}
+	
+	void crash3() {
+		//throw new Error();
+		//System.exit(0);
 	}
 	
 }
