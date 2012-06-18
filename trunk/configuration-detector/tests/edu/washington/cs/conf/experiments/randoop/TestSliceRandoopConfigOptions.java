@@ -17,6 +17,7 @@ import edu.washington.cs.conf.analysis.IRStatement;
 import edu.washington.cs.conf.analysis.SlicePruner;
 import edu.washington.cs.conf.analysis.ConfigurationSlicer;
 import edu.washington.cs.conf.analysis.ConfigurationSlicer.CG;
+import edu.washington.cs.conf.experiments.CommonUtils;
 import edu.washington.cs.conf.experiments.RandoopExpUtils;
 import edu.washington.cs.conf.instrument.InstrumentSchema;
 import junit.framework.TestCase;
@@ -67,7 +68,7 @@ public class TestSliceRandoopConfigOptions extends TestCase {
 			    Set<IRStatement> branchStmts = ConfPropOutput.extractBranchStatements(sameStmts);
 			    System.out.println("      branching statements: " + branchStmts.size());
 			
-			    dumpStatements(branchStmts);
+			    CommonUtils.dumpStatements(branchStmts);
 		    }
 		}
 	}
@@ -145,7 +146,7 @@ public class TestSliceRandoopConfigOptions extends TestCase {
 //			System.err.println("   numbered statements: " + output.getNumberedBranches().size());
 //			System.err.println("   number of src branching statements: " + output.getNumberedBranchesInSource().size());
 			
-			dumpStatements(branchStmts);
+			CommonUtils.dumpStatements(branchStmts);
 		}
 
 		assertEquals(randoopConfList.size(), outputs.size());
@@ -156,13 +157,5 @@ public class TestSliceRandoopConfigOptions extends TestCase {
 		}
 		
 		return outputs;
-	}
-	
-	
-	
-	static void dumpStatements(Collection<IRStatement> stmts) {
-		for(IRStatement stmt : stmts) {
-			System.out.println("     >> " + stmt.toString());
-		}
 	}
 }
