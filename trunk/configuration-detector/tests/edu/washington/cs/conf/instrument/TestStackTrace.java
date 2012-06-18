@@ -15,6 +15,8 @@ public class TestStackTrace extends TestCase {
 	
 	/**
 	 * It is not possible to get a stack when the system exits/crashes.
+	 * 
+	 * just use the human maintained stack in ConfTracer.
 	 * */
 	public void testSeeStackTraceWhenCrashed() {
 		
