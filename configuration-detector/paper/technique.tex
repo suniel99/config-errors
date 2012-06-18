@@ -1,6 +1,14 @@
 \section{Technique}
 \label{sec:technique}
 
+We model configurations as a set of key-value pairs, where
+the keys are strings and the values have arbitrary type. This is a
+convenient abstraction for analysis as well as a close match for
+many standard configuration APIs. It is the abstraction offered
+by the POSIX system environment, the Java Properties API,
+and the Windows registry.
+
+
 Figure~\ref{fig:workflow} sketches the high-level workflow of our technique.
 Our technique takes as input a program and a list of configuration options.
 It first performs a configuration propagation analysis to identify
@@ -277,3 +285,4 @@ perform synchronization when dependence graph is updated.
 Our technique can be seen as a way to reduce overhead,
 including selective profiling, and static pre-processing
 techniques.
+
