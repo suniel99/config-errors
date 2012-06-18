@@ -40,6 +40,7 @@ public class ConfEntityRepository {
 			boolean isStatic = entity.isStatic();
 			
 			Class<?> clz = Utils.loadclass(path, fullClassName);
+			Utils.checkNotNull(clz, "full class name: " + fullClassName);
 			Field f = Utils.lookupField(clz, fieldName);
 			Utils.checkNotNull(f);
 			
