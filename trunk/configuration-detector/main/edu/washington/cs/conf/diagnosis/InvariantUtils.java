@@ -4,8 +4,10 @@ import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.Comparator;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -98,6 +100,27 @@ public class InvariantUtils {
 	}
 
 	public static Set<String> fetchMethodsWithDiffInvariants(String filename1, String filename2) throws Exception {
+		PrintDifferingInvariantsVisitor v = createVisitor(filename1, filename2);
+		//get the affected points and then sanitize
+		Set<String> ppts = v.getAffectedPoints();
+		Set<String> methodNames = extractMethods(ppts);
+		
+		return methodNames;
+	}
+	
+	public static Map<String, Integer> fetchRankedMethodsWithDiffInvariants(String filename1, String filename2) throws Exception {
+		PrintDifferingInvariantsVisitor v = createVisitor(filename1, filename2);
+		//get the affected points and then sanitize
+		Map<String, Integer> rankedPpt = v.getRankedAffectedMethods();
+		Map<String, Integer> methodMap = new LinkedHashMap<String, Integer>();
+		for(String ppt : rankedPpt.keySet()) {
+			methodMap.put(extractMethod(ppt), rankedPpt.get(ppt));
+		}
+		
+		return methodMap;
+	}
+	
+	private static PrintDifferingInvariantsVisitor createVisitor(String filename1, String filename2) throws Exception {
 		Diff diff = new Diff(false, false);
 		Comparator<Invariant> defaultComparator = new Invariant.ClassVarnameComparator();
 		// all null
@@ -112,13 +135,10 @@ public class InvariantUtils {
 		PrintDifferingInvariantsVisitor v = new PrintDifferingInvariantsVisitor(
 				System.out, false, false, false);
 		root.accept(v);
-
-		//get the affected points and then sanitize
-		Set<String> ppts = v.getAffectedPoints();
-		Set<String> methodNames = extractMethods(ppts);
 		
-		return methodNames;
+		return v;
 	}
+	
 	
 	static Set<String> extractMethods(Set<String> ppts) {
 		Set<String> methods = new LinkedHashSet<String>();
@@ -126,12 +146,21 @@ public class InvariantUtils {
 		//<DataStructures.StackArTester.push_noobserve(int):::ENTER>
 		for(String ppt : ppts) {
 //			System.out.println("----------" + ppt);
-			Utils.checkTrue((ppt.endsWith(":::EXIT") ||ppt.endsWith(":::ENTER") ),
-					"Wrong format: " + ppt);
-			String method = ppt.substring(0, ppt.indexOf(":::"));
+//			Utils.checkTrue((ppt.endsWith(":::EXIT") ||ppt.endsWith(":::ENTER") ),
+//					"Wrong format: " + ppt);
+//			String method = ppt.substring(0, ppt.indexOf(":::"));
+			String method = extractMethod(ppt);
 			methods.add(method);
 		}
 		return methods;
+	}
+	
+	static String extractMethod(String ppt) {
+		Utils.checkTrue((ppt.endsWith(":::EXIT") ||ppt.endsWith(":::ENTER") ),
+				"Wrong format: " + ppt);
+		String method = ppt.substring(0, ppt.indexOf(":::"));
+		return method;
+		
 	}
 
 	/***
@@ -183,6 +212,8 @@ public class InvariantUtils {
 class PrintDifferingInvariantsVisitor extends PrintAllVisitor {
 	
 	private Set<String> pptWithDiffInvariants = new LinkedHashSet<String>();
+	
+	private Map<String, Integer> pptWithDiffInvariantNumbers = new LinkedHashMap<String, Integer>();
 
 	public static final Logger debug = Logger
 			.getLogger("daikon.diff.DetailedStatisticsVisitor");
@@ -197,11 +228,20 @@ class PrintDifferingInvariantsVisitor extends PrintAllVisitor {
 	public Set<String> getAffectedPoints() {
 		return this.pptWithDiffInvariants;
 	}
+	
+	public Map<String, Integer> getRankedAffectedMethods() {
+		return Utils.sortByValue(this.pptWithDiffInvariantNumbers, false);
+	}
 
 	public void visit(InvNode node) {
 		Invariant inv1 = node.getInv1();
 		Invariant inv2 = node.getInv2();
+		
+		//number of invariants violated
+		int violationNum = 0;
+		
 		if (shouldPrint(inv1, inv2)) {
+			violationNum++;
 			// System.err.println(inv1);
 			if (inv1 != null && inv1.ppt != null && inv1.ppt.parent != null) {
 //				System.err.println(inv1.ppt.parent.name);
@@ -212,6 +252,22 @@ class PrintDifferingInvariantsVisitor extends PrintAllVisitor {
 				pptWithDiffInvariants.add(inv2.ppt.parent.name);
 			}
 			super.visit(node);
+		}
+		
+		//add to the map
+		Utils.checkTrue(inv1 != null || inv2 != null);
+		String methodName1 = (inv1 != null && inv1.ppt != null && inv1.ppt.parent != null) ? inv1.ppt.parent.name : null;
+		String methodName2 = (inv1 != null && inv1.ppt != null && inv1.ppt.parent != null) ? inv1.ppt.parent.name : null;
+		if(methodName1 != null && methodName2 != null) {
+			Utils.checkTrue(methodName1.equals(methodName2));
+		}
+		String name = methodName1 == null ? methodName2 : methodName1;
+		if(name != null) {
+		    if(!this.pptWithDiffInvariantNumbers.containsKey(name)) {
+			    this.pptWithDiffInvariantNumbers.put(name, 1);
+		    } else {
+			    this.pptWithDiffInvariantNumbers.put(name, violationNum + this.pptWithDiffInvariantNumbers.get(name));
+		    }
 		}
 	}
 

@@ -1,5 +1,6 @@
 package edu.washington.cs.conf.experiments.daikon;
 
+import java.util.Map;
 import java.util.Set;
 
 import edu.washington.cs.conf.diagnosis.InvariantUtils;
@@ -16,6 +17,12 @@ public class TestInvariantDiffInArStack extends TestCase {
 		assertEquals(3, sets.size());
 		assertEquals("[DataStructures.StackArTester.createItem(int), DataStructures.StackArTester.push(int), DataStructures.StackArTester.push_noobserve(int)]",
 				sets.toString());
+		
+		Map<String, Integer> map = InvariantUtils.fetchRankedMethodsWithDiffInvariants(filename1, filename2);
+		System.out.println(map.size());
+//		Map<String> violatedNums = In
+		System.out.println(map);
+		System.out.println(sets);
 	}
 	
 	public void testMethodEquals() {
