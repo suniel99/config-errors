@@ -63,6 +63,14 @@ Need to say how to collect representative profiles
 
 Use injected errors to test the technique's reliability
 
+\subsubsection{Evaluation Procedural}
+
+Rewrite the configuration option in the form of method fields, since
+the local variable information has gone in the bytecode.
+
+Use 1-CFA to construct call graph, achieve much better precision
+than 0-CFA. 
+
 \subsection{Experiment Design}
 
 
@@ -261,7 +269,12 @@ selective instrumentation, permitting the use in fielded software.
 
 \vspace{1mm}
 
-\noindent \textbf{\textit{Limitations.}} similar inputs, if no inputs is available.
+\noindent \textbf{\textit{Limitations.}} similar inputs, if no inputs is available, test adequacy.
+
+We focus on named configuration options with a common key-value semantic.
+
+Our tool implementation and experiments were restricted to Java. Our analysis
+does not track options that are passed between processes via the command line.
 
 \vspace{1mm}
 

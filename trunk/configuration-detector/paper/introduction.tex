@@ -64,6 +64,21 @@ Our technique requires no alterations to
 the JVM or standard library. This distinguishes our work from
 competing techniques such as dynamic taint tracking.
 
+Previous technique focuses exclusively on configuration errors
+where the value of an option is wrong and this causes a program
+to fail in a deterministic way with an error message, while
+ignoring configuration problems that manifest themeselves as
+silent failures.
+
+We envision that this technique xxx could be performed by
+the software developers; users would need only to provide
+the profiles xxx to back a diagnosis.
+
+Our technique, on its own, does not require a user to specify
+\textit{why} and \textit{how} the program fail.
+Our technique also genertes concise descriptions of the problem
+wuith a given option, as is ranking possible diagnoses.
+
 \vspace{1mm}
 \noindent \textbf{\textit{Evaluations.}} 
 
