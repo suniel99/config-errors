@@ -1,0 +1,8 @@
+Go to the output dir, and execute the following command to get the trace file.
+
+java -cp ./weka-instrumented-no-trace.jar;../subjects/weka/JFlex.jar;../subjects/weka/java-cup.jar;../bin
+weka.classifiers.trees.J48 -t ../subjects/weka/iris.arff -i
+
+change iris.arff  to labor.arff === to get a bad trace
+
+set -R -N 2  (reduce the level pruning)
