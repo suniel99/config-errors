@@ -79,6 +79,7 @@ public class TestRandoopBaseline extends TestCase {
 	
 	public Set<String> getAffectedMethods(String goodInvFile, String badInvFile) throws Exception {
 		Set<String> affectedMethods = InvariantUtils.fetchMethodsWithDiffInvariants(goodInvFile, badInvFile);
+		//InvariantUtils.fetchRankedMethodsWithDiffInvariants(goodInvFile, badInvFile);
 		System.out.println("size: " + affectedMethods.size());
 		
 		System.out.println("------------ a list of methods -----------");
