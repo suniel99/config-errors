@@ -1,0 +1,13 @@
+Go to the directory ./subjects/jchord/simpletest
+
+Run chord from Command line:
+
+java -cp ../chord-instrumented.jar;../../../bin
+     -Dchord.class.path=../../../bin;classes/
+     -Dchord.work.dir=.
+     -Dchord.run.analyses=datarace-java
+     chord.project.Boot
+     
+
+//add an option could make the race become apparent
+ -Dchord.datarace.exclude.eqth=false
