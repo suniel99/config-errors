@@ -29,10 +29,10 @@ import edu.washington.cs.conf.util.Utils;
 
 public class CommonUtils {
 	
-	public static Collection<ConfPropOutput> getConfPropOutputs(String path, String mainClass, List<ConfEntity> confList, boolean doPruning) {
+	public static Collection<ConfPropOutput> getConfPropOutputs(String path, String mainClass, List<ConfEntity> confList, String exclusionFile, boolean doPruning) {
 		ConfigurationSlicer helper = new ConfigurationSlicer(path, mainClass);
 		helper.setCGType(CG.OneCFA);
-		helper.setExclusionFile("JavaAllExclusions.txt");
+		helper.setExclusionFile(exclusionFile);
 		helper.setDataDependenceOptions(DataDependenceOptions.NO_BASE_NO_HEAP_NO_EXCEPTIONS);
 		helper.setControlDependenceOptions(ControlDependenceOptions.NONE);
 		helper.setContextSensitive(false); //context-insensitive
@@ -44,17 +44,23 @@ public class CommonUtils {
 		
 		Collection<ConfPropOutput> outputs = new LinkedList<ConfPropOutput>();
 		for(ConfEntity entity : confList) {
+			Log.logln("entity: " + entity);
 			ConfPropOutput output = helper.outputSliceConfOption(entity);
 			outputs.add(output);
 			System.out.println("  statement in slice: " + output.statements.size());
+			Log.logln("  statement in slice: " + output.statements.size());
 			Set<IRStatement> filtered = ConfPropOutput.excludeIgnorableStatements(output.statements);
 			System.out.println("  statements after filtering: " + filtered.size());
+			Log.logln("  statements after filtering: " + filtered.size());
 			
 			Set<IRStatement> sameStmts = ConfUtils.removeSameStmtsInDiffContexts(filtered);// filterSameStatements(filtered);
 			System.out.println("  filtered statements: " + sameStmts.size());
+			Log.logln("  filtered statements: " + sameStmts.size());
 			
 			Set<IRStatement> branchStmts = ConfPropOutput.extractBranchStatements(sameStmts);
 			System.out.println("  branching statements: " + branchStmts.size());
+			Log.logln("  branching statements: " + branchStmts.size());
+			
 			dumpStatements(branchStmts);
 		}
 
@@ -63,9 +69,20 @@ public class CommonUtils {
 		if(doPruning) {
 			System.out.println("pruning slices by overalp...");
 			outputs = SlicePruner.pruneSliceByOverlap(outputs);
+			for(ConfPropOutput output : outputs) {
+				Log.logln("entity: " + output.getConfEntity());
+				Set<IRStatement> filtered = ConfPropOutput.excludeIgnorableStatements(output.statements);
+				Set<IRStatement> sameStmts = ConfUtils.removeSameStmtsInDiffContexts(filtered);
+				Set<IRStatement> branchStmts = ConfPropOutput.extractBranchStatements(sameStmts);
+				Log.logln("  statement in the pruned slice: " + branchStmts.size());
+			}
 		}
 		
 		return outputs;
+	}
+	
+	public static Collection<ConfPropOutput> getConfPropOutputs(String path, String mainClass, List<ConfEntity> confList, boolean doPruning) {
+		return getConfPropOutputs(path, mainClass, confList, "JavaAllExclusions.txt", doPruning);
 	}
 	
 	
