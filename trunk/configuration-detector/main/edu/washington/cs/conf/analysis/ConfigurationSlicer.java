@@ -340,10 +340,10 @@ public class ConfigurationSlicer {
 				    irs.add(ir);
 			    } else {
 			    	//skip fake method 
-			    	Log.logln("skip stmt: " + s + " in method: " + s.getNode().getClass());
+			    	//Log.logln("skip stmt: " + s + " in method: " + s.getNode().getClass());
 			    }
 			} else {
-				Log.logln("skip non-StatementWithInstructionIndex: " + s);
+				//Log.logln("skip non-StatementWithInstructionIndex: " + s);
 			}
 		}
 		
