@@ -9,7 +9,10 @@ Generally, locating crashing errors are much easier than locating non-crashing e
 
 1. no main class:
    
-   go to dir: subjects/jchord/simpletest
+   go to dir: subjects/jchord/  (should not go to simpletest folder, it will have a very
+   tricky pitfall. Essentially, 2 JVMs will be lanunched, each will dump a trace file.
+   If went to the simpletest file, the later file by the parent process will override the
+   desirabl one)
    
    java -cp ../chord.jar;../../../bin -Dchord.class.path=../../../bin;classes/
        -Dchord.work.dir=.
