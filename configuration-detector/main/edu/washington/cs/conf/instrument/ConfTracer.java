@@ -2,6 +2,7 @@ package edu.washington.cs.conf.instrument;
 
 import instrument.Globals;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -31,7 +32,13 @@ public class ConfTracer {
 		                	sb.append(Globals.lineSep);
 		                }
 	                	try {
-							Files.writeToFile(sb.toString(), "./trace_dump.txt");
+	                		long time = System.currentTimeMillis();
+	                		System.out.println("At: " + time);
+	                		String fileName = "./trace_dump_"+time+".txt";
+	                		File f = new File(fileName);
+	                		System.out.println("write to file: " + f.getAbsolutePath());
+	                		
+							Files.writeToFile(sb.toString(), fileName);
 						} catch (IOException e) {
 							e.printStackTrace();
 						}
@@ -81,6 +88,7 @@ public class ConfTracer {
 	}
 	
 	public void trace(String input) {
+		//System.out.println(input);
 		synchronized(traceMap) {
 			//the format of line: PRE (or POST), config name, method as context
 			//we should record the call context, e.g, stacktrace

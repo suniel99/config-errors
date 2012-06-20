@@ -31,6 +31,7 @@ public class ConfInstrumenter extends AbstractInstrumenter {
 	  protected boolean entry = false;
 	  protected boolean exit = false;
 	  protected boolean exception = false;
+//	  protected boolean dumpshrink = false;
 
 	  static final String fieldName = "_Conf_enable_trace";
 	  
@@ -110,7 +111,8 @@ public class ConfInstrumenter extends AbstractInstrumenter {
 	        	for(int i = 0; i < length; i++) {
 	        		IInstruction inst = me.getInstructions()[i];
 	        		if(confIndices.containsKey(i)) {
-	        			System.out.println("inst: " + inst);
+	        			System.out.println("inst: " + inst + " @ " + methodSig
+	        					+ ", config #: " + confIndices.get(i).size());
 	        			for(String conf : confIndices.get(i)) {
 	        				
 	        				//FIXME expensive operations

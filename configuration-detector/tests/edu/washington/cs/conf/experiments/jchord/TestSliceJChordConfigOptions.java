@@ -10,14 +10,21 @@ import edu.washington.cs.conf.analysis.ConfPropOutput;
 import edu.washington.cs.conf.experiments.ChordExpUtils;
 import edu.washington.cs.conf.experiments.CommonUtils;
 import edu.washington.cs.conf.instrument.InstrumentSchema;
+import edu.washington.cs.conf.instrument.InstrumentSchema.TYPE;
 import edu.washington.cs.conf.util.Log;
 import junit.framework.TestCase;
 
 public class TestSliceJChordConfigOptions extends TestCase {
 	public static String jchord_instrument_file = "./jchord_option_instr_ser.dat";
 	
+	public static String jchord_instrument_txt = "./jchord_option_instr.txt";
+	
+	public static String jchord_main = "Lchord/project/Main";
+	
+	public static String jchord_exclusion = "ChordExclusions.txt";
+	
 	public void testInitAllConfigOptions() {
-		String path = "./subjects/jchord/chord.jar";
+		String path = TestInstrumentJChord.jchord_notrace;
 //		String mainClass = "Lchord/project/Main"
 		List<ConfEntity> jchordConfList = ChordExpUtils.getChordConfList();
 		ConfEntityRepository repo = new ConfEntityRepository(jchordConfList);
@@ -29,18 +36,22 @@ public class TestSliceJChordConfigOptions extends TestCase {
 	}
 	
 	public void testSliceOptionsInJChordNoPrune() {
-		sliceOptionsInJChord(false);
+		sliceOptionsInJChord(ChordExpUtils.getChordConfList(), false);
 	}
 	
 	public void testSliceOptionsInJChordWithPrune() {
-		sliceOptionsInJChord(true);
+		sliceOptionsInJChord(ChordExpUtils.getChordConfList(), true);
 	}
 	
-	public Collection<ConfPropOutput> sliceOptionsInJChord(boolean prune) {
-		String path = "./subjects/jchord/chord.jar";
-		String mainClass = "Lchord/project/Main";
-		String exFile = "ChordExclusions.txt";
-		List<ConfEntity> jchordConfList = ChordExpUtils.getChordConfList();
+	public void testSliceSampleOptions() {
+		sliceOptionsInJChord(ChordExpUtils.getSampleConfList(), false);
+	}
+	
+	public Collection<ConfPropOutput> sliceOptionsInJChord(List<ConfEntity> jchordConfList, boolean prune) {
+		String path = TestInstrumentJChord.jchord_notrace;
+		String mainClass = jchord_main;
+		String exFile = jchord_exclusion;
+//		List<ConfEntity> jchordConfList = ChordExpUtils.getChordConfList();
 		
 		Log.logConfig("./jchord-config-slice.txt");
 		Collection<ConfPropOutput> confs = CommonUtils.getConfPropOutputs(path, mainClass, jchordConfList, exFile, prune);
@@ -50,13 +61,14 @@ public class TestSliceJChordConfigOptions extends TestCase {
 	}
 	
 	public void testCreateInstrumentSchema() {
-		Collection<ConfPropOutput> outputs = this.sliceOptionsInJChord(false);
+		Collection<ConfPropOutput> outputs = this.sliceOptionsInJChord(ChordExpUtils.getChordConfList(), false);
 		
 		InstrumentSchema schema = new InstrumentSchema();
+		schema.setType(TYPE.SOURCE_PREDICATE); //NOTE use the abstraction of source predicate
 		schema.addInstrumentationPoint(outputs);
 		
 		ConfOutputSerializer.serializeSchema(schema, jchord_instrument_file);
-		ConfOutputSerializer.writeToFileAsText(schema, "./jchord_option_instr.txt");
+		ConfOutputSerializer.writeToFileAsText(schema, jchord_instrument_txt);
 		
 		//recover from the file
 		InstrumentSchema newSchema = ConfOutputSerializer.deserializeAsSchema(jchord_instrument_file);
