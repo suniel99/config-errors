@@ -88,7 +88,7 @@ public class CommonUtils {
 	
 	public static void dumpStatements(Collection<IRStatement> stmts) {
 		for(IRStatement stmt : stmts) {
-			System.out.println("     >> " + stmt.toString());
+			Log.logln("     >> " + stmt.toString());
 		}
 	}
 	

@@ -13,7 +13,7 @@ import edu.washington.cs.conf.util.Utils;
 
 public abstract class AbstractInstrumenter {
 
-	protected final boolean disasm = true;
+	  protected final boolean disasm = false;
 	  protected final boolean verify = true;
 	  protected OfflineInstrumenter instrumenter;
 	  
@@ -24,6 +24,7 @@ public abstract class AbstractInstrumenter {
 	  public static String INDEX_SEP = "_index_";
 	  
 	  public void instrument(String inputElement, String outputJar) throws Exception {
+		  System.out.println("start instrumentating");
 	      instrumenter = new OfflineInstrumenter();
 	      Writer w = new BufferedWriter(new FileWriter("report", false));
 	      instrumenter.addInputElement(inputElement);

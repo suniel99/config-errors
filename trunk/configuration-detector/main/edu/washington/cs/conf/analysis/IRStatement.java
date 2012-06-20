@@ -31,8 +31,8 @@ public class IRStatement {
 	
 	public static String[] ignoredPackages = new String[]{
 			"java.", "javax.", "plume.", "org.apache.bcel.",
-			"com.ibm.wala.", "edu.washington.cs.conf.",
-			"gnu.trove.", "javassist.", "Lhj.runtime",
+			"com.ibm.wala.", "edu.washington.cs.conf."
+			,"gnu.trove.", "javassist.", "Lhj.runtime",
 			"org.scannotation", "hj.runtime"
 	};
 	

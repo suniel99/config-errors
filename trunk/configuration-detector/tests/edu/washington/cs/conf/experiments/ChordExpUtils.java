@@ -6,6 +6,14 @@ import java.util.List;
 import edu.washington.cs.conf.analysis.ConfEntity;
 
 public class ChordExpUtils {
+	
+	public static List<ConfEntity> getSampleConfList() {
+		ConfEntity entity10 = new ConfEntity("chord.project.Config", "scopeKind", true);
+		List<ConfEntity> list = new LinkedList<ConfEntity>();
+		list.add(entity10);
+		return list;
+	}
+	
 	public static List<ConfEntity> getChordConfList() {
 		ConfEntity entity1 = new ConfEntity("chord.project.Config", "maxHeap", true);
 		ConfEntity entity2 = new ConfEntity("chord.project.Config", "maxStack", true);
