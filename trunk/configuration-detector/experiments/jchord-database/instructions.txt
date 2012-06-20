@@ -1,10 +1,15 @@
-Go to the directory ./subjects/jchord/simpletest
+Go to the directory ./subjects/jchord/
 
 Run chord from Command line:
 
-java -cp ../chord-instrumented.jar;../../../bin
+go to dir: subjects/jchord/  (should not go to simpletest folder, it will have a very
+   tricky pitfall. Essentially, 2 JVMs will be lanunched, each will dump a trace file.
+   If went to the simpletest file, the later file by the parent process will override the
+   desirabl one)
+
+java -cp ./chord-no-trace-instrumented.jar;../../bin
      -Dchord.class.path=../../../bin;classes/
-     -Dchord.work.dir=.
+     -Dchord.work.dir=./simpletest
      -Dchord.run.analyses=datarace-java
      chord.project.Boot
      
