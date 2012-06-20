@@ -33,7 +33,8 @@ public class IRStatement {
 			"java.", "javax.", "plume.", "org.apache.bcel.",
 			"com.ibm.wala.", "edu.washington.cs.conf."
 			,"gnu.trove.", "javassist.", "Lhj.runtime",
-			"org.scannotation", "hj.runtime"
+			"org.scannotation", "hj.runtime", "org.junit",
+			"junit.", "gov.nasa.",
 	};
 	
 	public final StatementWithInstructionIndex s;
