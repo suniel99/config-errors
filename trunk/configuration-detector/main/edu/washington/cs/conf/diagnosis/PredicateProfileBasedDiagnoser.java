@@ -41,6 +41,10 @@ public class PredicateProfileBasedDiagnoser {
 		this.repository = repository;
 	}
 	
+	public List<ConfDiagnosisOutput> computeResponsibleOptions() {
+		return computeResponsibleOptions(RankType.SINGLE_IMPORT);
+	}
+	
 	public List<ConfDiagnosisOutput> computeResponsibleOptions(RankType type) {
 		Collection<List<ConfDiagnosisEntity>> coll = summarizeAllDiagnosisEntity(this.goodRuns,
 				this.badRun, this.repository);
