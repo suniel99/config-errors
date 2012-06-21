@@ -7,7 +7,7 @@
    
 detailed steps:
 
-go to the ./output folder
+go to the ./output folder (note when running in command, it must use " for the regex)
 
 java -cp ./synoptic-instrumented.jar;../subjects/synoptic/libs/*;../bin synoptic.main.Main
 
@@ -19,7 +19,15 @@ java -cp ./synoptic-instrumented.jar;../subjects/synoptic/libs/*;../bin synoptic
    -d D:\\tools\\graphviz2.8\\dot\\bin\\dot
    ./traces/TwoPhaseCommit/2pc_3nodes_100tx.log
    
+   Full command, can copy-paste and run:
+   
+   java -cp ./synoptic-instrumented.jar;../subjects/synoptic/libs/*;../bin synoptic.main.Main -r "^(?<sender>),(?<receiver>),(?<TYPE>),(?<txId>)" -m "\\k<txId>" -o ./2pc_3nodes_good -d D:\tools\graphviz2.8\dot\bin\dot ../subjects/synoptic/data/2pc_3nodes_100tx.log
+   
 2. injected-error for bad run
 
    change -m to:
      -m '\\k<Id>'
+     
+3. Ivan's report error:
+
+   -m \k<ID>
