@@ -30,8 +30,12 @@ import edu.washington.cs.conf.util.Utils;
 public class CommonUtils {
 	
 	public static Collection<ConfPropOutput> getConfPropOutputs(String path, String mainClass, List<ConfEntity> confList, String exclusionFile, boolean doPruning) {
+		return getConfPropOutputs(path, mainClass, confList, exclusionFile, CG.OneCFA, doPruning);
+	}
+	
+	public static Collection<ConfPropOutput> getConfPropOutputs(String path, String mainClass, List<ConfEntity> confList, String exclusionFile, CG type, boolean doPruning) {
 		ConfigurationSlicer helper = new ConfigurationSlicer(path, mainClass);
-		helper.setCGType(CG.OneCFA);
+		helper.setCGType(type);
 		helper.setExclusionFile(exclusionFile);
 		helper.setDataDependenceOptions(DataDependenceOptions.NO_BASE_NO_HEAP_NO_EXCEPTIONS);
 		helper.setControlDependenceOptions(ControlDependenceOptions.NONE);
