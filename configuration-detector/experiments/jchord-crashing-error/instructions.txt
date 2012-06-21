@@ -1,4 +1,4 @@
-All crashing error from Ari Rabkin's ASE'11 paper, Table III:
+Some crashing error from Ari Rabkin's ASE'11 paper, Table III:
 
 This instruction is applicable for the latest Chord version as of May 2012.
 
@@ -14,11 +14,12 @@ Generally, locating crashing errors are much easier than locating non-crashing e
    If went to the simpletest file, the later file by the parent process will override the
    desirabl one)
    
-   java -cp ../chord.jar;../../../bin -Dchord.class.path=../../../bin;classes/
-       -Dchord.work.dir=.
-       -Dchord.main.class=notexist   [This does not exist]
-       -Dchord.run.analyses=datarace-java
-       chord.project.Boot
+   java -cp ./chord-no-trace-instrumented.jar;../../bin
+     -Dchord.class.path=../../../bin;classes/
+     -Dchord.work.dir=./simpletest
+     -Dchord.run.analyses=datarace-java
+     -Dchord.main.class=notexist   [This does not exist]
+     chord.project.Boot
        
    Running this command gives the exception trace in: chord_output/log.txt
    at joeq.Class.jq_Class.load(jq_Class.java:824)
@@ -46,6 +47,7 @@ Generally, locating crashing errors are much easier than locating non-crashing e
 
 2. no such analysis
 
+    [use the path as 1]
     java -cp ../chord.jar;../../../bin -Dchord.class.path=../../../bin;classes/
        -Dchord.work.dir=.
        -Dchord.run.analyses= not-exist [not existed analysis]
@@ -141,6 +143,7 @@ Generally, locating crashing errors are much easier than locating non-crashing e
        chord.project.Boot
    
 
+[this is a long execution, crashes near the end]
 6. printing non-existent relation
    java -cp ../chord.jar;../../../bin -Dchord.class.path=../../../bin;classes/
        -Dchord.work.dir=.
