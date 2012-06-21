@@ -1,0 +1,12 @@
+enter directory ./subjects/soot-2.5/examples
+
+compile the example java code: javac HelloWorld.java
+
+1. obtain good run (with -keep-line-number)
+
+   java -cp ../../../bin;../../../output/soot-instrumented.jar;../libs/*;./ soot.Main -app -keep-line-number HelloWorld
+   
+2. obtain bad run (without -keep-line-number)
+
+   java -cp ../../../bin;../../../output/soot-instrumented.jar;../libs/*;./ soot.Main -app
+   HelloWorld
