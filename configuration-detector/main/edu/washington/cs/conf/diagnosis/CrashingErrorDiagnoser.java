@@ -5,6 +5,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import edu.washington.cs.conf.analysis.ConfEntityRepository;
+import edu.washington.cs.conf.diagnosis.PredicateProfileBasedDiagnoser.RankType;
 import edu.washington.cs.conf.util.Files;
 import edu.washington.cs.conf.util.Utils;
 
@@ -71,28 +72,43 @@ public class CrashingErrorDiagnoser {
 			//create the good profile tuple
 			PredicateProfileTuple filteredTuple = PredicateProfileTuple.createGoodRun(goodRun.name, filteredProfiles);
 			filteredGoodRuns.add(filteredTuple);
+			//print the debugging information
+			System.out.println(" - number of profiles in the good run before filtering: " + goodRun.getAllProfiles().size());
+			System.out.println(" - number of profiles in the good run after filtering: " + filteredTuple.getAllProfiles().size());
+			System.out.println();
 		}
 		
 		PredicateProfileBasedDiagnoser diagnoser
             = new PredicateProfileBasedDiagnoser(filteredGoodRuns, this.badRun, this.repository);
+		
+		System.out.println(" > number of profiles in the bad run: " + this.badRun.getAllProfiles().size());
+		System.out.println();
 		
         return diagnoser.computeResponsibleOptions();
 	}
 	
 	//only the executed parts in the stack trace
 	public List<ConfDiagnosisOutput> computeResponsibleOptionsWithStackTrace() {
+		return computeResponsibleOptionsWithStackTrace(RankType.SINGLE_IMPORT);
+	}
+	public List<ConfDiagnosisOutput> computeResponsibleOptionsWithStackTrace(RankType type) {
+		System.out.println("Compute responsible options only covered by the stack trace... ");
 		Utils.checkNotNull(this.stackTraces);
 		String[] methods = this.fetchMethodFromStackTrace(this.stackTraces);
 		
 		//recreate the bad profiles
 		Collection<PredicateProfile> filteredBadProfiles = new LinkedList<PredicateProfile>();
 		for(PredicateProfile p : this.badRun.getAllProfiles()) {
+//			System.out.println(p.getContext());
 			if(Utils.startWith(p.getContext(), methods)) {
+				//System.out.println("add");
 				filteredBadProfiles.add(p);
 			}
 		}
 		PredicateProfileTuple filteredBadTuple = PredicateProfileTuple.createBadRun(this.badRun.name, filteredBadProfiles);
-		
+		System.out.println(" > number of profiles in the bad run before filtering: " + this.badRun.getAllProfiles().size());
+		System.out.println(" > number of profiles in the bad run after filtering: " + filteredBadTuple.getAllProfiles().size());
+		System.out.println();
 		//recreate the good profiles
 		Collection<PredicateProfileTuple> filteredGoodTuples = new LinkedList<PredicateProfileTuple>();
 		for(PredicateProfileTuple goodTuple : this.goodRuns) {
@@ -104,13 +120,17 @@ public class CrashingErrorDiagnoser {
 			}
 			PredicateProfileTuple filteredGoodTuple = PredicateProfileTuple.createGoodRun(goodTuple.name, filteredGoodProfiles);
 			filteredGoodTuples.add(filteredGoodTuple);
+			//see the filtered num
+			System.out.println(" - number of profiles in the good run before filtering: " + goodTuple.getAllProfiles().size());
+			System.out.println(" - number of profiles in the good run before filtering: " + filteredGoodTuple.getAllProfiles().size());
 		}
+		System.out.println();
 		
 		//start diagnosis
 		PredicateProfileBasedDiagnoser diagnoser
             = new PredicateProfileBasedDiagnoser(filteredGoodTuples, filteredBadTuple, this.repository);
 	
-        return diagnoser.computeResponsibleOptions();
+        return diagnoser.computeResponsibleOptions(type);
 	}
 	
 	//a single stack trace looks like: at chord.project.Main.main(Main.java: 19)
@@ -124,6 +144,7 @@ public class CrashingErrorDiagnoser {
 			int endIndex = trace.indexOf("(");
 			Utils.checkTrue(startIndex != -1 && endIndex != -1 && endIndex > startIndex, trace);
 			String method = trace.substring(startIndex + at.length(), endIndex);
+			method = method.trim();
 			methods[count++] = method;
 //			System.out.println(method);
 		}
@@ -135,5 +156,11 @@ public class CrashingErrorDiagnoser {
         PredicateProfileBasedDiagnoser diagnoser
             = new PredicateProfileBasedDiagnoser(this.goodRuns, this.badRun, this.repository);
         return diagnoser.computeResponsibleOptions();
+	}
+	
+	public List<ConfDiagnosisOutput> computeResponsibleOptionsAsNonCrashingErrors(RankType type) {
+        PredicateProfileBasedDiagnoser diagnoser
+            = new PredicateProfileBasedDiagnoser(this.goodRuns, this.badRun, this.repository);
+        return diagnoser.computeResponsibleOptions(type);
 	}
 }

@@ -1,13 +1,16 @@
 package edu.washington.cs.conf.experiments.jchord;
 
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 import edu.washington.cs.conf.analysis.ConfEntity;
 import edu.washington.cs.conf.analysis.ConfEntityRepository;
 import edu.washington.cs.conf.diagnosis.ConfDiagnosisOutput;
 import edu.washington.cs.conf.diagnosis.CrashingErrorDiagnoser;
 import edu.washington.cs.conf.diagnosis.PredicateProfileBasedDiagnoser;
+import edu.washington.cs.conf.diagnosis.PredicateProfileBasedDiagnoser.RankType;
 import edu.washington.cs.conf.diagnosis.PredicateProfileTuple;
 import edu.washington.cs.conf.diagnosis.ProfileDistanceCalculator.DistanceType;
 import edu.washington.cs.conf.diagnosis.TraceAnalyzer;
@@ -104,27 +107,29 @@ public class TestCrashingErrorDiagnosis extends TestCase {
     
     enum DiagnosisType {NONCRASHING, CRASHING, STACKTRACE}
     
-    List<ConfDiagnosisOutput>  doDiagnosis(DiagnosisType t, String badTrace, String badStackTrace, String[] goodTraces) {
+    List<ConfDiagnosisOutput>  doDiagnosis(DiagnosisType t, String badTraceFile, String badStackTraceFiles,
+    		String[] goodTraceFiles) {
     	//create the repo
     	List<ConfEntity> jchordConfList = ChordExpUtils.getChordConfList();
 		ConfEntityRepository repo = new ConfEntityRepository(jchordConfList);
 		
 		//create profile tuples
-    	PredicateProfileTuple badTuple = TraceAnalyzer.createBadProfileTuple(badTrace, "badTrace1");
+    	PredicateProfileTuple badTuple = TraceAnalyzer.createBadProfileTuple(badTraceFile, "badTrace1");
     	List<PredicateProfileTuple> goodTuples = new LinkedList<PredicateProfileTuple>();
-    	for(String goodTrace : goodTraces) {
+    	for(String goodTrace : goodTraceFiles) {
     		goodTuples.add(TraceAnalyzer.createGoodProfileTuple(goodTrace, "goodTrace"));
     	}
     	
     	//start the diagnosis
     	CrashingErrorDiagnoser diagnoser = new CrashingErrorDiagnoser(goodTuples, badTuple, repo);
-    	diagnoser.setStackTraces(badStackTrace);
+    	diagnoser.setStackTraces(badStackTraceFiles);
 
     	if(t.equals(DiagnosisType.NONCRASHING)) {
     		return diagnoser.computeResponsibleOptionsAsNonCrashingErrors();
     	} else if (t.equals(DiagnosisType.CRASHING)) {
     		return diagnoser.computeResponsibleOptionsInCrashingTrace();
     	} else if (t.equals(DiagnosisType.STACKTRACE)) {
+//    		return diagnoser.computeResponsibleOptionsWithStackTrace(RankType.IMPORT_SUM);
     		return diagnoser.computeResponsibleOptionsWithStackTrace();
     	} else {
     		throw new Error();
@@ -133,9 +138,19 @@ public class TestCrashingErrorDiagnosis extends TestCase {
     
     void dumpOutputs(List<ConfDiagnosisOutput> results) {
     	System.out.println("Number: " + results.size());
+//    	Set<String> outputs = new LinkedHashSet<String>();
+//    	for(ConfDiagnosisOutput result : results) {
+//    		outputs.add(result.getConfEntity().toString());
+//    	}
+//    	System.out.println("------------pure ranking------------");
+//    	int count = 1;
+//    	for(String outputName : outputs) {
+//    		System.out.println((count++) + ". " + outputName);
+//    	}
+    	System.out.println("----------- explanation ------------");
     	for(int i = 0; i < results.size(); i++) {
     		ConfDiagnosisOutput o = results.get(i);
-    		System.out.println(i + ". " + o.getConfEntity());
+    		System.out.println((i + 1) + ". " + o.getConfEntity());
     		System.out.println("  " + o.getBriefExplanation());
     	}
     }
@@ -187,7 +202,7 @@ public class TestCrashingErrorDiagnosis extends TestCase {
     /**
      * Use the stack trace
      * */
-    //N/A reflectKind
+    //19 reflectKind
     public void testDiagnoseWithCrashingStackTrace1() {
     	List<ConfDiagnosisOutput> results = this.doDiagnosis(DiagnosisType.STACKTRACE, invalidReflectKind, invalidReflectKindStackTrace,
     			new String[]{goodRunTrace});
@@ -201,7 +216,7 @@ public class TestCrashingErrorDiagnosis extends TestCase {
     	dumpOutputs(results);
 	}
     
-    //mainClassName
+    //26 mainClassName
     public void testDiagnoseWithCrashingStackTrace3() {
     	List<ConfDiagnosisOutput> results = this.doDiagnosis(DiagnosisType.STACKTRACE, noMainMethod, noMainMethodStackTrace,
     			new String[]{goodRunTrace});
@@ -215,7 +230,7 @@ public class TestCrashingErrorDiagnosis extends TestCase {
     	dumpOutputs(results);
 	}
     
-    //12 printRels
+    //13 printRels
     public void testDiagnoseWithCrashingStackTrace5() {
     	List<ConfDiagnosisOutput> results = this.doDiagnosis(DiagnosisType.STACKTRACE, printInvalidRels, printInvalidRelsStackTrace,
     			new String[]{goodRunTrace});
