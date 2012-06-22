@@ -1,4 +1,3 @@
-java.lang.ClassNotFoundException: not-exist
 	at java.net.URLClassLoader$1.run(URLClassLoader.java:202)
 	at java.security.AccessController.doPrivileged(Native Method)
 	at java.net.URLClassLoader.findClass(URLClassLoader.java:190)

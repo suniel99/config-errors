@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import edu.washington.cs.conf.analysis.ConfEntity;
 import edu.washington.cs.conf.analysis.ConfEntityRepository;
 import edu.washington.cs.conf.diagnosis.ConfDiagnosisEntity.RawDataType;
 import edu.washington.cs.conf.diagnosis.ConfDiagnosisEntity.ScoreType;
@@ -41,6 +40,9 @@ public class PredicateProfileBasedDiagnoser {
 		this.repository = repository;
 	}
 	
+	/**
+	 * By default, it uses SINGLE_IMPORT metric
+	 * */
 	public List<ConfDiagnosisOutput> computeResponsibleOptions() {
 		return computeResponsibleOptions(RankType.SINGLE_IMPORT);
 	}

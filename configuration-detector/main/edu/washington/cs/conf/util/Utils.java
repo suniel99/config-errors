@@ -300,6 +300,15 @@ public class Utils {
 		return false;
  	}
 	
+	public static boolean startWith(String t, String[] prefix) {
+		for(String p : prefix) {
+			if(t.startsWith(p)) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
 	public static <T> Collection<T> iterableToCollection(Iterable<T> ts) {
 		Collection<T> collection = new LinkedList<T>();
 		for(T t : ts) {
