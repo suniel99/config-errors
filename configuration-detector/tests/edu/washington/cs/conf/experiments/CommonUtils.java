@@ -61,6 +61,10 @@ public class CommonUtils {
 			System.out.println("  filtered statements: " + sameStmts.size());
 			Log.logln("  filtered statements: " + sameStmts.size());
 			
+			for(IRStatement s : sameStmts) {
+				Log.logln("       statement: " + s);
+			}
+			
 			Set<IRStatement> branchStmts = ConfPropOutput.extractBranchStatements(sameStmts);
 			System.out.println("  branching statements: " + branchStmts.size());
 			Log.logln("  branching statements: " + branchStmts.size());

@@ -1,10 +1,14 @@
 package edu.washington.cs.conf.diagnosis;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import edu.washington.cs.conf.analysis.ConfEntityRepository;
+import edu.washington.cs.conf.analysis.ConfPropOutput;
 import edu.washington.cs.conf.diagnosis.PredicateProfileBasedDiagnoser.RankType;
 import edu.washington.cs.conf.util.Files;
 import edu.washington.cs.conf.util.Utils;
@@ -94,7 +98,7 @@ public class CrashingErrorDiagnoser {
 	public List<ConfDiagnosisOutput> computeResponsibleOptionsWithStackTrace(RankType type) {
 		System.out.println("Compute responsible options only covered by the stack trace... ");
 		Utils.checkNotNull(this.stackTraces);
-		String[] methods = this.fetchMethodFromStackTrace(this.stackTraces);
+		String[] methods = fetchMethodFromStackTrace(this.stackTraces);
 		
 		//recreate the bad profiles
 		Collection<PredicateProfile> filteredBadProfiles = new LinkedList<PredicateProfile>();
@@ -134,21 +138,37 @@ public class CrashingErrorDiagnoser {
 	}
 	
 	//a single stack trace looks like: at chord.project.Main.main(Main.java: 19)
-	private String[] fetchMethodFromStackTrace(String[] traces) {
-		String at = "at ";
+	private static String[] fetchMethodFromStackTrace(String[] traces) {
 		String[] methods = new String[traces.length];
 		int count = 0;
 		for(String trace : traces) {
-			trace = trace.trim();
-			int startIndex = trace.indexOf(at);
-			int endIndex = trace.indexOf("(");
-			Utils.checkTrue(startIndex != -1 && endIndex != -1 && endIndex > startIndex, trace);
-			String method = trace.substring(startIndex + at.length(), endIndex);
-			method = method.trim();
-			methods[count++] = method;
+			methods[count++] = fetchMethodFromStackTrace(trace);
 //			System.out.println(method);
 		}
 		return methods;
+	}
+	
+	private static String fetchMethodFromStackTrace(String trace) {
+		String at = "at ";
+		trace = trace.trim();
+		int startIndex = trace.indexOf(at);
+		int endIndex = trace.indexOf("(");
+		Utils.checkTrue(startIndex != -1 && endIndex != -1 && endIndex > startIndex, trace);
+		String method = trace.substring(startIndex + at.length(), endIndex);
+		method = method.trim();
+		return method;
+	}
+	
+	private static int fetchLineNumberFromStackTrace(String trace) {
+		trace = trace.trim();
+		int startIndex = trace.lastIndexOf(":");
+		int endIndex = trace.lastIndexOf(")");
+		if(startIndex == -1 || endIndex == -1) {
+			return -1;
+		}
+		Utils.checkTrue(endIndex > startIndex);
+		String str = trace.substring(startIndex + 1, endIndex).trim();
+		return Integer.parseInt(str);
 	}
 	
 	//diagnose like diagnosing non-crashing errors
@@ -162,5 +182,67 @@ public class CrashingErrorDiagnoser {
         PredicateProfileBasedDiagnoser diagnoser
             = new PredicateProfileBasedDiagnoser(this.goodRuns, this.badRun, this.repository);
         return diagnoser.computeResponsibleOptions(type);
+	}
+	
+	public static List<ConfDiagnosisOutput> rankConfigurationOptions(Map<ConfDiagnosisOutput, Integer> stackCoverage, Collection<ConfDiagnosisOutput> rankedList) {
+		Map<ConfDiagnosisOutput, Float> scores = new LinkedHashMap<ConfDiagnosisOutput, Float>();
+		
+		for(ConfDiagnosisOutput o : rankedList) {
+			scores.put(o, o.getFinalScore() + stackCoverage.get(o));
+		}
+		
+		scores = Utils.sortByValue(scores, false);
+		System.out.println("-----------------intermediate results----------------");
+		for(ConfDiagnosisOutput o : scores.keySet()) {
+			System.out.println(o.getConfEntity().getFullConfName() + ",   " + scores.get(o));
+		}
+		List<ConfDiagnosisOutput> finalRankedList = Utils.sortByValueAndReturnKeys(scores, false);
+		
+		return finalRankedList;
+	}
+	
+	//check when the configuration can affect the line number in the stack trace
+	public static Map<ConfDiagnosisOutput, Integer> computeMatchedStacktraceNum(Collection<ConfPropOutput> confSlices,
+			Collection<ConfDiagnosisOutput> outputs, String[] stackTraces) {
+		List<String> methods = new ArrayList<String>();
+		List<Integer> lines = new ArrayList<Integer>();
+		for(String trace : stackTraces) {
+			String method = fetchMethodFromStackTrace(trace);
+			Integer lineNum = fetchLineNumberFromStackTrace(trace);
+			if(lineNum == -1) {
+				System.err.println("no line number: " + trace);
+				continue;
+			}
+			methods.add(method);
+			lines.add(lineNum);
+		}
+		Utils.checkTrue(methods.size() == lines.size());
+		//then rank each ConfDiagnosisOutput based on the match
+		Map<ConfDiagnosisOutput, Integer> map = new LinkedHashMap<ConfDiagnosisOutput, Integer>();
+		for(ConfDiagnosisOutput output : outputs) {
+			//first get the ConfPropOutput
+			ConfPropOutput confSlice = null;
+			for(ConfPropOutput slice : confSlices) {
+				if(slice.getConfEntity().getFullConfName().equals(output.getConfEntity().getFullConfName())) {
+					confSlice = slice;
+					break;
+				}
+			}
+			Utils.checkNotNull(confSlice);
+			//count the num
+			Integer matchedStackTraceNum = 0;
+			for(int i = 0; i < methods.size(); i++) {
+				String method = methods.get(i);
+				int lineNum = lines.get(i);
+				if(confSlice.includeStatement(method, lineNum)) {
+					matchedStackTraceNum ++;
+//					matchedStackTraceNum += (methods.size() - i + 1);
+				}
+			}
+			//put to the map
+			map.put(output, matchedStackTraceNum);
+		}
+		
+		return map;
 	}
 }

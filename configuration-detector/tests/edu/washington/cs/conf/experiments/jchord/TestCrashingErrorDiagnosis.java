@@ -1,12 +1,15 @@
 package edu.washington.cs.conf.experiments.jchord;
 
+import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import edu.washington.cs.conf.analysis.ConfEntity;
 import edu.washington.cs.conf.analysis.ConfEntityRepository;
+import edu.washington.cs.conf.analysis.ConfPropOutput;
 import edu.washington.cs.conf.diagnosis.ConfDiagnosisOutput;
 import edu.washington.cs.conf.diagnosis.CrashingErrorDiagnoser;
 import edu.washington.cs.conf.diagnosis.PredicateProfileBasedDiagnoser;
@@ -16,6 +19,7 @@ import edu.washington.cs.conf.diagnosis.ProfileDistanceCalculator.DistanceType;
 import edu.washington.cs.conf.diagnosis.TraceAnalyzer;
 import edu.washington.cs.conf.experiments.ChordExpUtils;
 import edu.washington.cs.conf.experiments.CommonUtils;
+import edu.washington.cs.conf.util.Files;
 import junit.framework.TestCase;
 
 public class TestCrashingErrorDiagnosis extends TestCase {
@@ -151,7 +155,28 @@ public class TestCrashingErrorDiagnosis extends TestCase {
     	for(int i = 0; i < results.size(); i++) {
     		ConfDiagnosisOutput o = results.get(i);
     		System.out.println((i + 1) + ". " + o.getConfEntity());
+    		System.out.println("  final score: " + o.getFinalScore());
     		System.out.println("  " + o.getBriefExplanation());
+    	}
+    }
+    
+    void rankByStackTraceCoverage(String stackTraceFile, Collection<ConfDiagnosisOutput> outputs) {
+    	this.rankByStackTraceCoverage(stackTraceFile, outputs, false);
+    }
+    
+    void rankByStackTraceCoverage(String stackTraceFile, Collection<ConfDiagnosisOutput> outputs, boolean pruned) {
+    	Collection<ConfPropOutput> slices = TestSliceJChordConfigOptions.sliceOptionsInJChord(ChordExpUtils.getChordConfList(), pruned);
+    	String[] stackTraces = Files.readWholeNoExp(stackTraceFile).toArray(new String[0]);
+    	Map<ConfDiagnosisOutput, Integer> map = CrashingErrorDiagnoser.computeMatchedStacktraceNum(slices, outputs, stackTraces);
+    	System.out.println("----------- number of overlap ----------");
+    	for(ConfDiagnosisOutput o : map.keySet()) {
+    		System.out.println(o.getConfEntity().getFullConfName());
+    		System.out.println("     " + map.get(o));
+    	}
+    	System.out.println("------------final ranking---------------");
+    	List<ConfDiagnosisOutput> rankedOutputs = CrashingErrorDiagnoser.rankConfigurationOptions(map, outputs);
+    	for(ConfDiagnosisOutput o : rankedOutputs) {
+    		System.out.println(o.getConfEntity().getFullConfName());
     	}
     }
     
@@ -163,6 +188,7 @@ public class TestCrashingErrorDiagnosis extends TestCase {
     	List<ConfDiagnosisOutput> results = this.doDiagnosis(DiagnosisType.CRASHING, invalidReflectKind, invalidReflectKindStackTrace,
     			new String[]{goodRunTrace});
 		dumpOutputs(results);
+		rankByStackTraceCoverage(invalidReflectKindStackTrace, results, false); //make it number 1
 	}
 	
     //1, scopeKind
@@ -170,27 +196,31 @@ public class TestCrashingErrorDiagnosis extends TestCase {
     	List<ConfDiagnosisOutput> results = this.doDiagnosis(DiagnosisType.CRASHING, invalidScopeKind, invalidScopeKindStackTrace,
     			new String[]{goodRunTrace});
     	dumpOutputs(results);
+    	//rankByStackTraceCoverage(invalidScopeKindStackTrace, results, false);
 	}
     
-    //23, mainClassName
+    //24, mainClassName
     public void testDiagnoseWithCrashingTrace3() {
     	List<ConfDiagnosisOutput> results = this.doDiagnosis(DiagnosisType.CRASHING, noMainMethod, noMainMethodStackTrace,
     			new String[]{goodRunTrace});
     	dumpOutputs(results);
+    	rankByStackTraceCoverage(noMainMethodStackTrace, results, false);
 	}
     
-    //10 runAnalyses
+    //11 runAnalyses
     public void testDiagnoseWithCrashingTrace4() {
     	List<ConfDiagnosisOutput> results = this.doDiagnosis(DiagnosisType.CRASHING, noSuchAnalysis, noSuchAnalysisStackTrace,
     			new String[]{goodRunTrace});
     	dumpOutputs(results);
+    	rankByStackTraceCoverage(noSuchAnalysisStackTrace, results, false);
 	}
     
-    //8, printRels
+    //9, printRels
     public void testDiagnoseWithCrashingTrace5() {
     	List<ConfDiagnosisOutput> results = this.doDiagnosis(DiagnosisType.CRASHING, printInvalidRels, printInvalidRelsStackTrace, 
     			new String[]{goodRunTrace});
     	dumpOutputs(results);
+    	rankByStackTraceCoverage(printInvalidRelsStackTrace, results, false);
 	}
     
     //22 userClassPathName
@@ -198,6 +228,7 @@ public class TestCrashingErrorDiagnosis extends TestCase {
     	List<ConfDiagnosisOutput> results = this.doDiagnosis(DiagnosisType.CRASHING, wrongClassPath, wrongClassPathStackTrace,
     			new String[]{goodRunTrace});
     	dumpOutputs(results);
+    	rankByStackTraceCoverage(wrongClassPathStackTrace, results, false);
 	}
     /**
      * Use the stack trace
@@ -207,6 +238,7 @@ public class TestCrashingErrorDiagnosis extends TestCase {
     	List<ConfDiagnosisOutput> results = this.doDiagnosis(DiagnosisType.STACKTRACE, invalidReflectKind, invalidReflectKindStackTrace,
     			new String[]{goodRunTrace});
 		dumpOutputs(results);
+		rankByStackTraceCoverage(invalidReflectKindStackTrace, results);
 	}
 	
     //31, scopeKind
@@ -214,6 +246,7 @@ public class TestCrashingErrorDiagnosis extends TestCase {
     	List<ConfDiagnosisOutput> results = this.doDiagnosis(DiagnosisType.STACKTRACE, invalidScopeKind, invalidScopeKindStackTrace,
     			new String[]{goodRunTrace});
     	dumpOutputs(results);
+    	rankByStackTraceCoverage(invalidScopeKindStackTrace, results);
 	}
     
     //26 mainClassName
@@ -221,6 +254,7 @@ public class TestCrashingErrorDiagnosis extends TestCase {
     	List<ConfDiagnosisOutput> results = this.doDiagnosis(DiagnosisType.STACKTRACE, noMainMethod, noMainMethodStackTrace,
     			new String[]{goodRunTrace});
     	dumpOutputs(results);
+    	rankByStackTraceCoverage(noMainMethodStackTrace, results);
 	}
     
     //13 runAnalyses
@@ -228,6 +262,7 @@ public class TestCrashingErrorDiagnosis extends TestCase {
     	List<ConfDiagnosisOutput> results = this.doDiagnosis(DiagnosisType.STACKTRACE, noSuchAnalysis, noSuchAnalysisStackTrace,
     			new String[]{goodRunTrace});
     	dumpOutputs(results);
+    	rankByStackTraceCoverage(noSuchAnalysisStackTrace, results);
 	}
     
     //13 printRels
@@ -235,6 +270,7 @@ public class TestCrashingErrorDiagnosis extends TestCase {
     	List<ConfDiagnosisOutput> results = this.doDiagnosis(DiagnosisType.STACKTRACE, printInvalidRels, printInvalidRelsStackTrace,
     			new String[]{goodRunTrace});
     	dumpOutputs(results);
+    	rankByStackTraceCoverage(printInvalidRelsStackTrace, results);
 	}
     
     //25 userClassPathName
@@ -242,5 +278,6 @@ public class TestCrashingErrorDiagnosis extends TestCase {
     	List<ConfDiagnosisOutput> results = this.doDiagnosis(DiagnosisType.STACKTRACE, wrongClassPath, wrongClassPathStackTrace,
     			new String[]{goodRunTrace});
     	dumpOutputs(results);
+    	rankByStackTraceCoverage(wrongClassPathStackTrace, results, false);
 	}
 }
