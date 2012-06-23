@@ -6,11 +6,17 @@ import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+
+import com.ibm.wala.ipa.slicer.Statement;
 
 import edu.washington.cs.conf.analysis.ConfEntityRepository;
 import edu.washington.cs.conf.analysis.ConfPropOutput;
+import edu.washington.cs.conf.analysis.ConfUtils;
+import edu.washington.cs.conf.analysis.IRStatement;
 import edu.washington.cs.conf.diagnosis.PredicateProfileBasedDiagnoser.RankType;
 import edu.washington.cs.conf.util.Files;
+import edu.washington.cs.conf.util.Log;
 import edu.washington.cs.conf.util.Utils;
 
 /**
@@ -221,13 +227,7 @@ public class CrashingErrorDiagnoser {
 		Map<ConfDiagnosisOutput, Integer> map = new LinkedHashMap<ConfDiagnosisOutput, Integer>();
 		for(ConfDiagnosisOutput output : outputs) {
 			//first get the ConfPropOutput
-			ConfPropOutput confSlice = null;
-			for(ConfPropOutput slice : confSlices) {
-				if(slice.getConfEntity().getFullConfName().equals(output.getConfEntity().getFullConfName())) {
-					confSlice = slice;
-					break;
-				}
-			}
+			ConfPropOutput confSlice = findConfDiagnosisOutput(confSlices, output); 
 			Utils.checkNotNull(confSlice);
 			//count the num
 			Integer matchedStackTraceNum = 0;
@@ -244,5 +244,55 @@ public class CrashingErrorDiagnoser {
 		}
 		
 		return map;
+	}
+	
+	public static Map<String, Integer> computeStackTraceDistance(Collection<ConfPropOutput> confSlices, ConfDiagnosisOutput output, String[] stackTraces) {
+		Map<String, Integer> map = new LinkedHashMap<String, Integer>();
+		//in the output slice, the distance between the stack trace methods to the configuration entry
+		for(String stackTrace : stackTraces) {
+			String method = fetchMethodFromStackTrace(stackTrace);
+			Integer lineNum = fetchLineNumberFromStackTrace(stackTrace);
+			if(lineNum == -1) {
+				continue;
+			}
+			ConfPropOutput confSlice = findConfDiagnosisOutput(confSlices, output); 
+			Utils.checkNotNull(confSlice);
+			
+			Set<IRStatement> filtered = ConfPropOutput.excludeIgnorableStatements(confSlice.statements);
+			Set<IRStatement> statements = ConfUtils.removeSameStmtsInDiffContexts(filtered);// filterSameStatements(filtered);
+			
+			//compute the distance
+			IRStatement stmt = null;
+			for(IRStatement irs : statements) {
+				if(irs.getMethodSig().startsWith(method) && irs.getLineNumber() == lineNum) {
+					stmt = irs;
+					break;
+				}
+			}
+			int distance = Integer.MAX_VALUE;
+			if(stmt != null) {
+				if(confSlice.getConfigurationSlicer() != null) {
+				    Statement seed = confSlice.getConfigurationSlicer().extractConfStatement(confSlice.getConfEntity());
+				    Statement target = stmt.getStatement();
+				    distance = confSlice.getConfigurationSlicer().computeDistanceInThinSlicing(seed, target);
+				}
+			}
+			
+			map.put(stackTrace, distance);
+		}
+		return map;
+	}
+	
+	private static ConfPropOutput findConfDiagnosisOutput(Collection<ConfPropOutput> confSlices, ConfDiagnosisOutput output) {
+		ConfPropOutput confSlice = null;
+		for(ConfPropOutput slice : confSlices) {
+			if(slice.getConfEntity().getFullConfName().equals(output.getConfEntity().getFullConfName())) {
+				confSlice = slice;
+				break;
+			}
+		}
+		return confSlice;
+//		Utils.checkNotNull(confSlice);
+		
 	}
 }

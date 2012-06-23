@@ -65,6 +65,7 @@ public class ConfigurationSlicer {
 	private CallGraphBuilder builder = null;
 	private AnalysisOptions options = null;
 	private CallGraph cg = null;
+	private boolean addStatementDistance = false;
 	
 	private String targetPackageName = null;
 	
@@ -141,10 +142,22 @@ public class ConfigurationSlicer {
 		return this.builder.getPointerAnalysis();
 	}
 	
+	public void setSlicingDistance(boolean flag) {
+		this.addStatementDistance = flag;
+	}
+	
 	public ConfPropOutput outputSliceConfOption(ConfEntity entity) {
 		Collection<Statement> stmts = sliceConfOption(entity);
 		Collection<IRStatement> irs = convert(stmts);
 		ConfPropOutput output = new ConfPropOutput(entity, irs, this.targetPackageName);
+		//add distance or not
+		if(this.addStatementDistance) {
+			Statement seed = this.extractConfStatement(entity);
+			for(IRStatement target : irs) {
+			    int distance = this.computeDistanceInThinSlicing(seed, target.getStatement());
+			    output.setSlicingDistance(target, distance);
+			}
+		}
 		return output;
 	}
 	
@@ -215,13 +228,19 @@ public class ConfigurationSlicer {
 		return slice;
 	}
 	
+	public int computeDistanceInThinSlicing(Statement seed, Statement target) {
+		Utils.checkNotNull(slicer);
+		int distance = slicer.computeBFSDistanceInForwardSlice(seed, target);
+		return distance;
+	}
+	
 	private void checkCG() {
 		if(this.cg == null) {
 			  throw new RuntimeException("Please call buildAnalysis() first.");
 		  }
 	}
 	
-	Statement extractConfStatement(ConfEntity entity) {
+	public Statement extractConfStatement(ConfEntity entity) {
 		String className = entity.getClassName();
 		String confName = entity.getConfName();
 		String assignMethod = entity.getAssignMethod(); //FIXME we may need more specific method signature

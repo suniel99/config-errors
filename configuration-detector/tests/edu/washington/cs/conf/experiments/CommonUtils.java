@@ -42,6 +42,9 @@ public class CommonUtils {
 		helper.setContextSensitive(false); //context-insensitive
 		helper.buildAnalysis();
 		
+		//set computing distance
+//		helper.setSlicingDistance(true);
+		
 		//get all type info
 		ConfEntityRepository repo = new ConfEntityRepository(confList);
 		repo.initializeTypesInConfEntities(path);
@@ -84,6 +87,11 @@ public class CommonUtils {
 				Set<IRStatement> branchStmts = ConfPropOutput.extractBranchStatements(sameStmts);
 				Log.logln("  statement in the pruned slice: " + branchStmts.size());
 			}
+		}
+		
+		//save the slicer
+		for(ConfPropOutput output : outputs) {
+			output.setConfigurationSlicer(helper);
 		}
 		
 		return outputs;
