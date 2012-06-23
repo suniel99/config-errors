@@ -399,6 +399,28 @@ public class Utils {
 		return sum/ts.size();
 	}
 	
+	public static <K, V> Map<K, V> sortByKey(Map<K, V> map, final boolean increase) {
+	     List<Entry<K, V>> list = new LinkedList<Entry<K, V>>(map.entrySet());
+	     Collections.sort(list, new Comparator() {
+	          public int compare(Object o1, Object o2) {
+	        	  if(increase) {
+	        		  return ((Comparable) ((Map.Entry) (o1)).getKey())
+		              .compareTo(((Map.Entry) (o2)).getKey());
+	        	  } else {
+	        		  return ((Comparable) ((Map.Entry) (o2)).getKey())
+		              .compareTo(((Map.Entry) (o1)).getKey());
+	        	  }
+	          }
+	     });
+
+	    Map<K, V> result = new LinkedHashMap<K, V>();
+	    for (Iterator<Entry<K, V>> it = list.iterator(); it.hasNext();) {
+	        Map.Entry<K, V> entry = (Map.Entry<K, V>)it.next();
+	        result.put(entry.getKey(), entry.getValue());
+	    }
+	    return result;
+	}
+	
 	public static <K, V> Map<K, V> sortByValue(Map<K, V> map, final boolean increase) {
 	     List<Entry<K, V>> list = new LinkedList<Entry<K, V>>(map.entrySet());
 	     Collections.sort(list, new Comparator() {
