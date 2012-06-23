@@ -158,7 +158,7 @@ Generally, locating crashing errors are much easier than locating non-crashing e
 	    at chord.project.Main.main(Main.java:50)
 	    
 
-Two cases described in the ASE have vague description. We cannot reproduce them:
+3 cases described in the ASE have vague description. We cannot reproduce them:
 
 1. no main method: it seems to be the problem of the input, rather than a configuration that a user could control
 2. diassembling nonexistent class: lacks enough details
