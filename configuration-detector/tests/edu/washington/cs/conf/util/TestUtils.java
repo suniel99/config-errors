@@ -22,6 +22,16 @@ public class TestUtils extends TestCase {
 		assertEquals("[b, c, d, a]", sortedKeys.toString());
 	}
 	
+	public void testSortMapByKey() {
+		Map<String, Integer> map = new HashMap<String, Integer>();
+		map.put("c", 3);
+		map.put("d", 2);
+		map.put("b", 5);
+		map.put("a", 1);
+		map = Utils.sortByKey(map, false);
+		System.out.println(map);
+	}
+	
 	public void testAverage() {
 		Collection<Integer> fs = new LinkedList<Integer>();
 		fs.add(4);
