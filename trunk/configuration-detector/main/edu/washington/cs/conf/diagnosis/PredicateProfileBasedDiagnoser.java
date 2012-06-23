@@ -384,6 +384,7 @@ public class PredicateProfileBasedDiagnoser {
 				} else {
 					//initially create and add the output
 					ConfDiagnosisOutput output = new ConfDiagnosisOutput(rankedEntity.getConfEntity());
+					output.setFinalScore(rankedEntity.getScore(t));
 					visitedConfigs.put(configName, output);
 					output.addExplain("Choose Rank: " + ranking
 							+ ": " + configName + " at context : " + rankedEntity.getContext()
@@ -412,11 +413,14 @@ public class PredicateProfileBasedDiagnoser {
 					ConfDiagnosisOutput output = visitedConfigs.get(configName);
 					Utils.checkTrue(configOutputSums.containsKey(output), configName + " is not contained.");
 					Float updatedValue = configOutputSums.get(output) + rankedEntity.getScore(t);
+//					output.setFinalScore(updatedValue);
+					visitedConfigs.get(configName).setFinalScore(updatedValue);
 					visitedConfigs.get(configName).addExplain("Add new score: " + rankedEntity.getScore(t)
 							+ "  at context: " + rankedEntity.getContext() + ", now updated value: " + updatedValue);
 					configOutputSums.put(output, updatedValue);
 				} else {
 					ConfDiagnosisOutput output = new ConfDiagnosisOutput(rankedEntity.getConfEntity());
+					output.setFinalScore(rankedEntity.getScore(t));
 					visitedConfigs.put(configName, output);
 					output.addExplain("First add new score: " + rankedEntity.getScore(t)
 							+ "  at context: " + rankedEntity.getContext());
@@ -466,6 +470,7 @@ public class PredicateProfileBasedDiagnoser {
 				Float myScore = score/numOfShares;
 				o.addExplain("num of shares: " + numOfShares + ",  original tfidf value: " + tfidfValues.get(o)
 						+ ", adding score: " + myScore + ", becomes: " + (tfidfValues.get(o) + myScore));
+				o.setFinalScore(tfidfValues.get(o) + myScore);
 				tfidfValues.put(o, tfidfValues.get(o) + myScore);
 			}
 			

@@ -97,10 +97,12 @@ public class ConfDiagnosisOutput {
 			listNo++;
 			int rank = 0;
 			for(ConfDiagnosisOutput output : list) {
+//				System.err.println(output.getFinalScore());
 				rank++;
 				if(!outputAndRanks.containsKey(output)) {
 					Utils.checkTrue(!selfMapping.containsKey(output));
 					ConfDiagnosisOutput copy = new ConfDiagnosisOutput(output.conf);
+					copy.setFinalScore(output.getFinalScore());
 					outputAndRanks.put(copy, new LinkedList<Integer>());
 					selfMapping.put(copy, copy);
 				}
@@ -108,6 +110,11 @@ public class ConfDiagnosisOutput {
 				outputAndRanks.get(output).add(rank);
 				//selfMapping.get(output).addExplain("From the: " + listNo + ", trace");
 				selfMapping.get(output).addAllExplain(output.getExplanations());
+//				System.err.println("final : " + output.getFinalScore() + ", existing final: " + selfMapping.get(output).getFinalScore());
+				if(output.getFinalScore() > selfMapping.get(output).getFinalScore()) {
+					selfMapping.get(output).setFinalScore(output.getFinalScore());
+				}
+				//selfMapping.get(output).setFinalScore(output.getFinalScore());
 			}
 		}
 		//do the ranking

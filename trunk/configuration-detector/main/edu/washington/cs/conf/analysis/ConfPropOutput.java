@@ -23,8 +23,7 @@ public class ConfPropOutput implements Serializable {
 	
 	public final ConfEntity conf; //fully serializable, no worry
 	
-	public final boolean ignoreLibs = true;
-	                                                  
+	public final boolean ignoreLibs = true;      
 	
 	//set is not serializable
 	public final Set<IRStatement> statements;
@@ -52,6 +51,19 @@ public class ConfPropOutput implements Serializable {
 	
 	public ConfEntity getConfEntity() {
 		return conf;
+	}
+	
+	//the full name is in the form of: packagename.classname.methodname
+	//the signature is in the form of: chord.project.Config.check(Ljava/lang/String;[Ljava/lang/String;Ljava/lang/String;)
+	public boolean includeStatement(String fullMethodName, int sourceLineNum) {
+		for(IRStatement irs : this.statements) {
+			String methodSig = irs.methodSig;
+			int lineNum = irs.lineNumber;
+			if(methodSig.startsWith(fullMethodName) && lineNum == sourceLineNum) {
+				return true;
+			}
+		}
+		return false;
 	}
 	
 	public boolean containStatement(String methodSig, int instructionIndex) {
