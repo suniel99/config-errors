@@ -21,7 +21,6 @@ public class ObjectAccess {
 		w2.doSomething();
 		w1.doSomething();
 	}
-	
 }
 
 class ObjectWrapper {
