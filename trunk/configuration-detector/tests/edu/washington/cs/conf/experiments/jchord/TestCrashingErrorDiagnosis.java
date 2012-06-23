@@ -1,7 +1,7 @@
 package edu.washington.cs.conf.experiments.jchord;
 
 import java.util.Collection;
-import java.util.LinkedHashSet;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -12,14 +12,13 @@ import edu.washington.cs.conf.analysis.ConfEntityRepository;
 import edu.washington.cs.conf.analysis.ConfPropOutput;
 import edu.washington.cs.conf.diagnosis.ConfDiagnosisOutput;
 import edu.washington.cs.conf.diagnosis.CrashingErrorDiagnoser;
-import edu.washington.cs.conf.diagnosis.PredicateProfileBasedDiagnoser;
-import edu.washington.cs.conf.diagnosis.PredicateProfileBasedDiagnoser.RankType;
 import edu.washington.cs.conf.diagnosis.PredicateProfileTuple;
 import edu.washington.cs.conf.diagnosis.ProfileDistanceCalculator.DistanceType;
 import edu.washington.cs.conf.diagnosis.TraceAnalyzer;
 import edu.washington.cs.conf.experiments.ChordExpUtils;
 import edu.washington.cs.conf.experiments.CommonUtils;
 import edu.washington.cs.conf.util.Files;
+import edu.washington.cs.conf.util.Utils;
 import junit.framework.TestCase;
 
 public class TestCrashingErrorDiagnosis extends TestCase {
@@ -180,16 +179,83 @@ public class TestCrashingErrorDiagnosis extends TestCase {
     	}
     }
     
+    void rankByStackTraceDistanceInSlice(String stackTraceFile, Collection<ConfDiagnosisOutput> outputs) {
+    	this.rankByStackTraceDistanceInSlice(stackTraceFile, outputs, false);
+    }
+    
+    void rankByStackTraceDistanceInSlice(String stackTraceFile, Collection<ConfDiagnosisOutput> outputs, boolean pruned) {
+
+    	Map<Float, List<ConfDiagnosisOutput>> multiRanking = new LinkedHashMap<Float, List<ConfDiagnosisOutput>>();
+    	for(ConfDiagnosisOutput output : outputs) {
+    		Float finalScore = output.getFinalScore();
+    		if(!multiRanking.containsKey(finalScore)) {
+    			multiRanking.put(finalScore, new LinkedList<ConfDiagnosisOutput>());
+    		}
+    		multiRanking.get(finalScore).add(output);
+    	}
+    	
+    	multiRanking = Utils.sortByKey(multiRanking, false);
+    	for(Float f : multiRanking.keySet()) {
+    		System.out.println(f);
+    		for(ConfDiagnosisOutput output : multiRanking.get(f)) {
+    			System.out.println("    " + output.getConfEntity().getFullConfName());
+    		}
+    		System.out.println();
+    	}
+    	
+    	//then sort in each multi-ranking
+    	Collection<ConfPropOutput> slices = TestSliceJChordConfigOptions.sliceOptionsInJChord(ChordExpUtils.getChordConfList(), pruned);
+    	String[] stackTraces = Files.readWholeNoExp(stackTraceFile).toArray(new String[0]);
+    	for(Float f : multiRanking.keySet()) {
+    		List<ConfDiagnosisOutput> list = multiRanking.get(f);
+    		
+    		//rank the list based on the slice distance
+    		//roughly
+    		Map<ConfDiagnosisOutput, Integer> map = new LinkedHashMap<ConfDiagnosisOutput, Integer>();
+    		for(ConfDiagnosisOutput output : list) {
+    			Map<String, Integer> distance = CrashingErrorDiagnoser.computeStackTraceDistance(slices, output, stackTraces);
+    			for(String m : distance.keySet()) {
+    				Integer d = distance.get(m);
+    				if(d != Integer.MAX_VALUE) {
+    					map.put(output, d);
+    					break;
+    				}
+    			}
+    		}
+    		List<ConfDiagnosisOutput>  rankedList = Utils.sortByValueAndReturnKeys(map, true);
+    		
+    		multiRanking.put(f, rankedList);
+    	}
+    	System.out.println("---------  after final ranking ----------");
+    	for(Float f : multiRanking.keySet()) {
+    		System.out.println(f);
+    		for(ConfDiagnosisOutput output : multiRanking.get(f)) {
+    			System.out.println("    " + output.getConfEntity().getFullConfName());
+    		}
+    		System.out.println();
+    	}
+    	
+//    	for(ConfDiagnosisOutput output : outputs) {
+//    		Map<String, Integer> distance = CrashingErrorDiagnoser.computeStackTraceDistance(slices, output, stackTraces);
+//    		System.out.println(output.getConfEntity());
+//    		for(String m : distance.keySet()) {
+//    			System.out.println("   " + m + " : " + distance.get(m));
+//    		}
+//    	}
+    }
+    
     /**
      * Focus on the wrong trace only
      * */
-    //18, reflectKind
+    //18, reflectKind, can rank  1 when using stack trace info
     public void testDiagnoseWithCrashingTrace1() {
     	List<ConfDiagnosisOutput> results = this.doDiagnosis(DiagnosisType.CRASHING, invalidReflectKind, invalidReflectKindStackTrace,
     			new String[]{goodRunTrace});
 		dumpOutputs(results);
 		rankByStackTraceCoverage(invalidReflectKindStackTrace, results, false); //make it number 1
 	}
+    
+    //XXX A possible way is to improve the slice accuracy
 	
     //1, scopeKind
     public void testDiagnoseWithCrashingTrace2() {
@@ -200,36 +266,58 @@ public class TestCrashingErrorDiagnosis extends TestCase {
 	}
     
     //24, mainClassName
+    //can rank to 1
+    //0.985317
+//    chord.project.Config.mainClassName
+//    chord.project.analyses.BasicDynamicAnalysis.runBefore
+//    chord.program.Program.runBefore
+//    chord.project.Config.traceKind
+    //
     public void testDiagnoseWithCrashingTrace3() {
     	List<ConfDiagnosisOutput> results = this.doDiagnosis(DiagnosisType.CRASHING, noMainMethod, noMainMethodStackTrace,
     			new String[]{goodRunTrace});
     	dumpOutputs(results);
-    	rankByStackTraceCoverage(noMainMethodStackTrace, results, false);
+//    	rankByStackTraceCoverage(noMainMethodStackTrace, results, false);
+    	rankByStackTraceDistanceInSlice(noMainMethodStackTrace, results, false);
 	}
     
     //11 runAnalyses
+    // 17 use stack info
     public void testDiagnoseWithCrashingTrace4() {
     	List<ConfDiagnosisOutput> results = this.doDiagnosis(DiagnosisType.CRASHING, noSuchAnalysis, noSuchAnalysisStackTrace,
     			new String[]{goodRunTrace});
     	dumpOutputs(results);
-    	rankByStackTraceCoverage(noSuchAnalysisStackTrace, results, false);
+//    	rankByStackTraceCoverage(noSuchAnalysisStackTrace, results, false);
+    	rankByStackTraceDistanceInSlice(noSuchAnalysisStackTrace, results, false);
 	}
     
     //9, printRels
+    //noise ranked before: chord.project.analyses.BasicDynamicAnalysisrunBefore,
+    // chord.program.Program : runBefore  ---  chord.analyses.method.RelExtraEntryPoints : extraMethodsList
+    // --- chord.project.Config : instrSchemeFileName ---  chord.project.Config : traceKind 
+    // --- chord.project.Config : instrKind --- chord.project.Config : dlogAnalysisPathName
+    // ---chord.project.Config : javaAnalysisPathName ---
+    //ranked 15
     public void testDiagnoseWithCrashingTrace5() {
     	List<ConfDiagnosisOutput> results = this.doDiagnosis(DiagnosisType.CRASHING, printInvalidRels, printInvalidRelsStackTrace, 
     			new String[]{goodRunTrace});
     	dumpOutputs(results);
-    	rankByStackTraceCoverage(printInvalidRelsStackTrace, results, false);
+    	//rankByStackTraceCoverage(printInvalidRelsStackTrace, results, false);
+    	rankByStackTraceDistanceInSlice(printInvalidRelsStackTrace, results, false);
 	}
     
     //22 userClassPathName
+    //rank 8
     public void testDiagnoseWithCrashingTrace6() {
     	List<ConfDiagnosisOutput> results = this.doDiagnosis(DiagnosisType.CRASHING, wrongClassPath, wrongClassPathStackTrace,
     			new String[]{goodRunTrace});
     	dumpOutputs(results);
-    	rankByStackTraceCoverage(wrongClassPathStackTrace, results, false);
+//    	rankByStackTraceCoverage(wrongClassPathStackTrace, results, false);
+    	rankByStackTraceDistanceInSlice(wrongClassPathStackTrace, results, false);
 	}
+    
+    
+    
     /**
      * Use the stack trace
      * */

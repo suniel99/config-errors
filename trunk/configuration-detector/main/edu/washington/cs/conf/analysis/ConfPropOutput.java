@@ -4,9 +4,11 @@ import instrument.Globals;
 
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import com.ibm.wala.ipa.callgraph.CGNode;
@@ -27,6 +29,11 @@ public class ConfPropOutput implements Serializable {
 	
 	//set is not serializable
 	public final Set<IRStatement> statements;
+	
+	//not used in equals and compare
+	public final Map<IRStatement, Integer> stmtDistances = new LinkedHashMap<IRStatement, Integer>();
+	
+	private ConfigurationSlicer slicer = null;
 	
 	public ConfPropOutput(ConfEntity conf, Collection<IRStatement> stmts) {
 		this(conf, stmts, null);
@@ -51,6 +58,26 @@ public class ConfPropOutput implements Serializable {
 	
 	public ConfEntity getConfEntity() {
 		return conf;
+	}
+	
+	public int getSlicingDistance(IRStatement irs) {
+		Utils.checkTrue(stmtDistances.containsKey(irs));
+		return stmtDistances.get(irs);
+	}
+	
+	public void setSlicingDistance(IRStatement irs, int distance) {
+		Utils.checkTrue(statements.contains(irs));
+		Utils.checkTrue(distance > 0);
+		this.stmtDistances.put(irs, distance);
+	}
+	
+	public void setConfigurationSlicer(ConfigurationSlicer slicer) {
+		Utils.checkNotNull(slicer);
+		this.slicer = slicer;
+	}
+	
+	public ConfigurationSlicer getConfigurationSlicer() {
+		return this.slicer;
 	}
 	
 	//the full name is in the form of: packagename.classname.methodname
