@@ -1,9 +1,7 @@
 package test.slice.examples;
 
-import java.io.File;
 import java.io.PrintStream;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
 public class SimpleListExample {
@@ -18,11 +16,17 @@ public class SimpleListExample {
 
 	private static List<String> addToList(String input) {
 		List<String> list = new ArrayList<String>();
-		list.add(str1 + "  ");
+//		String l = SimpleListExample.str1 + "  "; //true ? str1 : " ";
+//		list.add(l);
+		list.add(SimpleListExample.str1);
 		list.add("   ");
 		//if (str2 != null) {
-			list.add(str2 + "    ");
+			list.add(SimpleListExample.str2 + "    ");
 		//}
+		System.out.println("hello");
+		String local = "+";
+		list.add(local + " ");
+		String local2 = local + " variable";
 //		irrelevantCall(input);
 //		usePrintOut();
 		return list;
@@ -30,13 +34,13 @@ public class SimpleListExample {
 	
 	private static void usePrintOut() {
 		PrintStream out = System.out;
-		out.println(str1);
+		out.println(SimpleListExample.str1);
 		out.println("  ");
-		out.println(str2);
+		out.println(SimpleListExample.str2 + "   ");
 		List<String> list = new ArrayList<String>();
 		list.add("   ");
-		if (str2 != null) {
-			list.add(str2 + "    ");
+		if (SimpleListExample.str2 != null) {
+			list.add(SimpleListExample.str2 + "    ");
 		}
 	}
 	
