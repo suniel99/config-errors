@@ -157,6 +157,59 @@ Generally, locating crashing errors are much easier than locating non-crashing e
 	    at chord.project.Main.run(Main.java:82)
 	    at chord.project.Main.main(Main.java:50)
 	    
+	    
+7. no main class
+      java -cp ./chord-no-trace-instrumented.jar;../../bin
+     -Dchord.class.path=../../../bin;classes/
+     -Dchord.work.dir=./simpletest
+     -Dchord.run.analyses=datarace-java
+     -Dchord.main.class=notexist   [an exist class but does not contain main method]
+     chord.project.Boot
+     
+     java.lang.Error: ERROR: RTA: Could not find main class 'test.Client' or main method in that class.
+	at chord.project.Messages.fatal(Messages.java:24)
+	at chord.program.RTA.build(RTA.java:198)
+	at chord.program.RTA.getMethods(RTA.java:144)
+	at chord.program.Program.buildMethods(Program.java:174)
+	at chord.program.Program.getMethod(Program.java:514)
+	at chord.program.Program.getMethod(Program.java:490)
+	at chord.program.Program.getMainMethod(Program.java:526)
+	at chord.analyses.method.DomM.init(DomM.java:38)
+	at chord.project.analyses.ProgramDom.run(ProgramDom.java:42)
+	at chord.project.ClassicProject.runTask(ClassicProject.java:393)
+	at chord.project.ClassicProject.runTask(ClassicProject.java:390)
+	at chord.project.ClassicProject.runTask(ClassicProject.java:390)
+	at chord.project.ClassicProject.runTask(ClassicProject.java:414)
+	at chord.analyses.datarace.DataraceAnalysis.run(DataraceAnalysis.java:90)
+	at chord.project.ClassicProject.runTask(ClassicProject.java:393)
+	at chord.project.ClassicProject.runTask(ClassicProject.java:414)
+	at chord.project.ClassicProject.run(ClassicProject.java:107)
+	at chord.project.Main.run(Main.java:78)
+	at chord.project.Main.main(Main.java:50)
+     
+8.  no context kind
+   java -cp ./chord-no-trace-instrumented.jar;../../bin
+     -Dchord.class.path=../../../bin;classes/
+     -Dchord.work.dir=./simpletest
+     -Dchord.run.analyses=datarace-java
+     -Dchord.ctxt.kind= notexist
+     chord.project.Boot
+     
+9
+   print nonexist class
+   java -cp ./chord-no-trace-instrumented.jar;../../bin
+     -Dchord.class.path=../../../bin;classes/
+     -Dchord.work.dir=./simpletest
+     -Dchord.run.analyses=datarace-java
+     -Dchord.print.classes= notexis [non-existing one]
+     chord.project.Boot
+     
+     java.lang.Error: ERROR: Program: Could not find class 'notexist'.
+	at chord.project.Messages.fatal(Messages.java:24)
+	at chord.program.Program.printClass(Program.java:810)
+	at chord.project.Main.run(Main.java:74)
+	at chord.project.Main.main(Main.java:50)
+   
 
 3 cases described in the ASE have vague description. We cannot reproduce them:
 

@@ -33,9 +33,9 @@ public class TestCrashingErrorDiagnosis extends TestCase {
 	public String invalidScopeKindStackTrace
        = "./experiments/jchord-crashing-error/chord-crash-invalid-scope-kind-stacktrace.txt";
 	
-	public String noMainMethod
+	public String noMainClass
        = "./experiments/jchord-crashing-error/chord-crash-no-main-method.txt";
-	public String noMainMethodStackTrace
+	public String noMainClassStackTrace
        = "./experiments/jchord-crashing-error/chord-crash-no-main-method-stacktrace.txt";
 	
 	public String noSuchAnalysis
@@ -53,6 +53,22 @@ public class TestCrashingErrorDiagnosis extends TestCase {
 	public String wrongClassPathStackTrace
        = "./experiments/jchord-crashing-error/chord-crash-wrong-class-path-stacktrace.txt";
 	
+	public String noMainMethodInClass
+	   = "./experiments/jchord-crashing-error/chord-crash-no-main-method.txt";
+	public String noMainMethodInClassStackTrace
+	   = "./experiments/jchord-crashing-error/chord-crash-no-main-method-stacktrace.txt";
+	
+	public String noCtxtKind
+	   = "./experiments/jchord-crashing-error/chord-crash-no-ctxt-kind.txt";
+	public String noCtxtKindStackTrace
+	   = "./experiments/jchord-crashing-error/chord-crash-no-ctxt-kind-stacktrace.txt";
+	
+	public String printNoClass
+	   = "./experiments/jchord-crashing-error/chord-crash-print-no-class.txt";
+	public String printNoClassStackTrace
+	   = "./experiments/jchord-crashing-error/chord-crash-print-no-class-stacktrace.txt";
+	
+	
 	//the good run
 	public String goodRunTrace
 	   = "./experiments/jchord-database/simpletest-has-race.txt";
@@ -60,7 +76,7 @@ public class TestCrashingErrorDiagnosis extends TestCase {
 	public void testCalcDistances() {
 		CommonUtils.compareTraceDistance(goodRunTrace, invalidReflectKind, DistanceType.INTERPRODUCT, 0.9998555f);
 		CommonUtils.compareTraceDistance(goodRunTrace, invalidScopeKind, DistanceType.INTERPRODUCT, 0.6472167f);
-		CommonUtils.compareTraceDistance(goodRunTrace, noMainMethod, DistanceType.INTERPRODUCT, 0.6461625f);
+		CommonUtils.compareTraceDistance(goodRunTrace, noMainClass, DistanceType.INTERPRODUCT, 0.6461625f);
 		CommonUtils.compareTraceDistance(goodRunTrace, noSuchAnalysis, DistanceType.INTERPRODUCT, 0.6580911f);
 		CommonUtils.compareTraceDistance(goodRunTrace, printInvalidRels, DistanceType.INTERPRODUCT, 0.10745859f);
 		CommonUtils.compareTraceDistance(goodRunTrace, wrongClassPath, DistanceType.INTERPRODUCT, 0.6448741f);
@@ -82,7 +98,7 @@ public class TestCrashingErrorDiagnosis extends TestCase {
     
     //rank 23 for mainClassName
     public void testUsingNonCrashingDiagnosis3() {
-    	List<ConfDiagnosisOutput> results = this.doDiagnosis(DiagnosisType.NONCRASHING, noMainMethod, noMainMethodStackTrace,
+    	List<ConfDiagnosisOutput> results = this.doDiagnosis(DiagnosisType.NONCRASHING, noMainClass, noMainClassStackTrace,
     			new String[]{goodRunTrace});
     	dumpOutputs(results);
 	}
@@ -104,6 +120,27 @@ public class TestCrashingErrorDiagnosis extends TestCase {
     //rank 22 userClassPathName
     public void testUsingNonCrashingDiagnosis6() {
     	List<ConfDiagnosisOutput> results = this.doDiagnosis(DiagnosisType.NONCRASHING, wrongClassPath, wrongClassPathStackTrace,
+    			new String[]{goodRunTrace});
+    	dumpOutputs(results);
+	}
+    
+    //24 mainClassName
+    public void testUsingNonCrashingDiagnosis7() {
+    	List<ConfDiagnosisOutput> results = this.doDiagnosis(DiagnosisType.NONCRASHING, noMainMethodInClass, noMainMethodInClassStackTrace,
+    			new String[]{goodRunTrace});
+    	dumpOutputs(results);
+	}
+    
+    //FIXME not runnable now
+    public void testUsingNonCrashingDiagnosis8() {
+    	List<ConfDiagnosisOutput> results = this.doDiagnosis(DiagnosisType.NONCRASHING, noCtxtKind, noCtxtKindStackTrace,
+    			new String[]{goodRunTrace});
+    	dumpOutputs(results);
+	}
+    
+    //9 printClasses
+    public void testUsingNonCrashingDiagnosis9() {
+    	List<ConfDiagnosisOutput> results = this.doDiagnosis(DiagnosisType.NONCRASHING, printNoClass, printNoClassStackTrace,
     			new String[]{goodRunTrace});
     	dumpOutputs(results);
 	}
@@ -274,11 +311,11 @@ public class TestCrashingErrorDiagnosis extends TestCase {
 //    chord.project.Config.traceKind
     //
     public void testDiagnoseWithCrashingTrace3() {
-    	List<ConfDiagnosisOutput> results = this.doDiagnosis(DiagnosisType.CRASHING, noMainMethod, noMainMethodStackTrace,
+    	List<ConfDiagnosisOutput> results = this.doDiagnosis(DiagnosisType.CRASHING, noMainClass, noMainClassStackTrace,
     			new String[]{goodRunTrace});
     	dumpOutputs(results);
 //    	rankByStackTraceCoverage(noMainMethodStackTrace, results, false);
-    	rankByStackTraceDistanceInSlice(noMainMethodStackTrace, results, false);
+    	rankByStackTraceDistanceInSlice(noMainClassStackTrace, results, false);
 	}
     
     //11 runAnalyses
@@ -316,6 +353,28 @@ public class TestCrashingErrorDiagnosis extends TestCase {
     	rankByStackTraceDistanceInSlice(wrongClassPathStackTrace, results, false);
 	}
     
+    //3 mainClassName ranked 3 with stack trace info
+    public void testDiagnoseWithCrashingTrace7() {
+    	List<ConfDiagnosisOutput> results = this.doDiagnosis(DiagnosisType.CRASHING, noMainMethodInClass, noMainMethodInClassStackTrace,
+    			new String[]{goodRunTrace});
+    	dumpOutputs(results);
+    	rankByStackTraceDistanceInSlice(noMainMethodInClassStackTrace, results, false);
+	}
+    
+    //FIXME not runnable now
+    public void testDiagnoseWithCrashingTrace8() {
+    	List<ConfDiagnosisOutput> results = this.doDiagnosis(DiagnosisType.CRASHING, noCtxtKind, noCtxtKindStackTrace,
+    			new String[]{goodRunTrace});
+    	dumpOutputs(results);
+	}
+    
+    //9 printClasses , drop to 15 when using distance
+    public void testDiagnoseWithCrashingTrace9() {
+    	List<ConfDiagnosisOutput> results = this.doDiagnosis(DiagnosisType.CRASHING, printNoClass, printNoClassStackTrace,
+    			new String[]{goodRunTrace});
+    	dumpOutputs(results);
+    	rankByStackTraceDistanceInSlice(printNoClassStackTrace, results, false);
+	}
     
     
     /**
@@ -339,10 +398,10 @@ public class TestCrashingErrorDiagnosis extends TestCase {
     
     //26 mainClassName
     public void testDiagnoseWithCrashingStackTrace3() {
-    	List<ConfDiagnosisOutput> results = this.doDiagnosis(DiagnosisType.STACKTRACE, noMainMethod, noMainMethodStackTrace,
+    	List<ConfDiagnosisOutput> results = this.doDiagnosis(DiagnosisType.STACKTRACE, noMainClass, noMainClassStackTrace,
     			new String[]{goodRunTrace});
     	dumpOutputs(results);
-    	rankByStackTraceCoverage(noMainMethodStackTrace, results);
+    	rankByStackTraceCoverage(noMainClassStackTrace, results);
 	}
     
     //13 runAnalyses
@@ -367,5 +426,26 @@ public class TestCrashingErrorDiagnosis extends TestCase {
     			new String[]{goodRunTrace});
     	dumpOutputs(results);
     	rankByStackTraceCoverage(wrongClassPathStackTrace, results, false);
+	}
+    
+  //27 mainClassName
+    public void testDiagnoseWithCrashingStackTrace7() {
+    	List<ConfDiagnosisOutput> results = this.doDiagnosis(DiagnosisType.STACKTRACE, noMainMethodInClass, noMainMethodInClassStackTrace,
+    			new String[]{goodRunTrace});
+    	dumpOutputs(results);
+	}
+    
+    //FIXME not runnable now
+    public void testDiagnoseWithCrashingStackTrace8() {
+    	List<ConfDiagnosisOutput> results = this.doDiagnosis(DiagnosisType.STACKTRACE, noCtxtKind, noCtxtKindStackTrace,
+    			new String[]{goodRunTrace});
+    	dumpOutputs(results);
+	}
+    
+    //14 printClasses
+    public void testDiagnoseWithCrashingStackTrace9() {
+    	List<ConfDiagnosisOutput> results = this.doDiagnosis(DiagnosisType.STACKTRACE, printNoClass, printNoClassStackTrace,
+    			new String[]{goodRunTrace});
+    	dumpOutputs(results);
 	}
 }
