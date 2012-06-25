@@ -73,6 +73,8 @@ public class TestCrashingErrorDiagnosis extends TestCase {
 	public String goodRunTrace
 	   = "./experiments/jchord-database/simpletest-has-race.txt";
 	
+	public String goodCtxtRun = "./experiments/jchord-database/ctxtsanalysis_default.txt";
+	
 	public void testCalcDistances() {
 		CommonUtils.compareTraceDistance(goodRunTrace, invalidReflectKind, DistanceType.INTERPRODUCT, 0.9998555f);
 		CommonUtils.compareTraceDistance(goodRunTrace, invalidScopeKind, DistanceType.INTERPRODUCT, 0.6472167f);
@@ -178,15 +180,6 @@ public class TestCrashingErrorDiagnosis extends TestCase {
     
     void dumpOutputs(List<ConfDiagnosisOutput> results) {
     	System.out.println("Number: " + results.size());
-//    	Set<String> outputs = new LinkedHashSet<String>();
-//    	for(ConfDiagnosisOutput result : results) {
-//    		outputs.add(result.getConfEntity().toString());
-//    	}
-//    	System.out.println("------------pure ranking------------");
-//    	int count = 1;
-//    	for(String outputName : outputs) {
-//    		System.out.println((count++) + ". " + outputName);
-//    	}
     	System.out.println("----------- explanation ------------");
     	for(int i = 0; i < results.size(); i++) {
     		ConfDiagnosisOutput o = results.get(i);
@@ -221,6 +214,10 @@ public class TestCrashingErrorDiagnosis extends TestCase {
     }
     
     void rankByStackTraceDistanceInSlice(String stackTraceFile, Collection<ConfDiagnosisOutput> outputs, boolean pruned) {
+    	rankByStackTraceDistanceInSlice(stackTraceFile, outputs, pruned, false);
+    }
+    
+    void rankByStackTraceDistanceInSlice(String stackTraceFile, Collection<ConfDiagnosisOutput> outputs, boolean pruned, boolean noLib) {
 
     	Map<Float, List<ConfDiagnosisOutput>> multiRanking = new LinkedHashMap<Float, List<ConfDiagnosisOutput>>();
     	for(ConfDiagnosisOutput output : outputs) {
@@ -240,7 +237,7 @@ public class TestCrashingErrorDiagnosis extends TestCase {
     		System.out.println();
     	}
     	
-    	//then sort in each multi-ranking
+    	//then sort each multi-ranking
     	Collection<ConfPropOutput> slices = TestSliceJChordConfigOptions.sliceOptionsInJChord(ChordExpUtils.getChordConfList(), pruned);
     	String[] stackTraces = Files.readWholeNoExp(stackTraceFile).toArray(new String[0]);
     	for(Float f : multiRanking.keySet()) {
@@ -250,11 +247,12 @@ public class TestCrashingErrorDiagnosis extends TestCase {
     		//roughly
     		Map<ConfDiagnosisOutput, Integer> map = new LinkedHashMap<ConfDiagnosisOutput, Integer>();
     		for(ConfDiagnosisOutput output : list) {
-    			Map<String, Integer> distance = CrashingErrorDiagnoser.computeStackTraceDistance(slices, output, stackTraces);
+    			Map<String, Integer> distance = CrashingErrorDiagnoser.computeStackTraceDistance(slices, output, stackTraces, noLib);
     			for(String m : distance.keySet()) {
     				Integer d = distance.get(m);
     				if(d != Integer.MAX_VALUE) {
     					map.put(output, d);
+    					System.out.println(" >> distance: " + output.getConfEntity().getFullConfName() + ", : " + d);
     					break;
     				}
     			}
@@ -271,14 +269,6 @@ public class TestCrashingErrorDiagnosis extends TestCase {
     		}
     		System.out.println();
     	}
-    	
-//    	for(ConfDiagnosisOutput output : outputs) {
-//    		Map<String, Integer> distance = CrashingErrorDiagnoser.computeStackTraceDistance(slices, output, stackTraces);
-//    		System.out.println(output.getConfEntity());
-//    		for(String m : distance.keySet()) {
-//    			System.out.println("   " + m + " : " + distance.get(m));
-//    		}
-//    	}
     }
     
     /**
@@ -362,9 +352,16 @@ public class TestCrashingErrorDiagnosis extends TestCase {
 	}
     
     //FIXME not runnable now
+    //rank 1
     public void testDiagnoseWithCrashingTrace8() {
     	List<ConfDiagnosisOutput> results = this.doDiagnosis(DiagnosisType.CRASHING, noCtxtKind, noCtxtKindStackTrace,
-    			new String[]{goodRunTrace});
+    			new String[]{this.goodCtxtRun}); //NOTE a diff ctxt run
+    	dumpOutputs(results);
+	}
+    
+    public void testDiagnoseWithCrashingTrace8_1() {
+    	List<ConfDiagnosisOutput> results = this.doDiagnosis(DiagnosisType.CRASHING, noCtxtKind, noCtxtKindStackTrace,
+    			new String[]{this.goodRunTrace}); //NOTE a diff ctxt run
     	dumpOutputs(results);
 	}
     
@@ -373,7 +370,7 @@ public class TestCrashingErrorDiagnosis extends TestCase {
     	List<ConfDiagnosisOutput> results = this.doDiagnosis(DiagnosisType.CRASHING, printNoClass, printNoClassStackTrace,
     			new String[]{goodRunTrace});
     	dumpOutputs(results);
-    	rankByStackTraceDistanceInSlice(printNoClassStackTrace, results, false);
+    	rankByStackTraceDistanceInSlice(printNoClassStackTrace, results, false, true);
 	}
     
     

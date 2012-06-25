@@ -33,7 +33,7 @@ public class TestSliceJChordConfigOptions extends TestCase {
 		for(ConfEntity conf : jchordConfList) {
 			System.out.println(conf);
 		}
-		assertEquals(76, jchordConfList.size());
+		assertEquals(77, jchordConfList.size());
 	}
 	
 	public void testSliceOptionsInJChordNoPrune() {

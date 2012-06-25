@@ -107,6 +107,8 @@ public class ChordExpUtils {
 		
 		ConfEntity entity77 = new ConfEntity("chord.analyses.alias.CtxtsAnalysis", "kobj_K", true);
 		ConfEntity entity78 = new ConfEntity("chord.analyses.alias.CtxtsAnalysis", "kcfa_K", true);
+		ConfEntity entity79 = new ConfEntity("chord.analyses.alias.CtxtsAnalysis", "ctxtKind", true);
+		
 		
 		List<ConfEntity> list = new LinkedList<ConfEntity>();
 		
@@ -188,6 +190,7 @@ public class ChordExpUtils {
 		list.add(entity76);
 		list.add(entity77);
 		list.add(entity78);
+		list.add(entity79);
 		
 		return list;
 	}
