@@ -60,6 +60,25 @@ on the reference computer for which a solution is known.
 
 \ourtool helps mitigate such problems.
 
+We have developed a tool, called \ourtool, that uses xxx
+to identify the likely root cause of a configuration error.
+When a user or administrator wishes to diagnose a
+problem such as a crash or incorrect output, she
+reproduces the problem xxxxon a platform $\blacksquare$
+where \ourtool tracks the causal dependencies between
+configuration options and the program behavior.
+\ourtool produces an ordered list of the 
+configuration options most likely to have caused the exhibited
+problem.
+
+While xxx analysis takes a few minutes for a complex application,
+automated error diagnosis is still considerably faster and
+less labor-intensive than manual debugging or searching
+through other resources.
+
+\ourtool tracks dependencies introduced by both data and
+control flow. It propagates dependencies among xxx
+
 
 Most prior work on configuration debugging has relied
 on large user communities or on modifying the program’s execution
@@ -99,6 +118,22 @@ wuith a given option, as is ranking possible diagnoses.
 %\noindent \textbf{\textit{Evaluations.}} 
 
 \subsection{Evaluation}
+
+Our results show that \ourtool identifies the correct
+root causes of most configuration errors. xxxx top 3,
+it lists the correct root cause as the top 3 xxx.
+\ourtool takes less than xxx minutes for diagnosing
+one configuration error, making it an attractive alternative
+to manual debugging.
+
+\ourtool outputs an ordered list of probable root causes.
+Each entry in the list is a user-settle configuration option;
+our results show that \ourtool typically outputs
+the actuall responsible configuration option as the top 3 in the list.
+
+This allows \ourtool user to focus on a few specific configuration
+options when deciding how to fix the problem. By finding the
+needle in the haystack, \ourtool can be an attractive ...
 
 %\vspace{1mm}
 %\noindent \textbf{\textit{Contributions.}}
