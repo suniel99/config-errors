@@ -351,7 +351,6 @@ public class TestCrashingErrorDiagnosis extends TestCase {
     	rankByStackTraceDistanceInSlice(noMainMethodInClassStackTrace, results, false);
 	}
     
-    //FIXME not runnable now
     //rank 1
     public void testDiagnoseWithCrashingTrace8() {
     	List<ConfDiagnosisOutput> results = this.doDiagnosis(DiagnosisType.CRASHING, noCtxtKind, noCtxtKindStackTrace,
