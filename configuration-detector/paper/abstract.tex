@@ -1,15 +1,17 @@
 \begin{abstract}
-Errors from software misconfiguration are often time-consuming
-and difficult to diagnosize. In this paper, we present a
-technique %helps solve these problems by suggesting
-to identify the root cause of configuration errors,
+Software configuration errors are often time-consuming
+and difficult to diagnosize. In this paper, we focus
+specifically on such configuration errors,
 in which the application code is correct, but the software
 is inappropriately configured so that it does
-behave as desired. %Unlike existing approaches,
-Our technique is fully-automated: it does not
+behave as desired. 
+We present a technique (and its tool implementation,
+called \ourtool) to identify the root cause of configuration errors.
+Our technique differs from existing approaches in
+two aspects: it is fully-automated and does \textit{not}
 require users to provide a testing oracle (to check whether
-the software functions correctly) and is
-capable to diagnose both crashing and non-crashing
+the software functions correctly); and it is
+capable to diagnose both \textit{crashing} and \textit{non-crashing}
 errors.
 
 %We are focusing specifically on configuration errors, in which the application
@@ -26,11 +28,15 @@ errors.
 %$\blacksquare$ say a few of our tool's technique
 
 
-We have built a tool called \ourtool for Java software.
-In an evaluation on \noncrash real-world non-crashing and \crash crashing configuration
-errors, \ourtool identifies the source of the misconfiguration
+%We have built a tool called \ourtool for Java software.
+We evaluated \ourtool on \noncrash non-crashing configuration errors
+and \crash crashing configuration errors from
+\subjectnum real-world systems. \ourtool identifies the
+source of the misconfiguration
 as the top 3 root cause for \topnum out of all \errors errors,
-showing good scalability and making it a promising alternative to manual debugging.
+%showing its usefulness in error diagnosis.
+%showing good scalability and
+making it a promising solution in error diagnosis. %alternative to manual debugging.
 
 %that xxx -- \ourtool uses these
 %xxx to link the erroneous behavior to specific configuration options. Our
