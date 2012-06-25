@@ -1,12 +1,39 @@
 \begin{abstract}
-Software configuration errors are often time-consuming and enormously
-frustrating to diagnosize. In this paper, we show  xxx helps solve
-these problems by pinpointing the root cause of configuration errors.
-$\blacksquare$ say a few of our tool's technique
+Errors from software misconfiguration are often time-consuming
+and difficult to diagnosize. In this paper, we present a
+technique %helps solve these problems by suggesting
+to identify the root cause of configuration errors,
+in which the application code is correct, but the software
+is inappropriately configured so that it does
+behave as desired. %Unlike existing approaches,
+Our technique is fully-automated: it does not
+require users to provide a testing oracle (to check whether
+the software functions correctly) and is
+capable to diagnose both crashing and non-crashing
+errors.
+
+%We are focusing specifically on configuration errors, in which the application
+%code is correct, but the program is inappropriately configured so that
+%it does not behave as desired. For instance, a mistake in a configuration
+%option passed in command line may lead software to crash, or simply produce
+%incorrect output.
+
+%uses static analysis,
+%uses dynamic profiling
+%, and uses statistical inference to link the observed
+%erroneous behaviors to specific configuration options.
+
+%$\blacksquare$ say a few of our tool's technique
 
 
-We have built a tool called \ourtool that xxx -- \ourtool uses these
-xxx to link the erroneous behavior to specific configuration options. Our
-results using \ourtool to solve misconfigurations in xxx, xxx, xxx show
-that \ourtool identifies the soruce of the misconfiguration xxxx.
+We have built a tool called \ourtool for Java software.
+In an evaluation on \noncrash real-world non-crashing and \crash crashing configuration
+errors, \ourtool identifies the source of the misconfiguration
+as the top 3 root cause for \topnum out of all \errors errors,
+showing good scalability and making it a promising alternative to manual debugging.
+
+%that xxx -- \ourtool uses these
+%xxx to link the erroneous behavior to specific configuration options. Our
+%results using \ourtool to solve misconfigurations in xxx, xxx, xxx show
+%that \ourtool identifies the soruce of the misconfiguration xxxx.
 \end{abstract}

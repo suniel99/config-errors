@@ -23,3 +23,8 @@ determine whether it is a branching statement
 the calling context. Instrument the program entry point, exit, point, etc,
 since useing the native method to get a stack trace incurs.
 becomes heavy weight, and not usable in practice.
+
+We do not analyze inside the standard library. Instead, we treat library
+methods as opaque and treat references to library-defined types as
+primitives. ... It is unlikely that a configuration option set on
+the client software would impact its dependent library behaviors.

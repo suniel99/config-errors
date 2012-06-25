@@ -55,6 +55,12 @@ clustering-based~\cite{Dickinson:2001:FFC},
 error explanation~\cite{Groce:2006:EED},
 and approach combining static and dynamic information~\cite{Holmes:2011:IPT, Zhang:2008:EIF}.
 
+Delta debugging is an algorithm for isolating software error causes. It relies on
+a working state, a broken state, and a set of potential changes. However, it
+cannot diagnose errors where no working configuration is available for
+a particular site. It also pushes more of the work of troubleshooting
+onto the user site.
+
 
 \textbf{Other related work.} This category includes inferring configuration options
 from source code with static analysis~\cite{Rabkin:2011:SEP}, 

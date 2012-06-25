@@ -1,11 +1,13 @@
 \section{Evaluation}
+\label{sec:evaluation}
 
 \subsection{Research Questions}
 
 We aim to answer the following research questions:
 
 \begin{itemize}
-\item Is our technique useful in explaining software misconfiguration errors?
+\item Is our technique useful in diagnosing software configuration errors, including
+crashing and non-crashing errors?
 \item Is the information provided by our technique more useful than the statement-level
 profiling and the method-level dynamic invariant detection?
 \item Which factors (how much) can affect our technique's accuracy?
@@ -17,43 +19,61 @@ We collected a number of subject programs and their mis-configuration problems i
 Table~\ref{tab:subjects}.
 
 \begin{table}[t]
-\setlength{\tabcolsep}{.14\tabcolsep}
-\begin{tabular}{|c|c|c|c|l|}
+%\setlength{\tabcolsep}{.84\tabcolsep}
+\begin{tabular}{lccc}
 \hline
- Program & LOC & \#Config & \#Traces & Description \\
+ Program (version) & LOC & \#Conf Options & \#Profiles\\
  \hline
-\hline
-\multicolumn{5}{|l|}{Non-crashing Configuration Problems}   \\
  \hline
- Randoop & & &&  No tests generated \\
-\hline
- Weka &  & && Poor performance \\
- &  & && of the decision tree \\
-\hline
- Chord & & && No datarace reported \\
-\hline
- Synoptic & && & Produce an incorrect model \\
-\hline
- Soot &  &  && Source code line number \\
- &  &  && is missing \\
-\hline
-\hline
-\multicolumn{5}{|l|}{Crashing Configuration Problems}   \\
-\hline
-& & & &\\
-\hline
-& & & &\\
-\hline
-& & & &\\
+ Randoop & & & \\
+ Weka &  & & \\
+ JChord & & & \\
+ Synoptic & && \\
+ Soot &  &  & \\
 \hline
 \end{tabular}
 
-\Caption{{\label{tab:subjects} Subject programs and their configuration problems. Column ``\#Configs''
-shows the number available configuration options. Column ``\#Traces''
-shows the number of traces in the constructed database.}}
+
+\Caption{{\label{tab:subjects} Subject programs. Column ``\#Conf Options''
+shows the number available configuration options. Column ``\#Profiles''
+shows the number of profiles in the constructed database.}}
 \end{table}
 
 Need to say how to collect representative profiles
+
+\begin{table}[t]
+\setlength{\tabcolsep}{.24\tabcolsep}
+\begin{tabular}{|l|l|l|}
+\hline
+ Error ID & Program & Description \\
+ \hline
+\hline
+\multicolumn{3}{|l|}{Non-crashing errors}   \\
+ \hline
+ 1 & \randoop & No tests generated for Nanoxml\\
+ 2 & \weka & Low accuracy of the decision tree\\
+ 3 & \jchord & No datarace reported for a racy program\\
+ 4 & \synoptic & Generate an incorrect model\\
+ 5 & \soot & Source code line number is missing\\
+\hline
+\hline
+\multicolumn{3}{|l|}{Crashing errors (taken from~\cite{})}   \\
+\hline
+ 6 & \jchord & No main class is specified\\
+ 7 & \jchord& No main method in the entry class\\
+ 8 & \jchord & Running a nonexistent analysis\\
+ 9 & \jchord & Invalid context-sensitive analysis name\\
+ 10 & \jchord & Printing nonexistent relations\\
+ 11 & \jchord & Disassembling nonexistent classes\\
+ 12 & \jchord & Invalid scope kind\\
+ 13 & \jchord & Invalid reflection kind\\
+ 14 & \jchord & Wrong classpath\\
+\hline
+\end{tabular}
+
+\Caption{{\label{tab:subjects} A list of \errors
+configuration errors used in our evaluation. }}
+\end{table}
 
 \subsubsection{Crashing Errors}
 
@@ -61,7 +81,7 @@ Need to say how to collect representative profiles
 
 %Use injected errors to test the technique's reliability
 
-\subsubsection{Evaluation Procedural}
+\subsection{Evaluation Procedural}
 
 Rewrite the configuration option in the form of method fields, since
 the local variable information has gone in the bytecode.
@@ -69,135 +89,65 @@ the local variable information has gone in the bytecode.
 Use 1-CFA to construct call graph, achieve much better precision
 than 0-CFA. 
 
-\subsection{Experiment Design}
+Re-writing the configuration initialization code in JChord, because
+it is defined in an add-hoc way
 
+Run examples from user manual to form the database. The effort
+can be amortized in development time.
 
+\subsection{Results}
 
-\subsubsection{Accuracy in Localizing Configuration Errors}
-
-\begin{table}[t]
-\setlength{\tabcolsep}{.84\tabcolsep}
-\begin{tabular}{|c|c|c|c|c|}
+\begin{table*}[t]
+\setlength{\tabcolsep}{.54\tabcolsep}
+\begin{tabular}{|l||l||l|l||c||c||c||c|}
 \hline
- Program & \#Similar & \#Avg Pred & \#Rank & Explanation \\
+  & & \multicolumn{2}{|c||}{Our Proposed Technique} & Full Slicing & Coverage Analysis& Invariant Analysis & ConfAnalyzer~\cite{}\\
+\cline{3-8}
+ Error ID & Reponsible Option & \#Cmp Profile & Rank  & Rank & Rank & Rank & Rank \\
  \hline
 \hline
-\multicolumn{5}{|l|}{Non-crashing Configuration Problems}   \\
+\multicolumn{8}{|l|}{Non-crashing errors}   \\
  \hline
- Randoop & &  &&  \\
-\hline
- Weka &  & & & \\
-\hline
- Chord & & & &\\
-\hline
- Synoptic & & && \\
-\hline
- Soot &  &    &&\\
+ 1 & & & & & & &N \\
+ 2 & & & & & & &N\\
+ 3 & & & & & & &N\\
+ 4 & & & & & & &N\\
+ 5 & & & & & & &N\\
 \hline
 \hline
-\multicolumn{5}{|l|}{Crashing Configuration Problems}   \\
+\multicolumn{8}{|l|}{Crashing errors (taken from~\cite{})}   \\
 \hline
-& & & &\\
-\hline
-& & & &\\
-\hline
-& & & &\\
+ 6 & & & & & & &\\
+ 7 & & & & & & &\\
+ 8 & & & & & & &\\
+ 9 & & & & & & &\\
+ 10 & & & & & & &\\
+ 11 & & & & & & &\\
+ 12 & & & & & & &\\
+ 13 & & & & & & &\\
+ 14 & & & & & & &\\
 \hline
 \end{tabular}
 
-\Caption{{\label{tab:accuracy} Results. Column ``\#Avg Pred'' shows
-the average number of affected predicates by each configuration options
-computed by our configuration propagation analysis (Section~\ref{}).
-``\#Rank'' shows the ranking of the responsible configuration
-option in the output list...}}
-\end{table}
+\Caption{{\label{tab:results} Experimental results. }}
+\end{table*}
+
+
+\subsubsection{Accuracy in Diagnosing Configuration Errors}
+
 
 Are the ranked configurations useful for misconfiguration error diagnosis?
 We examine the ranked configurations to see how well they can explain the behavior.
 
-\noindent \textbf{Comparison with Existing Approach.}
-The ASE paper. Only handles crashing errors.
+%\noindent \textbf{Comparison with Alternative Approaches.}
+%The ASE paper. Only handles crashing errors.
 
-\subsubsection{Sensitivy to the Inputs}
+Need to explain each configuration error
 
-\begin{table}[t]
-\setlength{\tabcolsep}{.84\tabcolsep}
-\begin{tabular}{|c|c|c|c|}
-\hline
- Program & Most Similar One& Least Similar One& Random \\
- \hline
-\hline
-\multicolumn{4}{|l|}{Non-crashing Configuration Problems}   \\
- \hline
- Randoop & & &   \\
-\hline
- Weka &  & & \\
-\hline
- Chord & & & \\
-\hline
- Synoptic & & &  \\
-\hline
- Soot &  &  &  \\
-\hline
-\hline
-\multicolumn{4}{|l|}{Crashing Configuration Problems}   \\
-\hline
-& & & \\
-\hline
-& & & \\
-\hline
-& & & \\
-\hline
-\end{tabular}
 
-\Caption{{\label{tab:accuracy} Results. Use three settings:
-the most similar one trace, the least similar one, and randomly
-select XXX number of traces. }}
-\end{table}
+\subsubsection{Comparison with Alternative Approaches}
 
-What would the technique produce when feeding it with different inputs (e.g.,
-radically different inputs instead of similar ones)?
-
-In our approach, we first select a set of similar profiles from the  database,
-and then to do comparison. What about just using a single trace, i.e., the
-most similar trace? the most dissimilar traces? or what about just using a set
-of random selected trace.
-
-Comparison of different distance metrics to find similar statements.
-
-\subsubsection{Comparison with Traditional Slicing}
-\begin{table}[t]
-\setlength{\tabcolsep}{.84\tabcolsep}
-\begin{tabular}{|c|c|c|}
-\hline
- Program &  \#Avg Pred & \#Rank \\
- \hline
-\hline
-\multicolumn{3}{|l|}{Non-crashing Configuration Problems}   \\
- \hline
- Randoop & &    \\
-\hline
- Weka &  &   \\
-\hline
- Chord & & \\
-\hline
- Synoptic & &  \\
-\hline
- Soot &  &    \\
-\hline
-\hline
-\multicolumn{3}{|l|}{Crashing Configuration Problems}   \\
-\hline
-& & \\
-\hline
-& & \\
-\hline
-& & \\
-\hline
-\end{tabular}
-
-\Caption{{\label{tab:slicingaccuracy} Results of using traditional slicing}}
-\end{table}
+%\subsubsection{Comparison with Traditional Slicing}
 
 How would the results change if traditional slicing~\cite{Horwitz:1988} is used
 in Section~\ref{sec:prop}?
@@ -205,42 +155,8 @@ in Section~\ref{sec:prop}?
 What about using traditional slicing for configuration propagation analysis?
 full control and data-flow information.
 
-\subsubsection{Comparison with Statement-level Profiling and Method-level Invariant Detection}
+\subsubsection{Comparison with Existing Approaches}%Statement-level Profiling and Method-level Invariant Detection}
 
-\begin{table}[t]
-\setlength{\tabcolsep}{.54\tabcolsep}
-\begin{tabular}{|c|c|c|c|}
-\hline
- & \multicolumn{3}{|c|}{Rank of the responsible option} \\
-\cline{2-4}
- Program & Statement Profile& Method-level & Our technique \\
- \hline
-\hline
-\multicolumn{4}{|l|}{Non-crashing Configuration Problems}   \\
- \hline
- Randoop & & &  \\
-\hline
- Weka &  & &  \\
-\hline
- Chord & & &  \\
-\hline
- Synoptic & & &  \\
-\hline
- Soot &  &  &  \\
-\hline
-\hline
-\multicolumn{4}{|l|}{Crashing Configuration Problems}   \\
-\hline
-& & & \\
-\hline
-& & & \\
-\hline
-& & & \\
-\hline
-\end{tabular}
-
-\Caption{{\label{tab:subjects} Comparison with statement-level and method-level .}}
-\end{table}
 
 Our technique is at the \textit{predicate}-level. What about using
 \textit{statement}-level instrumentation and \textit{method}-level dynamic invariant detection~\cite{Ernst:1999}?
@@ -256,6 +172,60 @@ The second alternative is to run the program, diff the dynamically-detected inva
 methods that have the most different invariants between 2 runs. Then, querying thin slicing to
 figure out the configuration options.
 
+Compare with statistical debugging?
+
+\subsubsection{Effects of Varying Comparison Profiles}
+
+
+\begin{table}[t]
+\setlength{\tabcolsep}{.54\tabcolsep}
+\begin{tabular}{|l|l|l|l|}
+\hline
+  & \multicolumn{3}{|c|}{Rank of the Responsible Option } \\
+  %& \multicolumn{3}{|c|}{Different Comparison Profile Selection Strategy} \\
+\cline{2-4}
+ Error ID & Most Similar& Random Selection& Least Similar\\
+ \hline
+\hline
+\multicolumn{4}{|l|}{Non-crashing errors}   \\
+ \hline
+ 1 & & &\\
+ 2 & & &\\
+ 3 & & &\\
+ 4 & & &\\
+ 5 & & &\\
+\hline
+\hline
+\multicolumn{4}{|l|}{Crashing errors (taken from~\cite{})}   \\
+\hline
+ 6 & & &\\
+ 7 & & &\\
+ 8 & & &\\
+ 9 & & &\\
+ 10 & & &\\
+ 11 & & &\\
+ 12 & & &\\
+ 13 & & &\\
+ 14 & & &\\
+\hline
+\end{tabular}
+
+\Caption{{\label{tab:subjects} A list of \errors
+configuration errors used in our evaluation. }}
+\end{table}
+
+
+
+What would the technique produce when feeding it with different inputs (e.g.,
+radically different inputs instead of similar ones)?
+
+In our approach, we first select a set of similar profiles from the  database,
+and then to do comparison. What about just using a single trace, i.e., the
+most similar trace? the most dissimilar traces? or what about just using a set
+of random selected trace.
+
+Comparison of different distance metrics to find similar statements.
+
 \subsubsection{The Effects of Increasing Context Sensitivity}
 
 When recording configuration profiles (Section~\ref{sec:profiling}), is it useful
@@ -263,10 +233,12 @@ to increase the length of calling context? Would that help improve our technique
 
 The default length is 1, we increase it to 2, 3, and then observe the difference
 
-\subsection{Discussions}
+\subsection{Experimental Discussions}
 
 \noindent \textbf{\textit{Performance.}} low time cost when when doing
 selective instrumentation, permitting the use in fielded software.
+
+The overhead, the cost of diagnosis, acceptable?
 
 \vspace{1mm}
 
