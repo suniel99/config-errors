@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.ibm.wala.ipa.slicer.NormalStatement;
 import com.ibm.wala.ipa.slicer.Statement;
 
 import edu.washington.cs.conf.analysis.ConfEntityRepository;
@@ -18,6 +19,7 @@ import edu.washington.cs.conf.diagnosis.PredicateProfileBasedDiagnoser.RankType;
 import edu.washington.cs.conf.util.Files;
 import edu.washington.cs.conf.util.Log;
 import edu.washington.cs.conf.util.Utils;
+import edu.washington.cs.conf.util.WALAUtils;
 
 /**
  * Implements a diagnoser for configuration crashing errors.
@@ -246,7 +248,13 @@ public class CrashingErrorDiagnoser {
 		return map;
 	}
 	
-	public static Map<String, Integer> computeStackTraceDistance(Collection<ConfPropOutput> confSlices, ConfDiagnosisOutput output, String[] stackTraces) {
+	public static Map<String, Integer> computeStackTraceDistance(Collection<ConfPropOutput> confSlices,
+			ConfDiagnosisOutput output, String[] stackTraces) {
+		return computeStackTraceDistance(confSlices, output, stackTraces, false);
+	}
+	
+	public static Map<String, Integer> computeStackTraceDistance(Collection<ConfPropOutput> confSlices,
+			ConfDiagnosisOutput output, String[] stackTraces, boolean noLib) {
 		Map<String, Integer> map = new LinkedHashMap<String, Integer>();
 		//in the output slice, the distance between the stack trace methods to the configuration entry
 		for(String stackTrace : stackTraces) {
@@ -263,10 +271,16 @@ public class CrashingErrorDiagnoser {
 			
 			//compute the distance
 			IRStatement stmt = null;
+			int pathLength = 0;
 			for(IRStatement irs : statements) {
 				if(irs.getMethodSig().startsWith(method) && irs.getLineNumber() == lineNum) {
+					pathLength++;
 					stmt = irs;
 					break;
+				} else {
+					if(!shouldPrune(irs.getStatement())) {
+						pathLength++;
+					}
 				}
 			}
 			int distance = Integer.MAX_VALUE;
@@ -274,8 +288,19 @@ public class CrashingErrorDiagnoser {
 				if(confSlice.getConfigurationSlicer() != null) {
 				    Statement seed = confSlice.getConfigurationSlicer().extractConfStatement(confSlice.getConfEntity());
 				    Statement target = stmt.getStatement();
-				    distance = confSlice.getConfigurationSlicer().computeDistanceInThinSlicing(seed, target);
+				    if(noLib) {
+				      //prune out all lib calls
+				      List<Statement> list = confSlice.getConfigurationSlicer().computeStatementListInThinSlicing(seed, target);
+				      List<Statement> pruned = pruneAllLibCalls(list);
+				      distance = pruned.size();
+				    } else {
+				       distance = confSlice.getConfigurationSlicer().computeDistanceInThinSlicing(seed, target);
+				    }
 				}
+			}
+			
+			if(distance != Integer.MAX_VALUE) {
+				distance = Math.min(distance, pathLength);
 			}
 			
 			map.put(stackTrace, distance);
@@ -294,5 +319,30 @@ public class CrashingErrorDiagnoser {
 		return confSlice;
 //		Utils.checkNotNull(confSlice);
 		
+	}
+	
+	static String[] skipped = new String[]{"java.", "javax.", "sun."};
+	
+	private static List<Statement> pruneAllLibCalls(Collection<Statement> coll) {
+		List<Statement> pruned = new LinkedList<Statement>();
+		for(Statement s : coll) {
+			if(shouldPrune(s)) {
+				continue;
+			} else {
+				pruned.add(s);
+			}
+		}
+		return pruned;
+	}
+	
+	private static boolean shouldPrune(Statement s) {
+		if(s instanceof NormalStatement) {
+			NormalStatement ns = (NormalStatement)s;
+			String methodCall = WALAUtils.getFullMethodName(ns.getNode().getMethod());
+			if(Utils.startWith(methodCall, skipped)) {
+				return true;
+			}
+		}
+		return false;
 	}
 }

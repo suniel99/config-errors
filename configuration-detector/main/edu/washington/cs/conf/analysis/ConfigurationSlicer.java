@@ -3,6 +3,7 @@ package edu.washington.cs.conf.analysis;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.List;
 
 
 import com.ibm.wala.classLoader.ShrikeBTMethod;
@@ -232,6 +233,11 @@ public class ConfigurationSlicer {
 		Utils.checkNotNull(slicer);
 		int distance = slicer.computeBFSDistanceInForwardSlice(seed, target);
 		return distance;
+	}
+	
+	public List<Statement> computeStatementListInThinSlicing(Statement seed, Statement target) {
+		Utils.checkNotNull(slicer);
+		return slicer.computeBFSPathInForwardSlice(seed, target);
 	}
 	
 	private void checkCG() {
