@@ -188,12 +188,24 @@ Generally, locating crashing errors are much easier than locating non-crashing e
 	at chord.project.Main.main(Main.java:50)
      
 8.  no context kind
+
+   the good run:
+      java -cp ./chord-no-trace-instrumented.jar;../../bin
+     -Dchord.class.path=../../../bin;classes/
+     -Dchord.work.dir=./simpletest
+     -Dchord.run.analyses=datarace-java
+     //-Dchord.ctxt.kind= notexist
+     chord.project.Boot
+   
+   
    java -cp ./chord-no-trace-instrumented.jar;../../bin
      -Dchord.class.path=../../../bin;classes/
      -Dchord.work.dir=./simpletest
      -Dchord.run.analyses=datarace-java
      -Dchord.ctxt.kind= notexist
      chord.project.Boot
+     
+     
      
 9
    print nonexist class

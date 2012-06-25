@@ -1,7 +1,6 @@
-java.lang.Error: ERROR: Unknown value 'notexist' for system property 'chord.ctxt.kind'; expected: [ ci cs co ]
 	at chord.project.Messages.fatal(Messages.java:24)
 	at chord.project.Config.check(Config.java:233)
-	at chord.analyses.alias.CtxtsAnalysis.run(CtxtsAnalysis.java:325)
+	at chord.analyses.alias.CtxtsAnalysis.run(CtxtsAnalysis.java:327)
 	at chord.project.ClassicProject.runTask(ClassicProject.java:393)
 	at chord.project.ClassicProject.runTask(ClassicProject.java:414)
 	at chord.project.ClassicProject.run(ClassicProject.java:107)
