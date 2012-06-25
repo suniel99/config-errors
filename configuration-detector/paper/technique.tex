@@ -9,6 +9,8 @@ by the POSIX system environment, the Java Properties API,
 and the Windows registry.
 
 
+\subsection{Overview}
+
 Figure~\ref{fig:workflow} sketches the high-level workflow of our technique.
 Our technique takes as input a program and a list of configuration options.
 It first performs a configuration propagation analysis to identify
@@ -227,9 +229,18 @@ predicate: newSequence.size() > maxsize
 Introduce the metric for ranking configurations, and its
 statistical meaning,e g., balance 2 parts
 
-\subsubsection{Non-Crashing Problems}
+\subsubsection{Selecting Peers for Execution Comparison}
 
-\subsubsection{Crashing Problems}
+\subsubsection{Diagnosing Non-Crashing Errors}
+
+\subsubsection{Diagnosing Crashing Errors}
+
+A stack trace is available.
+
+\subsubsection{Filtering Execution Noises}
+
+remove some off-by-one
+
 
 When some unexpected program behavior is observed, our technique
 attempts to explain its reason by comparing the recorded profile (denoted
@@ -268,8 +279,8 @@ predicate: newSequence.size() > maxsize
     \# true branch: 20
     \# false branch: 80
 
-configuration: repeat_heuristic
-predicate: repeat_heuristic
+configuration: repeat\_heuristic
+predicate: repeat\_heuristic
     \# evaluation: 50
     \# true branch: 50
     \# false branch: 0
@@ -285,7 +296,18 @@ of predicate \CodeIn{newSequence.size() > maxsize} deviates most, and our techni
 selects the \CodeIn{maxsize} configuration as the responsible one, and displays it to the user, suggesting he/she
 to inspect its value and re-set it.
 
-\subsection{Discussion}
+
+Finally, needs to average the results
+
+\subsection{Discussions}
+
+The fundamental differences between inputs and options
+
+why cannot delta debugging?
+
+why not store failed traces in teh database? (developers
+cannot anticipate the error behaviors)
+
 Why dynamic slicing is not usable? No seed statement, and great overhead. Using JSlicer incurs
 a great overhead. It needs to track every instruction and
 perform synchronization when dependence graph is updated.

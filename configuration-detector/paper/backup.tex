@@ -1,0 +1,143 @@
+
+\begin{table}[t]
+\setlength{\tabcolsep}{.84\tabcolsep}
+\begin{tabular}{|c|c|c|}
+\hline
+ Program &  \#Avg Pred & \#Rank \\
+ \hline
+\hline
+\multicolumn{3}{|l|}{Non-crashing Configuration Problems}   \\
+ \hline
+ Randoop & &    \\
+\hline
+ Weka &  &   \\
+\hline
+ Chord & & \\
+\hline
+ Synoptic & &  \\
+\hline
+ Soot &  &    \\
+\hline
+\hline
+\multicolumn{3}{|l|}{Crashing Configuration Problems}   \\
+\hline
+& & \\
+\hline
+& & \\
+\hline
+& & \\
+\hline
+\end{tabular}
+
+\Caption{{\label{tab:slicingaccuracy} Results of using traditional slicing}}
+\end{table}
+
+
+\begin{table}[t]
+\setlength{\tabcolsep}{.54\tabcolsep}
+\begin{tabular}{|c|c|c|c|}
+\hline
+ & \multicolumn{3}{|c|}{Rank of the responsible option} \\
+\cline{2-4}
+ Program & Statement Profile& Method-level & Our technique \\
+ \hline
+\hline
+\multicolumn{4}{|l|}{Non-crashing Configuration Problems}   \\
+ \hline
+ Randoop & & &  \\
+\hline
+ Weka &  & &  \\
+\hline
+ Chord & & &  \\
+\hline
+ Synoptic & & &  \\
+\hline
+ Soot &  &  &  \\
+\hline
+\hline
+\multicolumn{4}{|l|}{Crashing Configuration Problems}   \\
+\hline
+& & & \\
+\hline
+& & & \\
+\hline
+& & & \\
+\hline
+\end{tabular}
+
+\Caption{{\label{tab:subjects} Comparison with statement-level and method-level .}}
+\end{table}
+
+
+\begin{table}[t]
+\setlength{\tabcolsep}{.84\tabcolsep}
+\begin{tabular}{|c|c|c|c|}
+\hline
+ Program & Most Similar One& Least Similar One& Random \\
+ \hline
+\hline
+\multicolumn{4}{|l|}{Non-crashing Configuration Problems}   \\
+ \hline
+ Randoop & & &   \\
+\hline
+ Weka &  & & \\
+\hline
+ Chord & & & \\
+\hline
+ Synoptic & & &  \\
+\hline
+ Soot &  &  &  \\
+\hline
+\hline
+\multicolumn{4}{|l|}{Crashing Configuration Problems}   \\
+\hline
+& & & \\
+\hline
+& & & \\
+\hline
+& & & \\
+\hline
+\end{tabular}
+
+\Caption{{\label{tab:accuracy} Results. Use three settings:
+the most similar one trace, the least similar one, and randomly
+select XXX number of traces. }}
+\end{table}
+
+
+\begin{table}[t]
+\setlength{\tabcolsep}{.84\tabcolsep}
+\begin{tabular}{|c|c|c|c|c|}
+\hline
+ Program & \#Similar & \#Avg Pred & \#Rank & Explanation \\
+ \hline
+\hline
+\multicolumn{5}{|l|}{Non-crashing Configuration Problems}   \\
+ \hline
+ Randoop & &  &&  \\
+\hline
+ Weka &  & & & \\
+\hline
+ Chord & & & &\\
+\hline
+ Synoptic & & && \\
+\hline
+ Soot &  &    &&\\
+\hline
+\hline
+\multicolumn{5}{|l|}{Crashing Configuration Problems}   \\
+\hline
+& & & &\\
+\hline
+& & & &\\
+\hline
+& & & &\\
+\hline
+\end{tabular}
+
+\Caption{{\label{tab:accuracy} Results. Column ``\#Avg Pred'' shows
+the average number of affected predicates by each configuration options
+computed by our configuration propagation analysis (Section~\ref{}).
+``\#Rank'' shows the ranking of the responsible configuration
+option in the output list...}}
+\end{table}

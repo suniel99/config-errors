@@ -5,36 +5,52 @@
 Modern software is extraordinarily complex. Many applications have a large
 number of configuration options that offer users great flexibility to
 customize their behaviors. This flexibility has a cost: when something
-goes wrong, fixing a configuration problem can be both time-consuming
-and frustrating. 
-Technical support contributes 17\% of the total cost of ownership of
+goes wrong, diagnosing a configuration error can be both time-consuming
+and frustrating. Technical support contributes 17\% of the total cost of ownership of
 today's desktop computers~\cite{confevidence}, and troubleshooting misconfigurations
 is a large part of technical support.
 
-Misconfigurations are often exhibited by an application unexpectedly terminating
-or producing undesirable output. While an ideal application would always
+Software misconfigurations are often exhibited by an application unexpectedly terminating
+(i.e., crashing errors) or producing an undesirable output (i.e., non-crashing errors). While an ideal application would always
 output a helpful error message when such events occur, it is unfortunately
-the case that such messages are often cryptic, misleading, or even non-existent.
+the case that such messages are often cryptic, misleading, or even non-existent~\cite{}.
 Thus, users must search manuals, FAQs, and online forums to find potential
-solutions to the problem. $\blacksquare$ this process is frustrating..
+solutions to the problem. %$\blacksquare$ this process is frustrating..
+
+\subsection{Example}
+
 
 $\blacksquare$ also lead to spurious bug reports.
 
-The process of explaining configuration errors can be divided into two
-separate tasks: diagnosing which specific configuration option is
+A users should not be experted and should not be expected to provide
+an testing oracle.
+
+To the best of our knowledge, this problem cannot be diagnosed by
+existing configuration error localization approaches.
+
+not everyone has the technical skill to use this solution.
+And even if one does, using the xxx, findinig, and moving xx
+counter past the end of the loop can be a tedious and annoying process.
+
+Assume the crash
+
+Our tool provides contextual information.
+
+
+%\vspace{1mm}
+%\noindent \textbf{\textit{Our technique.}} 
+
+\subsection{Diagnosing Configuration Errors}
+
+The process of diagnosing configuration errors can be divided into two
+separate tasks: identifying which specific configuration option is
 responsible for the unexpected behavior, and determining how to fix that
 configuration option. In this paper, we address the former task: finding
 the root cause of a configuration error.
+%, and leave the later task
+%of fixing
 
-We are focusing specifically on configuration errors, in which the application
-code is correct, but the program is inappropriately configured so that
-it does not behave as desired. For instance, a mistake in a configuration
-option passed in command line may lead software to crash, or simply produce
-incorrect output.
-
-
-\vspace{1mm}
-\noindent \textbf{\textit{Our technique.}} 
+\textbf{Our technique}
 
 $\blacksquare$ We assume that the error is know, i.e., the error has
 been previously encountered ... Thus, the problem of explaining a
@@ -79,11 +95,38 @@ Our technique, on its own, does not require a user to specify
 Our technique also genertes concise descriptions of the problem
 wuith a given option, as is ranking possible diagnoses.
 
-\vspace{1mm}
-\noindent \textbf{\textit{Evaluations.}} 
+%\vspace{1mm}
+%\noindent \textbf{\textit{Evaluations.}} 
 
-\vspace{1mm}
-\noindent \textbf{\textit{Contributions.}} This paper makes
-the following contributions:
+\subsection{Evaluation}
+
+%\vspace{1mm}
+%\noindent \textbf{\textit{Contributions.}}
+
+\subsection{Contributions}
+This paper makes the following contributions:
+
+\begin{itemize}
+%\item \textbf{Problem.} To the best of our knowledge, we are the first to address
+%the invalid thread access error detection problem for multithreaded GUI applications.
+
+\item \textbf{Technique.} We present a technique to diagnose
+software configuration errors. Our technique uses static analysis,
+dynamic profiling, and statistical inference to link the
+erroneous behavior to specific configuratio options (Section~\ref{sec:technique}).
+
+
+\item \textbf{Implementation.} We implemented our technique 
+for Java software (Section~\ref{sec:implementation}). Our tool implementation is publicly available at
+\url{http://config-errors.googlecode.com}.
+
+
+\item \textbf{Evaluation.} We applied \ourtool to diagnose
+\errors crashing and non-crashing configuration errors in \subjectnum
+real-world Java software. The results
+show the usefulness of the proposed technique (Section~\ref{sec:evaluation}).
+
+\end{itemize}
+
 
 
