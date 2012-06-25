@@ -6,6 +6,9 @@
 We aim to answer the following research questions:
 
 \begin{itemize}
+\item How effective is \ourtool in diagnosing the root cause of
+configuration errors?
+\item How long does \ourtool take to find the root cause?
 \item Is our technique useful in diagnosing software configuration errors, including
 crashing and non-crashing errors?
 \item Is the information provided by our technique more useful than the statement-level
@@ -15,8 +18,16 @@ profiling and the method-level dynamic invariant detection?
 
 \subsection{Subject Programs}
 
+We evaluated \ourtool on xxx Java applications: xxx, xxx,
+
 We collected a number of subject programs and their mis-configuration problems in
 Table~\ref{tab:subjects}.
+
+We searched forums, FAQ pages and configuration documents to find
+actual configuration problems that users have experienced with our
+target applications. In total, we chose xxx misconfigurations (xxx
+are crashing, xxx non-crashing) that were casued by errors in
+configuration options. Table xxx lists the configuration errors for each application.
 
 \begin{table}[t]
 %\setlength{\tabcolsep}{.84\tabcolsep}
@@ -83,6 +94,7 @@ configuration errors used in our evaluation. }}
 
 \subsection{Evaluation Procedural}
 
+
 Rewrite the configuration option in the form of method fields, since
 the local variable information has gone in the bytecode.
 
@@ -94,6 +106,11 @@ it is defined in an add-hoc way
 
 Run examples from user manual to form the database. The effort
 can be amortized in development time.
+
+We use two metrics to evaluate \ourtool's effectiveness: the absolute ranking of the
+actual root cause in the list returned by \ourtool, and the
+time cost to diagnose each configuration error.
+
 
 \subsection{Results}
 
@@ -134,6 +151,9 @@ can be amortized in development time.
 
 
 \subsubsection{Accuracy in Diagnosing Configuration Errors}
+
+For each configuration error, Table~\ref{} shows the ranking of the
+responsible configuration option, the number , xxx.
 
 
 Are the ranked configurations useful for misconfiguration error diagnosis?
@@ -214,6 +234,10 @@ Compare with statistical debugging?
 configuration errors used in our evaluation. }}
 \end{table}
 
+
+We next investigate the effect of varying \ourtool's
+comparison profiles. As Table~\ref{} shows, varying the
+strategy..
 
 
 What would the technique produce when feeding it with different inputs (e.g.,
