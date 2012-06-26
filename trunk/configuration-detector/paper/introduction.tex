@@ -13,28 +13,29 @@ is a large part of technical support.
 Software misconfigurations are often exhibited by an application unexpectedly terminating
 (i.e., crashing errors) or producing an incorrect output (i.e., non-crashing errors). While an ideal application would always
 output a helpful error message when such events occur, it is unfortunately
-the case that such messages are often cryptic, misleading, or even non-existent~\cite{}.
+the case that such messages are often cryptic, misleading, or
+even non-existent~\cite{Yin:2011:ESC, Attariyan:2010:ACT, Hubaux:2012, rangefix}.
 Thus, users must search manuals, FAQs, and online forums to find potential
 solutions to the problem. %$\blacksquare$ this process is frustrating..
 
 \subsection{Motivating Example}
 
 Randoop is an automated unit test generation tool, which implements
-a technique called feedback-directed random test generation~\cite{}.
+a technique called feedback-directed random test generation~\cite{randoop}.
 It has been used in academic instituitions and
 industrial companies such as Microsoft, Google,
-and ABB, and found numerous previoulsy-unknown bugs~\cite{}.
+and ABB, and found numerous previoulsy-unknown bugs.
 
 During the maintenance of the Randoop tool, we received a ``bug report''
 from a testing expert who has been using Randoop for quite a while.
 The bug report indicated that Randoop failed to generate
-tests for a subject program called Nanoxml~\cite{}. When running Randoop,
+tests for a subject program called Nanoxml~\cite{nanoxml}. When running Randoop,
 it terminates normally but simply does not output any tests.
 
 Compared to crashing errors, this non-crashing error is particularly difficult to diagnose.
 First, Randoop sliently failed without exhibiting a crashing point or
-a stacktrace. This makes existing techniques like dynamic slicing~\cite{},
-failure trace analysis~\cite{} unapplicable. Second, there is no
+a stacktrace. This makes existing techniques like dynamic slicing~\cite{Zhang:2003:PDS},
+failure trace analysis~\cite{Rabkin:2011:PPC, Attariyan:2010:ACT} unapplicable. Second, there is no
 available testing oracle to test whether a program behaves correctly.
 This makes existing bug isolation techniques like delta debugging
 unapplicable. In fact, to the best of our knowledge, we are not
@@ -175,7 +176,7 @@ link the erroneous behavior to specific responsible configuratio options.
 \begin{itemize}
 \item \textbf{Static Configurtion Propagation Analysis}. For
 each user-settable conofiguration option, \ourtool
-uses a lightweight dependence analysis technique, called Thin Slicing~\ref{},
+uses a lightweight dependence analysis technique, called Thin Slicing~\cite{Sridharan:2007},
 to identify its affected predicate in the code.
 
 \item \textbf{Dynamic Configuration Behavior Profiling}. \ourtool
@@ -202,7 +203,8 @@ configurations, if changed, may even fix the unexpected behavior.
 %$\blacksquare$ We assume that the error is know, i.e., the error has
 %been previously encountered ... 
 
-Compared to existing approaches~\cite{}, \ourtool has
+Compared to existing approaches~\cite{Zeller:2002:ICC, Zhang:2003:PDS,
+Rabkin:2011:PPC, Whitaker:2004:CDS, Attariyan:2010:ACT, Wang:2004:AMT}, \ourtool has
 several notable features:
 
 \begin{itemize}
@@ -210,12 +212,13 @@ several notable features:
 \ourtool does not require a user to specify
 \textit{when}, \textit{why} and \textit{how} the program fail. This is
 different than many well-known automated debugging techniques such
-as delta debugging~\cite{} and dynamic slicing~\cite{}.
+as delta debugging~\cite{Zeller:2002:ICC} and dynamic slicing~\cite{Zhang:2003:PDS}.
 Our technique also genertes concise descriptions of the problem
 wuith a given option, as is ranking possible diagnoses.
 
 \item \textbf{Diagnose both non-crashing and crasing errors}.
-Most of the existing techniques~\cite{} focus exclusively on configuration errors
+Most of the existing techniques~\cite{Rabkin:2011:PPC,
+Whitaker:2004:CDS, Attariyan:2010:ACT} focus exclusively on configuration errors
 where the value of an option is wrong and this causes a program
 to fail in a deterministic way with an error message, while
 ignoring configuration problems that manifest themeselves as
@@ -225,7 +228,7 @@ both kinds of errors.
 \item \textbf{Require no system support.} Our technique requires no alterations to
 the JVM or standard library. This distinguishes our work from
 competing techniques such as OS-level configuration
-management~\cite{} or dynamic taint tracking~\cite{}.
+error troubleshooting~\cite{Whitaker:2004:CDS}.% or dynamic taint tracking~\cite{clause07july}.
 
 \end{itemize}
 
@@ -293,9 +296,9 @@ one configuration error, making it an attractive alternative
 to manual debugging.
 
 We also compared the effectiveness of \ourtool to
-three existing approaches: statement-level profiling~\cite{}, method-level
-invariant detection~\cite{}, and dynamic tainting-based configuration
-error diagnosis techniques. The experiment results show that
+three existing approaches: statement-level profiling~\cite{Jones:2002}, method-level
+invariant detection~\cite{Ernst:1999}, and dynamic tainting-based configuration
+error diagnosis techniques~\cite{Rabkin:2011:PPC}. The experiment results show that
 \ourtool significantly outperforms both statement-level profiling
 and method-level invariant detection in diagnosis accuracy, suggesting
 that focusing on the behavior of program predicates can be a

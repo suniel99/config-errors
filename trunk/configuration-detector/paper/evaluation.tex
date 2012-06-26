@@ -18,7 +18,9 @@ profiling and the method-level dynamic invariant detection?
 
 \subsection{Subject Programs}
 
-We evaluated \ourtool on xxx Java applications: xxx, xxx,
+We evaluated \ourtool on xxx Java applications: Randoop~\cite{randoop},
+Weka~\cite{weka}, JChord~\cite{jchord}, Synoptic~\cite{synoptic},
+and Soot~\cite{soot}.
 
 We collected a number of subject programs and their mis-configuration problems in
 Table~\ref{tab:subjects}.
@@ -31,7 +33,7 @@ configuration options. Table xxx lists the configuration errors for each applica
 
 \begin{table}[t]
 %\setlength{\tabcolsep}{.84\tabcolsep}
-\begin{tabular}{lccc}
+\begin{tabular}{|l|c|c|c|}
 \hline
  Program (version) & LOC & \#Conf Options & \#Profiles\\
  \hline
@@ -68,7 +70,7 @@ Need to say how to collect representative profiles
  5 & \soot & Source code line number is missing\\
 \hline
 \hline
-\multicolumn{3}{|l|}{Crashing errors (taken from~\cite{})}   \\
+\multicolumn{3}{|l|}{Crashing errors (taken from~\cite{Rabkin:2011:PPC})}   \\
 \hline
  6 & \jchord & No main class is specified\\
  7 & \jchord& No main method in the entry class\\
@@ -111,6 +113,8 @@ We use two metrics to evaluate \ourtool's effectiveness: the absolute ranking of
 actual root cause in the list returned by \ourtool, and the
 time cost to diagnose each configuration error.
 
+Use extraction~\cite{Rabkin:2011:SEP}
+
 
 \subsection{Results}
 
@@ -118,7 +122,7 @@ time cost to diagnose each configuration error.
 \setlength{\tabcolsep}{.54\tabcolsep}
 \begin{tabular}{|l||l||l|l||c||c||c||c|}
 \hline
-  & & \multicolumn{2}{|c||}{Our Proposed Technique} & Full Slicing & Coverage Analysis& Invariant Analysis & ConfAnalyzer~\cite{}\\
+  & & \multicolumn{2}{|c||}{Our Proposed Technique} & Full Slicing & Coverage Analysis& Invariant Analysis & ConfAnalyzer~\cite{Rabkin:2011:PPC}\\
 \cline{3-8}
  Error ID & Reponsible Option & \#Cmp Profile & Rank  & Rank & Rank & Rank & Rank \\
  \hline
@@ -132,7 +136,7 @@ time cost to diagnose each configuration error.
  5 & & & & & & &N\\
 \hline
 \hline
-\multicolumn{8}{|l|}{Crashing errors (taken from~\cite{})}   \\
+\multicolumn{8}{|l|}{Crashing errors (taken from~\cite{Rabkin:2011:PPC})}   \\
 \hline
  6 & & & & & & &\\
  7 & & & & & & &\\
@@ -179,7 +183,8 @@ full control and data-flow information.
 
 
 Our technique is at the \textit{predicate}-level. What about using
-\textit{statement}-level instrumentation and \textit{method}-level dynamic invariant detection~\cite{Ernst:1999}?
+\textit{statement}-level instrumentation~\cite{Jones:2002}
+ and \textit{method}-level dynamic invariant detection~\cite{Ernst:1999}?
 
 Is our \textit{predicate}-level granularity a suitable one?
 
@@ -216,7 +221,7 @@ Compare with statistical debugging?
  5 & & &\\
 \hline
 \hline
-\multicolumn{4}{|l|}{Crashing errors (taken from~\cite{})}   \\
+\multicolumn{4}{|l|}{Crashing errors (taken from~\cite{Rabkin:2011:PPC})}   \\
 \hline
  6 & & &\\
  7 & & &\\
