@@ -1,30 +1,97 @@
 \section{Related Work}
 
-Work related to this paper falls into two major categories;
-(1) software configuration error diagnosis; and (2) automated
-debugging techniques.
+Work related to this paper falls into three major categories;
+(1) software configuration error diagnosis; (2) automated
+debugging techniques; and (3) general software configuration management
+techniques.
  
 \subsection{Software Configuration Error Diagnosis}
 
+Several prior research efforts have applied different techniques to the
+problem of software configuration error diagnosis~\cite{Attariyan:2008:UCD, 
+Yuan:2011:COC, Zhou:2007:DMD, Su:2009:AGP}.
+Chronus~\cite{Whitaker:2004:CDS} relies on a user-provided
+testing oracle to check the behavior of the system, and uses
+virtual machine checkpoint and binary search to find the
+point in time where the program behavior
+switched from correct to incorrect. PeerPressure~\cite{Wang:2004:AMT} 
+uses statistical methods to compare
+configuration state in the Windows registry on different machines.
+When a flag on a machine exhibiting erroneous behavior differs
+from the value usually chosen by other machines, PeerPressure
+flags the value as a potential error. More recently, ConfAid~\cite{Attariyan:2010:ACT}
+takes a dynamic-tainting-based approach to infer configuration problems 
+by monitoring causality within the program binary as it executes.
+ConfAnalyzer~\cite{Rabkin:2011:PPC} combines static dataflow analysis
+and dynamic tainting analysis to precompute
+possible configuration error diagnoses for every possible crashing point
+in a program. 
+
+By contrast, our work is significantly different the existing work.
+First, almost all existing approaches focus exclusively on configuration errors
+that lead to software crash or assertion failures, and can not
+be used to diagnose \textit{non-crashing} errors~\cite{Yin:2011:ESC}.
+Second, existing approaches~\cite{Attariyan:2010:ACT, Whitaker:2004:CDS}
+often assume the existence of a testing oracle that can safely
+reveal the error during the diagnosis. However, such error-revealing oracles are often
+absent in practice. Writing it often
+requires a substantial amount of time and expertise that a
+typical software user would not prefer, and should not be expected, to invest.
+Third, approaches like PeerPressure~\cite{Wang:2004:AMT} benefit from
+the known schema of the Windows registry, but cannot detect configuration errors
+that lie outside the registry. Our technique of analyzing the
+affected predicate behavior is more general for Java software.
+
+
+
+
+%Most prior work has taken a \textit{black box} approach that uses
+%only state external to the application being debugged to infer the problem.
+
 \subsection{Automated Debugging Techniques}
 
-\textbf{Configuration error diagnosis approaches.} Existing approaches include
-pure slicing-based technique~\cite{Rabkin:2011:PPC}, binary search-based
-technique~\cite{Whitaker:2004:CDS}, dynamic information flow-based
-technique~\cite{Attariyan:2010:ACT}, template-based technique~\cite{Yuan:2011:COC},
-invariant-based technique~\cite{Zhou:2007:DMD}, decision-tree-based approach~\cite{Mickens:2007:SID}, and
-causality-based technique~\cite{Attariyan:2008:UCD}.
-problem shooting~\cite{Su:2009:AGP, Wang:2004:AMT}. 
-This work is significantly different than the existing ones. First,
-almost all existing approaches implicitly assume a visible \textit{crashing} error,
-while our approach does not have this assumption. In fact, crashing
-errors are often much easier to localize than other silent failures.
-Second, almost all existing approach assume the existence of an oracle
-which can safely identify the potential errors, such as the timing
-threshold for a web server performance. However, such error-revealing
-oracles are often absent in practice.
-Third, some approaches assume the existence of a configuration model, which
-helps in narrowing down possible errors.
+Program slicing~\cite{}, intended to aid in debugging, is a well-known
+approach to determine which statements could affect the variable value. $\blacksquare$
+
+
+Delta debugging~\cite{} is an algorithm for isolating software error causes.
+It works by differences between a working state and broken
+state to isolate a set of failure-inducing changes.
+However, it requires users to provide a testing oracle to check
+whether an intermediate program state functions correctly.
+It also cannot diagnose errors where no working configuration
+is available. \ourtool overcomes the above limitations $\blacksquare$
+
+%a particular failrue. It also pushes more of the work of troubleshooting
+%onto the user site.
+
+Recently, statistical algorithms have been applied to the automated
+debugging domain~\cite{}. Clarify~\cite{} uses program features
+such as function call counts, call site, and stack dumps to improve
+error reporting. The improved error reporting, although helpful,
+does not disagnose the root cause. The CBI project~\cite{}
+analyzes execution traces collected from deployed software
+to isolate software failure causes. Specifically, the program
+is instrumented to collect information from certain run-time
+values and this information is passed on to a statistical engine
+to compute likely buggy predicates.$\blacksquare$
+
+
+\subsection{Software Configuration Management}
+
+Recent studies show that configuration errors are pervasive, costly,
+and time-consuming to diagnose~\cite{Yin:2011:ESC, Hubaux:2012}.
+
+%\textbf{Configuration error diagnosis approaches.} Existing approaches include
+%pure slicing-based technique~\cite{}, binary search-based
+%technique~\cite{}, dynamic information flow-based
+%technique~\cite{}, template-based technique~\cite{},
+%invariant-based technique~\cite{}, decision-tree-based approach~\cite{Mickens:2007:SID}, and
+%causality-based technique~\cite{Attariyan:2008:UCD}.
+%problem shooting~\cite{ }. 
+
+
+\subsection{Un-organized parts}
 
 \textbf{Better configuration management approaches.} Researchers
 have designed many techniques to reduce the burden of configuration
@@ -65,11 +132,6 @@ clustering-based~\cite{Dickinson:2001:FFC},
 error explanation~\cite{Groce:2006:EED},
 and approach combining static and dynamic information~\cite{Holmes:2011:IPT, Zhang:2008:EIF}.
 
-Delta debugging is an algorithm for isolating software error causes. It relies on
-a working state, a broken state, and a set of potential changes. However, it
-cannot diagnose errors where no working configuration is available for
-a particular site. It also pushes more of the work of troubleshooting
-onto the user site.
 
 
 \textbf{Other related work.} This category includes inferring configuration options

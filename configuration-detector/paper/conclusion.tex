@@ -3,8 +3,8 @@
 In this paper, we have presented a practical technique (and
 its tool implementation, called \ourtool) for diagnosing
 configuration errors in complex software systems.
-Our experimental results show that \ourtool is capable
-to diagnose both crashing and non-crashing configuration errors
+Our experimental results show that \ourtool is effective in
+diagnosing both crashing and non-crashing configuration errors
 in realistic systems and do so with a
 relatively small number of program profiles in the pre-built database.
 
@@ -18,21 +18,28 @@ Our future
 work will focus on the following two topics:
 
 \textbf{Fixing configuration errors.} After a configuration error
-is revealed, fixing it is often time-consuming. Recently, work has
-been done on automatically
-repairing source code~\cite{} and test scripts~\cite{}. However, none
-of them focuses on repairing a configuration option error. Thus, we
-are interested in developing automated error fixing techniques
-for software misconfigurations.
+is localized, fixing it and verifying the patch is
+often non-trivial and time-consuming. Thus, we
+are interested in applying the current advance in
+automated error-patching~\cite{PerkinsKLABCPSSSWZEP2009, rangefix} and
+software self-adaptation~\cite{Wang:2009:STR, Mori:2011:LSU} techniques to
+the problem of configuration error fixing.
+
+%developing automated error-fixing techniques
+%for general software misconfigurations.
 
 \textbf{Improving configuration error reporting.} A high-quality
 error report allows software users to understand and correct the problem
 they encounter. 
-%Unfortunately, the quality of error reports often
-%decreases as software becomes more complex and configurable.
-We plan to investigate how to apply the current advance in
-program  retrofitting~\cite{} to the context of configuration management,
-and improve the error reporting mechanism in large, configurable software systems.
+Unfortunately, the quality of error reports often
+decreases as software becomes more complex and configurable.
+To address this problem, we plan to develop new error reporting mechanisms
+to make configuration errors
+more diagnosable.
+
+%plan to investigate how to apply the current advance in
+%program  retrofitting~\cite{} to the context of configuration management,
+%and improve the error reporting mechanism in large, configurable software systems.
 
 %Combined with automated configuration extraction. Our current
 %technique requires developers to spend some one-time effort
