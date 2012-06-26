@@ -1,36 +1,57 @@
 \section{Conclusion and Future Work}
 
-%We have demonstrated a practical, scalable algorithm for isolating
-%multiple bugs in complex software systems. Our experimental results
-%show that we can detect a wide variety of both anticipated and
-%unanticipated causes of failure in realistic systems and do so with a
-%relatively modest number of program executions.
+In this paper, we have presented a practical technique (and
+its tool implementation, called \ourtool) for diagnosing
+configuration errors in complex software systems.
+Our experimental results show that \ourtool is capable
+to diagnose both crashing and non-crashing configuration errors
+in realistic systems and do so with a
+relatively small number of program profiles in the pre-built database.
 
-
-Moderm software often requires substantial configuration
-before being used. Small configuration errors can lead to
-hard-to-diagnose erreneous behaviors.
-$\blacksquare$ We demonstrate xxxx.
-Our technique can aid users in understanding and
-troubleshooting these errors xxx.
-oWe evaluate our work in detail
-
-We evaluate our work in detail on xxx.
-
-The source code of our tool implementation is available at:
-\url{http://xxx.googlecode.com} $\blacksquare$
+The source code of \ourtool is publicly available at:
+\url{http://config-errors.googlecode.com}.
 
 \vspace{1mm}
 
-Besides general issues such as performance and ease of use, our future
-work will concentrate on the following topics:
+%Besides general issues such as performance and ease of use,
+Our future
+work will focus on the following two topics:
 
-Combined with automated configuration extraction. Our current
-technique requires developers to spend some one-time effort
-to encode a list of available configuration options. This step
-could be automated by combining with some exsiting work on
-automated configuration option extraction~\cite{}.
+\textbf{Fixing configuration errors.} After a configuration error
+is revealed, fixing it is often time-consuming. Recently, work has
+been done on automatically
+repairing source code~\cite{} and test scripts~\cite{}. However, none
+of them focuses on repairing a configuration option error. Thus, we
+are interested in developing automated error fixing techniques
+for software misconfigurations.
 
-Improve configuration problem reporting mechanism. Many
-programs would produce general error messages when configuration
-errors occur.
+\textbf{Improving configuration error reporting.} A high-quality
+error report allows software users to understand and correct the problem
+they encounter. 
+%Unfortunately, the quality of error reports often
+%decreases as software becomes more complex and configurable.
+We plan to investigate how to apply the current advance in
+program  retrofitting~\cite{} to the context of configuration management,
+and improve the error reporting mechanism in large, configurable software systems.
+
+%Combined with automated configuration extraction. Our current
+%technique requires developers to spend some one-time effort
+%to encode a list of available configuration options. This step
+%could be automated by combining with some exsiting work on
+%automated configuration option extraction~\cite{}.
+
+%Improve configuration problem reporting mechanism. Many
+%programs would produce general error messages when configuration
+%errors occur.
+
+
+%$\blacksquare$ We demonstrate xxxx.
+%Our technique can aid users in understanding and
+%troubleshooting these errors xxx.
+%oWe evaluate our work in detail
+
+%We evaluate our work in detail on xxx.
+
+
+%\vspace{1mm}
+
