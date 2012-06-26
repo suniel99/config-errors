@@ -37,6 +37,14 @@ diagnose the observed behavior. Our technique's output is a ranked list of
 configurations that could possibly explain the why the program does not produce the desirable result. Those
 configurations, if changed, may even fix the unexpected behavior.
 
+
+\ourtool tracks dependencies introduced by both data and
+control flow. It propagates dependencies among xxx
+
+\ourtool produces an ordered list of the 
+configuration options most likely to have caused the exhibited
+problem.
+
 \begin{figure*}[!]
   \centering
   \includegraphics[scale=0.600]{architecture}
@@ -70,67 +78,7 @@ Our technique uses thin slicing~\cite{Sridharan:2007} as a manner to include
 We illustrate the advantages of using thin slicing 
  in Figure~\ref{fig:example}.
 
-\begin{figure}[t]
-\vspace{-2mm}
-\small{//a configuration option to control a sequence's max length}
-\vspace{-2mm}
-\begin{CodeOut}
-\begin{alltt}
-int maxsize = readFromCommandLine();  //\textit{seed statement}
 
-1.  public ExecutableSequence step() \ttlcb
-2.    ExecutableSequence eSeq = createNewUniqueSequence();
-3.    AbstractGenerator.currSeq = eSeq.sequence;
-4.    eSeq.execute(executionVisitor);
-5.    processSequence(eSeq);
-6.    if (eSeq.sequence.hasActiveFlags()) \ttlcb
-7.      componentManager.addGeneratedSequence(eSeq.sequence);
-8.    \ttrcb
-9.    return eSeq;
-10. \ttrcb
-
-11. private ExecutableSequence createNewUniqueSequence() \ttlcb
-12.   Sequence newSequence = ...; //sequence creation step omitted
-13.   if (newSequence.size() > maxsize) \ttlcb
-14.     return null;
-15.   \ttrcb
-16.   if (this.allSequences.contains(newSequence)) \ttlcb
-17.     return null;
-18.   \ttrcb
-19.   return new ExecutableSequence(newSequence);
-20. \ttrcb
-\end{alltt}
-\end{CodeOut}
-\tinystep
-\vspace*{-3.0ex} \Caption{{\label{fig:example} 
-Code excerpt from the Randoop automated test generator~\cite{randoop}.
-A forward slice computed by the traditional slicing algorithm~\cite{Horwitz:1988:ISU}
-from the seed statement includes statements 2, 3,
-4, 5, 6, 7, 9, 13, 14, 16, 17, and 19.
-By contrast, a thin slice~\cite{Sridharan:2007}
-only contains line 13.
-}} %\vspace{-1.8mm}
-\end{figure}
-
-
-\begin{figure}[t]
-\begin{CodeOut}
-\begin{alltt} 
-Configuration option: randoop.main.GenInputsAbstract.maxsize
-The predicate: "newSequence.size() > GenInputsAbstract.maxsize" in
-"randoop.ForwardGenerator.createNewUniqueSequence()" (line: 312)
-shows different behaviors.
-
-In good runs, it evaluates to true:  14.4\% of the time (1315 observations)
-In the bad run, it evaluates to true: 32.3\% of the time (2727 observations)
-
-\end{alltt}
-\end{CodeOut}
-\vspace*{-15pt}
-\Caption{{\label{fig:output}
-The diagnosis output . The top ranked option 
-}} %\vspace{-5mm}
-\end{figure}
 
 
 
