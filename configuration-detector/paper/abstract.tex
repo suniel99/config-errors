@@ -7,7 +7,7 @@ hard-to-diagnose erreneous behaviors.
 %and difficult to diagnosize.
 In this paper, we focus specifically on software configuration errors,
 in which the application code is correct, but the software
-is inappropriately configured so that it does
+is inappropriately configured so that it does not
 behave as desired. 
 We present a technique (and its tool implementation,
 called \ourtool) to identify the root cause of configuration errors.
@@ -18,14 +18,6 @@ the software functions correctly); and it is
 capable to diagnose both \textit{crashing} and \textit{non-crashing}
 errors.
 
-%We are focusing specifically on configuration errors, in which the application
-%code is correct, but the program is inappropriately configured so that
-%it does not behave as desired. For instance, a mistake in a configuration
-%option passed in command line may lead software to crash, or simply produce
-%incorrect output.
-
-%uses static analysis,
-%uses dynamic profiling
 %, and uses statistical inference to link the observed
 %erroneous behaviors to specific configuration options.
 
@@ -38,9 +30,7 @@ and \crash crashing configuration errors from
 \subjectnum real-world systems. \ourtool identifies the
 source of the misconfiguration
 as the top 3 root cause for \topnum out of all \errors errors,
-%showing its usefulness in error diagnosis.
-%showing good scalability and
-making it a promising solution in error diagnosis. %alternative to manual debugging.
+making it a promising solution in automated debugging. %error diagnosis. %alternative to manual debugging.
 
 %that xxx -- \ourtool uses these
 %xxx to link the erroneous behavior to specific configuration options. Our
