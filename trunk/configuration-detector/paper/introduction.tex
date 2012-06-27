@@ -174,17 +174,17 @@ the root cause of a configuration error.
 link the erroneous behavior to specific responsible configuratio options.
 
 \begin{itemize}
-\item \textbf{Static Configurtion Propagation Analysis}. For
+\item \textbf{Configurtion Propagation Analysis}. For
 each user-settable conofiguration option, \ourtool
 uses a lightweight dependence analysis technique, called Thin Slicing~\cite{Sridharan:2007},
-to identify its affected predicate in the code.
+to statically identify its affected predicate in the code.
 
-\item \textbf{Dynamic Configuration Behavior Profiling}. \ourtool
+\item \textbf{Configuration Behavior Profiling}. \ourtool
 performs \textit{selective instrumentation} to capture the
 dynamic behaviors of the test code when errorenous behavior
 is observed.
 
-\item \textbf{Statistical Configuration Deviation Analysis}.
+\item \textbf{Configuration Deviation Analysis}.
 When errorenous behavior is revealed, \ourtool looks up a
 pre-built database, selects the most similar profiles, and
 performs statistical analysis to identify which configuration

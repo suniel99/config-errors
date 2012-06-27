@@ -1,19 +1,23 @@
 \section{Evaluation}
 \label{sec:evaluation}
 
-\subsection{Research Questions}
+%\subsection{Research Questions}
 
 We aim to answer the following research questions:
 
 \begin{itemize}
 \item How effective is \ourtool in diagnosing the root cause of
 configuration errors?
+
+\item $\blacksquare$ compare to existing approaches
+
 \item How long does \ourtool take to find the root cause?
-\item Is our technique useful in diagnosing software configuration errors, including
-crashing and non-crashing errors?
-\item Is the information provided by our technique more useful than the statement-level
-profiling and the method-level dynamic invariant detection?
-\item Which factors (how much) can affect our technique's accuracy?
+
+%\item Is our technique useful in diagnosing software configuration errors, including
+%crashing and non-crashing errors?
+%\item Is the information provided by our technique more useful than the statement-level
+%profiling and the method-level dynamic invariant detection?
+%\item Which factors (how much) can affect our technique's accuracy?
 \end{itemize}
 
 \subsection{Subject Programs}
@@ -21,6 +25,8 @@ profiling and the method-level dynamic invariant detection?
 We evaluated \ourtool on xxx Java applications: Randoop~\cite{randoop},
 Weka~\cite{weka}, JChord~\cite{jchord}, Synoptic~\cite{synoptic},
 and Soot~\cite{soot}.
+
+\subsubsection{Configuration Errors}
 
 We collected a number of subject programs and their mis-configuration problems in
 Table~\ref{tab:subjects}.
@@ -70,7 +76,7 @@ Need to say how to collect representative profiles
  5 & \soot & Source code line number is missing\\
 \hline
 \hline
-\multicolumn{3}{|l|}{Crashing errors (taken from~\cite{Rabkin:2011:PPC})}   \\
+\multicolumn{3}{|l|}{Crashing errors}   \\
 \hline
  6 & \jchord & No main class is specified\\
  7 & \jchord& No main method in the entry class\\
@@ -85,12 +91,12 @@ Need to say how to collect representative profiles
 \end{tabular}
 
 \Caption{{\label{tab:subjects} A list of \errors
-configuration errors used in our evaluation. }}
+configuration errors used in our evaluation.
+The 9 crashing errors are taken from~\cite{Rabkin:2011:PPC}.
+}}
 \end{table}
 
-\subsubsection{Crashing Errors}
 
-\subsubsection{Non-Crashing Errors}
 
 %Use injected errors to test the technique's reliability
 
@@ -136,7 +142,7 @@ Use extraction~\cite{Rabkin:2011:SEP}
  5 & & & & & & &N\\
 \hline
 \hline
-\multicolumn{8}{|l|}{Crashing errors (taken from~\cite{Rabkin:2011:PPC})}   \\
+\multicolumn{8}{|l|}{Crashing errors}   \\
 \hline
  6 & & & & & & &\\
  7 & & & & & & &\\
@@ -172,6 +178,15 @@ Need to explain each configuration error
 \subsubsection{Comparison with Alternative Approaches}
 
 %\subsubsection{Comparison with Traditional Slicing}
+We compare \ourtool with four alternative approaches:
+
+\noindent \textbf{Full Slicing.}
+
+\noindent \textbf{Coverage Analysis.}
+
+\noindent \textbf{Invariant Analysis.}
+
+\noindent \textbf{Taint-based Analysis (ConfAnalyzer~\cite{Rabkin:2011:PPC}).}
 
 How would the results change if traditional slicing~\cite{Horwitz:1988} is used
 in Section~\ref{sec:prop}?
@@ -179,7 +194,7 @@ in Section~\ref{sec:prop}?
 What about using traditional slicing for configuration propagation analysis?
 full control and data-flow information.
 
-\subsubsection{Comparison with Existing Approaches}%Statement-level Profiling and Method-level Invariant Detection}
+%\subsubsection{Comparison with Existing Approaches}
 
 
 Our technique is at the \textit{predicate}-level. What about using
@@ -221,7 +236,7 @@ Compare with statistical debugging?
  5 & & &\\
 \hline
 \hline
-\multicolumn{4}{|l|}{Crashing errors (taken from~\cite{Rabkin:2011:PPC})}   \\
+\multicolumn{4}{|l|}{Crashing errors}   \\
 \hline
  6 & & &\\
  7 & & &\\
@@ -235,8 +250,8 @@ Compare with statistical debugging?
 \hline
 \end{tabular}
 
-\Caption{{\label{tab:subjects} A list of \errors
-configuration errors used in our evaluation. }}
+\Caption{{\label{tab:subjects} The effects of varying comparison
+profiles. }}
 \end{table}
 
 
@@ -255,12 +270,12 @@ of random selected trace.
 
 Comparison of different distance metrics to find similar statements.
 
-\subsubsection{The Effects of Increasing Context Sensitivity}
+%\subsubsection{The Effects of Increasing Context Sensitivity}
 
-When recording configuration profiles (Section~\ref{sec:profiling}), is it useful
-to increase the length of calling context? Would that help improve our technique's accuracy?
+%When recording configuration profiles (Section~\ref{sec:profiling}), is it useful
+%to increase the length of calling context? Would that help improve our technique's accuracy?
 
-The default length is 1, we increase it to 2, 3, and then observe the difference
+%The default length is 1, we increase it to 2, 3, and then observe the difference
 
 \subsection{Experimental Discussions}
 
