@@ -139,7 +139,8 @@ public class ConfDiagnosisEntity {
     			this.scoreProvenance.put(ScoreType.RATIO_DELTA,
     					"Good absolute ratio: " + this.getRawData(RawDataType.GOOD_RATIO_ABS)
     					+ ", computed by, good-evaluation: " + this.getRawData(RawDataType.GOOD_EVAL_COUNT)
-    					+ ", good-entering: " + this.getRawData(RawDataType.GOOD_ENTER_COUNT));
+    					+ ", good-entering: " + this.getRawData(RawDataType.GOOD_ENTER_COUNT)
+    					+ ",  line num: " + getLineNumber() + ", text: " + getPredicateText());
     		} else if (!hasGoodRatio && hasBadRatio) {
     			float score = Math.abs(this.getRawData(RawDataType.BAD_RATIO_ABS));
     			this.scores.put(ScoreType.RATIO_DELTA, score);
@@ -162,21 +163,24 @@ public class ConfDiagnosisEntity {
     					+ ",  computed by: good-evaluation: " + this.getRawData(RawDataType.GOOD_EVAL_COUNT)
     					+ ",  good ratio: " + this.getRawData(RawDataType.GOOD_RATIO)
     					+ ",  bad-evaluation: " + this.getRawData(RawDataType.BAD_EVAL_COUNT)
-    					+ ",  bad ratio:  " + this.getRawData(RawDataType.BAD_RATIO));
+    					+ ",  bad ratio:  " + this.getRawData(RawDataType.BAD_RATIO)
+    					+ ",  line num: " + getLineNumber() + ", text: " + getPredicateText());
     		} else if (hasGoodImport && !hasBadImport) {
     			float score = Math.abs(this.getRawData(RawDataType.GOOD_IMPORT_ABS));
     			this.scores.put(ScoreType.IMPORT_DELTA, score);
     			this.scoreProvenance.put(ScoreType.IMPORT_DELTA,
     					"Good absolute import: " + this.getRawData(RawDataType.GOOD_IMPORT_ABS)
     					+ ", computed by, good-evaluation: " + this.getRawData(RawDataType.GOOD_EVAL_COUNT)
-    					+ ", good absolute ratio: " + this.getRawData(RawDataType.GOOD_RATIO_ABS));
+    					+ ", good absolute ratio: " + this.getRawData(RawDataType.GOOD_RATIO_ABS)
+    					+ ",  line num: " + getLineNumber() + ", text: " + getPredicateText());
     		} else if (!hasGoodImport && hasBadImport) {
     			float score = Math.abs(this.getRawData(RawDataType.BAD_IMPORT_ABS));
     			this.scores.put(ScoreType.IMPORT_DELTA, score);
     			this.scoreProvenance.put(ScoreType.IMPORT_DELTA,
     					"Bad absolute import: " + this.getRawData(RawDataType.BAD_IMPORT_ABS)
     					+ ",  computed by, bad-evaluation: " + this.getRawData(RawDataType.BAD_EVAL_COUNT)
-    					+ ",  bad absolute ratio: " + this.getRawData(RawDataType.BAD_RATIO_ABS));
+    					+ ",  bad absolute ratio: " + this.getRawData(RawDataType.BAD_RATIO_ABS)
+    					+ ",  line num: " + getLineNumber() + ", text: " + getPredicateText());
     		} else {
     			throw new Error();
     		}

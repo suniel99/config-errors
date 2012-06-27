@@ -4,8 +4,15 @@ import java.util.LinkedList;
 import java.util.List;
 
 import edu.washington.cs.conf.analysis.ConfEntity;
+import edu.washington.cs.conf.analysis.ConfEntityRepository;
 
 public class WekaExpUtils {
+	
+	public static ConfEntityRepository getWekaRepository() {
+		List<ConfEntity> wekaConfList = WekaExpUtils.getWekaConfList();
+		ConfEntityRepository repo = new ConfEntityRepository(wekaConfList);
+		return repo;
+	}
 	
 	public static List<ConfEntity> getWekaConfList() {
 		ConfEntity entity2 = new ConfEntity("weka.classifiers.trees.J48", "m_unpruned", false);
