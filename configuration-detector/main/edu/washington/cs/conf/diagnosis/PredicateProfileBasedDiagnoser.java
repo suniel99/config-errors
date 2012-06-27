@@ -154,7 +154,7 @@ public class PredicateProfileBasedDiagnoser {
 		//associate with the entity
 		for(ConfDiagnosisEntity result : retList) {
 			result.setConfEntity(repository);
-			Utils.checkTrue(result.getConfEntity() != null);
+			Utils.checkTrue(result.getConfEntity() != null, "name: " + result.getConfigFullName());
 		}
 		
 		//check the correctness here

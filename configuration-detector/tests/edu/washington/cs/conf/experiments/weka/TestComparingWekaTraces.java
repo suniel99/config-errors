@@ -25,9 +25,9 @@ public class TestComparingWekaTraces extends TestCase {
 	static String good7 = dir + "soybean-instance.txt";
 	static String good8 = dir + "stra-remove-folds-soybean-nov.txt";
 	static String good9 = dir + "stra-remove-folds-soybean.txt";
-	static String good10 = dir + "weather-j48.txt";
+	static String good10 = dir + "weather-j48.txt"; //good
 	static String good11 = dir + "weather-rules.txt";
-	static String good12 = dir + "good-iris.txt";
+	static String good12 = dir + "good-iris.txt"; //good
 	
 	static String[] db = new String[]{good1, good2, good3, good4, good5, good6, /*good7,*/ good8, good9, good10, good11, good12};
 	

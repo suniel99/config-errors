@@ -3,8 +3,12 @@ package edu.washington.cs.conf.diagnosis;
 import instrument.Globals;
 
 import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Random;
+import java.util.Set;
 
 import edu.washington.cs.conf.analysis.ConfEntityRepository;
 import edu.washington.cs.conf.analysis.ConfPropOutput;
@@ -28,6 +32,8 @@ import edu.washington.cs.conf.util.Utils;
  * */
 public class MainAnalyzer {
 	
+	public enum SelectionStrategy {RandomK, OneMostSimilar, OneLeastSimilar, ALL}
+	
 	public static boolean doFiltering = false;
 	public static boolean amortizeNoise = false;
 	public static int thresholdcount = 3;
@@ -40,6 +46,8 @@ public class MainAnalyzer {
 	
 	private String sourceDir = null;
 	private Collection<ConfPropOutput> outputs = null;
+	
+	private SelectionStrategy strategy = null;
 
 	public final PredicateProfileTuple badRun;
 	private final List<PredicateProfileTuple> goodRuns
@@ -96,10 +104,26 @@ public class MainAnalyzer {
 	
 	public List<ConfDiagnosisOutput> computeResponsibleOptions() {
 		this.showParameters(); //for debugging purpose
-		List<PredicateProfileTuple> similarProfiles
+		List<PredicateProfileTuple> cmpProfiles
 		   = selectSimilarProfileTuples(this.goodRunDb, this.badRun, this.distanceType, this.distanceThreshold);
-		System.err.println("Number of similar profiles: " + similarProfiles.size());
-		PredicateProfileBasedDiagnoser diagnoser = createDiagnoser(similarProfiles, this.badRun, this.repository);
+		System.err.println("Number of similar profiles: " + cmpProfiles.size());
+		
+		//do experiment here
+		if(this.strategy != null) {
+			if(this.strategy.equals(SelectionStrategy.RandomK)) {
+				cmpProfiles = randomSelectProfileTuples(this.goodRunDb, cmpProfiles.size());
+			} else if (this.strategy.equals(SelectionStrategy.OneMostSimilar)) {
+				cmpProfiles = selectOneMostSimilarProfileTuples(this.goodRunDb, this.badRun, this.distanceType);
+			} else if (this.strategy.equals(SelectionStrategy.OneLeastSimilar)) {
+				cmpProfiles = selectOneLeastSimilarProfileTuples(this.goodRunDb, this.badRun, this.distanceType);
+			} else if (this.strategy.equals(SelectionStrategy.ALL)) {
+				cmpProfiles = this.goodRunDb.getAllTuples();
+			}
+			System.err.println("In experiment, using strategy: " + this.strategy);
+			System.err.println("re-select: " + cmpProfiles.size() + " profiles for comparison.");
+		}
+		
+		PredicateProfileBasedDiagnoser diagnoser = createDiagnoser(cmpProfiles, this.badRun, this.repository);
 		List<ConfDiagnosisOutput> rankedOutput = diagnoser.computeResponsibleOptions(this.rankType);
 		return rankedOutput;
 	}
@@ -134,6 +158,41 @@ public class MainAnalyzer {
 			DistanceType distanceType, Float threshold) {
 		List<PredicateProfileTuple> similarTuples = db.findSimilarTuples(target, distanceType, threshold);
 		return similarTuples;
+	}
+	
+	static List<PredicateProfileTuple> randomSelectProfileTuples(PredicateProfileDatabase db, int num) {
+		List<PredicateProfileTuple> allTuples = db.getAllTuples();
+		Utils.checkTrue(num > 0 && num <= allTuples.size(), "Incorrect num.");
+		
+		Random randomGenerator = new Random();
+		Set<Integer> indices = new HashSet<Integer>();
+		while(indices.size() < num) {
+			int index = randomGenerator.nextInt(allTuples.size());
+			indices.add(index);
+		}
+		
+		List<PredicateProfileTuple> randomTuples = new LinkedList<PredicateProfileTuple>();
+		for(Integer i : indices) {
+			randomTuples.add(allTuples.get(i));
+		}
+		
+		Utils.checkTrue(num == randomTuples.size());
+		
+		return randomTuples;
+	}
+	
+	static List<PredicateProfileTuple> selectOneMostSimilarProfileTuples(PredicateProfileDatabase db, PredicateProfileTuple target,
+			DistanceType distanceType) {
+		List<PredicateProfileTuple> mostSimilarTuples = Collections.singletonList(db.findTheMostSimilarTuple(target, distanceType));
+		Utils.checkTrue(mostSimilarTuples.size() == 1);
+		return mostSimilarTuples;
+	}
+	
+	static List<PredicateProfileTuple> selectOneLeastSimilarProfileTuples(PredicateProfileDatabase db, PredicateProfileTuple target,
+			DistanceType distanceType) {
+		List<PredicateProfileTuple> leastSimilarTuples = Collections.singletonList(db.findTheLeastSimilarTuple(target, distanceType));
+		Utils.checkTrue(leastSimilarTuples.size() == 1);
+		return leastSimilarTuples;
 	}
 
 	public float getThreshold() {
@@ -195,5 +254,9 @@ public class MainAnalyzer {
 
 	public void setOutputs(Collection<ConfPropOutput> outputs) {
 		this.outputs = outputs;
+	}
+	
+	public void setSelectionStrategy(SelectionStrategy strategy) {
+		this.strategy = strategy;
 	}
 }

@@ -3,6 +3,9 @@ package edu.washington.cs.conf.instrument;
 import instrument.Globals;
 
 import java.io.Writer;
+import java.util.Collection;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 import com.ibm.wala.shrikeBT.ConstantInstruction;
 import com.ibm.wala.shrikeBT.Constants;
@@ -17,6 +20,8 @@ import com.ibm.wala.shrikeBT.shrikeCT.ClassInstrumenter;
 import com.ibm.wala.shrikeCT.ClassReader;
 import com.ibm.wala.shrikeCT.ClassWriter;
 
+import edu.washington.cs.conf.util.Utils;
+
 public class EveryStmtInstrumenter extends AbstractInstrumenter {
 	
 	static final String fieldName = "_Stmt_enable_trace";
@@ -24,15 +29,31 @@ public class EveryStmtInstrumenter extends AbstractInstrumenter {
 	static final Instruction getTracer = Util.makeGet(StmtTracer.class, "tracer");
 	static final Instruction callTrace = Util.makeInvoke(StmtTracer.class, "trace", new Class[] { String.class });
 	
+	private Set<String> skippedClasses = null;
+	
 	public EveryStmtInstrumenter() {
 		//empty on purpose
 	}
 
+	//full name
+	public void setSkippedClasses(Collection<String> classes) {
+		skippedClasses = new LinkedHashSet<String>();
+		skippedClasses.addAll(classes);
+	}
+	
 	@Override
 	protected void doClass(ClassInstrumenter ci, Writer w) throws Exception {
 		final String className = ci.getReader().getName();
 	    w.write("Class: " + className + "\n");
 	    w.flush();
+	    
+	    if(this.skippedClasses != null) {
+	    	String cName = Utils.translateSlashToDot(className);
+	    	if(this.skippedClasses.contains(cName)) {
+	    		System.out.print("Skip. " + cName + "\n");
+	    		return;
+	    	}
+	    }
 
 	    for (int m = 0; m < ci.getReader().getMethodCount(); m++) {
 	      MethodData d = ci.visitMethod(m);

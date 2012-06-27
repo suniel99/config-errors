@@ -27,7 +27,10 @@ public class StmtTracer {
 	                	sb.append(Globals.lineSep);
 	                }
                 	try {
-						Files.writeToFile(sb.toString(), "./stmts_dump.txt");
+                		long currTime = System.currentTimeMillis();
+                		String fileName = "./stmts_dump_" + currTime + ".txt";
+                		System.out.println("Write to file: " + fileName);
+						Files.writeToFile(sb.toString(), fileName);
 					} catch (IOException e) {
 						e.printStackTrace();
 					}
