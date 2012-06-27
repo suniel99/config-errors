@@ -32,9 +32,9 @@ public class MainAnalyzer {
 	public static boolean amortizeNoise = false;
 	public static int thresholdcount = 3;
 	
-	private float threshold = 0.8f;
+	private float distanceThreshold = 0.3f; //distance
 	private DistanceType distanceType = DistanceType.INTERPRODUCT;
-	private RankType rankType = RankType.TFIDF_IMPORT;
+	private RankType rankType = RankType.SINGLE_IMPORT;
 	private CrossRunRank crossRank = CrossRunRank.HIGHEST_RANK_AVG;
 	private final ConfEntityRepository repository;
 	
@@ -97,7 +97,7 @@ public class MainAnalyzer {
 	public List<ConfDiagnosisOutput> computeResponsibleOptions() {
 		this.showParameters(); //for debugging purpose
 		List<PredicateProfileTuple> similarProfiles
-		   = selectSimilarProfileTuples(this.goodRunDb, this.badRun, this.distanceType, this.threshold);
+		   = selectSimilarProfileTuples(this.goodRunDb, this.badRun, this.distanceType, this.distanceThreshold);
 		System.err.println("Number of similar profiles: " + similarProfiles.size());
 		PredicateProfileBasedDiagnoser diagnoser = createDiagnoser(similarProfiles, this.badRun, this.repository);
 		List<ConfDiagnosisOutput> rankedOutput = diagnoser.computeResponsibleOptions(this.rankType);
@@ -113,7 +113,7 @@ public class MainAnalyzer {
 		sb.append(Globals.lineSep);
 		sb.append("  distance type: " + this.distanceType);
 		sb.append(Globals.lineSep);
-		sb.append("  threshold: " + this.threshold);
+		sb.append("  threshold: " + this.distanceThreshold);
 		sb.append(Globals.lineSep);
 		sb.append("For configuration option ranking: ");
 		sb.append(Globals.lineSep);
@@ -137,11 +137,11 @@ public class MainAnalyzer {
 	}
 
 	public float getThreshold() {
-		return threshold;
+		return distanceThreshold;
 	}
 
 	public void setThreshold(float threshold) {
-		this.threshold = threshold;
+		this.distanceThreshold = threshold;
 	}
 
 	public DistanceType getDistanceType() {

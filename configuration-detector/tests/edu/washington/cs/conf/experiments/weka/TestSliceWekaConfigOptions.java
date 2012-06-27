@@ -34,7 +34,7 @@ public class TestSliceWekaConfigOptions extends TestCase {
 	}
 	
 	public void testCreateInstrumentSchema() {
-		Collection<ConfPropOutput> outputs = this.getWekaConfOutputs();
+		Collection<ConfPropOutput> outputs = getWekaConfOutputs();
 		
 		InstrumentSchema schema = new InstrumentSchema();
 		schema.addInstrumentationPoint(outputs);
@@ -47,7 +47,7 @@ public class TestSliceWekaConfigOptions extends TestCase {
 		assertEquals(schema.toString(), newSchema.toString());
 	}
 	
-	public Collection<ConfPropOutput> getWekaConfOutputs() {
+	public static Collection<ConfPropOutput> getWekaConfOutputs() {
 		String path = "./subjects/weka/weka-no-trace.jar;./subjects/weka/JFlex.jar;" +
 		"./subjects/weka/java-cup.jar";
         String mainClass = "Lweka/classifiers/trees/J48";
