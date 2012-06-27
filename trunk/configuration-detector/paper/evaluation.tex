@@ -44,18 +44,20 @@ configuration options. Table xxx lists the configuration errors for each applica
  Program (version) & LOC & \#Conf Options & \#Profiles\\
  \hline
  \hline
- Randoop & & & \\
- Weka &  & & \\
- JChord & & & \\
- Synoptic & && \\
- Soot &  &  & \\
+ Randoop (1.3.2) & 18587 & 57 & \\
+ Weka (3.6.7) & 256305 & 14 & 12\\
+ JChord (2.1) & 23391 &  79 & \\
+ Synoptic (trunk) & 19153 & 37 & \\
+ Soot (2.5.0) & 159273 & 49 & \\
 \hline
 \end{tabular}
 
 
-\Caption{{\label{tab:subjects} Subject programs. Column ``\#Conf Options''
-shows the number available configuration options. Column ``\#Profiles''
-shows the number of profiles in the constructed database.}}
+\Caption{{\label{tab:subjects} Subject programs. 
+Column ``LOC'' is the number of lines of code,
+as counted by CLOC~\cite{cloc}. Column ``\#Conf Options''
+is the number of available configuration options. Column ``\#Profiles''
+is the number of profiles in the pre-built database.}}
 \end{table}
 
 Need to say how to collect representative profiles
@@ -69,7 +71,7 @@ Need to say how to collect representative profiles
 \hline
 \multicolumn{3}{|l|}{Non-crashing errors}   \\
  \hline
- 1 & \randoop & No tests generated for Nanoxml\\
+ 1 & \randoop & No tests generated for NanoXML~\cite{nanoxml}\\
  2 & \weka & Low accuracy of the decision tree\\
  3 & \jchord & No datarace reported for a racy program\\
  4 & \synoptic & Generate an incorrect model\\
@@ -79,7 +81,7 @@ Need to say how to collect representative profiles
 \multicolumn{3}{|l|}{Crashing errors}   \\
 \hline
  6 & \jchord & No main class is specified\\
- 7 & \jchord& No main method in the entry class\\
+ 7 & \jchord& No main method in the specified class\\
  8 & \jchord & Running a nonexistent analysis\\
  9 & \jchord & Invalid context-sensitive analysis name\\
  10 & \jchord & Printing nonexistent relations\\
@@ -91,8 +93,8 @@ Need to say how to collect representative profiles
 \end{tabular}
 
 \Caption{{\label{tab:subjects} A list of \errors
-configuration errors used in our evaluation.
-The 9 crashing errors are taken from~\cite{Rabkin:2011:PPC}.
+configuration errors used in the evaluation.
+The 9 crashing errors in the bottom table are taken from~\cite{Rabkin:2011:PPC}.
 }}
 \end{table}
 
@@ -125,38 +127,45 @@ Use extraction~\cite{Rabkin:2011:SEP}
 \subsection{Results}
 
 \begin{table*}[t]
-\setlength{\tabcolsep}{.54\tabcolsep}
-\begin{tabular}{|l||l||l|l||c||c||c||c|}
+\setlength{\tabcolsep}{.34\tabcolsep}
+\begin{tabular}{|l||c||c|c||c||c||c||c|}
 \hline
-  & & \multicolumn{2}{|c||}{Our Proposed Technique} & Full Slicing & Coverage Analysis& Invariant Analysis & ConfAnalyzer~\cite{Rabkin:2011:PPC}\\
+ Error ID.  & & \multicolumn{2}{|c||}{\ourtool} & Full Slicing & Coverage Analysis& Invariant Analysis & ConfAnalyzer~\cite{Rabkin:2011:PPC}\\
 \cline{3-8}
- Error ID & Reponsible Option & \#Cmp Profile & Rank  & Rank & Rank & Rank & Rank \\
+ Program & Reponsible Option & \#Cmp Profile & Rank  & Rank & Rank & Rank & Rank \\
  \hline
 \hline
 \multicolumn{8}{|l|}{Non-crashing errors}   \\
  \hline
- 1 & & & & & & &N \\
- 2 & & & & & & &N\\
- 3 & & & & & & &N\\
- 4 & & & & & & &N\\
- 5 & & & & & & &N\\
+ 1.Randoop& \CodeIn{maxsize} & & 1 & & & &N \\
+ 2.Weka&\CodeIn{m\_numFolds}&2&1& & & &N\\
+ 3.JChord& \CodeIn{chord.kobj.k} &  & 2& & & &N\\
+ 4.Synoptic& \CodeIn{partitionRegExp}&  & 1& & & &N\\
+ 5.Soot& \CodeIn{keep\_line\_number} & & 3 & & & &N\\
 \hline
 \hline
 \multicolumn{8}{|l|}{Crashing errors}   \\
 \hline
- 6 & & & & & & &\\
- 7 & & & & & & &\\
- 8 & & & & & & &\\
- 9 & & & & & & &\\
- 10 & & & & & & &\\
- 11 & & & & & & &\\
- 12 & & & & & & &\\
- 13 & & & & & & &\\
- 14 & & & & & & &\\
+ 6.JChord& \CodeIn{chord.main.class}& & 1& & & &\\
+ 7.JChord& \CodeIn{chord.main.class}& & 3& & & &\\
+ 8.JChord& \CodeIn{chord.run.analyses}& & 17& & & &\\
+ 9.JChord& \CodeIn{chord.ctxt.kind}& & 1 & & & &\\
+ 10.JChord& \CodeIn{chord.print.rels}& & 15 & & & &\\
+ 11.JChord& \CodeIn{chord.print.classes}& & 15 & & & &\\
+ 12.JChord& \CodeIn{chord.scope.kind}& & 1& & & &\\
+ 13.JChord& \CodeIn{chord.reflect.kind} & & 1& & & &\\
+ 14.JChord& \CodeIn{chord.class.path}& & 8 & & & &\\
 \hline
 \end{tabular}
 
-\Caption{{\label{tab:results} Experimental results. }}
+\Caption{{\label{tab:results} Experimental results in diagnosing software
+configuration errors. Column ``Responsible Option'' shows the actual
+configuration option for the error. Column ``\ourtool'' shows the results of using
+our technique. Columns ``Full Slicing'', ``Coverage Analysis'',
+``Invariant Analysis'', and ``ConfAnalyzer'' show the results of
+using four comparison techniques, as detailed in Section~\ref{sec:comparison}.
+For each technique, Column ``Rank'' shows the rank of the actual responsible
+option in its diagnosis outputs; in which lower is better.}}
 \end{table*}
 
 
@@ -176,6 +185,7 @@ Need to explain each configuration error
 
 
 \subsubsection{Comparison with Alternative Approaches}
+\label{sec:comparison}
 
 %\subsubsection{Comparison with Traditional Slicing}
 We compare \ourtool with four alternative approaches:
@@ -215,6 +225,7 @@ figure out the configuration options.
 Compare with statistical debugging?
 
 \subsubsection{Effects of Varying Comparison Profiles}
+\label{sec:ranking}
 
 
 \begin{table}[t]
@@ -250,8 +261,8 @@ Compare with statistical debugging?
 \hline
 \end{tabular}
 
-\Caption{{\label{tab:subjects} The effects of varying comparison
-profiles. }}
+\Caption{{\label{tab:subjects} Comparison with different profile selection
+strategies (Section~\ref{sec:ranking}) in ranking the responsible option. }}
 \end{table}
 
 
