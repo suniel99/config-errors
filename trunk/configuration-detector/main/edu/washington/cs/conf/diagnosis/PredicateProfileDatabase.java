@@ -5,6 +5,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import edu.washington.cs.conf.diagnosis.ProfileDistanceCalculator.DistanceType;
+import edu.washington.cs.conf.util.Utils;
 
 /**
  * Store a list of predicate profile tuples
@@ -49,5 +50,45 @@ public class PredicateProfileDatabase {
 		}
 		
 		return retList;
+	}
+	
+	/**
+	 * return only 1 most similar tuple
+	 * */
+	public PredicateProfileTuple findTheMostSimilarTuple(PredicateProfileTuple target, DistanceType t) {
+		Utils.checkTrue(tuples.size() > 0);
+		PredicateProfileTuple ret = null;
+		Float minDist = Float.MAX_VALUE;
+		for(PredicateProfileTuple tuple : tuples) {
+			float distance = ProfileDistanceCalculator.computeDistance(tuple, target, t);
+			System.err.println("distance: " + distance);
+			if(distance < minDist) {
+				ret = tuple;
+				minDist = distance;
+			}
+		}
+		Utils.checkNotNull(ret);
+		System.err.println("The closest distance: " + minDist);
+		return ret;
+	}
+	
+	/**
+	 * return only 1 least similar tuple
+	 * */
+	public PredicateProfileTuple findTheLeastSimilarTuple(PredicateProfileTuple target, DistanceType t) {
+		Utils.checkTrue(tuples.size() > 0);
+		PredicateProfileTuple ret = null;
+		Float maxDist = Float.MIN_VALUE;
+		for(PredicateProfileTuple tuple : tuples) {
+			float distance = ProfileDistanceCalculator.computeDistance(tuple, target, t);
+			System.err.println("distance: " + distance);
+			if(distance > maxDist) {
+				ret = tuple;
+				maxDist = distance;
+			}
+		}
+		Utils.checkNotNull(ret);
+		System.err.println("The farthest distance: " + maxDist);
+		return ret;
 	}
 }

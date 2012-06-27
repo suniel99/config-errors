@@ -21,8 +21,13 @@ public class StmtFileReader {
 			if(line.trim().isEmpty()) {
 				continue;
 			}
-			StmtExecuted stmt = new StmtExecuted(line);
-			retStmts.add(stmt);
+			try {
+			    StmtExecuted stmt = new StmtExecuted(line);
+			    retStmts.add(stmt);
+			} catch (RuntimeException e) {
+				e.printStackTrace();
+				continue;
+			}
 		}
 		
 		return retStmts;

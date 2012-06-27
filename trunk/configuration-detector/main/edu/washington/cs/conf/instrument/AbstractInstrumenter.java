@@ -34,7 +34,12 @@ public abstract class AbstractInstrumenter {
 	      ClassInstrumenter ci;
 	      //do the instrumentation
 	      while ((ci = instrumenter.nextClass()) != null) {
-	        doClass(ci, w);
+	    	  try {
+	             doClass(ci, w);
+	    	  } catch (Throwable e) {
+	    		  e.printStackTrace();
+	    		  continue;
+	    	  }
 	      }
 	      instrumenter.close();
 	  }
