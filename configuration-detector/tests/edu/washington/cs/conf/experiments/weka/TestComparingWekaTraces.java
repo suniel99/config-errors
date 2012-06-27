@@ -13,4 +13,30 @@ public class TestComparingWekaTraces extends TestCase {
 	    CommonUtils.compareTraceDistance(goodRunTrace, badRunTrace, DistanceType.INTERPRODUCT, 0.16477811f);
 	}
 	
+	//other traces
+	static String dir = "./experiments/weka-database/";
+	
+	static String good1 = dir + "discretize-iris.txt";
+	static String good2 = dir + "iris-simplified-last.txt";
+	static String good3 = dir + "iris-simplified.txt";
+	static String good4 = dir + "nomToBinary-contact-lenses.txt";
+	static String good5 = dir + "resample-soybean-uniform.txt";
+	static String good6 = dir + "resample-soybean.txt";
+	static String good7 = dir + "soybean-instance.txt";
+	static String good8 = dir + "stra-remove-folds-soybean-nov.txt";
+	static String good9 = dir + "stra-remove-folds-soybean.txt";
+	static String good10 = dir + "weather-j48.txt";
+	static String good11 = dir + "weather-rules.txt";
+	static String good12 = dir + "good-iris.txt";
+	
+	String[] db = new String[]{good1, good2, good3, good4, good5, good6, good7, good8, good9, good10, good11, good12};
+	
+	public void testAll() {
+	    
+	    String badRunTrace = "./experiments/weka-database/bad-labor.txt";
+	    for(String goodRunTrace : db) {
+	    	System.out.println(goodRunTrace);
+	        CommonUtils.compareTraceDistance(goodRunTrace, badRunTrace, DistanceType.INTERPRODUCT, null, false);
+	    }
+	}
 }

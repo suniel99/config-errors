@@ -19,4 +19,12 @@ public class TestDiagnoseWekaOptions extends TestCase {
 	    CommonUtils.diagnoseOptions(goodRunTrace, badRunTrace, true, repo, RankType.SINGLE_IMPORT, 0.2f);
 	}
 	
+	public void test2() {
+		String goodRunTrace = TestComparingWekaTraces.good12;
+	    String badRunTrace = "./experiments/weka-database/bad-labor.txt";
+	    List<ConfEntity> wekaConfList = WekaExpUtils.getWekaConfList();
+		ConfEntityRepository repo = new ConfEntityRepository(wekaConfList);
+	    CommonUtils.diagnoseOptions(goodRunTrace, badRunTrace, true, repo, RankType.SINGLE_IMPORT, 0.2f);
+	}
+	
 }
