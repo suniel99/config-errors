@@ -138,14 +138,22 @@ public class CommonUtils {
 		MainAnalyzer.doFiltering = false;
 	}
 	
-	public static void compareTraceDistance(String goodRunTrace, String badRunTrace, DistanceType t, Float expected) {
+	public static void compareTraceDistance(String goodRunTrace, String badRunTrace, DistanceType t, Float expected, boolean check) {
 		PredicateProfileTuple good = TraceAnalyzer.createGoodProfileTuple(goodRunTrace, "good-run");
 		PredicateProfileTuple bad = TraceAnalyzer.createBadProfileTuple(badRunTrace, "bad-run");
 		
-		ProfileDistanceCalculator.showAlignedVectors(good, bad);
+		if(check) {
+		    ProfileDistanceCalculator.showAlignedVectors(good, bad);
+		}
 		
 		float distance = ProfileDistanceCalculator.computeDistance(good, bad, t);
 		System.out.println(t + " distance: " + distance);
-	    Utils.checkTrue(expected == distance);
+		if(check) {
+	        Utils.checkTrue(expected == distance);
+		}
+	}
+	
+	public static void compareTraceDistance(String goodRunTrace, String badRunTrace, DistanceType t, Float expected) {
+		compareTraceDistance(goodRunTrace, badRunTrace, t, expected, true);
 	}
 }
