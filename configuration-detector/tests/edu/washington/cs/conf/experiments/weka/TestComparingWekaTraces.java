@@ -29,7 +29,7 @@ public class TestComparingWekaTraces extends TestCase {
 	static String good11 = dir + "weather-rules.txt";
 	static String good12 = dir + "good-iris.txt";
 	
-	static String[] db = new String[]{good1, good2, good3, good4, good5, good6, good7, good8, good9, good10, good11, good12};
+	static String[] db = new String[]{good1, good2, good3, good4, good5, good6, /*good7,*/ good8, good9, good10, good11, good12};
 	
 	public void testAll() {
 	    
