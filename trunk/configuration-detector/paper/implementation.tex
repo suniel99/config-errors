@@ -1,30 +1,67 @@
 \section{Implementation}
 \label{sec:implementation}
 
-implement at bytecode level, use wala, store all profile in local files.
+We implemented a tool, called \ourtool, on top of the WALA
+framework~\cite{wala}. Our tool works at the Java bytecode level.
+It first statically computes the affected predicates
+for each configuration option. Then it performs offline instrumentation
+of Java bytecode, to record the evaluation result of each affected
+predicate. 
+%\ourtool works in a fully automatic and
+%push-button way to diagnose an error, and scales to realistic programs.
 
-Use code alignment to find missing predicates, consider the following code:
+It is worth noting that after compiled into bytecode,
+a predicate in Java source code might correspond to multiple bytecode
+instructions. When performing forward thin slicing from
+the initialization statement of a configuration option,
+the slice may miss predicates that should be included.
+Consider the following simplified code snippet from JChord~\cite{jchord}
+and its translated WALA bytecode (formatted for readability): 
+
 
 \begin{CodeOut}
 \begin{alltt}
-  String eqth = ...; //a configuration option
-
-1. if (eqth.equals("true")) \ttlcb
-2.   add(1);
+   // eqth is a configuration option
+1. if (eqth.equals("run")) \ttlcb
+2.   add();
 3. \ttrcb
 \end{alltt}
 \end{CodeOut}
+\vspace{-2mm}
+\hspace{20mm}$\Downarrow$ 
+%\vspace{-2mm}
+\begin{CodeOut}
+\begin{alltt}
+1. r0 = getstatic eqth
+2. r1 = ldc "run"
+3. r2 = r0.equals(r1)
+4. r4 = true
+5. conditional branch(eq) r2, r4
+7. invokevirtual add() 
+\end{alltt}
+\end{CodeOut}
 
-It wont include  line 1, since in the translated bytecode.
-we align the bytecode with the source code by the line number to
-determine whether it is a branching statement
+In the translated bytecode, lines 1 -- 5 correspond to line 1 in the
+source code. However, when performing a thin slicing from the
+assignment statement of option \CodeIn{eqth}, only lines 1 and 3
+in the translated bytecode are included, while the affected predicate
+in line 5 is missed.  In our implementation, after performing the thin
+slicing, \ourtool checks if a bytecode instruction in the slice
+correspond to a predicate in the source code, then the
+conditional bytecode instruction (like line 5 above) translated from that predicate
+will also be included.
+
+%It wont include  line 1, since in the translated bytecode.
+%we align the bytecode with the source code by the line number to
+%determine whether it is a branching statement
 
 
-the calling context. Instrument the program entry point, exit, point, etc,
-since useing the native method to get a stack trace incurs.
-becomes heavy weight, and not usable in practice.
+%the calling context. Instrument the program entry point, exit, point, etc,
+%since useing the native method to get a stack trace incurs.
+%becomes heavy weight, and not usable in practice.
 
-We do not analyze inside the standard library. Instead, we treat library
-methods as opaque and treat references to library-defined types as
-primitives. ... It is unlikely that a configuration option set on
-the client software would impact its dependent library behaviors.
+For a Java program, \ourtool does not analyzes the standard Java
+library and all dependent, third-party libraries, since it is
+unlikely that a configuration option set on a client-side
+program would affect the behaviors of its dependent libraries.
+
