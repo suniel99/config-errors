@@ -9,9 +9,12 @@ We aim to answer the following research questions:
 \item How effective is \ourtool in diagnosing the root cause of
 configuration errors?
 
-\item $\blacksquare$ compare to existing approaches
+\item Can \ourtool provide more accurate diagnosis information than
+the existing approaches? %$\blacksquare$ compare to existing approaches
 
-\item How long does \ourtool take to find the root cause?
+\item What are the effects of varying the comparison profiles?% How long does \ourtool take to diagnose a configuration error?
+
+\item How long does \ourtool take to diagnose a configuration error?
 
 %\item Is our technique useful in diagnosing software configuration errors, including
 %crashing and non-crashing errors?
@@ -127,7 +130,7 @@ Use extraction~\cite{Rabkin:2011:SEP}
 \subsection{Results}
 
 \begin{table*}[t]
-\setlength{\tabcolsep}{.34\tabcolsep}
+\setlength{\tabcolsep}{.24\tabcolsep}
 \begin{tabular}{|l||c||c|c||c||c||c||c|}
 \hline
  Error ID.  & & \multicolumn{2}{|c||}{\ourtool} & Full Slicing & Coverage Analysis& Invariant Analysis & ConfAnalyzer~\cite{Rabkin:2011:PPC}\\
@@ -137,24 +140,24 @@ Use extraction~\cite{Rabkin:2011:SEP}
 \hline
 \multicolumn{8}{|l|}{Non-crashing errors}   \\
  \hline
- 1.Randoop& \CodeIn{maxsize} & & 1 & & & &N \\
- 2.Weka&\CodeIn{m\_numFolds}&2&1& & & &N\\
- 3.JChord& \CodeIn{chord.kobj.k} &  & 2& & & &N\\
- 4.Synoptic& \CodeIn{partitionRegExp}&  & 1& & & &N\\
- 5.Soot& \CodeIn{keep\_line\_number} & & 3 & & & &N\\
+ 1. Randoop& \CodeIn{maxsize} & & 1 & & N & N &X \\
+ 2. Weka&\CodeIn{m\_numFolds}&2&1& & 4 & &X\\
+ 3. JChord& \CodeIn{chord.kobj.k} &  & 2& & & &X\\
+ 4. Synoptic& \CodeIn{partitionRegExp}&  & 1& & & &X\\
+ 5. Soot& \CodeIn{keep\_line\_number} & & 3 & & & &X\\
 \hline
 \hline
 \multicolumn{8}{|l|}{Crashing errors}   \\
 \hline
- 6.JChord& \CodeIn{chord.main.class}& & 1& & & &\\
- 7.JChord& \CodeIn{chord.main.class}& & 3& & & &\\
- 8.JChord& \CodeIn{chord.run.analyses}& & 17& & & &\\
- 9.JChord& \CodeIn{chord.ctxt.kind}& & 1 & & & &\\
- 10.JChord& \CodeIn{chord.print.rels}& & 15 & & & &\\
- 11.JChord& \CodeIn{chord.print.classes}& & 15 & & & &\\
- 12.JChord& \CodeIn{chord.scope.kind}& & 1& & & &\\
- 13.JChord& \CodeIn{chord.reflect.kind} & & 1& & & &\\
- 14.JChord& \CodeIn{chord.class.path}& & 8 & & & &\\
+ 6. JChord& \CodeIn{chord.main.class}& & 1& & & &\\
+ 7. JChord& \CodeIn{chord.main.class}& & 3& & & &\\
+ 8. JChord& \CodeIn{chord.run.analyses}& & 17& & & &\\
+ 9. JChord& \CodeIn{chord.ctxt.kind}& & 1 & & & &\\
+ 10. JChord& \CodeIn{chord.print.rels}& & 15 & & & &\\
+ 11. JChord& \CodeIn{chord.print.classes}& & 15 & & & &\\
+ 12. JChord& \CodeIn{chord.scope.kind}& & 1& & & &\\
+ 13. JChord& \CodeIn{chord.reflect.kind} & & 1& & & &\\
+ 14. JChord& \CodeIn{chord.class.path}& & 8 & & & &\\
 \hline
 \end{tabular}
 
@@ -164,8 +167,12 @@ configuration option for the error. Column ``\ourtool'' shows the results of usi
 our technique. Columns ``Full Slicing'', ``Coverage Analysis'',
 ``Invariant Analysis'', and ``ConfAnalyzer'' show the results of
 using four comparison techniques, as detailed in Section~\ref{sec:comparison}.
+Column ``\#Cmp Profiles'' shows the number of similar profiles selected
+from the pre-built database for comparison.
 For each technique, Column ``Rank'' shows the rank of the actual responsible
-option in its diagnosis outputs; in which lower is better.}}
+option in its diagnosis outputs; in which lower is better. ``X''
+means the technique is not applicable, and ``N'' means the technique
+does not output the actual responsible option.}}
 \end{table*}
 
 
@@ -182,6 +189,10 @@ We examine the ranked configurations to see how well they can explain the behavi
 %The ASE paper. Only handles crashing errors.
 
 Need to explain each configuration error
+
+
+\vspace{1mm}
+\noindent \textbf{\textit{Summary.}} how effective
 
 
 \subsubsection{Comparison with Alternative Approaches}
@@ -204,7 +215,6 @@ in Section~\ref{sec:prop}?
 What about using traditional slicing for configuration propagation analysis?
 full control and data-flow information.
 
-%\subsubsection{Comparison with Existing Approaches}
 
 
 Our technique is at the \textit{predicate}-level. What about using
@@ -224,27 +234,30 @@ figure out the configuration options.
 
 Compare with statistical debugging?
 
+\vspace{1mm}
+\noindent \textbf{\textit{Summary.}} how effective
+
 \subsubsection{Effects of Varying Comparison Profiles}
 \label{sec:ranking}
 
 
 \begin{table}[t]
-\setlength{\tabcolsep}{.54\tabcolsep}
-\begin{tabular}{|l|l|l|l|}
+\setlength{\tabcolsep}{.24\tabcolsep}
+\begin{tabular}{|l|c|c||c|}
 \hline
-  & \multicolumn{3}{|c|}{Rank of the Responsible Option } \\
+  & \multicolumn{3}{|c|}{Rank of the Actual Responsible Option } \\
   %& \multicolumn{3}{|c|}{Different Comparison Profile Selection Strategy} \\
 \cline{2-4}
- Error ID & Most Similar& Random Selection& Least Similar\\
+ Error ID & All Profiles & Random Selection&  Similarity-Based\\
  \hline
 \hline
 \multicolumn{4}{|l|}{Non-crashing errors}   \\
  \hline
- 1 & & &\\
- 2 & & &\\
- 3 & & &\\
- 4 & & &\\
- 5 & & &\\
+ 1. Randoop & & &\\
+ 2. Weka & 7 & 6 & 1\\
+ 3. JChord & & &\\
+ 4. Synoptic & & &\\
+ 5. Soot & & &\\
 \hline
 \hline
 \multicolumn{4}{|l|}{Crashing errors}   \\
@@ -262,7 +275,9 @@ Compare with statistical debugging?
 \end{tabular}
 
 \Caption{{\label{tab:subjects} Comparison with different profile selection
-strategies (Section~\ref{sec:ranking}) in ranking the responsible option. }}
+strategies (Section~\ref{sec:ranking}) in ranking the responsible option.
+The last column ``Similarity-based'' is the selection strategy
+used in \ourtool, and the data in that column is taken from Table~\ref{tab:results}.}}
 \end{table}
 
 
@@ -287,15 +302,22 @@ Comparison of different distance metrics to find similar statements.
 %to increase the length of calling context? Would that help improve our technique's accuracy?
 
 %The default length is 1, we increase it to 2, 3, and then observe the difference
+\vspace{1mm}
+\noindent \textbf{\textit{Summary.}} how effective
 
-\subsection{Experimental Discussions}
-
-\noindent \textbf{\textit{Performance.}} low time cost when when doing
+\subsubsection{Performance of \ourtool}
+low time cost when when doing
 selective instrumentation, permitting the use in fielded software.
 
 The overhead, the cost of diagnosis, acceptable?
 
 \vspace{1mm}
+\noindent \textbf{\textit{Summary.}} how effective
+
+\vspace{1mm}
+
+\subsection{Experimental Discussions}
+
 
 \noindent \textbf{\textit{Limitations.}} similar inputs, if no inputs is available, test adequacy.
 
