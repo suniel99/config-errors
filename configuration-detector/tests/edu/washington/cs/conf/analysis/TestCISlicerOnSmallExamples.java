@@ -23,6 +23,15 @@ import junit.framework.TestCase;
 
 public class TestCISlicerOnSmallExamples extends TestCase {
 
+	public void testCode() {
+		String path = "D:\\research\\configurations\\workspace\\configuration-detector\\bin\\test\\code";
+		String mainClass = "Ltest/code/EqthConf";
+		String definedClass = "test.code.EqthConf";
+		String fieldName = "eqth";
+		boolean isStatic = true;
+		forwardSliceOnSingleField(path, mainClass, definedClass, fieldName, isStatic);
+	}
+	
 	public void testFieldFlowToObject() {
 		String path = "D:\\research\\configurations\\workspace\\configuration-detector\\bin\\test\\slice\\examples";
 		String mainClass = "Ltest/slice/examples/FieldFlowToObject";
@@ -131,6 +140,11 @@ public class TestCISlicerOnSmallExamples extends TestCase {
 			    if(!irs.shouldIgnore() && irs.hasLineNumber()) {
 			    	stmts.add(irs);
 			    }
+			    
+			    CGNode node = s.getNode();
+			    String ss = WALAUtils.getAllIRAsString(node);
+			    System.out.println(ss);
+			    
 			}
 		}
 		
