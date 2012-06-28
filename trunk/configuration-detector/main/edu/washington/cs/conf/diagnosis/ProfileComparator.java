@@ -1,7 +1,5 @@
 package edu.washington.cs.conf.diagnosis;
 
-import instrument.Globals;
-
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
@@ -9,6 +7,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import edu.washington.cs.conf.util.Globals;
 import edu.washington.cs.conf.util.Log;
 import edu.washington.cs.conf.util.Utils;
 

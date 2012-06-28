@@ -1,7 +1,5 @@
 package edu.washington.cs.conf.analysis;
 
-import instrument.Globals;
-
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.LinkedHashMap;
@@ -17,6 +15,7 @@ import com.ibm.wala.ssa.SSAConditionalBranchInstruction;
 import com.ibm.wala.ssa.SSAInstruction;
 
 import edu.washington.cs.conf.diagnosis.InvariantUtils;
+import edu.washington.cs.conf.util.Globals;
 import edu.washington.cs.conf.util.Utils;
 import edu.washington.cs.conf.util.WALAUtils;
 

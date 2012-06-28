@@ -1,7 +1,5 @@
 package edu.washington.cs.conf.instrument;
 
-import instrument.Globals;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.LinkedHashMap;
@@ -9,6 +7,7 @@ import java.util.Map;
 import java.util.Stack;
 
 import edu.washington.cs.conf.util.Files;
+import edu.washington.cs.conf.util.Globals;
 
 /**
  * An instrumentation class

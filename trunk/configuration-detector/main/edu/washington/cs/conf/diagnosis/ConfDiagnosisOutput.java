@@ -1,7 +1,5 @@
 package edu.washington.cs.conf.diagnosis;
 
-import instrument.Globals;
-
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.util.Collection;
@@ -11,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 import edu.washington.cs.conf.analysis.ConfEntity;
+import edu.washington.cs.conf.util.Globals;
 import edu.washington.cs.conf.util.Utils;
 
 public class ConfDiagnosisOutput {

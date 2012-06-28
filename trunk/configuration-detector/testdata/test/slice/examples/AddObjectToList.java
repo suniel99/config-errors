@@ -1,7 +1,5 @@
 package test.slice.examples;
 
-import instrument.Tracer;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
