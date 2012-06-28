@@ -193,11 +193,37 @@ predicate: newSequence.size() > maxsize
 \subsection{Configuration Deviation Analysis}
 \label{sec:analysis}
 
+To diagnose a configuration error, \ourtool runs each predicate, traces its
+output, and genertes its dependency set. It compares the dependency sets
+with those generated on the reference compute for each known bug. To compare
+dependency sets, the tool calculates the edit distance between the sets
+for each predicate. For each known bug, it sums the edit
+distances to calculate the similarity between the state of the sick
+computer and the state of the reference computer. It identifies the bug
+with the lowest total as the most likely diagnosis; in the case of ties,
+it reports all tied bugs as being equally likely to be the root cause.
 
 Introduce the metric for ranking configurations, and its
 statistical meaning,e g., balance 2 parts
 
 \subsubsection{Selecting Peers for Execution Comparison}
+
+\ourtool uses the pattern of observed behaviors of program predicates
+to diagnose configuration errors. Using this approach, \ourtool
+executes the program on the erreneous inputs with the
+corresponding configuration and aggregates the result of
+each instrumented predicate as a vector $S_{current}$ = $<float, float, ..>$.
+\ourtool then compares $S_{current}$ with a set of
+vectors in the pre-built database, where each vector is generated
+by running xxxx (correct).
+
+Intuitively, each vector is capatures the system behavior..
+
+\ourtool chooses the vector that is most similar to $S_{current}$ as
+the most likely diagnosis for the error.
+
+\ourtool uses the interproduction distance as a similarity metric, we will
+refer it as the xxx method.
 
 \subsubsection{Diagnosing Non-Crashing Errors}
 
