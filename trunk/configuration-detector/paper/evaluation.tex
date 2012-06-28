@@ -8,37 +8,29 @@ We aim to answer the following research questions:
 \begin{itemize}
 \item How effective is \ourtool in diagnosing the root cause of
 configuration errors?
-
 \item Can \ourtool provide more accurate diagnosis information than
-the existing approaches? %$\blacksquare$ compare to existing approaches
-
-\item What are the effects of varying the comparison profiles?% How long does \ourtool take to diagnose a configuration error?
-
+the existing approaches? 
+\item What are the effects of varying the comparison profiles?
 \item How long does \ourtool take to diagnose a configuration error?
-
-%\item Is our technique useful in diagnosing software configuration errors, including
-%crashing and non-crashing errors?
-%\item Is the information provided by our technique more useful than the statement-level
-%profiling and the method-level dynamic invariant detection?
-%\item Which factors (how much) can affect our technique's accuracy?
 \end{itemize}
 
 \subsection{Subject Programs}
 
-We evaluated \ourtool on xxx Java applications: Randoop~\cite{randoop},
+We evaluated \ourtool on \subjectnum Java applications: Randoop~\cite{randoop},
 Weka~\cite{weka}, JChord~\cite{jchord}, Synoptic~\cite{synoptic},
-and Soot~\cite{soot}.
+and Soot~\cite{soot}. $\blacksquare$ need for brief introduction
 
-\subsubsection{Configuration Errors}
+\subsubsection{Configuration Problems}
 
-We collected a number of subject programs and their mis-configuration problems in
-Table~\ref{tab:subjects}.
 
-We searched forums, FAQ pages and configuration documents to find
-actual configuration problems that users have experienced with our
+We searched forums, FAQ pages and the literature on configuration error diagnosis
+research to find actual configuration problems that users have experienced with our
 target applications. In total, we chose xxx misconfigurations (xxx
 are crashing, xxx non-crashing) that were casued by errors in
 configuration options. Table xxx lists the configuration errors for each application.
+The xxx misconfigured values cover various data types, such as enumerated types,
+numerical ranges, regular expressions, and text entries. Table~\ref{} lists
+the configuration errors for each application~\cite{tab:subjects}.
 
 \begin{table}[t]
 %\setlength{\tabcolsep}{.84\tabcolsep}
@@ -102,11 +94,12 @@ The 9 crashing errors in the bottom table are taken from~\cite{Rabkin:2011:PPC}.
 \end{table}
 
 
-
-%Use injected errors to test the technique's reliability
-
 \subsection{Evaluation Procedural}
 
+
+To evaluate \ourtool, we used \ourtool to instrument
+the application, ran it with its error-revealing
+inputs and configuration, and obtained xxxx profile xxx. 
 
 Rewrite the configuration option in the form of method fields, since
 the local variable information has gone in the bytecode.
@@ -125,6 +118,9 @@ actual root cause in the list returned by \ourtool, and the
 time cost to diagnose each configuration error.
 
 Use extraction~\cite{Rabkin:2011:SEP}
+
+Are the ranked configurations useful for misconfiguration
+error diagnosis?  We examine the ranked configurations to see how well they can explain the behavior.
 
 
 \subsection{Results}
@@ -181,14 +177,46 @@ does not output the actual responsible option.}}
 For each configuration error, Table~\ref{} shows the ranking of the
 responsible configuration option, the number , xxx.
 
+The nature of the root-cause configuratin option is only one factor.
+The ranking also depends on how the root-cause option relates to
+other options int he suspect set. A highly customized machine
+likely produces more noises, since the unique customizations
+can be even less conforming than a sick option value.
 
-Are the ranked configurations useful for misconfiguration error diagnosis?
-We examine the ranked configurations to see how well they can explain the behavior.
+As shown in Table~\ref{tab:results}, \ourtool is highly effective
+in pinpointing the root cause of misconfigurations. \ourtool
+ranks the actual root cause top 3 in xx cases. Sometimes,
+when the actual causes is ranked lower, the option ranked
+higher provides a valuable clue to help debug the problem.
+For instance, in xxx the actual error usually occurs nested xxx.
 
-%\noindent \textbf{Comparison with Alternative Approaches.}
-%The ASE paper. Only handles crashing errors.
+For xxx, \ourtool successfully pinpointed the root causes (where
+we define success as listing the actual root cause as one of the
+top 3 options) for xxx of the errors. For the last error, \ourtool
+cannot run to completion due to xxxx.
 
-Need to explain each configuration error
+\ourtool also successfully diagnoses xx\% of the xxx errors. For the
+remaining errors, \ourtool ranks the root cause 9th. The configuration
+error is that the xxx. Thus, the root cause gets ranked lower
+in the list.
+
+Overall, \ourtool successfully diagnosed xxx out of xxx errors
+by ranking the actual responsible option at top 3.
+The remaining errors are a direct result of xxxx and seems
+hard for \ourtool to diagnose correctly.
+
+
+We next briefly explain the root cause of each non-crashing configuration
+errors as shown Table~\ref{tab:results}. The detailed illustration
+for those crashing errors can be found in~\cite{Rabkin:2011:PPC}.
+
+\begin{itemize}
+\item \textbf{Randoop}. reason
+\item \textbf{Weka}. reason
+\item \textbf{JChord}. reason
+\item \textbf{Synoptic}. reason
+\item \textbf{Soot}. reason
+\end{itemize}
 
 
 \vspace{1mm}
@@ -198,44 +226,45 @@ Need to explain each configuration error
 \subsubsection{Comparison with Alternative Approaches}
 \label{sec:comparison}
 
-%\subsubsection{Comparison with Traditional Slicing}
-We compare \ourtool with four alternative approaches:
+We next compare \ourtool with four alternative approaches
+in diagnosing configuration errors.
+%the first three has not been discussed in the literature
 
 \noindent \textbf{Full Slicing.}
-
-\noindent \textbf{Coverage Analysis.}
-
-\noindent \textbf{Invariant Analysis.}
-
-\noindent \textbf{Taint-based Analysis (ConfAnalyzer~\cite{Rabkin:2011:PPC}).}
-
 How would the results change if traditional slicing~\cite{Horwitz:1988} is used
 in Section~\ref{sec:prop}?
 
 What about using traditional slicing for configuration propagation analysis?
 full control and data-flow information.
 
-
-
-Our technique is at the \textit{predicate}-level. What about using
-\textit{statement}-level instrumentation~\cite{Jones:2002}
- and \textit{method}-level dynamic invariant detection~\cite{Ernst:1999}?
-
-Is our \textit{predicate}-level granularity a suitable one?
-
+\vspace{1mm}
+\noindent \textbf{Coverage Analysis.}
 The first alternative is to instrument all statement, and record the different between a bad run and
 a set of good runs. Find out the statement covered most by good runs, but covered least by bad run.
 After then, querying the thin slicing info, to rank the configuration options that can affect them.
 
-
+\vspace{1mm}
+\noindent \textbf{Invariant Analysis.}
 The second alternative is to run the program, diff the dynamically-detected invariants. Ranked all
 methods that have the most different invariants between 2 runs. Then, querying thin slicing to
 figure out the configuration options.
 
-Compare with statistical debugging?
+
+\vspace{1mm}
+\noindent \textbf{Taint-based Analysis.}
+Rabkin and katz proposed a family of techniques (and its tool implementation called ConfAnalyzer)
+to precompute possible
+configuration diagnosis for Java software~\cite{Rabkin:2011:PPC}. In their work,
+the most accurate technique is based on dynamic taint analysis, which precisely
+tracks the information flow during program execution. % bit level
+This taint-based analysis works remarkably well for crashinig errors, but can
+not diagnose non-crashing errors.
+
+%Compare with statistical debugging?
 
 \vspace{1mm}
 \noindent \textbf{\textit{Summary.}} how effective
+Is our \textit{predicate}-level granularity a suitable one?
 
 \subsubsection{Effects of Varying Comparison Profiles}
 \label{sec:ranking}
@@ -283,7 +312,11 @@ used in \ourtool, and the data in that column is taken from Table~\ref{tab:resul
 
 We next investigate the effect of varying \ourtool's
 comparison profiles. As Table~\ref{} shows, varying the
-strategy..
+strategy xxx has substantially different effects on the
+diagnosis results, depending on the application being analyzed.
+
+The result difference derives froom the nature of the applications.
+We found....  . On the other hand,
 
 
 What would the technique produce when feeding it with different inputs (e.g.,
@@ -296,12 +329,6 @@ of random selected trace.
 
 Comparison of different distance metrics to find similar statements.
 
-%\subsubsection{The Effects of Increasing Context Sensitivity}
-
-%When recording configuration profiles (Section~\ref{sec:profiling}), is it useful
-%to increase the length of calling context? Would that help improve our technique's accuracy?
-
-%The default length is 1, we increase it to 2, 3, and then observe the difference
 \vspace{1mm}
 \noindent \textbf{\textit{Summary.}} how effective
 
@@ -310,6 +337,13 @@ low time cost when when doing
 selective instrumentation, permitting the use in fielded software.
 
 The overhead, the cost of diagnosis, acceptable?
+
+The performance of \ourtool is reasonable. The time to diagnose
+an error varies among applications.  XXX app takes less than xxx,
+while xxx takes xxx to complete.
+
+\ourtool performs very well on these errors. The average time
+to diagnose xxx (with max, min xx).
 
 \vspace{1mm}
 \noindent \textbf{\textit{Summary.}} how effective
@@ -334,3 +368,8 @@ does not track options that are passed between processes via the command line.
 
 \noindent \textbf{\textit{Experimental Conclusions.}} similar inputs, if no inputs is available.
 
+\ourtool makes configuration error diagnosis easier by suggesting
+the specific options that may lead to an unexpected behavior. Compared to
+alternative approaches, \ourtool distinguishes itself by being able to
+diagnose both crashing and non-crashinig errors without requiring
+a user-provided testing oracle. $\blacksquare$
