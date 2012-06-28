@@ -9,6 +9,7 @@ import java.util.Map;
 import edu.washington.cs.conf.analysis.ConfEntity;
 import edu.washington.cs.conf.analysis.ConfPropOutput;
 import edu.washington.cs.conf.diagnosis.StmtCoverageBasedDiagnoser;
+import edu.washington.cs.conf.diagnosis.StmtCoverageBasedDiagnoserMain;
 import edu.washington.cs.conf.diagnosis.StmtExecuted;
 import edu.washington.cs.conf.diagnosis.StmtFileReader;
 import edu.washington.cs.conf.diagnosis.TestStmtExecutedDiffer;
@@ -33,40 +34,13 @@ public class TestWekaBaseline extends TestCase {
 	 * Diagnose by statements
 	 * */
 	public void testDiagnoseByStmt() {
-		List<StmtExecuted> good1 = StmtFileReader.readStmts("./experiments/weka-baseline/good_stmt_iris.txt");
-		List<StmtExecuted> good2 = StmtFileReader.readStmts("./experiments/weka-baseline/good_stmt_weather.txt");
-		List<StmtExecuted> bad1 = StmtFileReader.readStmts("./experiments/weka-baseline/bad_stmt_labor.txt");
-		
-		Collection<Collection<StmtExecuted>> goodRuns
-	        = new LinkedList<Collection<StmtExecuted>>();
-		goodRuns.add(good1);
-		goodRuns.add(good2);
-		
-		Collection<Collection<StmtExecuted>> badRuns
-            = new LinkedList<Collection<StmtExecuted>>();
-		badRuns.add(bad1);
-		
-		//do diff
-		Map<String, Float> scores = TestStmtExecutedDiffer.computeScore(goodRuns, badRuns);
-		
 		Collection<ConfPropOutput> outputs = TestSliceWekaConfigOptions.getWekaConfOutputs();
-		StmtCoverageBasedDiagnoser diagnoser = new StmtCoverageBasedDiagnoser(outputs, scores);
 		
-		System.out.println("start to diagnose options: ....");
+		String[] badStmtFiles = new String[]{"./experiments/weka-baseline/bad_stmt_labor.txt"};
+		String[] goodStmtFiles = new String[]{"./experiments/weka-baseline/good_stmt_iris.txt",
+				"./experiments/weka-baseline/good_stmt_weather.txt"};
 		
-		List<ConfEntity> results = diagnoser.computeResponsibleOptions();
-		
-		List<String> entities = new LinkedList<String>();
-		for(ConfEntity result : results) {
-//			System.out.println(result);
-			if(!entities.contains(result.toString())) {
-				entities.add(result.toString());
-			}
-		}
-		
-		for(int i = 0; i  < entities.size(); i++) {
-			System.out.println(i+1 + ". " + entities.get(i));
-		}
+		StmtCoverageBasedDiagnoserMain.findResponsibleOptions(outputs, badStmtFiles, goodStmtFiles);
 	}
 	
 	/**

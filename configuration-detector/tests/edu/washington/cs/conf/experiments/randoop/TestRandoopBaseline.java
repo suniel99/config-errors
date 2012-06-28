@@ -25,7 +25,7 @@ import junit.framework.TestCase;
 
 public class TestRandoopBaseline extends TestCase {
 	
-	public void testExecutedLine() {
+	public void testDiagnoseOptionsByStmtCoverage() {
 		List<StmtExecuted> good1 = StmtFileReader.readStmts("./experiments/randoop-baseline-stmt/good-arraylist-60s.txt");
 		List<StmtExecuted> good2 = StmtFileReader.readStmts("./experiments/randoop-baseline-stmt/good-treeset-60s.txt");
 		List<StmtExecuted> good3 = StmtFileReader.readStmts("./experiments/randoop-baseline-stmt/good-show-help.txt");
@@ -52,8 +52,20 @@ public class TestRandoopBaseline extends TestCase {
 		
 		List<ConfEntity> results = diagnoser.computeResponsibleOptions();
 		
+//		for(ConfEntity result : results) {
+//			System.out.println(result);
+//		}
+		
+		List<String> entities = new LinkedList<String>();
 		for(ConfEntity result : results) {
-			System.out.println(result);
+//			System.out.println(result);
+			if(!entities.contains(result.toString())) {
+				entities.add(result.toString());
+			}
+		}
+		
+		for(int i = 0; i  < entities.size(); i++) {
+			System.out.println(i+1 + ". " + entities.get(i));
 		}
 	}
 	
@@ -61,7 +73,7 @@ public class TestRandoopBaseline extends TestCase {
 	 * The daikon invariant file is a little bit large, so I use absolute file path here
 	 * @throws Exception 
 	 * */
-	public void testAffectedMethods() throws Exception {
+	public void testDiagnoseOptionsByInvariantAnalysis() throws Exception {
 		String goodInvFile = "D:\\research\\configurations\\daikon\\bin\\randoop-examples\\randoop-arraylist-60s.inv.gz";
 		String badInvFile = "D:\\research\\configurations\\daikon\\bin\\randoop-examples\\nanoxml-60s.inv.gz";
 		//Set<String> affectedMethods = getAffectedMethods(goodInvFile, badInvFile);
@@ -71,8 +83,10 @@ public class TestRandoopBaseline extends TestCase {
 		List<ConfEntity> entities = MethodBasedDiagnoser.computeResponsibleOptions(Collections.singletonList(goodInvFile), badInvFile, confs);
 		
 		System.out.println(entities.size());
+		int i = 0;
 		for(ConfEntity entity : entities) {
-			System.out.println(entity);
+			System.out.println((i+1) + ". " + entity);
+			i++;
 		}
 		
 	}
