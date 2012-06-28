@@ -22,9 +22,9 @@ solutions to the problem. %$\blacksquare$ this process is frustrating..
 
 Randoop is an automated unit test generation tool, which implements
 a technique called feedback-directed random test generation~\cite{randoop}.
-It has been used in academic instituitions and
+It has been used in academic institutions and
 industrial companies such as Microsoft, Google,
-and ABB, and found numerous previoulsy-unknown bugs.
+and ABB, and found numerous previously-unknown bugs.
 
 During the maintenance of the Randoop tool, we received a ``bug report''
 from a testing expert who has been using Randoop for quite a while.
@@ -33,12 +33,12 @@ tests for a subject program called Nanoxml~\cite{nanoxml}. When running Randoop,
 it terminates normally but simply does not output any tests.
 
 Compared to crashing errors, this non-crashing error is particularly difficult to diagnose.
-First, Randoop sliently failed without exhibiting a crashing point or
-a stacktrace. This makes existing techniques like dynamic slicing~\cite{Zhang:2003:PDS},
-failure trace analysis~\cite{Rabkin:2011:PPC, Attariyan:2010:ACT} unapplicable. Second, there is no
+First, Randoop silently failed without exhibiting a crashing point or
+a stack trace. This makes existing techniques like dynamic slicing~\cite{Zhang:2003:PDS},
+failure trace analysis~\cite{Rabkin:2011:PPC, Attariyan:2010:ACT} inapplicable. Second, there is no
 available testing oracle to test whether a program behaves correctly.
 This makes existing bug isolation techniques like delta debugging
-unapplicable. In fact, to the best of our knowledge, we are not
+inapplicable. In fact, to the best of our knowledge, we are not
 aware any existing tool can be used to pinpoint the root cause.
 
 When diagnosing using our \ourtool tool, it outputs an error report as
@@ -143,7 +143,7 @@ Code excerpt from the Randoop automated test generator~\cite{randoop}.
 
 %$\blacksquare$ also lead to spurious bug reports.
 
-%A users should not be experted and should not be expected to provide
+%A users should not be expected and should not be expected to provide
 %an testing oracle.
 
 %To the best of our knowledge, this problem cannot be diagnosed by
@@ -151,7 +151,7 @@ Code excerpt from the Randoop automated test generator~\cite{randoop}.
 %crashing, Second, no failure, Third, no state
 
 %not everyone has the technical skill to use this solution.
-%And even if one does, using the xxx, findinig, and moving xx
+%And even if one does, using the xxx, finding, and moving xx
 %counter past the end of the loop can be a tedious and annoying process.
 
 
@@ -175,17 +175,17 @@ link the erroneous behavior to specific responsible configuratio options.
 
 \begin{itemize}
 \item \textbf{Configurtion Propagation Analysis}. For
-each user-settable conofiguration option, \ourtool
+each user-settable configuration option, \ourtool
 uses a lightweight dependence analysis technique, called Thin Slicing~\cite{Sridharan:2007},
 to statically identify its affected predicate in the code.
 
 \item \textbf{Configuration Behavior Profiling}. \ourtool
 performs \textit{selective instrumentation} to capture the
-dynamic behaviors of the test code when errorenous behavior
+dynamic behaviors of the test code when erroneous behavior
 is observed.
 
 \item \textbf{Configuration Deviation Analysis}.
-When errorenous behavior is revealed, \ourtool looks up a
+When erroneous behavior is revealed, \ourtool looks up a
 pre-built database, selects the most similar profiles, and
 performs statistical analysis to identify which configuration
 option's behavior deviates most between a good run and a bad.
@@ -213,16 +213,16 @@ several notable features:
 \textit{when}, \textit{why} and \textit{how} the program fail. This is
 different than many well-known automated debugging techniques such
 as delta debugging~\cite{Zeller:2002:ICC} and dynamic slicing~\cite{Zhang:2003:PDS}.
-Our technique also genertes concise descriptions of the problem
-wuith a given option, as is ranking possible diagnoses.
+Our technique also generates concise descriptions of the problem
+with a given option, as is ranking possible diagnoses.
 
-\item \textbf{Diagnose both non-crashing and crasing errors}.
+\item \textbf{Diagnose both non-crashing and crashing errors}.
 Most of the existing techniques~\cite{Rabkin:2011:PPC,
 Whitaker:2004:CDS, Attariyan:2010:ACT} focus exclusively on configuration errors
 where the value of an option is wrong and this causes a program
 to fail in a deterministic way with an error message, while
-ignoring configuration problems that manifest themeselves as
-silent failures. By constract, \ourtool is capable to diagnose
+ignoring configuration problems that manifest themselves as
+silent failures. By contract, \ourtool is capable to diagnose
 both kinds of errors.
 
 \item \textbf{Require no system support.} Our technique requires no alterations to
@@ -314,7 +314,7 @@ show that ... $\blacksquare$
 %\ourtool outputs an ordered list of probable root causes.
 %Each entry in the list is a user-settle configuration option;
 %our results show that \ourtool typically outputs
-%the actuall responsible configuration option as the top 3 in the list.
+%the actual responsible configuration option as the top 3 in the list.
 
 %By finding the
 %needle in the haystack, \ourtool can be an attractive ...
@@ -339,7 +339,7 @@ This paper makes the following contributions:
 \item \textbf{Technique.} We present a technique to diagnose
 software configuration errors. Our technique uses static analysis,
 dynamic profiling, and statistical inference to link the
-erroneous behavior to specific configuratio options (Section~\ref{sec:technique}).
+erroneous behavior to specific configuration options (Section~\ref{sec:technique}).
 
 
 \item \textbf{Implementation.} We implemented our technique 

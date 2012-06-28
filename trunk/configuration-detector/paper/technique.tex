@@ -93,7 +93,7 @@ of which is not needed at all by the client.
 However, if the provided input changes the workflow,
 instead of all data flow into it. 
 
-Take the code exerpt in Figure~\ref{fig:example} as an example.
+Take the code excerpt in Figure~\ref{fig:example} as an example.
 When Randoop is used to generate tests for different inputs (here,
 input mean programs under test), the created tests (method-call
 sequence at line 12) would be dramatically different.
@@ -102,7 +102,7 @@ be similar.
 
 \textbf{justification of focusing on thin slicing, rather
 than all affected parts}
-Tranditional slicing does not distinguish flows along
+Traditional slicing does not distinguish flows along
 pointers from flows along values.
 
 Thin slicing is a technique that focuses on statements
@@ -194,7 +194,7 @@ predicate: newSequence.size() > maxsize
 \label{sec:analysis}
 
 To diagnose a configuration error, \ourtool runs each predicate, traces its
-output, and genertes its dependency set. It compares the dependency sets
+output, and generates its dependency set. It compares the dependency sets
 with those generated on the reference compute for each known bug. To compare
 dependency sets, the tool calculates the edit distance between the sets
 for each predicate. For each known bug, it sums the edit
@@ -210,14 +210,14 @@ statistical meaning,e g., balance 2 parts
 
 \ourtool uses the pattern of observed behaviors of program predicates
 to diagnose configuration errors. Using this approach, \ourtool
-executes the program on the erreneous inputs with the
+executes the program on the erroneous inputs with the
 corresponding configuration and aggregates the result of
 each instrumented predicate as a vector $S_{current}$ = $<float, float, ..>$.
 \ourtool then compares $S_{current}$ with a set of
 vectors in the pre-built database, where each vector is generated
 by running xxxx (correct).
 
-Intuitively, each vector is capatures the system behavior..
+Intuitively, each vector is captures the system behavior..
 
 \ourtool chooses the vector that is most similar to $S_{current}$ as
 the most likely diagnosis for the error.
@@ -299,7 +299,7 @@ The fundamental differences between inputs and options
 
 why cannot delta debugging?
 
-why not store failed traces in teh database? (developers
+why not store failed traces in the database? (developers
 cannot anticipate the error behaviors)
 
 Why dynamic slicing is not usable? No seed statement, and great overhead. Using JSlicer incurs

@@ -26,7 +26,7 @@ and Soot~\cite{soot}. $\blacksquare$ need for brief introduction
 We searched forums, FAQ pages and the literature on configuration error diagnosis
 research to find actual configuration problems that users have experienced with our
 target applications. In total, we chose xxx misconfigurations (xxx
-are crashing, xxx non-crashing) that were casued by errors in
+are crashing, xxx non-crashing) that were caused by errors in
 configuration options. Table xxx lists the configuration errors for each application.
 The xxx misconfigured values cover various data types, such as enumerated types,
 numerical ranges, regular expressions, and text entries. Table~\ref{} lists
@@ -122,6 +122,9 @@ Use extraction~\cite{Rabkin:2011:SEP}
 Are the ranked configurations useful for misconfiguration
 error diagnosis?  We examine the ranked configurations to see how well they can explain the behavior.
 
+%This step
+%could be automated by combining with some existing  work on
+%automated configuration option extraction~\cite{}.
 
 \subsection{Results}
 
@@ -177,9 +180,9 @@ does not output the actual responsible option.}}
 For each configuration error, Table~\ref{} shows the ranking of the
 responsible configuration option, the number , xxx.
 
-The nature of the root-cause configuratin option is only one factor.
+The nature of the root-cause configuration option is only one factor.
 The ranking also depends on how the root-cause option relates to
-other options int he suspect set. A highly customized machine
+other options in the suspect set. A highly customized machine
 likely produces more noises, since the unique customizations
 can be even less conforming than a sick option value.
 
@@ -257,7 +260,7 @@ to precompute possible
 configuration diagnosis for Java software~\cite{Rabkin:2011:PPC}. In their work,
 the most accurate technique is based on dynamic taint analysis, which precisely
 tracks the information flow during program execution. % bit level
-This taint-based analysis works remarkably well for crashinig errors, but can
+This taint-based analysis works remarkably well for crashing errors, but can
 not diagnose non-crashing errors.
 
 %Compare with statistical debugging?
@@ -315,7 +318,7 @@ comparison profiles. As Table~\ref{} shows, varying the
 strategy xxx has substantially different effects on the
 diagnosis results, depending on the application being analyzed.
 
-The result difference derives froom the nature of the applications.
+The result difference derives from the nature of the applications.
 We found....  . On the other hand,
 
 
@@ -333,7 +336,7 @@ Comparison of different distance metrics to find similar statements.
 \noindent \textbf{\textit{Summary.}} how effective
 
 \subsubsection{Performance of \ourtool}
-low time cost when when doing
+low time cost when doing
 selective instrumentation, permitting the use in fielded software.
 
 The overhead, the cost of diagnosis, acceptable?
@@ -353,7 +356,7 @@ to diagnose xxx (with max, min xx).
 \subsection{Experimental Discussions}
 
 
-\noindent \textbf{\textit{Limitations.}} similar inputs, if no inputs is available, test adequacy.
+\noindent \textbf{\textit{Limitations.}} similar inputs, if no input is available, test adequacy.
 
 We focus on named configuration options with a common key-value semantic.
 
@@ -371,5 +374,5 @@ does not track options that are passed between processes via the command line.
 \ourtool makes configuration error diagnosis easier by suggesting
 the specific options that may lead to an unexpected behavior. Compared to
 alternative approaches, \ourtool distinguishes itself by being able to
-diagnose both crashing and non-crashinig errors without requiring
+diagnose both crashing and non-crashing errors without requiring
 a user-provided testing oracle. $\blacksquare$
