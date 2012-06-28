@@ -1,7 +1,5 @@
 package edu.washington.cs.conf.instrument;
 
-import instrument.Globals;
-
 import java.io.Writer;
 import java.util.Collection;
 import java.util.LinkedHashSet;
@@ -20,6 +18,7 @@ import com.ibm.wala.shrikeBT.shrikeCT.ClassInstrumenter;
 import com.ibm.wala.shrikeCT.ClassReader;
 import com.ibm.wala.shrikeCT.ClassWriter;
 
+import edu.washington.cs.conf.util.Globals;
 import edu.washington.cs.conf.util.Utils;
 
 public class EveryStmtInstrumenter extends AbstractInstrumenter {

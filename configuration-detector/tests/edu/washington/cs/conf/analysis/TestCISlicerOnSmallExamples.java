@@ -1,7 +1,5 @@
 package edu.washington.cs.conf.analysis;
 
-import instrument.Globals;
-
 import java.io.PrintWriter;
 import java.util.Collection;
 import java.util.LinkedList;
@@ -18,6 +16,7 @@ import com.ibm.wala.ipa.slicer.thin.ThinSlicer;
 import com.ibm.wala.util.graph.traverse.DFSFinishTimeIterator;
 
 import edu.washington.cs.conf.analysis.ConfigurationSlicer.CG;
+import edu.washington.cs.conf.util.Globals;
 import edu.washington.cs.conf.util.WALAUtils;
 import junit.framework.TestCase;
 

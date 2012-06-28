@@ -1,10 +1,10 @@
 package edu.washington.cs.conf.instrument;
 
-import instrument.Globals;
-
 import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
+
+import edu.washington.cs.conf.util.Globals;
 
 public class ExecutionContext implements Serializable {
 	

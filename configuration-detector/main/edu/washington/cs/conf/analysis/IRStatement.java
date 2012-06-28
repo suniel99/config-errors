@@ -4,8 +4,6 @@ import java.io.PrintWriter;
 import java.util.Collection;
 import java.util.Iterator;
 
-import instrument.Globals;
-
 import com.ibm.wala.cfg.Util;
 import com.ibm.wala.classLoader.ShrikeBTMethod;
 import com.ibm.wala.ipa.callgraph.CGNode;
@@ -15,6 +13,7 @@ import com.ibm.wala.shrikeCT.InvalidClassFileException;
 import com.ibm.wala.ssa.SSAConditionalBranchInstruction;
 import com.ibm.wala.ssa.SSAInstruction;
 
+import edu.washington.cs.conf.util.Globals;
 import edu.washington.cs.conf.util.Utils;
 import edu.washington.cs.conf.util.WALAUtils;
 

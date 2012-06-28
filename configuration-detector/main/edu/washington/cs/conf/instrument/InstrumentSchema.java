@@ -1,7 +1,5 @@
 package edu.washington.cs.conf.instrument;
 
-import instrument.Globals;
-
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -17,6 +15,7 @@ import java.util.Set;
 import edu.washington.cs.conf.analysis.ConfEntity;
 import edu.washington.cs.conf.analysis.ConfPropOutput;
 import edu.washington.cs.conf.analysis.ShrikePoint;
+import edu.washington.cs.conf.util.Globals;
 import edu.washington.cs.conf.util.Utils;
 
 /**

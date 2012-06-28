@@ -1,10 +1,9 @@
 package edu.washington.cs.conf.diagnosis;
 
-import instrument.Globals;
-
 import java.util.HashSet;
 import java.util.Set;
 
+import edu.washington.cs.conf.util.Globals;
 import edu.washington.cs.conf.util.Utils;
 
 /**

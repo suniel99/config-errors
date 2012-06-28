@@ -1,7 +1,5 @@
 package edu.washington.cs.conf.diagnosis;
 
-import instrument.Globals;
-
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -11,6 +9,7 @@ import java.util.Map;
 
 import edu.washington.cs.conf.analysis.ConfEntity;
 import edu.washington.cs.conf.analysis.ConfEntityRepository;
+import edu.washington.cs.conf.util.Globals;
 import edu.washington.cs.conf.util.Utils;
 
 public class ConfDiagnosisEntity {

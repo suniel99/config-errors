@@ -1,6 +1,6 @@
 package edu.washington.cs.conf.diagnosis;
 
-import instrument.Globals;
+import edu.washington.cs.conf.util.Globals;
 
 /**
  * A class for generating well-formatted, human-readable explanation

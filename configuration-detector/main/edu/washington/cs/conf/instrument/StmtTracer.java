@@ -1,12 +1,11 @@
 package edu.washington.cs.conf.instrument;
 
-import instrument.Globals;
-
 import java.io.IOException;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
 import edu.washington.cs.conf.util.Files;
+import edu.washington.cs.conf.util.Globals;
 
 /**
  * This tracer is used to trace every executed bytecode statements

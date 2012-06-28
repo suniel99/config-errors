@@ -1,7 +1,5 @@
 package edu.washington.cs.conf.diagnosis;
 
-import instrument.Globals;
-
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
@@ -16,6 +14,7 @@ import edu.washington.cs.conf.analysis.ConfUtils;
 import edu.washington.cs.conf.diagnosis.PredicateProfileBasedDiagnoser.CrossRunRank;
 import edu.washington.cs.conf.diagnosis.PredicateProfileBasedDiagnoser.RankType;
 import edu.washington.cs.conf.diagnosis.ProfileDistanceCalculator.DistanceType;
+import edu.washington.cs.conf.util.Globals;
 import edu.washington.cs.conf.util.Utils;
 
 /**

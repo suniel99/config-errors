@@ -1,7 +1,5 @@
 package edu.washington.cs.conf.analysis;
 
-import instrument.Globals;
-
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -18,6 +16,7 @@ import com.ibm.wala.util.CancelException;
 import junit.framework.TestCase;
 import edu.washington.cs.conf.analysis.ConfigurationSlicer.CG;
 import edu.washington.cs.conf.experiments.SynopticExpUtils;
+import edu.washington.cs.conf.util.Globals;
 import edu.washington.cs.conf.util.Log;
 import edu.washington.cs.conf.util.WALAUtils;
 
