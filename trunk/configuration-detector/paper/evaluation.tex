@@ -14,6 +14,10 @@ the existing approaches?
 \item How long does \ourtool take to diagnose a configuration error?
 \end{itemize}
 
+%how well can \ourtool identify solutions to configuration problems?
+%How effective is predicate-level ..
+%Can \ourtool identify slutions to configuration problems involving xx
+
 \subsection{Subject Programs}
 
 We evaluated \ourtool on \subjectnum Java applications: Randoop~\cite{randoop},
@@ -128,6 +132,10 @@ error diagnosis?  We examine the ranked configurations to see how well they can 
 %This step
 %could be automated by combining with some existing  work on
 %automated configuration option extraction~\cite{}.
+All of our experiments were run on a
+2.67GHz Intel Core PC with 4GB physical memory (1GB is allocated
+for the JVM), running Windows 7.
+
 
 \subsection{Results}
 
@@ -365,6 +373,15 @@ We focus on named configuration options with a common key-value semantic.
 
 Our tool implementation and experiments were restricted to Java. Our analysis
 does not track options that are passed between processes via the command line.
+
+\ourtool currently does not support debugging non-deterministic errors. %Combining \ourtool with a deterministic replay system
+For non-deterministic errors, \ourtool could potentially leverage one of
+several deterministic replay systems~\cite{Huang:2010:LLD}
+that can capture a buggy non-deterministic
+execution and faithfully reproduce it for late analysis.
+
+Our current \ourtool prototype assists in solving configuration errors that are confined
+to a single computer system, such as a home computer, personal workstation, or stand-alone server. (no process communication...)
 
 \vspace{1mm}
 

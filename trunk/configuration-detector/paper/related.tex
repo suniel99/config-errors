@@ -15,7 +15,11 @@ Chronus~\cite{Whitaker:2004:CDS} relies on a user-provided
 testing oracle to check the behavior of the system, and uses
 virtual machine checkpoint and binary search to find the
 point in time where the program behavior
-switched from correct to incorrect. PeerPressure~\cite{Wang:2004:AMT} 
+switched from correct to incorrect. AutoBash~\cite{Su:2007:AIC}
+fixes a misconfiguration by using
+OS-level speculation execution to try possible
+configurations, examine their effects, and roll them back when necessary.
+PeerPressure~\cite{Wang:2004:AMT} 
 uses statistical methods to compare
 configuration state in the Windows registry on different machines.
 When a registry entry value on a machine exhibiting erroneous behavior differs
@@ -67,9 +71,8 @@ affected predicate behavior is more general for Java software.
 
 \subsection{Automated Debugging Techniques}
 
-Many automated debugging techniques~\cite{Jones:2002,
-roessler-issta-2012, Horwitz:1988,
-clause07july} have been developed to localize errors in software.
+Many automated debugging techniques~\cite{Jones:2002, Zeller:2002:ICC
+ Horwitz:1988, clause07july} have been developed to localize errors in software.
 
 Program slicing~\cite{Horwitz:1988} and taint analysis~\cite{clause07july}
 are two techniques to determine which statements and inputs
