@@ -4,8 +4,16 @@ import java.util.LinkedList;
 import java.util.List;
 
 import edu.washington.cs.conf.analysis.ConfEntity;
+import edu.washington.cs.conf.analysis.ConfEntityRepository;
 
 public class SootExpUtils {
+	
+	public static ConfEntityRepository getConfEntityRepository() {
+		List<ConfEntity> sootConfList = getSootConfList();
+		ConfEntityRepository repo = new ConfEntityRepository(sootConfList);
+		return repo;
+	}
+	
 	public static List<ConfEntity> getSootConfList() {
 		ConfEntity entity1 = new ConfEntity("soot.options.Options", "help", false);
 		ConfEntity entity2 = new ConfEntity("soot.options.Options", "phase_list", false);

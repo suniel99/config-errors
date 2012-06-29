@@ -40,7 +40,9 @@ public class MainAnalyzer {
 	public static boolean amortizeNoise = false;
 	public static int thresholdcount = 3;
 	
-	private float distanceThreshold = 0.3f; //distance
+	public static float default_threshold = 0.3f;
+	
+	private float distanceThreshold = default_threshold; //distance
 	private DistanceType distanceType = DistanceType.INTERPRODUCT;
 	private RankType rankType = RankType.SINGLE_IMPORT;
 	private CrossRunRank crossRank = CrossRunRank.HIGHEST_RANK_AVG;
@@ -265,13 +267,20 @@ public class MainAnalyzer {
 	/**
 	 * A short cut for diagnosis
 	 * */
-	public void diagnoseConfigErrors(String badRunTrace, String[] goodRunTraceArray,
+	public static void diagnoseConfigErrors(String badRunTrace, String[] goodRunTraceArray,
 			ConfEntityRepository repo, String srcDir, Collection<ConfPropOutput> confSlices,
 			SelectionStrategy strategy) {
+		diagnoseConfigErrors(badRunTrace, goodRunTraceArray, repo, srcDir, confSlices, strategy, MainAnalyzer.default_threshold);
+	}
+	
+	public static void diagnoseConfigErrors(String badRunTrace, String[] goodRunTraceArray,
+			ConfEntityRepository repo, String srcDir, Collection<ConfPropOutput> confSlices,
+			SelectionStrategy strategy, float threshold) {
 		Collection<String> goodRunTraces = Arrays.asList(goodRunTraceArray);
 		
 		MainAnalyzer analyzer = new MainAnalyzer(badRunTrace, goodRunTraces, repo, srcDir, confSlices);
 		analyzer.setSelectionStrategy(strategy);
+		analyzer.setThreshold(threshold);
 		
 		List<ConfDiagnosisOutput> outputs = analyzer.computeResponsibleOptions();
 		for(ConfDiagnosisOutput o : outputs) {

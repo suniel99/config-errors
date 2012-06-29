@@ -9,6 +9,7 @@ import edu.washington.cs.conf.analysis.ConfPropOutput;
 import edu.washington.cs.conf.analysis.ConfUtils;
 import edu.washington.cs.conf.diagnosis.ConfDiagnosisOutput;
 import edu.washington.cs.conf.diagnosis.MainAnalyzer;
+import edu.washington.cs.conf.diagnosis.MainAnalyzer.SelectionStrategy;
 import edu.washington.cs.conf.diagnosis.PredicateProfileBasedDiagnoser.RankType;
 import edu.washington.cs.conf.experiments.RandoopExpUtils;
 import edu.washington.cs.conf.util.Log;
@@ -20,6 +21,25 @@ public class TestDiagnoseRandoopOptions extends TestCase {
 	public void tearDown() {
 		MainAnalyzer.amortizeNoise = false;
 		MainAnalyzer.doFiltering = false;
+	}
+	
+
+	public void testDiagnoseAll() {
+		ConfEntityRepository repo = RandoopExpUtils.getRandoopConfRepository();
+		MainAnalyzer.doFiltering = true;
+		MainAnalyzer.diagnoseConfigErrors(TestComparingRandoopGoodBadTraces.badRun,
+				TestComparingRandoopGoodBadTraces.db,
+				repo,
+				null, null, SelectionStrategy.ALL);
+	}
+	
+	public void testDiagnoseRandom() {
+		ConfEntityRepository repo = RandoopExpUtils.getRandoopConfRepository();
+		MainAnalyzer.doFiltering = true;
+		MainAnalyzer.diagnoseConfigErrors(TestComparingRandoopGoodBadTraces.badRun,
+				TestComparingRandoopGoodBadTraces.db,
+				repo,
+				null, null, SelectionStrategy.RandomK);
 	}
 
 	public void test1() {
