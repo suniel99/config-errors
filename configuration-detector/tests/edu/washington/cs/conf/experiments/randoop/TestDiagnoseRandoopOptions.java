@@ -63,84 +63,120 @@ public class TestDiagnoseRandoopOptions extends TestCase {
 		}
 	}
 	
-	public void test2_basedOn1CFA() {
-		MainAnalyzer.amortizeNoise = false;
-		MainAnalyzer.doFiltering = true;
-		
-		//ConfUtils.setUpLineNumberAndSource(sourceDir, propOutputs, profiles)
-		
-		ConfEntityRepository repo = RandoopExpUtils.getRandoopConfRepository();
-		
-		String goodRunTrace = "./experiments/randoop-database/good-treeset-60s-1-cfa-dump.txt";
-		String badRunTrace = "./experiments/randoop-database/bad-nano-xml-100s-1-cfa-dump.txt";
-		
-//		String sourceDir = "./subjects/randoop/randoop-src/";
-//		Collection<ConfPropOutput> configOutputs = TestSliceRandoopConfigOptions.getConfPropOutputs(); 
-		
-		MainAnalyzer analyzer = new MainAnalyzer(badRunTrace, Arrays.asList(goodRunTrace), repo);//, sourceDir, configOutputs);
-		analyzer.setRankType(RankType.IMPORT_RANK_CHANGE); //use single import is OK
-//		analyzer.setSourceDir(sourceDir);
-//		analyzer.setOutputs(configOutputs);
-		analyzer.setThreshold(0.4f);
-		
-		List<ConfDiagnosisOutput> outputs = analyzer.computeResponsibleOptions();
-		
-		Log.logConfig("./config_output.txt");
-		for(ConfDiagnosisOutput output : outputs) {
-		    System.out.println(output);
-//		    output.
-		    System.out.println("   " + output.getBriefExplanation());
-		    System.out.println();
-		    
-		    Log.logln(output.toString());
-		    Log.logln("exp num: " + output.getExplanations().size());
-		    for(String exp : output.getExplanations()) {
-		    	Log.logln("    " + exp);
-		    }
-		    Log.logln("");
-//		    output.showExplanations();
-		}
-		
-		Log.removeLogging();
-	}
+//	public void test22_basedOn1CFA() {
+//		MainAnalyzer.amortizeNoise = false;
+//		MainAnalyzer.doFiltering = true;
+//		
+//		//ConfUtils.setUpLineNumberAndSource(sourceDir, propOutputs, profiles)
+//		
+//		ConfEntityRepository repo = RandoopExpUtils.getRandoopConfRepository();
+//		
+//		String goodRunTrace = "./experiments/randoop-database/good-treeset-60s-1-cfa-dump.txt";
+//		String badRunTrace = "./experiments/randoop-database/bad-nano-xml-100s-1-cfa-dump.txt";
+//		
+////		String sourceDir = "./subjects/randoop/randoop-src/";
+////		Collection<ConfPropOutput> configOutputs = TestSliceRandoopConfigOptions.getConfPropOutputs(); 
+//		
+//		MainAnalyzer analyzer = new MainAnalyzer(badRunTrace, Arrays.asList(goodRunTrace), repo);//, sourceDir, configOutputs);
+//		analyzer.setRankType(RankType.IMPORT_RANK_CHANGE); //use single import is OK
+////		analyzer.setSourceDir(sourceDir);
+////		analyzer.setOutputs(configOutputs);
+//		analyzer.setThreshold(0.4f);
+//		
+//		List<ConfDiagnosisOutput> outputs = analyzer.computeResponsibleOptions();
+//		
+//		Log.logConfig("./config_output.txt");
+//		for(ConfDiagnosisOutput output : outputs) {
+//		    System.out.println(output);
+////		    output.
+//		    System.out.println("   " + output.getBriefExplanation());
+//		    System.out.println();
+//		    
+//		    Log.logln(output.toString());
+//		    Log.logln("exp num: " + output.getExplanations().size());
+//		    for(String exp : output.getExplanations()) {
+//		    	Log.logln("    " + exp);
+//		    }
+//		    Log.logln("");
+////		    output.showExplanations();
+//		}
+//		
+//		Log.removeLogging();
+//	}
 	
 	public void testTreeSet() {
 		String goodRunTrace = "./experiments/randoop-database/good-treeset-60s-pruned.txt";
 		String badRunTrace = "./experiments/randoop-database/bad-nano-xml-100s-pruned.txt";
-		this.test2_1cfa_pruned(goodRunTrace, badRunTrace);
+		this.diagnoseConfigErrors(goodRunTrace, badRunTrace);
 	}
 	
 	public void testBinarySearchTree() {
 		String goodRunTrace = "./experiments/randoop-database/good-binarysearchtree-60s-pruned.txt";
 		String badRunTrace = "./experiments/randoop-database/bad-nano-xml-100s-pruned.txt";
-		this.test2_1cfa_pruned(goodRunTrace, badRunTrace);
+		this.diagnoseConfigErrors(goodRunTrace, badRunTrace);
 	}
 	
 	public void testBinomialHeap() {
 		String goodRunTrace = "./experiments/randoop-database/good-binomialheap-60s-pruned.txt";
 		String badRunTrace = "./experiments/randoop-database/bad-nano-xml-100s-pruned.txt";
-		this.test2_1cfa_pruned(goodRunTrace, badRunTrace);
+		this.diagnoseConfigErrors(goodRunTrace, badRunTrace);
 	}
 	
 	public void testTreeSetCollections() {
 		String goodRunTrace = "./experiments/randoop-database/good-treeset-collections-60s-pruned.txt";
 		String badRunTrace = "./experiments/randoop-database/bad-nano-xml-100s-pruned.txt";
-		this.test2_1cfa_pruned(goodRunTrace, badRunTrace);
+		this.diagnoseConfigErrors(goodRunTrace, badRunTrace);
 	}
 	
 	public void testTreeSetCollectionsMyClass() {
 		String goodRunTrace = "./experiments/randoop-database/good-treeset-collections-60s-myclasses-pruned.txt";
 		String badRunTrace = "./experiments/randoop-database/bad-nano-xml-100s-pruned.txt";
-		this.test2_1cfa_pruned(goodRunTrace, badRunTrace);
+		this.diagnoseConfigErrors(goodRunTrace, badRunTrace);
+	}
+	
+	public void testGraph() {
+		String goodRunTrace = "./experiments/randoop-database/good_graph_trace-60s-pruned.txt";
+		String badRunTrace = "./experiments/randoop-database/bad-nano-xml-100s-pruned.txt";
+		this.diagnoseConfigErrors(goodRunTrace, badRunTrace);
+	}
+	
+	public void testJavaUtils() {
+		String goodRunTrace = "./experiments/randoop-database/good-java-utils-60s-pruned.txt";
+		String badRunTrace = "./experiments/randoop-database/bad-nano-xml-100s-pruned.txt";
+		this.diagnoseConfigErrors(goodRunTrace, badRunTrace);
 	}
 	
 	public void testShowHelp() {
 		String goodRunTrace = "./experiments/randoop-database/show_help-pruned.txt";
 		String badRunTrace = "./experiments/randoop-database/bad-nano-xml-100s-pruned.txt";
-		this.test2_1cfa_pruned(goodRunTrace, badRunTrace);
+		this.diagnoseConfigErrors(goodRunTrace, badRunTrace);
 	}
 	
-	public void test2_1cfa_pruned(String goodRunTrace, String badRunTrace) {
+	public void testShowUnpubHelp() {
+		String goodRunTrace = "./experiments/randoop-database/good-show-unpub-help.txt";
+		String badRunTrace = "./experiments/randoop-database/bad-nano-xml-100s-pruned.txt";
+		this.diagnoseConfigErrors(goodRunTrace, badRunTrace);
+	}
+	
+	public void testSimpleDs() {
+		String goodRunTrace = "./experiments/randoop-database/simple-ds-60s-pruned.txt";
+		String badRunTrace = "./experiments/randoop-database/bad-nano-xml-100s-pruned.txt";
+		this.diagnoseConfigErrors(goodRunTrace, badRunTrace);
+	}
+	
+	public void testJava2xml() {
+		String goodRunTrace = "./experiments/randoop-database/good-javax2xml-60s-pruned.txt";
+		String badRunTrace = "./experiments/randoop-database/bad-nano-xml-100s-pruned.txt";
+		this.diagnoseConfigErrors(goodRunTrace, badRunTrace);
+	}
+	
+	public void testApachePrimitives() {
+		String goodRunTrace = "./experiments/randoop-database/good-apache-primitive-60s-pruned.txt";
+		String badRunTrace = "./experiments/randoop-database/bad-nano-xml-100s-pruned.txt";
+		this.diagnoseConfigErrors(goodRunTrace, badRunTrace);
+	}
+	
+	public void diagnoseConfigErrors(String goodRunTrace, String badRunTrace) {
 //		MainAnalyzer.amortizeNoise = false;
 		MainAnalyzer.doFiltering = true;
 		
