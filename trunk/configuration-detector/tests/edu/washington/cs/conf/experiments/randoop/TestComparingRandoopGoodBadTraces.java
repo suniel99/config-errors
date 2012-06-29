@@ -78,6 +78,39 @@ public class TestComparingRandoopGoodBadTraces extends TestCase {
 		CommonUtils.compareTraceDistance(goodRunTrace, badRunTrace, DistanceType.INTERPRODUCT, 1.0f);
 	}
 	
+	public void test8() {
+		String goodRunTrace = "./experiments/randoop-database/good_graph_trace-60s-pruned.txt";
+		String badRunTrace = "./experiments/randoop-database/bad-nano-xml-100s-pruned.txt";
+		CommonUtils.compareTraceDistance(goodRunTrace, badRunTrace, DistanceType.INTERPRODUCT, 0.11180502f);
+	}
 	
+	public void test9() {
+		String goodRunTrace = "./experiments/randoop-database/good-java-utils-60s-pruned.txt";
+		String badRunTrace = "./experiments/randoop-database/bad-nano-xml-100s-pruned.txt";
+		CommonUtils.compareTraceDistance(goodRunTrace, badRunTrace, DistanceType.INTERPRODUCT, 0.2617579f);
+	}
+	
+	public void test10() {
+		String goodRunTrace = "./experiments/randoop-database/good-show-unpub-help.txt";
+		String badRunTrace = "./experiments/randoop-database/bad-nano-xml-100s-pruned.txt";
+		CommonUtils.compareTraceDistance(goodRunTrace, badRunTrace, DistanceType.INTERPRODUCT, 1.0f);
+	}
+	
+	public void test11() {
+		String goodRunTrace = "./experiments/randoop-database/simple-ds-60s-pruned.txt";
+		String badRunTrace = "./experiments/randoop-database/bad-nano-xml-100s-pruned.txt";
+		CommonUtils.compareTraceDistance(goodRunTrace, badRunTrace, DistanceType.INTERPRODUCT, 0.09734005f);
+	}
 
+	public void test12() {
+		String goodRunTrace = "./experiments/randoop-database/good-javax2xml-60s-pruned.txt";
+		String badRunTrace = "./experiments/randoop-database/bad-nano-xml-100s-pruned.txt";
+		CommonUtils.compareTraceDistance(goodRunTrace, badRunTrace, DistanceType.INTERPRODUCT, 0.04339099f);
+	}
+	
+	public void test13() {
+		String goodRunTrace = "./experiments/randoop-database/good-apache-primitive-60s-pruned.txt";
+		String badRunTrace = "./experiments/randoop-database/bad-nano-xml-100s-pruned.txt";
+		CommonUtils.compareTraceDistance(goodRunTrace, badRunTrace, DistanceType.INTERPRODUCT, 0.17921078f);
+	}
 }

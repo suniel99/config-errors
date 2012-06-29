@@ -55,9 +55,8 @@ public class TestDiagnoseWekaOptions extends TestCase {
 	}
 	
 	/***
-	 * Do random selection
+	 * Do random selection, see class: MainAnalyzer
 	 * */
-	
 	public void diagnoseWeka(SelectionStrategy strategy) {
 		String badRunTrace = "./experiments/weka-database/bad-labor.txt";
 		Collection<String> goodRunTraces = Arrays.asList(TestComparingWekaTraces.db);
