@@ -14,6 +14,7 @@ and the Windows registry.
 The goal of \ourtool is to help users find solutions to the configuration
 problems they are facing.
 
+%put to the introduction
 \ourtool is designed to be used by system administrators and end-users when they
 encountered a suspected configuration error that they do not
 know how to fix. \ourtool is run offline, once erroneous
@@ -21,6 +22,7 @@ behavior has been observed. A \ourtool user reproduces
 the problem by executing the application while \ourtool attaches to
 the executing application processes and monitors xxx.
 
+%put to the profiling section?
 Our goal is to capture sufficient information to allow users to reason
 about the causal effects of configurations and how they relate to
 predicates that test system health, while also minimizing performance impact
@@ -58,7 +60,9 @@ problem.
 \begin{figure*}[!]
   \centering
   \includegraphics[scale=0.600]{architecture}
-  \vspace*{-2.0ex}\caption {{\label{fig:workflow} The workflow of our configuration error explanation technique.
+  \vspace*{-2.0ex}\caption {{\label{fig:workflow} The workflow of our configuration error diagnosis technique.
+Phases ``Instrument'' and ``Run'' correspond to the Configuration Behavior Profiling step in Section~\ref{sec:profiling}.
+The other two phases: ``Propagation Analysis'' and ``Deviation Analysis'' correspond to steps in Section~\ref{sec:prop} and Section~\ref{sec:analysis}, respectively.
 }}
 \end{figure*}
 
@@ -69,6 +73,8 @@ Given a configuration option, this step statically determines its affected progr
 elements in the abstraction level of \textit{predicates}. Using predicates
 as the abstraction level makes our technique focus on program data flows, instead
 of all executed statements.
+
+A predicate is a boolean expression in the source code ...
 
 %In traditional program slicing techniques~\cite{}.
 In traditional taint tracking for security purposes, control
@@ -155,6 +161,10 @@ directly affected statements.
 solutions to a problem, it has a greater database of potential solutions to
 a problem.
 
+\ourtool assigns a unique signature for each predicate in the program.
+
+associate a predicate with its affecting configuration options during instrumentation.
+
 For each configuration, after obtaining its affected predicates, our technique
 instruments the program \textit{only} on those affected predicates. The instrumentation
 code keeps the results of how an affected predicate evaluates at runtime. Besides keeping
@@ -184,26 +194,6 @@ code as follows (the instrumentation code is highlighted by underline):
 The helper class \CodeIn{Instrumenter} saves the calling context (i.e.,
 method-call chains from the main entry), and the predicate evaluation result.
 
-Take the Randoop code in Figure~\ref{fig:example} as an example. Suppose when
-generating tests for a given program, 100 sequences are created (line 12) and 20
-of them exceed the max length as specified in the \CodeIn{maxSize} configuration option.
-As a result, the predicate at line 13 is evaluated 100 times, among which 20 times the
-predicate evaluates to \CodeIn{true}. Therefore,
-our instrumentation code will record the following information as profile for the predicate
-at line 13:
-
-%\pagebreak
-
-\begin{CodeOut}
-\begin{alltt}
-configuration: maxsize
-context: main -> ... -> step() - > createNewUniqueSequence()
-predicate: newSequence.size() > maxsize
-    \# evaluation: 100
-    \# true branch: 20
-    \# false branch: 80
-\end{alltt}
-\end{CodeOut}
 
 \subsection{Configuration Deviation Analysis}
 \label{sec:analysis}
@@ -218,11 +208,15 @@ computer and the state of the reference computer. It identifies the bug
 with the lowest total as the most likely diagnosis; in the case of ties,
 it reports all tied bugs as being equally likely to be the root cause.
 
-Introduce the metric for ranking configurations, and its
-statistical meaning,e g., balance 2 parts
+rank by the distance
 
 
-\subsubsection{Selecting Peers for Execution Comparison}
+
+\subsubsection{Selecting Similar Profiles for Comparison}
+
+A database can contain profiles produced by dramatically
+different tasks. It only makes sense to compare the buggy profile
+with a similar but correct task.
 
 \ourtool uses the pattern of observed behaviors of program predicates
 to diagnose configuration errors. Using this approach, \ourtool
@@ -244,78 +238,30 @@ the most likely diagnosis for the error.
 \ourtool uses the interproduction distance as a similarity metric, we will
 refer it as the xxx method.
 
+
 \subsubsection{Diagnosing Non-Crashing Errors}
+
+Introduce the metric for ranking configurations, and its
+statistical meaning,e g., balance 2 parts
 
 \subsubsection{Diagnosing Crashing Errors}
 
-A stack trace is available.
+A stack trace is available. A trace produced from a crashing error is not complete
 
 \subsubsection{Filtering Execution Noises}
 
 remove some off-by-one
 
 
-When some unexpected program behavior is observed, our technique
-attempts to explain its reason by comparing the recorded profile (denoted
-as \textit{bad-run profile}) with the recorded profiles of all
-executions on similar inputs that produced expected results (denoted as \textit{good-run profiles}).
-
-The configuration deviation analysis selects configuration
-options whose bad-run profile deviate most from its good-run profiles.
-
-Suppose, a bad run produces the following profile (2 configurations: \CodeIn{maxsize}
-and \CodeIn{repeat\_heuristic}. Calling context is omitted for brevity.):
-
-\begin{CodeOut}
-\begin{alltt}
-configuration: maxsize 
-predicate: newSequence.size() > maxsize
-    \# evaluation: 100
-    \# true branch: 60
-    \# false branch: 40
-
-configuration: repeat_heuristic
-predicate: repeat_heuristic
-    \# evaluation: 50
-    \# true branch: 50
-    \# false branch: 0
-\end{alltt}
-\end{CodeOut}
-
-For a good run with a similar input, the following profile is observed:
-
-\begin{CodeOut}
-\begin{alltt}
-configuration: maxsize 
-predicate: newSequence.size() > maxsize
-    \# evaluation: 100
-    \# true branch: 20
-    \# false branch: 80
-
-configuration: repeat\_heuristic
-predicate: repeat\_heuristic
-    \# evaluation: 50
-    \# true branch: 50
-    \# false branch: 0
-\end{alltt}
-\end{CodeOut}
-
-Our technique determines that in a good run, the ratio of predicate 
-\CodeIn{newSequence.size() > maxsize} being evaluated to true is: 20 / 80 = 0.2;
-but in a bad run, the ratio of the same predicate being evaluated to true is: 60 / 100 = 0.6.
-On the other hand, the ratio of the other predicate (i.e., \CodeIn{repeat\_heuristic}) being evaluated to true
-remains the same in both good and bad runs. Therefore, the behavior
-of predicate \CodeIn{newSequence.size() > maxsize} deviates most, and our technique
-selects the \CodeIn{maxsize} configuration as the responsible one, and displays it to the user, suggesting he/she
-to inspect its value and re-set it.
-
-
 Finally, needs to average the results
+\subsubsection{Rank the Output}
 
 \subsection{Discussions}
 
 The fundamental differences between inputs and options. A configuration
 option is fixed before input.
+
+Configuration customize the overall program behavior, when inputs is a specific
 
 why cannot delta debugging? no working state, no predicate
 

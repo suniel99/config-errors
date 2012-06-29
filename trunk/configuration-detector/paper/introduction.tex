@@ -292,7 +292,7 @@ should even feel easier.
 \subsection{Evaluation}
 
 We evaluated \ourtool on \errors configuration errors
-from \subjectnum real-world software, comprising
+from \subjectnum configurable software, comprising
 \crash crashing errors and \noncrash non-crashing errors.
 Our results show that \ourtool identifies the correct
 root causes of most configuration errors. xxxx top 3,
@@ -304,20 +304,25 @@ one configuration error, making it an attractive alternative
 to manual debugging.
 
 We also compared the effectiveness of \ourtool to
-three existing approaches: statement-level profiling~\cite{Jones:2002}, method-level
+4 existing approaches: statement-level profiling~\cite{Jones:2002}, method-level
 invariant detection~\cite{Ernst:1999}, and dynamic tainting-based configuration
 error diagnosis techniques~\cite{Rabkin:2011:PPC}. The experiment results show that
 \ourtool significantly outperforms both statement-level profiling
 and method-level invariant detection in diagnosis accuracy, suggesting
 that focusing on the behavior of program predicates can be a
-good choice. Compared to the dynamic tainting-based technique: ConfAnalyzer, \ourtool
+suitable abstraction. Compared to ConfAnalyzer~\cite{}, a dynamic taint-based technique
+which precisely tracks information flow at the bit level , \ourtool
 produces accurate diagnosis information for 5 non-crashing errors that
 ConfAnalyzer fails to diagnose, and output better info for 5 out of 9
 crashing errors. 
 
-Finally, we investigate the effecting of varying the comparison profiles
-and increasing the context length in profiling. Our experimental results
-show that ... $\blacksquare$
+Finally, we investigate the effecting of varying the comparison profiles.
+Our experimental results show that varying the
+profile selection strategy can result in substantially different effects on the
+diagnosis results, depending on the application being analyzed;
+and the similarity-based selection strategy used in \ourtool outperforms
+the other two alternatives.
+
 
 %\ourtool outputs an ordered list of probable root causes.
 %Each entry in the list is a user-settle configuration option;
@@ -346,18 +351,18 @@ This paper makes the following contributions:
 
 \item \textbf{Technique.} We present a technique to diagnose
 software configuration errors. Our technique uses static analysis,
-dynamic profiling, and statistical inference to link the
+dynamic profiling, and statistical analysis to link the
 erroneous behavior to specific configuration options (Section~\ref{sec:technique}).
 
 
 \item \textbf{Implementation.} We implemented our technique 
-in a tool, called \ourtool, for Java software. Our tool implementation is publicly available at
-\url{http://config-errors.googlecode.com} (Section~\ref{sec:implementation}).
+in a tool, called \ourtool, for Java software (Section~\ref{sec:implementation}). Our tool implementation is publicly available at
+\url{http://config-errors.googlecode.com}. 
 
 
 \item \textbf{Evaluation.} We applied \ourtool to diagnose
-\errors crashing and non-crashing configuration errors in \subjectnum
-real-world Java software. The results
+\errors configuration errors in \subjectnum
+configurable Java software. The results
 show the usefulness of the proposed technique (Section~\ref{sec:evaluation}).
 
 \end{itemize}
