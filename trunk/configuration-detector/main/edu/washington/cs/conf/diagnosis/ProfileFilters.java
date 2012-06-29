@@ -16,9 +16,9 @@ public class ProfileFilters {
 	public static List<ConfDiagnosisEntity> filter(Collection<ConfDiagnosisEntity> entities) {
 		List<ConfDiagnosisEntity> filtered = filterSingleOccurance(entities);
 		filtered = filterOneOccurance(filtered);
-		filtered = filterSingleOccuranceBothRuns(filtered);
-		filtered = filterSameRatio(filtered);
-		filtered = filterSameCountDelta(filtered);
+//		filtered = filterSingleOccuranceBothRuns(filtered);
+//		filtered = filterSameRatio(filtered);
+//		filtered = filterSameCountDelta(filtered);
 		filtered = filterLikelySliceImprecision(filtered);
 		return filtered;
 	}

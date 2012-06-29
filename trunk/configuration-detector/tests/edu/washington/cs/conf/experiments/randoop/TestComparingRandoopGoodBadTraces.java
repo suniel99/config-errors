@@ -6,6 +6,25 @@ import junit.framework.TestCase;
 
 public class TestComparingRandoopGoodBadTraces extends TestCase {
 	
+	public static String badRun = "./experiments/randoop-database/bad-nano-xml-100s-pruned.txt";
+	
+	public static String gentestsHelp = "./experiments/randoop-database/gentests_help-pruned.txt";
+	public static String graph = "./experiments/randoop-database/good_graph_trace-60s-pruned.txt";
+	public static String arraylist = "./experiments/randoop-database/good-arraylist-60s-pruned.txt";
+	public static String binarySearchTree = "./experiments/randoop-database/good-binarysearchtree-60s-pruned.txt";
+	public static String binomialHeap = "./experiments/randoop-database/good-binomialheap-60s-pruned.txt";
+	public static String javaUtils = "./experiments/randoop-database/good-java-utils-60s-pruned.txt";
+	public static String treeset = "./experiments/randoop-database/good-treeset-collections-60s-pruned.txt";
+	public static String treesetColl = "./experiments/randoop-database/good-treeset-collections-60s-pruned.txt";
+	public static String showHelpUnpub = "./experiments/randoop-database/good-show-unpub-help.txt";
+	public static String simpleds = "./experiments/randoop-database/simple-ds-60s-pruned.txt";
+	public static String primitives = "./experiments/randoop-database/good-apache-primitive-60s-pruned.txt";
+	public static String javax2xml = "./experiments/randoop-database/good-javax2xml-60s-pruned.txt";
+	
+	public static String[] db = new String[]{gentestsHelp, graph, arraylist, binarySearchTree, binomialHeap, javaUtils,
+		treeset, treesetColl, showHelpUnpub, simpleds, primitives, javax2xml};
+	
+	
 	public void test1() {
 		//compare the same
 		String goodRunTrace = "./experiments/randoop-database/good-treeset-60s.txt";
