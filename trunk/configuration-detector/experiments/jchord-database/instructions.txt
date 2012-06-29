@@ -16,3 +16,13 @@ java -cp ./chord-no-trace-instrumented.jar;../../bin
 
 //add an option could make the race become apparent
  -Dchord.datarace.exclude.eqth=false
+ 
+ Run examples
+ 
+ 1. ant -Dchord.work.dir=<WORK_DIR> -Dchord.run.analyses=cipa-0cfa-dlog run
+ 
+ 2. ant -Dchord.work.dir=<WORK_DIR> -Dchord.run.analyses=datarace-java run
+ 
+ 3.ant -Dchord.work.dir=<WORK_DIR> -Dchord.run.analyses=deadlock-java run
+ 
+ 4. ant -Dchord.out.dir=<OUT_DIR> -Dchord.print.project=true run
