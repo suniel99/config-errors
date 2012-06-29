@@ -1,5 +1,6 @@
 package edu.washington.cs.conf.diagnosis;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
@@ -14,6 +15,8 @@ import edu.washington.cs.conf.analysis.ConfUtils;
 import edu.washington.cs.conf.diagnosis.PredicateProfileBasedDiagnoser.CrossRunRank;
 import edu.washington.cs.conf.diagnosis.PredicateProfileBasedDiagnoser.RankType;
 import edu.washington.cs.conf.diagnosis.ProfileDistanceCalculator.DistanceType;
+import edu.washington.cs.conf.experiments.WekaExpUtils;
+import edu.washington.cs.conf.experiments.weka.TestComparingWekaTraces;
 import edu.washington.cs.conf.util.Globals;
 import edu.washington.cs.conf.util.Utils;
 
@@ -257,5 +260,24 @@ public class MainAnalyzer {
 	
 	public void setSelectionStrategy(SelectionStrategy strategy) {
 		this.strategy = strategy;
+	}
+	
+	/**
+	 * A short cut for diagnosis
+	 * */
+	public void diagnoseConfigErrors(String badRunTrace, String[] goodRunTraceArray,
+			ConfEntityRepository repo, String srcDir, Collection<ConfPropOutput> confSlices,
+			SelectionStrategy strategy) {
+		Collection<String> goodRunTraces = Arrays.asList(goodRunTraceArray);
+		
+		MainAnalyzer analyzer = new MainAnalyzer(badRunTrace, goodRunTraces, repo, srcDir, confSlices);
+		analyzer.setSelectionStrategy(strategy);
+		
+		List<ConfDiagnosisOutput> outputs = analyzer.computeResponsibleOptions();
+		for(ConfDiagnosisOutput o : outputs) {
+			System.out.println(o.getConfEntity());
+			System.out.println(o.getBriefExplanation());
+			System.out.println();
+		}
 	}
 }
