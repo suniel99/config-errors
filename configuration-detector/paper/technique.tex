@@ -11,6 +11,9 @@ and the Windows registry.
 
 \subsection{Overview}
 
+The goal of \ourtool is to help users find solutions to the configuration
+problems they are facing.
+
 \ourtool is designed to be used by system administrators and end-users when they
 encountered a suspected configuration error that they do not
 know how to fix. \ourtool is run offline, once erroneous
@@ -18,10 +21,16 @@ behavior has been observed. A \ourtool user reproduces
 the problem by executing the application while \ourtool attaches to
 the executing application processes and monitors xxx.
 
-For non-deterministic errors, \ourtool could potentially leverage one of
-several deterministic replay systems~\cite{Huang:2010:LLD}
-that can capture a buggy non-deterministic
-execution and faithfully reproduce it for late analysis.
+Our goal is to capture sufficient information to allow users to reason
+about the causal effects of configurations and how they relate to
+predicates that test system health, while also minimizing performance impact
+on foreground applications and keeping the amount of causal state manageable.
+%We also want to track caused effects of misconfigurations 
+
+%For non-deterministic errors, \ourtool could potentially leverage one of
+%several deterministic replay systems~\cite{Huang:2010:LLD}
+%that can capture a buggy non-deterministic
+%execution and faithfully reproduce it for late analysis.
 
 Figure~\ref{fig:workflow} sketches the high-level workflow of our technique.
 Our technique takes as input a program and a list of configuration options.
@@ -140,6 +149,12 @@ directly affected statements.
 \subsection{Configuration Behavior Profiling}
 \label{sec:profiling}
 
+\ourtool expresses system health as the results of executing a set of predicates.
+
+\ourtool lets users learn from each others' experience: as \ourtool sees more correct
+solutions to a problem, it has a greater database of potential solutions to
+a problem.
+
 For each configuration, after obtaining its affected predicates, our technique
 instruments the program \textit{only} on those affected predicates. The instrumentation
 code keeps the results of how an affected predicate evaluates at runtime. Besides keeping
@@ -206,6 +221,7 @@ it reports all tied bugs as being equally likely to be the root cause.
 Introduce the metric for ranking configurations, and its
 statistical meaning,e g., balance 2 parts
 
+
 \subsubsection{Selecting Peers for Execution Comparison}
 
 \ourtool uses the pattern of observed behaviors of program predicates
@@ -218,6 +234,9 @@ vectors in the pre-built database, where each vector is generated
 by running xxxx (correct).
 
 Intuitively, each vector is captures the system behavior..
+
+\ourtool automatically searches for solutions to a configuration
+problem.
 
 \ourtool chooses the vector that is most similar to $S_{current}$ as
 the most likely diagnosis for the error.
@@ -295,12 +314,16 @@ Finally, needs to average the results
 
 \subsection{Discussions}
 
-The fundamental differences between inputs and options
+The fundamental differences between inputs and options. A configuration
+option is fixed before input.
 
-why cannot delta debugging?
+why cannot delta debugging? no working state, no predicate
 
 why not store failed traces in the database? (developers
-cannot anticipate the error behaviors)
+cannot anticipate the error behaviors). A broader question is which
+informatin should be stored in the database for comparison, now, we use
+profiling info, what about statement info? invariant? they all
+summarize valuable info.
 
 Why dynamic slicing is not usable? No seed statement, and great overhead. Using JSlicer incurs
 a great overhead. It needs to track every instruction and
