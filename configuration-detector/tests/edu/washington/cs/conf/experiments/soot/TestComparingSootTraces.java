@@ -17,21 +17,34 @@ public class TestComparingSootTraces extends TestCase {
 	public static String soot_main_allowphan = "./experiments/soot-database/soot_main_allowphantom.txt";
 	public static String soot_main_help = "./experiments/soot-database/soot_main_help.txt";
 	public static String soot_main_no_args = "./experiments/soot-database/soot_main_no_args.txt";
-	public static String soot_main_pp_helloworld = "./experiments/soot-database/soot_main_pp_helloworld.txt"; //?
-	public static String soot_main_process_dir = "./experiments/soot-database/soot_main_process_dir.txt";//?
-	public static String soot_main_redict_dir = "./experiments/soot-database/soot_main_redict_dir.txt"; //?
+//	public static String soot_main_pp_helloworld = "./experiments/soot-database/soot_main_pp_helloworld.txt"; //?
+//	public static String soot_main_process_dir = "./experiments/soot-database/soot_main_process_dir.txt";//?
+//	public static String soot_main_redict_dir = "./experiments/soot-database/soot_main_redict_dir.txt"; //?
 	public static String static_method_inline_optimization = "./experiments/soot-database/static_method_inline_optimization.txt";
 	public static String whole_program_optimization = "./experiments/soot-database/whole_program_optimization.txt";
-
+    public static String ann_null_pointer = "./experiments/soot-database/ann_null_pointer.txt";
+    public static String array_bound_ann = "./experiments/soot-database/array_bound_ann.txt";
+    public static String side_effect_ann = "./experiments/soot-database/side-effect-ann.txt";
+    public static String side_effect_spark_ann = "./experiments/soot-database/side-effect-spark-enabled.txt";
+	
 	public static String soot_helloworld_no_keepline = "./experiments/soot-database/soot_helloworld_no_keepline.txt";
 	
 	public static String[] db = new String[]{
 		baf_string, jimple_use_cg_spark, jimple_use_original_name, optimize_helloworld,
-		optimize_jimple_helloworld, parse_jimple, produce_shimpe,
+		optimize_jimple_helloworld, 
+//		parse_jimple, 
+		produce_shimpe,
 		soot_helloworld_with_keepline, soot_main_allowphan,
-		soot_main_help, soot_main_no_args, soot_main_pp_helloworld,
-		soot_main_process_dir, soot_main_redict_dir, static_method_inline_optimization,
-		whole_program_optimization
+		soot_main_help, soot_main_no_args, 
+//		soot_main_pp_helloworld,
+//		soot_main_process_dir, 
+//		soot_main_redict_dir, 
+		static_method_inline_optimization,
+		whole_program_optimization,
+		ann_null_pointer,
+		array_bound_ann,
+		side_effect_ann,
+		side_effect_spark_ann
 	};
 	
 	public void test1() {
