@@ -7,8 +7,8 @@ go to the dir : D:\research\configurations\daikon\bin\weka
    weka.classifiers.trees.J48 -t ../subjects/weka/iris.arff -i
    
    //daikon command
-   java -cp ./path/to/daikon.jar;./weka.jar; daikon.Chicory --dtrace-file= TRACE_FILE_NAME
-   [xxx]
+   java -cp ./path/to/daikon.jar;./weka.jar; daikon.Chicory --dtrace-file= dtrace.gz TRACE_FILE_NAME
+   [xxx] --sample-start=10
    weka.classifiers.trees.J48 -t ./iris.arff -i
    
    
@@ -20,3 +20,8 @@ go to the dir : D:\research\configurations\daikon\bin\weka
 3. get the bad invariant
 
    weka.classifiers.trees.J48 -t labor.arff -i
+   
+
+Detect the invariant based on the above 3 trace file:
+
+   java -cp ./path/to/daikon.jar daikon.Daikon  xxx.dtrace.gz
