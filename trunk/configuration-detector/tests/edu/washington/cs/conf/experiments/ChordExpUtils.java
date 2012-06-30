@@ -4,6 +4,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import edu.washington.cs.conf.analysis.ConfEntity;
+import edu.washington.cs.conf.analysis.ConfEntityRepository;
 
 public class ChordExpUtils {
 	
@@ -12,6 +13,12 @@ public class ChordExpUtils {
 		List<ConfEntity> list = new LinkedList<ConfEntity>();
 		list.add(entity10);
 		return list;
+	}
+	
+	public static ConfEntityRepository getChordRepository() {
+		List<ConfEntity> jchordConfList = ChordExpUtils.getChordConfList();
+		ConfEntityRepository repo = new ConfEntityRepository(jchordConfList);
+		return repo;
 	}
 	
 	public static List<ConfEntity> getChordConfList() {
