@@ -164,11 +164,12 @@ public class MainAnalyzer {
 		return similarTuples;
 	}
 	
+	static Random randomGenerator = new Random();
+	
 	static List<PredicateProfileTuple> randomSelectProfileTuples(PredicateProfileDatabase db, int num) {
 		List<PredicateProfileTuple> allTuples = db.getAllTuples();
 		Utils.checkTrue(num > 0 && num <= allTuples.size(), "Incorrect num.");
 		
-		Random randomGenerator = new Random();
 		Set<Integer> indices = new HashSet<Integer>();
 		while(indices.size() < num) {
 			int index = randomGenerator.nextInt(allTuples.size());

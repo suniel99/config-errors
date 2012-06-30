@@ -41,6 +41,15 @@ public class TestDiagnoseRandoopOptions extends TestCase {
 				repo,
 				null, null, SelectionStrategy.RandomK);
 	}
+	
+	public void testDiagnoseSimilar() {
+		ConfEntityRepository repo = RandoopExpUtils.getRandoopConfRepository();
+		MainAnalyzer.doFiltering = true;
+		MainAnalyzer.diagnoseConfigErrors(TestComparingRandoopGoodBadTraces.badRun,
+				TestComparingRandoopGoodBadTraces.db,
+				repo,
+				null, null, null);
+	}
 
 	public void test1() {
 		ConfEntityRepository repo = RandoopExpUtils.getRandoopConfRepository();
