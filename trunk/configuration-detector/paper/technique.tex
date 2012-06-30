@@ -11,22 +11,9 @@ and the Windows registry.
 
 \subsection{Overview}
 
-The goal of \ourtool is to help users find solutions to the configuration
-problems they are facing.
 
-%put to the introduction
-\ourtool is designed to be used by system administrators and end-users when they
-encountered a suspected configuration error that they do not
-know how to fix. \ourtool is run offline, once erroneous
-behavior has been observed. A \ourtool user reproduces
-the problem by executing the application while \ourtool attaches to
-the executing application processes and monitors xxx.
 
 %put to the profiling section?
-Our goal is to capture sufficient information to allow users to reason
-about the causal effects of configurations and how they relate to
-predicates that test system health, while also minimizing performance impact
-on foreground applications and keeping the amount of causal state manageable.
 %We also want to track caused effects of misconfigurations 
 
 %For non-deterministic errors, \ourtool could potentially leverage one of
@@ -41,21 +28,13 @@ program elements (here, using the abstraction of predicates) that might be
 affected by each configuration (Section~\ref{sec:prop}). Then, it
 instruments the original program (Section~\ref{sec:profiling}).
 
-The instrumented version is deployed on the user side to collect program execution
-profiles (including both good and bad runs). When the user finds the program
-does not work as expected on a given input and configurations,
-he/she can invoke the Configuration Deviation Analysis component (Section~\ref{sec:analysis}) to
-diagnose the observed behavior. Our technique's output is a ranked list of
-configurations that could possibly explain the why the program does not produce the desirable result. Those
-configurations, if changed, may even fix the unexpected behavior.
-
-
-\ourtool tracks dependencies introduced by both data and
-control flow. It propagates dependencies among xxx
-
 \ourtool produces an ordered list of the 
 configuration options most likely to have caused the exhibited
 problem.
+
+%\ourtool tracks dependencies introduced by both data and
+%control flow. It propagates dependencies among xxx
+
 
 \begin{figure*}[!]
   \centering
@@ -154,6 +133,11 @@ directly affected statements.
 
 \subsection{Configuration Behavior Profiling}
 \label{sec:profiling}
+
+Our goal is to capture sufficient information to allow users to reason
+about the causal effects of configurations and how they relate to
+predicates that test system health, while also minimizing performance impact
+on foreground applications and keeping the amount of causal state manageable.
 
 \ourtool expresses system health as the results of executing a set of predicates.
 
