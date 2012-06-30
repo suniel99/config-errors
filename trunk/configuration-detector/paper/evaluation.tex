@@ -46,9 +46,9 @@ the configuration errors for each application~\cite{tab:subjects}.
  \hline
  Randoop (1.3.2) & 18587 & 57 & 12\\
  Weka (3.6.7) & 256305 & 14 & 12\\
- JChord (2.1) & 23391 &  79 & \\
+ JChord (2.1) & 23391 &  79 & 6 \\
  Synoptic (trunk) & 19153 & 37 & \\
- Soot (2.5.0) & 159273 & 49 & \\
+ Soot (2.5.0) & 159273 & 49 & 16 \\
 \hline
 \end{tabular}
 
@@ -150,11 +150,11 @@ for the JVM), running Windows 7.
 \hline
 \multicolumn{8}{|l|}{Non-crashing errors}   \\
  \hline
- 1. Randoop& \CodeIn{maxsize} & & 1 & & N & N &X \\
+ 1. Randoop& \CodeIn{maxsize} & 10 & 1 & & N & N &X \\
  2. Weka&\CodeIn{m\_numFolds}&2&1& & 4 & &X\\
- 3. JChord& \CodeIn{chord.kobj.k} &  & 2& & & &X\\
+ 3. JChord& \CodeIn{chord.kobj.k} & 3 & 2& & & &X\\
  4. Synoptic& \CodeIn{partitionRegExp}&  & 1& & & &X\\
- 5. Soot& \CodeIn{keep\_line\_number} & & 3 & & & &X\\
+ 5. Soot& \CodeIn{keep\_line\_number} & 1 & 3 & & & &X\\
 \hline
 \hline
 \multicolumn{8}{|l|}{Crashing errors}   \\
@@ -288,19 +288,19 @@ Is our \textit{predicate}-level granularity a suitable one?
 \setlength{\tabcolsep}{.24\tabcolsep}
 \begin{tabular}{|l|c|c||c|}
 \hline
-  & \multicolumn{3}{|c|}{Rank of the Actual Responsible Option } \\
+ Error ID. & \multicolumn{3}{|c|}{Rank of the Actual Responsible Option } \\
   %& \multicolumn{3}{|c|}{Different Comparison Profile Selection Strategy} \\
 \cline{2-4}
- Error ID & All Profiles & Random Selection&  Similarity-Based\\
+ Program & All Profiles & Random Selection&  Similarity-Based\\
  \hline
 \hline
 \multicolumn{4}{|l|}{Non-crashing errors}   \\
  \hline
- 1. Randoop & & &\\
+ 1. Randoop & 1 & 2 & 1\\
  2. Weka & 7 & 6 & 1\\
- 3. JChord & & &\\
- 4. Synoptic & & &\\
- 5. Soot & & &\\
+ 3. JChord & 16 & 19 & 2\\
+ 4. Synoptic & & & 1\\
+ 5. Soot & 13 & 13 & 3\\
 \hline
 \hline
 \multicolumn{4}{|l|}{Crashing errors}   \\
