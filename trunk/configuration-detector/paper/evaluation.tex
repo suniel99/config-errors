@@ -3,14 +3,15 @@
 
 %\subsection{Research Questions}
 
-We aim to answer the following research questions:
+Our evaluation answers the following research questions:
 
 \begin{itemize}
 \item How effective is \ourtool in diagnosing the root cause of
 configuration errors?
 \item Can \ourtool provide more accurate diagnosis information than
 the existing approaches? 
-\item What are the effects of varying the comparison profiles?
+\item What are the effects of varying the comparison profiles from
+the pre-built database?
 \item How long does \ourtool take to diagnose a configuration error?
 \end{itemize}
 
@@ -20,22 +21,26 @@ the existing approaches?
 
 \subsection{Subject Programs}
 
-We evaluated \ourtool on \subjectnum Java applications: Randoop~\cite{randoop},
-Weka~\cite{weka}, JChord~\cite{jchord}, Synoptic~\cite{synoptic},
-and Soot~\cite{soot}. Randoop is an automated unit test generation tool
-for Java. Weka $\blacksquare$ need for brief introduction
+We evaluated \ourtool on \subjectnum Java applications shown
+in Table~\ref{tab:subjects}.
+Randoop~\cite{randoop} is a robust automated test generator
+for Java programs. Weka~\cite{weka} is a useful toolkit implementing
+a broad variety of machine learning algorithms. In this experiment,
+we use its decision tree module component. JChord~\cite{jchord}
+is a program analysis platform that enables users to design, implement,
+and evaluate static and dynamic program analyses for Java bytecode.
+Synoptic~\cite{synoptic} is a tool to mine a finite state machine
+model representations of a system from logs.
+Soot~\cite{soot} is a Java optimization framework, which provides four
+intermediate representations for analyzing and transforming Java bytecode:
 
-\subsubsection{Configuration Problems}
+As shown in Table~\ref{tab:subjects}, each subject program has non-trivial
+code size, and contains a number of configuration options for users
+to customize its behaviors.
+
+\subsubsection{Configuration Errors}
 
 
-We searched forums, FAQ pages and the literature on configuration error diagnosis
-research to find actual configuration problems that users have experienced with our
-target applications. In total, we chose xxx misconfigurations (xxx
-are crashing, xxx non-crashing) that were caused by errors in
-configuration options. Table xxx lists the configuration errors for each application.
-The xxx misconfigured values cover various data types, such as enumerated types,
-numerical ranges, regular expressions, and text entries. Table~\ref{} lists
-the configuration errors for each application~\cite{tab:subjects}.
 
 \begin{table}[t]
 %\setlength{\tabcolsep}{.84\tabcolsep}
@@ -60,7 +65,6 @@ is the number of available configuration options. Column ``\#Profiles''
 is the number of profiles in the pre-built database.}}
 \end{table}
 
-Need to say how to collect representative profiles
 
 \begin{table}[t]
 \setlength{\tabcolsep}{.24\tabcolsep}
@@ -92,42 +96,85 @@ Need to say how to collect representative profiles
 \hline
 \end{tabular}
 
-\Caption{{\label{tab:subjects} A list of \errors
+\Caption{{\label{tab:errors} A list of \errors
 configuration errors used in the evaluation.
 The 9 crashing errors in the bottom table are taken from~\cite{Rabkin:2011:PPC}.
 }}
 \end{table}
 
+We searched forums, FAQ pages and the literature on
+configuration error diagnosis research to find actual
+configuration problems that users have experienced with our
+target applications. Combining with our own experience,
+we chose \errors representative configuration errors.
+Table~\ref{tab:errors} lists the configuration errors for each application.
+The configuration error list includes \noncrash non-crashing errors and \crash
+crashing errors, covering various data types, such as enumerated types,
+numerical ranges, regular expressions, and text entries.
 
 \subsection{Evaluation Procedural}
 
+For each subject program, we constructed a profile database
+running existing examples from its user manuals, discussion
+mailiing list, and the published papers. The number of profiles
+in each database is shown in Table~\ref{tab:subjects}. We
+found constructing such a database is quite easy. As shown
+in Section~\ref{sec:results}, even a database containing
+a small number of profiles is sufficient to
+diagnose many configuration errors.
 
-To evaluate \ourtool, we used \ourtool to instrument
-the application, ran it with its error-revealing
-inputs and configuration, and obtained xxxx profile xxx. 
+%Run examples from user manual to form the database. The effort
+%can be amortized in development time.
 
-Rewrite the configuration option in the form of method fields, since
-the local variable information has gone in the bytecode.
+We made a 30-line modification to the JChord code. These changes
+encapsulate the scattering configuration initialization code
+in a class field, and do not modify the program semantic. Here is
+a sample modification:
 
-Use 1-CFA to construct call graph, achieve much better precision
-than 0-CFA. 
 
-Re-writing the configuration initialization code in JChord, because
-it is defined in an add-hoc way
 
-Run examples from user manual to form the database. The effort
-can be amortized in development time.
+\begin{CodeOut}
+\begin{alltt}
+   // chord.kobj.k is a configuration option
+   // passed as a system property
+   public void run() \ttlcb
+     ...
+     int kobjK = Integer.getInteger("chord.kobj.k");
+     ...
+   \ttrcb
+\end{alltt}
+\end{CodeOut}
+\vspace{-4mm}
+\hspace{20mm}$\Downarrow$ 
+%\vspace{-2mm}
+\begin{CodeOut}
+\begin{alltt}
+   static int chord\_kobj\_k = Integer.getInteger("chord.kobj.k");
+   public void run() \ttlcb
+     ...
+     int kobjK = chord\_kobj\_k; 
+     ...
+   \ttrcb
+\end{alltt}
+\end{CodeOut}
 
-Cannot use unit test, since they are incomplete
 
-We use two metrics to evaluate \ourtool's effectiveness: the absolute ranking of the
-actual root cause in the list returned by \ourtool, and the
-time cost to diagnose each configuration error.
 
-Use extraction~\cite{Rabkin:2011:SEP}
+%Use 1-CFA to construct call graph, achieve much better precision
+%than 0-CFA. 
 
-Are the ranked configurations useful for misconfiguration
-error diagnosis?  We examine the ranked configurations to see how well they can explain the behavior.
+%Use extraction~\cite{Rabkin:2011:SEP}
+
+%To evaluate \ourtool, 
+
+When diagnosing a configuration error, we first reproduce the
+error on a \ourtool-enabled environment to obtain the
+trace file, then use \ourtool to identify its root cause.
+
+We use two metrics to evaluate \ourtool's effectiveness:
+the absolute ranking of the actual root cause in \ourtool's output
+list, and the time cost used in diagnosing each configuration error.
+
 
 %This step
 %could be automated by combining with some existing  work on
@@ -138,6 +185,7 @@ for the JVM), running Windows 7.
 
 
 \subsection{Results}
+\label{sec:results}
 
 \begin{table*}[t]
 \setlength{\tabcolsep}{.24\tabcolsep}
