@@ -16,34 +16,36 @@ output a helpful error message when such events occur, it is unfortunately
 the case that such messages are often cryptic, misleading, or
 even non-existent~\cite{Yin:2011:ESC, Attariyan:2010:ACT, Hubaux:2012, rangefix}.
 Thus, users must search manuals, FAQs, and online forums to find potential
-solutions to the problem. %$\blacksquare$ this process is frustrating..
+solutions.% to the problem. %$\blacksquare$ this process is frustrating..
 
 \subsection{Motivating Example}
 \label{sec:mot}
 
-This section describes a real scenario in which we used \ourtool to solve
-a configuration problem. During the maintenance of the Randoop
+%This section describes a real scenario in which we used \ourtool to solve %a configuration problem. 
+We next describe a real scenario in which we used \ourtool to solve a configuration problem. 
+During the maintenance of the Randoop
 automated test generation tool~\cite{randoop}, we received a ``bug report''
 from a testing expert who had been using Randoop for quite a while.
-The ``bug report'' indicated that Randoop failed to generate
-any tests for the NanoXML~\cite{nanoxml} program. The sympton is that
-Randoop terminates normally but does not generate any tests.
+The ``bug report'' indicated that Randoop terminated normally but
+failed to generate any tests for the NanoXML~\cite{nanoxml} program. 
+%The sympton is that
+%Randoop terminates normally but does not generate any tests.
 %on NanoXML, it 
 
 Although the reported problem is deterministic and fully-reproducible,
 this silent failure (or called, non-crashing error) is
 particularly difficult to diagnose. Differing from
-a crashing error, Randoop just exits normally without exhibiting
-a crashing point, dumping a stack trace, or indicating suspicious program variables
+a crashing error, Randoop did not exhibit a crashing point, dump
+ a stack trace, output an error message, or indicate suspicious program variables
 with incorrect values. This makes many well-known
 techniques such as dynamic slicing~\cite{Zhang:2003:PDS},
 dynamic information flow tracking~\cite{Attariyan:2010:ACT},
 failure trace analysis~\cite{Rabkin:2011:PPC} inapplicable.
 In addition, for this scenario, there is no obvious testing oracle to check whether
 Randoop behaves as desired, which further makes many
-search-based fault isolation techniques such as Delta Debugging~\cite{Zeller:2002:ICC}
+search-based fault isolation techniques such as Delta debugging~\cite{Zeller:2002:ICC}
 ineffective. Moreover, the configuration and
-inputs recorded for reproducing this problem have already been
+inputs attached in the bug report have already been
 minimized: if any part is removed, this behavior
 is no longer triggered. 
 
@@ -51,7 +53,7 @@ Actually, this bug report is not real. It does not reveal a bug
 in the Randoop code. Its root cause is simply because
 the user forgot to set one configuration option.
 Despite the simplicity of the solution, to the best of our knowledge, none of the
-existing configuration error diagnosis technique~\cite{Attariyan:2008:UCD, 
+existing configuration error diagnosis techniques~\cite{Attariyan:2008:UCD, 
 Yuan:2011:COC, Su:2009:AGP, Whitaker:2004:CDS, Wang:2004:AMT,
 Attariyan:2010:ACT, Rabkin:2011:PPC} can be directly applied.
 
@@ -89,13 +91,13 @@ to daignose and solve this problem. We first reproduce this
 error in a \ourtool-enabled environment, and then let \ourtool analyze the
 recorded execution trace to diagnose this root cause.
 As a result, \ourtool produces
-an error report (Figure~\ref{fig:output}) in the form of an ordered list of possible responsible
-configuration options.
-The error report in Figure~\ref{fig:output} suggests
+an error report (Figure~\ref{fig:output}) in the form of an ordered list of
+suspicious configuration options that should be changed.
+The error report in Figure~\ref{fig:output} suggests that
 a configuration option named
 \CodeIn{maxsize} is the most likely one.
-The error report also provides relevant explantory
-information: % about the reason why \CodeIn{maxsize} should be account for:
+The error report also provides relevant 
+information to explain why: % about the reason why \CodeIn{maxsize} should be account for:
 a predicate affected by \CodeIn{maxsize} behaves dramatically
 different between the problematic execution and other correct executions 
 as kept in \ourtool's database.
@@ -106,13 +108,13 @@ as kept in \ourtool's database.
 To better understand the root cause, we show
 the relevant code snippet in Figure~\ref{fig:example}.
 Guided by the report, we can further find out
-the root cause of Randoop's failure
-is because when Randoop generates a new
+the root cause of Randoop's silent failure
+is because when generating a new
 test (line 100, in the form of a method-call sequence),
-it first compares the length of the created sequence with
+Randoop first compares its length with
 \CodeIn{maxsize}'s value (default value: 100). If a
 generated sequence exceeds this pre-defined limit,
-Randoop discards the test to avoid length explosion.
+Randoop discards the generated test to avoid length explosion.
 For most programs, using \CodeIn{maxsize}'s default value works remarkably
 well, and only 14.4\% of the generated sequences have been discarded.
 However, for NanoXML, the generated sequences are
@@ -120,9 +122,9 @@ much longer than usual; using \CodeIn{maxsize}'s default value
 results in 32.2\% of the generated sequences being discarded.
 %are discarded because the generated sequences are much longer.  
 \ourtool captures such deviated behavior, pinpoints the
-\CodeIn{maxsize} option, and suggests users to change its value.
+\CodeIn{maxsize} option, and suggests users to reset its value.
 Finally, this problem can be easily resolved after
-the user set \CodeIn{maxsize} to a larger value, for example, 500.
+the user change \CodeIn{maxsize} to a larger value, for example, 500.
 
 \begin{figure}[t]
 \vspace{-2mm}
@@ -158,9 +160,9 @@ int maxsize = readFromCommandLine(); //{initialize the option value}
 \end{CodeOut}
 \tinystep
 \vspace*{-3.0ex} \Caption{{\label{fig:example} 
-Code excerpt from Randoop~\cite{randoop}
+Simplified code excerpt from Randoop~\cite{randoop}
 to explain the configuration problem as pointed
-outed by the Figure~\ref{fig:output}.
+outed in Figure~\ref{fig:output}.
 %A forward slice computed by the traditional slicing algorithm~\cite{Horwitz:1988:ISU}
 %from the seed statement includes statements 2, 3,
 %4, 5, 6, 7, 9, 13, 14, 16, 17, and 19.
@@ -189,31 +191,34 @@ the root cause of a configuration error.
 %The goal of \textbf{our technique} is to help users find solutions to the configuration
 %problems they are facing.  
 \textbf{Our technique} contains three steps to 
-link the erroneous behavior to specific responsible configuratio options:
+link the erroneous behavior to specific responsible configuration options:
 
 \begin{itemize}
-\item \textbf{Configurtion Propagation Analysis}. For
+\item \textbf{Configuration Propagation Analysis}. For
 each configuration option, \ourtool
-uses a lightweight dependence analysis, called Thin slicing~\cite{Sridharan:2007},
-to statically identify its affected predicates in the code.
+uses a lightweight dependence analysis, called thin slicing~\cite{Sridharan:2007},
+to statically identify its affected predicates in the source code.
 
 \item \textbf{Configuration Behavior Profiling}. \ourtool
-\textit{selectively} 
-performs \textit{selective instrumentation} to capture the
-dynamic behaviors of the test code when erroneous behavior
+\textit{selectively} performs instrumentation on those
+affected predicates, to capture the
+dynamic behaviors of the diagnosed code when erroneous behavior
 is observed.
 
 \item \textbf{Configuration Deviation Analysis}.
 When erroneous behavior is revealed, \ourtool looks up a
-pre-built database, selects the most similar profiles, and
-performs statistical analysis to identify which configuration
-option's behavior deviates most between a good run and a bad.
+pre-built database, selects some similar profiles
+from know correct executions, and performs statistical analysis
+to identify which configuration option's behavior deviates the most
+between the recorded erroneous execution and the selected
+correct executions.
 
 \end{itemize}
 
 The output of \ourtool is a ranked list of
-configurations that could possibly explain the why the program does not produce the desirable result. Those
-configurations, if changed, may even fix the unexpected behavior.
+configurations that could possibly explain why the program does not produce the desirable result. 
+%Those
+%configurations, if changed, may even fix the unexpected behavior.
 
 Essentially, \ourtool reduces the problem of diagnosing a
 configuration error to differencing the observed erroneous 
@@ -243,7 +248,7 @@ ignoring configuration problems that manifest themselves as
 silent failures. By contract, \ourtool is capable to diagnose
 both kinds of errors.
 
-\item \textbf{It require no OS-level support.} Our technique requires no alterations to
+\item \textbf{It requires no OS-level support.} Our technique requires no alterations to
 the JVM or standard library. This distinguishes our work from
 competing techniques such as OS-level configuration
 error troubleshooting~\cite{Whitaker:2004:CDS}.% or dynamic taint tracking~\cite{clause07july}.
@@ -251,28 +256,17 @@ error troubleshooting~\cite{Whitaker:2004:CDS}.% or dynamic taint tracking~\cite
 \end{itemize}
 
 An important component in \ourtool is the pre-built
-profile database, which contains profiles
+database, which contains profiles
 from the known correct executions. We envision that this database is
-built by the software developers during integration testing.
+built by the software developers at release, and can be
+further enriched by software users. %during integration testing.
 In our experiments (Section~\ref{sec:evaluation}), we
-found such a database is quite easy to built even by running
-tens of illustrative examples from software manual.
+found that such a database is quite easy to built even by running
+a small number of illustrative examples from the user manual.
 
 %\ourtool is designed to help users find solutions to the configuration
 %problems they are facing.  
 
-\ourtool is designed to be used by system administrators and end-users when they
-encountered a suspected configuration error that they do not
-know how to fix. Once a \ourtool user encounter an unexpected
-behavior, she can reproduce the problem on a \ourtool-enabled environment,
-where \ourtool monitors the program execution and captures
-the the causal dependencies between
-configuration options and the program behavior. \ourtool
-further uses the obtained execution trace to query the pre-built database
-to find similar but correct known traces. Further, based on
-the deviation analysis between a recorded trace and other similar traces,
-\ourtool identifies the likely root cause of a configuration error and
-outputs a ranked list of suspicious options.
 
 %When a configuration error happens, users can
 %use \ourtool to diagnose the problem based on the recorded profile.
@@ -329,36 +323,39 @@ outputs a ranked list of suspicious options.
 \subsection{Evaluation}
 
 We evaluated \ourtool on \errors configuration errors
-from \subjectnum configurable software, comprising
+from \subjectnum configurable software, including
 \crash crashing errors and \noncrash non-crashing errors.
-Our results show that \ourtool identifies the correct
-root causes of most configuration errors. xxxx top 3,
-it lists the correct root cause as the top 3 xxx.
-This allows \ourtool user to focus on a few specific configuration
+Our results show that \ourtool identified the source
+of the configuration errors as the top 3 root cause
+for \topnum configuration errors.
+This permits \ourtool user to focus on a few specific configuration
 options when deciding how to fix the problem. 
-In addition, \ourtool takes less than xxx minutes for diagnosing
-one configuration error, making it an attractive alternative
+In addition, \ourtool takes less than 1 minutes for diagnosing
+one error, making it an attractive alternative
 to manual debugging.
 
-We also compared the effectiveness of \ourtool to
-4 existing approaches: statement-level profiling~\cite{Jones:2002}, method-level
-invariant detection~\cite{Ernst:1999}, and dynamic tainting-based configuration
-error diagnosis techniques~\cite{Rabkin:2011:PPC}. The experiment results show that
-\ourtool significantly outperforms both statement-level profiling
-and method-level invariant detection in diagnosis accuracy, suggesting
+We also compared \ourtool to
+full existing approaches: full slicing~\cite{},
+statement-level profiling~\cite{Jones:2002}, method-level
+invariant detection~\cite{Ernst:1999}, and dynamic information flow
+tracking~\cite{Rabkin:2011:PPC}. The experimental results show that
+\ourtool significantly outperformed both statement-level profiling
+and method-level invariant detection in the diagnosis accuracy, suggesting
 that focusing on the behavior of program predicates can be a
-suitable abstraction. Compared to ConfAnalyzer~\cite{}, a dynamic taint-based technique
+suitable abstraction. Compared to ConfAnalyzer~\cite{}, a dynamic
+information flow tracking-based technique
 which precisely tracks information flow at the bit level , \ourtool
-produces accurate diagnosis information for 5 non-crashing errors that
-ConfAnalyzer fails to diagnose, and output better info for 5 out of 9
-crashing errors. 
+produced accurate diagnosis information for the 5 non-crashing errors that
+ConfAnalyzer failed to diagnose, and produced comparable results
+for 5 out of the 9 crashing errors. 
 
-Finally, we investigate the effecting of varying the comparison profiles.
+Finally, we investigated the effects of varying the comparison profiles
+from the pre-built database.
 Our experimental results show that varying the
-profile selection strategy can result in substantially different effects on the
+profile selection strategy can result in substantially different
 diagnosis results, depending on the application being analyzed;
 and the similarity-based selection strategy used in \ourtool outperforms
-the other two alternatives.
+the other two comparison strategies.
 
 
 %\ourtool outputs an ordered list of probable root causes.

@@ -2,9 +2,8 @@
 \label{sec:technique}
 
 We model configurations as a set of key-value pairs, where
-the keys are strings and the values have arbitrary type. This is a
-convenient abstraction for analysis as well as a close match for
-many standard configuration APIs. It is the abstraction offered
+the keys are strings and the values have arbitrary type. This is
+a common abstraction offered
 by the POSIX system environment, the Java Properties API,
 and the Windows registry.
 
@@ -22,15 +21,21 @@ and the Windows registry.
 %execution and faithfully reproduce it for late analysis.
 
 Figure~\ref{fig:workflow} sketches the high-level workflow of our technique.
-Our technique takes as input a program and a list of configuration options.
-It first performs a configuration propagation analysis to identify
-program elements (here, using the abstraction of predicates) that might be
-affected by each configuration (Section~\ref{sec:prop}). Then, it
-instruments the original program (Section~\ref{sec:profiling}).
+Our technique takes as input a Java program and its configuration options.
+It first performs a propagation analysis to identify
+the affected predicates for each configuration option (Section~\ref{sec:prop}).
+After then, our technique \textit{selectively} instruments
+the program only on the affected predicates, linking each configuration
+to its affected predicates (Section~\ref{sec:profiling}).
+After the user run the failure-revealing inputs and configuration
+on the instrumented program, our technique obtains an execution profile.
+Our technique further uses the obtained execution profile
+to compare with the existing profiles in the pre-built database,
+diagnose the root cause of the error (Section~\ref{sec:analysis}).
 
-\ourtool produces an ordered list of the 
-configuration options most likely to have caused the exhibited
-problem.
+The error report produced by our technique is a ranked list
+of suspicious configuration options that may caused the exhibited problem.
+
 
 %\ourtool tracks dependencies introduced by both data and
 %control flow. It propagates dependencies among xxx
@@ -195,6 +200,18 @@ it reports all tied bugs as being equally likely to be the root cause.
 rank by the distance
 
 
+\ourtool is designed to be used by system administrators and end-users when they
+encountered a suspected configuration error that they do not
+know how to fix. Once a \ourtool user encounter an unexpected
+behavior, she can reproduce the problem on a \ourtool-enabled environment,
+where \ourtool monitors the program execution and captures
+the the causal dependencies between
+configuration options and the program behavior. \ourtool
+further uses the obtained execution trace to query the pre-built database
+to find similar but correct known traces. Further, based on
+the deviation analysis between a recorded trace and other similar traces,
+\ourtool identifies the likely root cause of a configuration error and
+outputs a ranked list of suspicious options.
 
 \subsubsection{Selecting Similar Profiles for Comparison}
 
