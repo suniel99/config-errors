@@ -16,17 +16,17 @@ import edu.washington.cs.conf.experiments.ChordExpUtils;
 import edu.washington.cs.conf.experiments.CommonUtils;
 import edu.washington.cs.conf.instrument.InstrumentSchema;
 import edu.washington.cs.conf.instrument.InstrumentSchema.TYPE;
-import edu.washington.cs.conf.util.Log;
 import junit.framework.TestCase;
 
 public class TestSliceJChordConfigOptions extends TestCase {
 	public static String jchord_instrument_file = "./jchord_option_instr_ser.dat";
-	
 	public static String jchord_instrument_txt = "./jchord_option_instr.txt";
-	
 	public static String jchord_main = "Lchord/project/Main";
-	
 	public static String jchord_exclusion = "ChordExclusions.txt";
+	
+	//use full slice
+	public static String jchord_instrument_file_full_slice = "./jchord_option_instr_ser_full_slice.dat";
+	public static String jchord_instrument_txt_full_slice = "./jchord_option_instr_full_slice.txt";
 	
 	public void testInitAllConfigOptions() {
 		String path = TestInstrumentJChord.jchord_notrace;
@@ -103,6 +103,21 @@ public class TestSliceJChordConfigOptions extends TestCase {
 		
 		//recover from the file
 		InstrumentSchema newSchema = ConfOutputSerializer.deserializeAsSchema(jchord_instrument_file);
+		assertEquals(schema.toString(), newSchema.toString());
+	}
+	
+	public void testCreateInstrumentSchemaFullSlice() {
+		Collection<ConfPropOutput> outputs = getJChordConfOutputsFullSlice();
+		
+		InstrumentSchema schema = new InstrumentSchema();
+		schema.setType(TYPE.SOURCE_PREDICATE); //NOTE use the abstraction of source predicate
+		schema.addInstrumentationPoint(outputs);
+		
+		ConfOutputSerializer.serializeSchema(schema, jchord_instrument_file_full_slice);
+		ConfOutputSerializer.writeToFileAsText(schema, jchord_instrument_txt_full_slice);
+		
+		//recover from the file
+		InstrumentSchema newSchema = ConfOutputSerializer.deserializeAsSchema(jchord_instrument_file_full_slice);
 		assertEquals(schema.toString(), newSchema.toString());
 	}
 }

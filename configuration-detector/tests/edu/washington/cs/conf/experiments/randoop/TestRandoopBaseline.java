@@ -21,9 +21,18 @@ import edu.washington.cs.conf.diagnosis.StmtExecuted;
 import edu.washington.cs.conf.diagnosis.StmtFileReader;
 import edu.washington.cs.conf.diagnosis.TestStmtExecutedDiffer;
 import edu.washington.cs.conf.experiments.RandoopExpUtils;
+import edu.washington.cs.conf.instrument.EveryStmtInstrumenter;
+import edu.washington.cs.conf.instrument.InstrumentStats;
 import junit.framework.TestCase;
 
 public class TestRandoopBaseline extends TestCase {
+	
+	public void testStmtInstrumentation() throws Exception {
+		EveryStmtInstrumenter instrumenter = new EveryStmtInstrumenter();
+        instrumenter.instrument("./subjects/randoop-jamie.jar", "./output/randoop-everystmt.jar");
+		
+		InstrumentStats.showInstrumentationStats();
+	}
 	
 	public void testDiagnoseOptionsByStmtCoverage() {
 		List<StmtExecuted> good1 = StmtFileReader.readStmts("./experiments/randoop-baseline-stmt/good-arraylist-60s.txt");

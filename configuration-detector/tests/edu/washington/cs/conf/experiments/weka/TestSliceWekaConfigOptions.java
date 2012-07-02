@@ -19,6 +19,11 @@ import junit.framework.TestCase;
 public class TestSliceWekaConfigOptions extends TestCase {
 	
 	public static String weka_instrument_file = "./weka_option_instr_ser.dat";
+	public static String weka_instrument_txt = "./weka_option_instr.txt";
+	
+	public static String weka_instrument_file_full_slice = "./weka_option_instr_ser_full_slice.dat";
+	public static String weka_instrument_txt_full_slice = "./weka_option_instr.txt";
+	
 
 	public void testInitAllConfigOptions() {
 		String path = "./subjects/weka/weka-no-trace.jar;./subjects/weka/JFlex.jar;" +
@@ -44,10 +49,24 @@ public class TestSliceWekaConfigOptions extends TestCase {
 		schema.addInstrumentationPoint(outputs);
 		
 		ConfOutputSerializer.serializeSchema(schema, weka_instrument_file);
-		ConfOutputSerializer.writeToFileAsText(schema, "./weka_option_instr.txt");
+		ConfOutputSerializer.writeToFileAsText(schema, weka_instrument_txt);
 		
 		//recover from the file
 		InstrumentSchema newSchema = ConfOutputSerializer.deserializeAsSchema(weka_instrument_file);
+		assertEquals(schema.toString(), newSchema.toString());
+	}
+	
+	public void testCreateInstrumentSchemaFullSlice() {
+        Collection<ConfPropOutput> outputs = getWekaConfOutputsFullSlice();
+		
+		InstrumentSchema schema = new InstrumentSchema();
+		schema.addInstrumentationPoint(outputs);
+		
+		ConfOutputSerializer.serializeSchema(schema, weka_instrument_file_full_slice);
+		ConfOutputSerializer.writeToFileAsText(schema, weka_instrument_txt_full_slice);
+		
+		//recover from the file
+		InstrumentSchema newSchema = ConfOutputSerializer.deserializeAsSchema(weka_instrument_file_full_slice);
 		assertEquals(schema.toString(), newSchema.toString());
 	}
 	

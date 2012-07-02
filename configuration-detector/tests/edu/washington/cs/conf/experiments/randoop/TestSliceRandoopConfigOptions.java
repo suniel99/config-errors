@@ -24,6 +24,12 @@ import junit.framework.TestCase;
 
 public class TestSliceRandoopConfigOptions extends TestCase {
 	
+	public static String randoop_instrument_file = "./randoop_option_instr_ser.dat";
+	public static String randoop_instrument_txt = "./randoop_option_instr.txt";
+	
+	public static String randoop_instrument_file_full_slice = "./randoop_option_instr_ser_full_slice.dat";
+	public static String randoop_instrument_txt_full_slice = "./randoop_option_instr_full_slice.txt";
+	
 	public static boolean doPruning = false;
 	
 	@Override
@@ -88,7 +94,6 @@ public class TestSliceRandoopConfigOptions extends TestCase {
 	
 	public void testCreateInstrumentSchema() {
 		doPruning = true;
-		
 		String path = "./subjects/randoop-jamie-no-trace.jar;./subjects/plume.jar";
        Collection<ConfPropOutput> outputs = getConfPropOutputs(path, RandoopExpUtils.getRandoopConfList());
 		
@@ -96,12 +101,28 @@ public class TestSliceRandoopConfigOptions extends TestCase {
 		InstrumentSchema schema = new InstrumentSchema();
 		schema.addInstrumentationPoint(outputs);
 		
-		String filePath = "./randoop_option_instr_ser.dat";
-		ConfOutputSerializer.serializeSchema(schema, filePath);
-		ConfOutputSerializer.writeToFileAsText(schema, "./randoop_option_instr.txt");
+		ConfOutputSerializer.serializeSchema(schema, randoop_instrument_file);
+		ConfOutputSerializer.writeToFileAsText(schema, randoop_instrument_txt);
 		
 		//recover from the file
-		InstrumentSchema newSchema = ConfOutputSerializer.deserializeAsSchema(filePath);
+		InstrumentSchema newSchema = ConfOutputSerializer.deserializeAsSchema(randoop_instrument_file);
+		assertEquals(schema.toString(), newSchema.toString());
+	}
+	
+	public void testCreateInstrumentSchemaFullSlice() {
+		doPruning = true;
+		String path = "./subjects/randoop-jamie-no-trace.jar;./subjects/plume.jar";
+       Collection<ConfPropOutput> outputs = getConfPropOutputsFullSlice(path, RandoopExpUtils.getRandoopConfList());
+		
+		//save as configuration schema
+		InstrumentSchema schema = new InstrumentSchema();
+		schema.addInstrumentationPoint(outputs);
+		
+		ConfOutputSerializer.serializeSchema(schema, randoop_instrument_file_full_slice);
+		ConfOutputSerializer.writeToFileAsText(schema, randoop_instrument_txt_full_slice);
+		
+		//recover from the file
+		InstrumentSchema newSchema = ConfOutputSerializer.deserializeAsSchema(randoop_instrument_file_full_slice);
 		assertEquals(schema.toString(), newSchema.toString());
 	}
 	

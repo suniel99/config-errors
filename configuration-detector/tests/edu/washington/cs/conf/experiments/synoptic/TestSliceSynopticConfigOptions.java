@@ -21,6 +21,10 @@ import junit.framework.TestCase;
 public class TestSliceSynopticConfigOptions extends TestCase {
 	
 	public static String synoptic_instrument_file = "./synoptic_option_instr_ser.dat";
+	public static String synoptic_instrument_txt = "./synoptic_option_instr.txt";
+	
+	public static String synoptic_instrument_file_full_slice = "./synoptic_option_instr_ser_full_slice.dat";
+	public static String synoptic_instrument_txt_full_slice = "./synoptic_option_instr_full_slice.txt";
 
 	public void testInitAllOptionsInSynoptic() {
 		String path = "./subjects/synoptic/synoptic.jar;"
@@ -52,10 +56,25 @@ public class TestSliceSynopticConfigOptions extends TestCase {
 		schema.addInstrumentationPoint(outputs);
 		
 		ConfOutputSerializer.serializeSchema(schema, synoptic_instrument_file);
-		ConfOutputSerializer.writeToFileAsText(schema, "./synoptic_option_instr.txt");
+		ConfOutputSerializer.writeToFileAsText(schema, synoptic_instrument_txt);
 		
 		//recover from the file
 		InstrumentSchema newSchema = ConfOutputSerializer.deserializeAsSchema(synoptic_instrument_file);
+		assertEquals(schema.toString(), newSchema.toString());
+	}
+	
+	public void testCreateInstrumentSchemaFullSlice() {
+        Collection<ConfPropOutput> outputs = getSynopticConfOutputsFullSlice();
+		
+		InstrumentSchema schema = new InstrumentSchema();
+		schema.setType(TYPE.SOURCE_PREDICATE);
+		schema.addInstrumentationPoint(outputs);
+		
+		ConfOutputSerializer.serializeSchema(schema, synoptic_instrument_file_full_slice);
+		ConfOutputSerializer.writeToFileAsText(schema, synoptic_instrument_txt_full_slice);
+		
+		//recover from the file
+		InstrumentSchema newSchema = ConfOutputSerializer.deserializeAsSchema(synoptic_instrument_file_full_slice);
 		assertEquals(schema.toString(), newSchema.toString());
 	}
 	
