@@ -4,8 +4,15 @@ import java.util.LinkedList;
 import java.util.List;
 
 import edu.washington.cs.conf.analysis.ConfEntity;
+import edu.washington.cs.conf.analysis.ConfEntityRepository;
 
 public class SynopticExpUtils {
+	
+	public static ConfEntityRepository getConfEntityRepository() {
+		List<ConfEntity> entities = getSynopticList();
+		return new ConfEntityRepository(entities);
+	}
+	
 	public static List<ConfEntity> getSynopticList() {
 		ConfEntity entity1 = new ConfEntity("synoptic.main.SynopticOptions",
 				"allHelp", false);

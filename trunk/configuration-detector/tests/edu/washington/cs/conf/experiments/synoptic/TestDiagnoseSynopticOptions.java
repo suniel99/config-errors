@@ -4,12 +4,35 @@ import java.util.List;
 
 import edu.washington.cs.conf.analysis.ConfEntity;
 import edu.washington.cs.conf.analysis.ConfEntityRepository;
+import edu.washington.cs.conf.diagnosis.MainAnalyzer;
+import edu.washington.cs.conf.diagnosis.MainAnalyzer.SelectionStrategy;
 import edu.washington.cs.conf.diagnosis.PredicateProfileBasedDiagnoser.RankType;
 import edu.washington.cs.conf.experiments.CommonUtils;
 import edu.washington.cs.conf.experiments.SynopticExpUtils;
 import junit.framework.TestCase;
 
 public class TestDiagnoseSynopticOptions extends TestCase {
+	
+	public void testDiagnoseAll() {
+		String badRun = TestComparingSynopticTraces.badRunTrace;
+		ConfEntityRepository repo = SynopticExpUtils.getConfEntityRepository();
+		MainAnalyzer.diagnoseConfigErrors(badRun, TestComparingSynopticTraces.db,
+				repo, null, null, SelectionStrategy.ALL);
+	}
+	
+	public void testDiagnoseRandom() {
+		String badRun = TestComparingSynopticTraces.badRunTrace;
+		ConfEntityRepository repo = SynopticExpUtils.getConfEntityRepository();
+		MainAnalyzer.diagnoseConfigErrors(badRun, TestComparingSynopticTraces.db,
+				repo, null, null, SelectionStrategy.RandomK);
+	}
+	
+	public void testDiagnoseSimilarity() {
+		String badRun = TestComparingSynopticTraces.badRunTrace;
+		ConfEntityRepository repo = SynopticExpUtils.getConfEntityRepository();
+		MainAnalyzer.diagnoseConfigErrors(badRun, TestComparingSynopticTraces.db,
+				repo, null, null, null);
+	}
 	
 	public void test1() {
 		String goodRunTrace = "./experiments/synoptic-database/2pc_3nodes_100tx_bad-injected.txt";
