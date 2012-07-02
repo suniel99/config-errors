@@ -2,7 +2,7 @@
 \label{sec:implementation}
 
 We implemented a tool, called \ourtool, on top of the WALA
-framework~\cite{wala}. Our tool works at the bytecode level.
+framework~\cite{wala}. Our tool analyzes the bytecode.
 It first statically computes the affected predicates
 for each configuration option, and then performs offline instrumentation.
 The behaviors of all affected predicates are recorded at runtime, and
@@ -11,9 +11,9 @@ kept in a trace file. Using the trace file,
 push-button way, and scales to realistic programs.
 
 It is worth noting that after compiled into bytecode,
-a predicate in Java source code can be translated into multiple bytecode
-instructions. Thus, a thin slice computed for a configuration
-option may miss predicates that should be included.
+a predicate in Java source code may be translated into multiple bytecode
+instructions. Thus, a computed thin slice
+miss predicates that should be included.
 Consider the following simplified code snippet from JChord~\cite{jchord}
 and its translated WALA bytecode:
 
@@ -50,12 +50,12 @@ for each bytecode instruction in the resulting slice:
 if an instruction 
 is translated from a predicate in the source code, then the
 branching instruction (e.g., line 5 above) translated
-from that predicate should also be included.
+from the same predicate should also be included.
 
 
-For a Java program, \ourtool does not analyze the standard Java
-library and all its dependent libraries. We believe such approximation
+For a Java program, \ourtool does not analyze the standard JDK
+library and all the dependent libraries. We believe such approximation
 is reasonable, since it is
 unlikely for a configuration option set on client software
-to affect the behaviors of the dependent libraries.
+to affect the behaviors of its dependent libraries.
 
