@@ -25,8 +25,8 @@ We evaluated \ourtool on \subjectnum Java applications shown
 in Table~\ref{tab:subjects}.
 Randoop~\cite{randoop} is a robust automated test generator
 for Java programs. Weka~\cite{weka} is a useful toolkit implementing
-a broad variety of machine learning algorithms. In this experiment,
-we use its decision tree module component. JChord~\cite{jchord}
+a broad variety of machine learning algorithms. Our evaluation
+uses its decision tree module component. JChord~\cite{jchord}
 is a program analysis platform that enables users to design, implement,
 and evaluate static and dynamic program analyses for Java bytecode.
 Synoptic~\cite{synoptic} is a tool to mine a finite state machine
@@ -34,8 +34,8 @@ model representations of a system from logs.
 Soot~\cite{soot} is a Java optimization framework, which provides four
 intermediate representations for analyzing and transforming Java bytecode:
 
-As shown in Table~\ref{tab:subjects}, each subject program has non-trivial
-code size, and contains a number of configuration options for users
+As shown in Table~\ref{tab:subjects}, each subject program has a non-trivial
+codebase, and exposes a number of configuration options for users
 to customize its behaviors.
 
 \subsubsection{Configuration Errors}
@@ -52,7 +52,7 @@ to customize its behaviors.
  Randoop (1.3.2) & 18587 & 57 & 12\\
  Weka (3.6.7) & 256305 & 14 & 12\\
  JChord (2.1) & 23391 &  79 & 6 \\
- Synoptic (trunk) & 19153 & 37 & \\
+ Synoptic (trunk) & 19153 & 37 & 6\\
  Soot (2.5.0) & 159273 & 49 & 16 \\
 \hline
 \end{tabular}
@@ -102,7 +102,7 @@ The 9 crashing errors in the bottom table are taken from~\cite{Rabkin:2011:PPC}.
 }}
 \end{table}
 
-We searched forums, FAQ pages and the literature on
+We searched forums, FAQ pages and the literature of
 configuration error diagnosis research to find actual
 configuration problems that users have experienced with our
 target applications. Combining with our own experience,
@@ -114,10 +114,10 @@ numerical ranges, regular expressions, and text entries.
 
 \subsection{Evaluation Procedural}
 
-For each subject program, we constructed a profile database
-running existing examples from its user manuals, discussion
-mailiing list, and the published papers. The number of profiles
-in each database is shown in Table~\ref{tab:subjects}. We
+For each Java application, we constructed a profile database
+by running existing examples from its user manual, discussion
+mailiing list, and the published papers. The number of obtained
+ profiles is shown in Table~\ref{tab:subjects}. We
 found constructing such a database is quite easy. As shown
 in Section~\ref{sec:results}, even a database containing
 a small number of profiles is sufficient to
@@ -126,10 +126,10 @@ diagnose many configuration errors.
 %Run examples from user manual to form the database. The effort
 %can be amortized in development time.
 
-We made a 30-line modification to the JChord code. These changes
-encapsulate the scattering configuration initialization code
-in a class field, and do not modify the program semantic. Here is
-a sample modification:
+We made a 30-line change to the JChord code. This change
+does not modify JChord's semantic; rather, it just encapsulates
+all scattered initialization statements of each configuration option
+into class fields. Here is a sample modification:
 
 
 
@@ -168,12 +168,13 @@ a sample modification:
 %To evaluate \ourtool, 
 
 When diagnosing a configuration error, we first reproduce the
-error on a \ourtool-enabled environment to obtain the
-trace file, then use \ourtool to identify its root cause.
+error on a \ourtool-instrumented version to obtain the
+trace file. Then, using the obtained trace file, we use \ourtool
+to identify its root cause.
 
 We use two metrics to evaluate \ourtool's effectiveness:
-the absolute ranking of the actual root cause in \ourtool's output
-list, and the time cost used in diagnosing each configuration error.
+the absolute ranking of the actual root cause in \ourtool's output,
+and the time cost used in diagnosis.
 
 
 %This step
@@ -189,7 +190,7 @@ for the JVM), running Windows 7.
 
 \begin{table*}[t]
 \setlength{\tabcolsep}{.24\tabcolsep}
-\begin{tabular}{|l||c||c|c||c||c||c||c|}
+\begin{tabular}{|l||c||c|c||c|c|c|c|}
 \hline
  Error ID.  & & \multicolumn{2}{|c||}{\ourtool} & Full Slicing & Coverage Analysis& Invariant Analysis & ConfAnalyzer~\cite{Rabkin:2011:PPC}\\
 \cline{3-8}
@@ -200,22 +201,22 @@ for the JVM), running Windows 7.
  \hline
  1. Randoop& \CodeIn{maxsize} & 10 & 1 & & N & N &X \\
  2. Weka&\CodeIn{m\_numFolds}&2&1& & 4 & &X\\
- 3. JChord& \CodeIn{chord.kobj.k} & 3 & 2& & & &X\\
- 4. Synoptic& \CodeIn{partitionRegExp}&  & 1& & & &X\\
- 5. Soot& \CodeIn{keep\_line\_number} & 1 & 3 & & & &X\\
+ 3. JChord& \CodeIn{chord.kobj.k} & 3 & 2& & N & &X\\
+ 4. Synoptic& \CodeIn{partitionRegExp}& 2 & 1& & 1 & &X\\
+ 5. Soot& \CodeIn{keep\_line\_number} & 1 & 3 &  & N& &X\\
 \hline
 \hline
 \multicolumn{8}{|l|}{Crashing errors}   \\
 \hline
- 6. JChord& \CodeIn{chord.main.class}& & 1& & & &\\
- 7. JChord& \CodeIn{chord.main.class}& & 3& & & &\\
- 8. JChord& \CodeIn{chord.run.analyses}& & 17& & & &\\
- 9. JChord& \CodeIn{chord.ctxt.kind}& & 1 & & & &\\
- 10. JChord& \CodeIn{chord.print.rels}& & 15 & & & &\\
- 11. JChord& \CodeIn{chord.print.classes}& & 15 & & & &\\
- 12. JChord& \CodeIn{chord.scope.kind}& & 1& & & &\\
- 13. JChord& \CodeIn{chord.reflect.kind} & & 1& & & &\\
- 14. JChord& \CodeIn{chord.class.path}& & 8 & & & &\\
+ 6. JChord& \CodeIn{chord.main.class}&3& 1& & & &1\\
+ 7. JChord& \CodeIn{chord.main.class}&3 & 3& & & &1\\
+ 8. JChord& \CodeIn{chord.run.analyses}&3 & 17& & & &1\\
+ 9. JChord& \CodeIn{chord.ctxt.kind}&3 & 1 & & & &3\\
+ 10. JChord& \CodeIn{chord.print.rels}& 3& 15 & & & &1\\
+ 11. JChord& \CodeIn{chord.print.classes}&3 & 15 & & & &1\\
+ 12. JChord& \CodeIn{chord.scope.kind}&3 & 1& & & &1\\
+ 13. JChord& \CodeIn{chord.reflect.kind} &3 & 1& & & &3\\
+ 14. JChord& \CodeIn{chord.class.path}&3 & 8 & & & &N\\
 \hline
 \end{tabular}
 
@@ -347,21 +348,21 @@ Is our \textit{predicate}-level granularity a suitable one?
  1. Randoop & 1 & 2 & 1\\
  2. Weka & 7 & 6 & 1\\
  3. JChord & 16 & 19 & 2\\
- 4. Synoptic & & & 1\\
+ 4. Synoptic & 1 & 1 & 1\\
  5. Soot & 13 & 13 & 3\\
 \hline
 \hline
 \multicolumn{4}{|l|}{Crashing errors}   \\
 \hline
- 6 & & &\\
- 7 & & &\\
- 8 & & &\\
- 9 & & &\\
- 10 & & &\\
- 11 & & &\\
- 12 & & &\\
- 13 & & &\\
- 14 & & &\\
+ 6. JChord & & &1\\
+ 7. JChord & & &3\\
+ 8. JChord & & &17\\
+ 9. JChord & & &1\\
+ 10. JChord & & &15\\
+ 11. JChord & & &15\\
+ 12. JChord & & &1\\
+ 13. JChord & & &1\\
+ 14. JChord & & &8\\
 \hline
 \end{tabular}
 
