@@ -36,12 +36,12 @@ public class TestSliceSynopticConfigOptions extends TestCase {
 	
 	public void testSliceOptionsInSynoptic() {
 		Log.logConfig("./synoptic-options-log.txt");
-		this.getSynopticConfOutputs();
+		getSynopticConfOutputs();
 		Log.removeLogging();
 	}
 	
 	public void testCreateInstrumentSchema() {
-        Collection<ConfPropOutput> outputs = this.getSynopticConfOutputs();
+        Collection<ConfPropOutput> outputs = getSynopticConfOutputs();
 		
 		InstrumentSchema schema = new InstrumentSchema();
 		schema.setType(TYPE.SOURCE_PREDICATE);
@@ -55,7 +55,7 @@ public class TestSliceSynopticConfigOptions extends TestCase {
 		assertEquals(schema.toString(), newSchema.toString());
 	}
 	
-	public Collection<ConfPropOutput> getSynopticConfOutputs() {
+	public static Collection<ConfPropOutput> getSynopticConfOutputs() {
 		String path = "./subjects/synoptic/synoptic.jar;"
 			+ "./subjects/synoptic/libs/plume.jar;"
 			+ "./subjects/synoptic/libs/commons-io-2.0.1.jar;"
