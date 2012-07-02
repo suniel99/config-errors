@@ -7,11 +7,11 @@ import junit.framework.TestCase;
 public class TestComparingJChordTraces extends TestCase {
 	
 	public static String ctxtanalysis = "./experiments/jchord-database/ctxtsanalysis_default.txt";
-	public static String simpletest_deadlock = "./experiments/jchord-database/deadlock_simpletest.txt";
-	public static String dlog_simpletest = "./experiments/jchord-database/dlog_simpletest.txt";
+	public static String simpletest_deadlock = "./experiments/jchord-database/deadlock_simpletest.txt";//!
+	public static String dlog_simpletest = "./experiments/jchord-database/dlog_simpletest.txt";//!
 	public static String do_nothing = "./experiments/jchord-database/do_nothing.txt";
 	public static String print_projects = "./experiments/jchord-database/print_projects.txt";
-	public static String simpletest_race = "./experiments/jchord-database/simpletest-has-race.txt";
+	public static String simpletest_race = "./experiments/jchord-database/simpletest-has-race.txt";//!
 	
 	public static String no_race = "./experiments/jchord-database/simpletest-no-race.txt";
 	

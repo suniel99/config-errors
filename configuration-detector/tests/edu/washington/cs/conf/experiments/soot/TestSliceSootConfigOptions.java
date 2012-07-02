@@ -37,11 +37,11 @@ public class TestSliceSootConfigOptions extends TestCase {
 	}
 	
 	public void testSliceOptionsInSoot() {
-		this.getSootConfOutputs();
+		getSootConfOutputs();
 	}
 	
 	public void testCreateInstrumentSchema() {
-        Collection<ConfPropOutput> outputs = this.getSootConfOutputs();
+        Collection<ConfPropOutput> outputs = getSootConfOutputs();
 		
 		InstrumentSchema schema = new InstrumentSchema();
 		schema.setType(TYPE.SOURCE_PREDICATE);
@@ -55,7 +55,7 @@ public class TestSliceSootConfigOptions extends TestCase {
 		assertEquals(schema.toString(), newSchema.toString());
 	}
 	
-	public Collection<ConfPropOutput> getSootConfOutputs() {
+	public static Collection<ConfPropOutput> getSootConfOutputs() {
 		String dir = "./subjects/soot-2.5/";
 		String path = dir + "soot.jar;" +
 		        dir + "libs/coffer.jar;" +

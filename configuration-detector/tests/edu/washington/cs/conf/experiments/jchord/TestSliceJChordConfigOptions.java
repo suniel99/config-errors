@@ -64,6 +64,10 @@ public class TestSliceJChordConfigOptions extends TestCase {
 		sliceOptionsInJChord(ChordExpUtils.getSampleConfList(), false);
 	}
 	
+	public static Collection<ConfPropOutput> getJChordConfOutputs() {
+		return sliceOptionsInJChord(ChordExpUtils.getChordConfList(), false);
+	}
+	
 	public static Collection<ConfPropOutput> sliceOptionsInJChord(List<ConfEntity> jchordConfList, boolean prune) {
 		String path = TestInstrumentJChord.jchord_notrace;
 		String mainClass = jchord_main;
