@@ -19,6 +19,10 @@ import junit.framework.TestCase;
 
 public class TestSliceSootConfigOptions extends TestCase {
 	public static String soot_instrument_file = "./soot_option_instr_ser.dat";
+	public static String soot_instrument_txt = "./soot_option_instr.txt";
+	
+	public static String soot_instrument_file_full_slice = "./soot_option_instr_ser_full_slice.dat";
+	public static String soot_instrument_txt_full_slice = "./soot_option_instr_full_slice.txt";
 	
 	public void testInitAllOptionsInSynoptic() {
 		String dir = "./subjects/soot-2.5/";
@@ -51,10 +55,25 @@ public class TestSliceSootConfigOptions extends TestCase {
 		schema.addInstrumentationPoint(outputs);
 		
 		ConfOutputSerializer.serializeSchema(schema, soot_instrument_file);
-		ConfOutputSerializer.writeToFileAsText(schema, "./soot_option_instr.txt");
+		ConfOutputSerializer.writeToFileAsText(schema, soot_instrument_txt);
 		
 		//recover from the file
 		InstrumentSchema newSchema = ConfOutputSerializer.deserializeAsSchema(soot_instrument_file);
+		assertEquals(schema.toString(), newSchema.toString());
+	}
+	
+	public void testCreateInstrumentSchemaFullSlice() {
+        Collection<ConfPropOutput> outputs = getSootConfOutputsFullSlice();
+		
+		InstrumentSchema schema = new InstrumentSchema();
+		schema.setType(TYPE.SOURCE_PREDICATE);
+		schema.addInstrumentationPoint(outputs);
+		
+		ConfOutputSerializer.serializeSchema(schema, soot_instrument_file_full_slice);
+		ConfOutputSerializer.writeToFileAsText(schema, soot_instrument_txt_full_slice);
+		
+		//recover from the file
+		InstrumentSchema newSchema = ConfOutputSerializer.deserializeAsSchema(soot_instrument_file_full_slice);
 		assertEquals(schema.toString(), newSchema.toString());
 	}
 	
