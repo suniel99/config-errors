@@ -31,3 +31,11 @@ java -cp ./synoptic-instrumented.jar;../subjects/synoptic/libs/*;../bin synoptic
 3. Ivan's report error:
 
    -m \k<ID>
+   
+4. use other examples in synoptic's manual
+
+   -h
+   -H
+   -V
+
+5. the apache log
