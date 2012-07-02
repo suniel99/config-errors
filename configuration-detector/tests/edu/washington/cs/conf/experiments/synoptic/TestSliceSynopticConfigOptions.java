@@ -3,10 +3,14 @@ package edu.washington.cs.conf.experiments.synoptic;
 import java.util.Collection;
 import java.util.List;
 
+import com.ibm.wala.ipa.slicer.Slicer.ControlDependenceOptions;
+import com.ibm.wala.ipa.slicer.Slicer.DataDependenceOptions;
+
 import edu.washington.cs.conf.analysis.ConfEntity;
 import edu.washington.cs.conf.analysis.ConfEntityRepository;
 import edu.washington.cs.conf.analysis.ConfOutputSerializer;
 import edu.washington.cs.conf.analysis.ConfPropOutput;
+import edu.washington.cs.conf.analysis.ConfigurationSlicer.CG;
 import edu.washington.cs.conf.experiments.CommonUtils;
 import edu.washington.cs.conf.experiments.SynopticExpUtils;
 import edu.washington.cs.conf.instrument.InstrumentSchema;
@@ -55,15 +59,24 @@ public class TestSliceSynopticConfigOptions extends TestCase {
 		assertEquals(schema.toString(), newSchema.toString());
 	}
 	
+	static String path = "./subjects/synoptic/synoptic.jar;"
+		+ "./subjects/synoptic/libs/plume.jar;"
+		+ "./subjects/synoptic/libs/commons-io-2.0.1.jar;"
+		+ "./subjects/synoptic/libs/commons-fileupload-1.2.2.jar;"
+		+ "./subjects/synoptic/libs/junit-4.9b2.jar";
+    static String mainClass = "Lsynoptic/main/Main";
+    
 	public static Collection<ConfPropOutput> getSynopticConfOutputs() {
-		String path = "./subjects/synoptic/synoptic.jar;"
-			+ "./subjects/synoptic/libs/plume.jar;"
-			+ "./subjects/synoptic/libs/commons-io-2.0.1.jar;"
-			+ "./subjects/synoptic/libs/commons-fileupload-1.2.2.jar;"
-			+ "./subjects/synoptic/libs/junit-4.9b2.jar";
-	    String mainClass = "Lsynoptic/main/Main";
         List<ConfEntity> synopticConfList = SynopticExpUtils.getSynopticList();
         Collection<ConfPropOutput> confs = CommonUtils.getConfPropOutputs(path, mainClass, synopticConfList, false);
+        return confs;
+	}
+	
+	public static Collection<ConfPropOutput> getSynopticConfOutputsFullSlice() {
+        List<ConfEntity> synopticConfList = SynopticExpUtils.getSynopticList();
+        Collection<ConfPropOutput> confs = CommonUtils.getConfPropOutputs(path, mainClass, synopticConfList, 
+        		"JavaAllExclusions.txt", CG.OneCFA, false,
+        		DataDependenceOptions.FULL, ControlDependenceOptions.FULL);
         return confs;
 	}
 }

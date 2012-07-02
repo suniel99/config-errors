@@ -3,6 +3,9 @@ package edu.washington.cs.conf.experiments.soot;
 import java.util.Collection;
 import java.util.List;
 
+import com.ibm.wala.ipa.slicer.Slicer.ControlDependenceOptions;
+import com.ibm.wala.ipa.slicer.Slicer.DataDependenceOptions;
+
 import edu.washington.cs.conf.analysis.ConfEntity;
 import edu.washington.cs.conf.analysis.ConfEntityRepository;
 import edu.washington.cs.conf.analysis.ConfOutputSerializer;
@@ -55,20 +58,28 @@ public class TestSliceSootConfigOptions extends TestCase {
 		assertEquals(schema.toString(), newSchema.toString());
 	}
 	
+	static String dir = "./subjects/soot-2.5/";
+	static String path = dir + "soot.jar;" +
+	        dir + "libs/coffer.jar;" +
+	        dir + "libs/jasminclasses-2.5.0.jar;" +
+	        dir + "libs/java_cup.jar;" +
+	        dir + "libs/JFlex.jar;" +
+	        dir + "libs/pao.jar;" +
+	        dir + "libs/polyglot.jar;" +
+	        dir + "libs/pth.jar";
+	static String mainClass = "Lsoot/Main";
+	
 	public static Collection<ConfPropOutput> getSootConfOutputs() {
-		String dir = "./subjects/soot-2.5/";
-		String path = dir + "soot.jar;" +
-		        dir + "libs/coffer.jar;" +
-		        dir + "libs/jasminclasses-2.5.0.jar;" +
-		        dir + "libs/java_cup.jar;" +
-		        dir + "libs/JFlex.jar;" +
-		        dir + "libs/pao.jar;" +
-		        dir + "libs/polyglot.jar;" +
-		        dir + "libs/pth.jar";
-		String mainClass = "Lsoot/Main";
 		List<ConfEntity> sootConfigs = SootExpUtils.getSootConfList();
 		Collection<ConfPropOutput> confs = CommonUtils.getConfPropOutputs(path, mainClass, sootConfigs, "SootExclusions.txt",
 				CG.ZeroCFA, false); //cannot use 1-CFA, which is too expensive
+        return confs;
+	}
+	
+	public static Collection<ConfPropOutput> getSootConfOutputsFullSlice() {
+		List<ConfEntity> sootConfigs = SootExpUtils.getSootConfList();
+		Collection<ConfPropOutput> confs = CommonUtils.getConfPropOutputs(path, mainClass, sootConfigs, "SootExclusions.txt",
+				CG.ZeroCFA, false, DataDependenceOptions.FULL, ControlDependenceOptions.FULL); //cannot use 1-CFA, which is too expensive
         return confs;
 	}
 }
