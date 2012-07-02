@@ -34,11 +34,20 @@ public class CommonUtils {
 	}
 	
 	public static Collection<ConfPropOutput> getConfPropOutputs(String path, String mainClass, List<ConfEntity> confList, String exclusionFile, CG type, boolean doPruning) {
+		return getConfPropOutputs(path, mainClass, confList, exclusionFile, type, doPruning, DataDependenceOptions.NO_BASE_NO_HEAP_NO_EXCEPTIONS, ControlDependenceOptions.NONE);
+	}
+	
+	public static Collection<ConfPropOutput> getConfPropOutputsFullSlice(String path, String mainClass, List<ConfEntity> confList, String exclusionFile, CG type, boolean doPruning) {
+		return getConfPropOutputs(path, mainClass, confList, exclusionFile, type, doPruning, DataDependenceOptions.FULL, ControlDependenceOptions.FULL);
+	}
+	
+	public static Collection<ConfPropOutput> getConfPropOutputs(String path, String mainClass, List<ConfEntity> confList, String exclusionFile, CG type, boolean doPruning,
+			DataDependenceOptions dataDep, ControlDependenceOptions controlDep) {
 		ConfigurationSlicer helper = new ConfigurationSlicer(path, mainClass);
 		helper.setCGType(type);
 		helper.setExclusionFile(exclusionFile);
-		helper.setDataDependenceOptions(DataDependenceOptions.NO_BASE_NO_HEAP_NO_EXCEPTIONS);
-		helper.setControlDependenceOptions(ControlDependenceOptions.NONE);
+		helper.setDataDependenceOptions(dataDep);
+		helper.setControlDependenceOptions(controlDep);
 		helper.setContextSensitive(false); //context-insensitive
 		helper.buildAnalysis();
 		

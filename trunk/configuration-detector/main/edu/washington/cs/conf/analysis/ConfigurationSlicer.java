@@ -75,6 +75,11 @@ public class ConfigurationSlicer {
 		this.mainClass = mainClass;
 	}
 	
+	public void useFullSlice() {
+		this.dataOption = DataDependenceOptions.FULL;
+		this.controlOption = ControlDependenceOptions.FULL;
+	}
+	
 	public void buildAnalysis() {
 		try {
 		  System.out.println("Using exclusion file: " + this.exclusionFile);

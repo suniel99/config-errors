@@ -4,10 +4,14 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
+import com.ibm.wala.ipa.slicer.Slicer.ControlDependenceOptions;
+import com.ibm.wala.ipa.slicer.Slicer.DataDependenceOptions;
+
 import edu.washington.cs.conf.analysis.ConfEntity;
 import edu.washington.cs.conf.analysis.ConfEntityRepository;
 import edu.washington.cs.conf.analysis.ConfOutputSerializer;
 import edu.washington.cs.conf.analysis.ConfPropOutput;
+import edu.washington.cs.conf.analysis.ConfigurationSlicer.CG;
 import edu.washington.cs.conf.experiments.ChordExpUtils;
 import edu.washington.cs.conf.experiments.CommonUtils;
 import edu.washington.cs.conf.instrument.InstrumentSchema;
@@ -68,21 +72,27 @@ public class TestSliceJChordConfigOptions extends TestCase {
 		return sliceOptionsInJChord(ChordExpUtils.getChordConfList(), false);
 	}
 	
+	static String path = TestInstrumentJChord.jchord_notrace;
+	static String mainClass = jchord_main;
+	static String exFile = jchord_exclusion;
+	
+	public static Collection<ConfPropOutput> getJChordConfOutputsFullSlice() {
+		List<ConfEntity> jchordConfList = ChordExpUtils.getChordConfList();
+		Collection<ConfPropOutput> confs = CommonUtils.getConfPropOutputs(path, mainClass, jchordConfList, exFile, CG.OneCFA, false,
+				DataDependenceOptions.FULL, ControlDependenceOptions.FULL);
+		return confs;
+	}
+	
 	public static Collection<ConfPropOutput> sliceOptionsInJChord(List<ConfEntity> jchordConfList, boolean prune) {
-		String path = TestInstrumentJChord.jchord_notrace;
-		String mainClass = jchord_main;
-		String exFile = jchord_exclusion;
-//		List<ConfEntity> jchordConfList = ChordExpUtils.getChordConfList();
-		
-		Log.logConfig("./jchord-config-slice.txt");
+//		Log.logConfig("./jchord-config-slice.txt");
 		Collection<ConfPropOutput> confs = CommonUtils.getConfPropOutputs(path, mainClass, jchordConfList, exFile, prune);
-		Log.removeLogging();
-		
+//		Log.removeLogging();
 		return confs;
 	}
 	
 	public void testCreateInstrumentSchema() {
-		Collection<ConfPropOutput> outputs = sliceOptionsInJChord(ChordExpUtils.getChordConfList(), false);
+		Collection<ConfPropOutput> outputs = getJChordConfOutputs();
+		//sliceOptionsInJChord(ChordExpUtils.getChordConfList(), false);
 		
 		InstrumentSchema schema = new InstrumentSchema();
 		schema.setType(TYPE.SOURCE_PREDICATE); //NOTE use the abstraction of source predicate

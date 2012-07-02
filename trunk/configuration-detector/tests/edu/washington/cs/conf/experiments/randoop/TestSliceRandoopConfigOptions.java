@@ -42,7 +42,6 @@ public class TestSliceRandoopConfigOptions extends TestCase {
 	}
 	
 	public void testPruneRandoopSlices() {
-		
 		doPruning = true;
 		
 		String path = "./subjects/randoop-jamie-no-trace.jar;./subjects/plume.jar";
@@ -107,19 +106,23 @@ public class TestSliceRandoopConfigOptions extends TestCase {
 	}
 	
 	public static Collection<ConfPropOutput> getConfPropOutputs(String path, List<ConfEntity> confList) {
-//		String path = "./subjects/randoop-jamie.jar;./subjects/plume.jar";
-		
-		
+		return getConfPropOutputs(path, confList, DataDependenceOptions.NO_BASE_NO_HEAP_NO_EXCEPTIONS,
+				ControlDependenceOptions.NONE);
+	}
+	
+	public static Collection<ConfPropOutput> getConfPropOutputsFullSlice(String path, List<ConfEntity> confList) {
+		return getConfPropOutputs(path, confList, DataDependenceOptions.FULL,
+				ControlDependenceOptions.FULL);
+	}
+	
+	public static Collection<ConfPropOutput> getConfPropOutputs(String path, List<ConfEntity> confList,
+			DataDependenceOptions dataDep, ControlDependenceOptions controlDep) {
 		String mainClass = "Lrandoop/main/Main";
 		ConfigurationSlicer helper = new ConfigurationSlicer(path, mainClass);
-//		helper.setCGType(CG.ZeroCFA);
-//		helper.setCGType(CG.CFA);
-//		helper.setCFAPrecision(2);
 		helper.setCGType(CG.OneCFA);
-//		helper.setCGType(CG.ZeroOneCFA);
 		helper.setExclusionFile("JavaAllExclusions.txt");
-		helper.setDataDependenceOptions(DataDependenceOptions.NO_BASE_NO_HEAP_NO_EXCEPTIONS);
-		helper.setControlDependenceOptions(ControlDependenceOptions.NONE);
+		helper.setDataDependenceOptions(dataDep);
+		helper.setControlDependenceOptions(controlDep);
 		helper.setContextSensitive(false); //context-insensitive
 		helper.buildAnalysis();
 		
