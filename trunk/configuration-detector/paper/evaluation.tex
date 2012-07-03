@@ -128,8 +128,11 @@ diagnose many configuration errors.
 
 We made a 30-line change to the JChord code. This change
 does not modify JChord's semantic; rather, it just encapsulates
-all scattered initialization statements of each configuration option
-into class fields. Here is a sample modification:
+all scattered configuration option initialization statements 
+as static class fields. This is purely an implementation
+choice because having a separate initialization statement
+makes us relatively easier to specify the seed statement
+in slicing. Here is a sample modification:
 
 
 
@@ -190,7 +193,7 @@ for the JVM), running Windows 7.
 
 \begin{table*}[t]
 \setlength{\tabcolsep}{.24\tabcolsep}
-\begin{tabular}{|l||c||c|c||c|c|c|c|}
+\begin{tabular}{|l||c||c|c||c|c|c||c|}
 \hline
  Error ID.  & & \multicolumn{2}{|c||}{\ourtool} & Full Slicing & Coverage Analysis& Invariant Analysis & ConfAnalyzer~\cite{Rabkin:2011:PPC}\\
 \cline{3-8}
@@ -224,12 +227,13 @@ for the JVM), running Windows 7.
 configuration errors. Column ``Responsible Option'' shows the actual
 configuration option for the error. Column ``\ourtool'' shows the results of using
 our technique. Columns ``Full Slicing'', ``Coverage Analysis'',
-``Invariant Analysis'', and ``ConfAnalyzer'' show the results of
-using four comparison techniques, as detailed in Section~\ref{sec:comparison}.
+and ``Invariant Analysis'' shows the results of three variants of \ourtool~\ref{sec:comparison}.
+Column ``ConfAnalyzer'' shows the results of an existing
+technique~\cite{Rabkin:2011:PPC}.
 Column ``\#Cmp Profiles'' shows the number of similar profiles selected
 from the pre-built database for comparison.
 For each technique, Column ``Rank'' shows the rank of the actual responsible
-option in its diagnosis outputs; in which lower is better. ``X''
+option in its output (lower is better). ``X''
 means the technique is not applicable, and ``N'' means the technique
 does not output the actual responsible option.}}
 \end{table*}
@@ -279,6 +283,15 @@ hard for \ourtool to diagnose correctly.
 %error is that the xxx. Thus, the root cause gets ranked lower
 %in the list.
 
+Crashing errors are often much easier to diagnose than non-crashing errors,
+because crashing errors usually happen shortly after the program
+is launched, and a crash often comes up with a stack trace that provides
+useful diagnosis clues. For example, \ourtool ranks the root cause of
+Error 14 (Table~\ref{}) 8th and ConfAnalyzer even fails to diagnose it.
+However, when JChord crashes, it dumps an \CodeIn{ClassNotFoundException}
+that explicitly leads users to check its classpath setting (via the
+\CodeIn{chord.class.path} option).
+
 
 \vspace{1mm}
 \noindent \textbf{\textit{Summary.}} \ourtool is effectively
@@ -290,37 +303,40 @@ in diagnosing both crashing and non-crashing configuration errors. $\blacksquare
 
 We next compare \ourtool with four alternative approaches
 in diagnosing configuration errors.
-The first three approaches are variants of the \ourtool
-technique, and the fourth one is an existing technique~\cite{Rabkin:2011:PPC}
+The first three approaches are variants of \ourtool,
+and the fourth one is an existing technique~\cite{Rabkin:2011:PPC}
 
 \vspace{1mm}
 \noindent \textbf{\ourtool with Full Slicing.} 
-In \ourtool, we use thin slicing to compute the affected predicates for
+In \ourtool, we choose thin slicing to compute the affected predicates for
 each configuration option. However, such affected predicates
-can also be computed by using the traditional full slicing~\cite{Horwitz:1988}.
-To evaluate the trade-offs, this alternative uses the traditional
-full slicing~\cite{Horwitz:1988} to replace thin slicing
-in the configuration propagation analysis phase (Section~\ref{sec:prop}).
+can also be computed by using the traditional full slicing algorithm~\cite{Horwitz:1988}.
+To evaluate the trade-offs, this alternative replaces
+thin slicing with the traditional
+full slicing~\cite{Horwitz:1988} in configuration
+propagation analysis (Section~\ref{sec:prop}).
 
 \vspace{1mm}
 \noindent \textbf{Coverage Analysis.}
-In this approach, we use statement coverage rather than
+In this variant, we use statement coverage rather than
 predicate behaviors to diagnose configuration errors. Specifically,
-we treat statements covered by the erroneous execution as
-potentially buggy, and statements covered the correct executions (in
-the pre-built database) as likely correct. Then, we uses
+we treat statements covered by the observed erroneous execution as
+potentially buggy, and statements covered the correct executions (from
+the pre-built database) as correct. Then, this variant uses
 a well-known fault localization technique, Tarantula~\cite{},
 to rank the likelihood of each statement being buggy.
-For each ranked statement, we consult the thin slicing results
-to infer which configuration option may affect it. $\blacksquare$
+For each ranked statement, this variant uses backward thin slicing
+to compute the affecting configuration options. $\blacksquare$ clear in
+how to rank?
 
 
 \vspace{1mm}
 \noindent \textbf{Invariant Analysis.}
-In this approach, we use method-level invariant information
-to diagnose configuration errors. This approach first dynamically
-detects invariants from the erroneous execution as well as invariants
-from all correct executions in the pre-built database. Then, it
+In this variant, we use method-level invariant as the abstraction level
+to diagnose configuration errors. This variant first uses
+Daikon~\cite{} to dynamically
+detect invariants from the erroneous execution  and invariants
+from correct executions (in the pre-built database). Then, it
 treats a method potentially buggy if its invariants detected
 from the erroneous execution differ from invariants detected
 by a correct execution. Finally, it ranks each suspicious
@@ -330,7 +346,7 @@ method by the number of different invariants. $\blacksquare$
 
 \vspace{1mm}
 \noindent \textbf{Dynamic information flow.}
-Rabkin and katz proposed a family of techniques (and its tool implementation called ConfAnalyzer)
+Rabkin and Katz proposed a family of techniques (and its tool implementation called ConfAnalyzer)
 to precompute possible
 configuration diagnosis for Java software~\cite{Rabkin:2011:PPC}. In their work,
 the most accurate technique (also the most precise technique in the literature,
@@ -385,18 +401,18 @@ Is our \textit{predicate}-level granularity a suitable one?
 \end{tabular}
 
 \Caption{{\label{tab:subjects} Comparison with different profile selection
-strategies (Section~\ref{sec:ranking}) in ranking the responsible option.
+strategies (Section~\ref{sec:ranking}).
 The last column ``Similarity-based'' is the selection strategy
 used in \ourtool, and the data in that column is taken from Table~\ref{tab:results}.}}
 \end{table}
 
 
-\ourtool compares the predicate behaviors in the erroneous trace against
-correct and similar traces in the pre-built database.
+\ourtool compares the predicate behaviors in the erroneous execution against
+correct and similar execution in the pre-built database.
 We next investigate the effect of using different comparison
-profiles. We compare the current similarity-based strategy (Section~\ref{})
+executions. We compare the current similarity-based strategy (Section~\ref{})
 with two alternatives: randomly selecting the same number of
-profiles as similarity-based strategies does, and using
+profiles as the similarity-based strategy does, and using
 all profiles in the database. Table~\ref{} shows the experimental results.
 
 We can see that varying the comparison strategy has result in

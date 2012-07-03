@@ -24,18 +24,20 @@ Figure~\ref{fig:workflow} sketches the high-level workflow of our technique.
 Our technique takes as input a Java program and its configuration options.
 It first performs a propagation analysis to identify
 the affected predicates for each configuration option (Section~\ref{sec:prop}).
-After then, our technique \textit{selectively} instruments
-the program only on the affected predicates, linking each configuration
-to its affected predicates (Section~\ref{sec:profiling}).
-After the user run the failure-revealing inputs and configuration
-on the instrumented program, our technique obtains an execution profile.
-Our technique further uses the obtained execution profile
+Then, our technique \textit{selectively} instruments
+the program only on those affected predicates. 
+When diagnosing an error, users can run the failing inputs and
+configurations on the instrumented program to obtain an execution
+profile (Section~\ref{sec:profiling}).
+Finally, our technique uses the obtained execution profile
 to compare with the existing profiles in the pre-built database,
-diagnose the root cause of the error (Section~\ref{sec:analysis}).
+and diagnose the its root cause (Section~\ref{sec:analysis}).
 
-The error report produced by our technique is a ranked list
-of suspicious configuration options that may caused the exhibited problem.
+The output error report is a ranked list
+of suspicious configuration options that may cause the exhibited problem.
 
+%, linking each configuration
+%to its affected predicates
 
 %\ourtool tracks dependencies introduced by both data and
 %control flow. It propagates dependencies among xxx
@@ -52,6 +54,12 @@ The other two phases: ``Propagation Analysis'' and ``Deviation Analysis'' corres
 
 \subsection{Configuration Propagation Analysis}
 \label{sec:prop}
+
+1. what is a predicate?
+
+2. why focus on predicates? customize control flow?
+
+3. why use slicing?
 
 Given a configuration option, this step statically determines its affected program
 elements in the abstraction level of \textit{predicates}. Using predicates
@@ -186,6 +194,18 @@ method-call chains from the main entry), and the predicate evaluation result.
 
 \subsection{Configuration Deviation Analysis}
 \label{sec:analysis}
+
+1. model the system health
+
+2. selecting similar profiles (why needed?)
+
+3. introduce the metric
+
+Essentially, \ourtool reduces the problem of diagnosing a
+configuration error to differencing the observed erroneous 
+execution with similar but correct executions recorded before,
+identifying the most deviated parts, and tracking the responsible
+option for those deviated parts.
 
 To diagnose a configuration error, \ourtool runs each predicate, traces its
 output, and generates its dependency set. It compares the dependency sets
