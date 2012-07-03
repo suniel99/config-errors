@@ -201,7 +201,7 @@ for the JVM), running Windows 7.
  \hline
  1. Randoop& \CodeIn{maxsize} & 10 & 1 & & N & N &X \\
  2. Weka&\CodeIn{m\_numFolds}&2&1& & 4 & &X\\
- 3. JChord& \CodeIn{chord.kobj.k} & 3 & 2& & N & &X\\
+ 3. JChord& \CodeIn{chord.kobj.k} & 3 & 2& & N &2  &X\\
  4. Synoptic& \CodeIn{partitionRegExp}& 2 & 1& & 1 & &X\\
  5. Soot& \CodeIn{keep\_line\_number} & 1 & 3 &  & N& &X\\
 \hline
@@ -237,41 +237,18 @@ does not output the actual responsible option.}}
 
 \subsubsection{Accuracy in Diagnosing Configuration Errors}
 
-For each configuration error, Table~\ref{} shows the ranking of the
-responsible configuration option, the number , xxx.
-
-The nature of the root-cause configuration option is only one factor.
-The ranking also depends on how the root-cause option relates to
-other options in the suspect set. A highly customized machine
-likely produces more noises, since the unique customizations
-can be even less conforming than a sick option value.
-
-As shown in Table~\ref{tab:results}, \ourtool is highly effective
-in pinpointing the root cause of misconfigurations. \ourtool
-ranks the actual root cause top 3 in xx cases. Sometimes,
-when the actual causes is ranked lower, the option ranked
-higher provides a valuable clue to help debug the problem.
-For instance, in xxx the actual error usually occurs nested xxx.
-
-For xxx, \ourtool successfully pinpointed the root causes (where
-we define success as listing the actual root cause as one of the
-top 3 options) for xxx of the errors. For the last error, \ourtool
-cannot run to completion due to xxxx.
-
-\ourtool also successfully diagnoses xx\% of the xxx errors. For the
-remaining errors, \ourtool ranks the root cause 9th. The configuration
-error is that the xxx. Thus, the root cause gets ranked lower
-in the list.
-
-Overall, \ourtool successfully diagnosed xxx out of xxx errors
-by ranking the actual responsible option at top 3.
-The remaining errors are a direct result of xxxx and seems
-hard for \ourtool to diagnose correctly.
+Table~\ref{tab:results} shows the experimental results.
+We can see that \ourtool is highly effective in pinpointing the root cause of
+misconfigurations. For all \noncrash non-crashing errors
+and 5 out of the \crash crashing errors, it lists the actual root cause as one of the
+top 3 options. For the rest
+4 crashing errors, the actual causes are ranked lower.
+This is because $\blacksquare$
 
 
 We next briefly explain the root cause of each non-crashing configuration
-errors as shown Table~\ref{tab:results}. The detailed illustration
-for those crashing errors can be found in~\cite{Rabkin:2011:PPC}.
+errors as shown Table~\ref{tab:results}, and discuss why
+\ourtool could identy them. 
 
 \begin{itemize}
 \item \textbf{Randoop}. reason
@@ -281,9 +258,31 @@ for those crashing errors can be found in~\cite{Rabkin:2011:PPC}.
 \item \textbf{Soot}. reason
 \end{itemize}
 
+Compared to non-crashing errors, \ourtool is less effective
+in localizing non-crashing errors. They are several reasons
+for this.
+
+The nature of the root-cause configuration option is only one factor.
+The ranking also depends on how the root-cause option relates to
+other options in the suspect set. A highly configurable software system 
+likely produces more noises, 
+
+%The detailed illustration
+%for those crashing errors can be found in~\cite{Rabkin:2011:PPC}.
+
+The remaining errors are a direct result of $\blacksquare$ and seems
+hard for \ourtool to diagnose correctly.
+
+
+%\ourtool also successfully diagnoses xx\% of the xxx errors. For the
+%remaining errors, \ourtool ranks the root cause 9th. The configuration
+%error is that the xxx. Thus, the root cause gets ranked lower
+%in the list.
+
 
 \vspace{1mm}
-\noindent \textbf{\textit{Summary.}} how effective
+\noindent \textbf{\textit{Summary.}} \ourtool is effectively
+in diagnosing both crashing and non-crashing configuration errors. $\blacksquare$
 
 
 \subsubsection{Comparison with Alternative Approaches}
@@ -291,39 +290,58 @@ for those crashing errors can be found in~\cite{Rabkin:2011:PPC}.
 
 We next compare \ourtool with four alternative approaches
 in diagnosing configuration errors.
-%the first three has not been discussed in the literature
+The first three approaches are variants of the \ourtool
+technique, and the fourth one is an existing technique~\cite{Rabkin:2011:PPC}
 
-\noindent \textbf{Full Slicing.}
-How would the results change if traditional slicing~\cite{Horwitz:1988} is used
-in Section~\ref{sec:prop}?
-
-What about using traditional slicing for configuration propagation analysis?
-full control and data-flow information.
+\vspace{1mm}
+\noindent \textbf{\ourtool with Full Slicing.} 
+In \ourtool, we use thin slicing to compute the affected predicates for
+each configuration option. However, such affected predicates
+can also be computed by using the traditional full slicing~\cite{Horwitz:1988}.
+To evaluate the trade-offs, this alternative uses the traditional
+full slicing~\cite{Horwitz:1988} to replace thin slicing
+in the configuration propagation analysis phase (Section~\ref{sec:prop}).
 
 \vspace{1mm}
 \noindent \textbf{Coverage Analysis.}
-The first alternative is to instrument all statement, and record the different between a bad run and
-a set of good runs. Find out the statement covered most by good runs, but covered least by bad run.
-After then, querying the thin slicing info, to rank the configuration options that can affect them.
+In this approach, we use statement coverage rather than
+predicate behaviors to diagnose configuration errors. Specifically,
+we treat statements covered by the erroneous execution as
+potentially buggy, and statements covered the correct executions (in
+the pre-built database) as likely correct. Then, we uses
+a well-known fault localization technique, Tarantula~\cite{},
+to rank the likelihood of each statement being buggy.
+For each ranked statement, we consult the thin slicing results
+to infer which configuration option may affect it. $\blacksquare$
+
 
 \vspace{1mm}
 \noindent \textbf{Invariant Analysis.}
-The second alternative is to run the program, diff the dynamically-detected invariants. Ranked all
-methods that have the most different invariants between 2 runs. Then, querying thin slicing to
-figure out the configuration options.
+In this approach, we use method-level invariant information
+to diagnose configuration errors. This approach first dynamically
+detects invariants from the erroneous execution as well as invariants
+from all correct executions in the pre-built database. Then, it
+treats a method potentially buggy if its invariants detected
+from the erroneous execution differ from invariants detected
+by a correct execution. Finally, it ranks each suspicious
+method by the number of different invariants. $\blacksquare$
+
 
 
 \vspace{1mm}
-\noindent \textbf{Taint-based Analysis.}
+\noindent \textbf{Dynamic information flow.}
 Rabkin and katz proposed a family of techniques (and its tool implementation called ConfAnalyzer)
 to precompute possible
 configuration diagnosis for Java software~\cite{Rabkin:2011:PPC}. In their work,
-the most accurate technique is based on dynamic taint analysis, which precisely
-tracks the information flow during program execution. % bit level
-This taint-based analysis works remarkably well for crashing errors, but can
+the most accurate technique (also the most precise technique in the literature,
+to the best of our knowledge) is based on dynamic information flow analysis, which precisely
+tracks the flow of each configuration option value during program execution at the bit level.
+Their technique works remarkably well for crashing errors, but can
 not diagnose non-crashing errors.
 
+\vspace{1mm}
 %Compare with statistical debugging?
+$\blacksquare$ put the results here
 
 \vspace{1mm}
 \noindent \textbf{\textit{Summary.}} how effective
@@ -373,40 +391,50 @@ used in \ourtool, and the data in that column is taken from Table~\ref{tab:resul
 \end{table}
 
 
-We next investigate the effect of varying \ourtool's
-comparison profiles. As Table~\ref{} shows, varying the
-strategy xxx has substantially different effects on the
-diagnosis results, depending on the application being analyzed.
+\ourtool compares the predicate behaviors in the erroneous trace against
+correct and similar traces in the pre-built database.
+We next investigate the effect of using different comparison
+profiles. We compare the current similarity-based strategy (Section~\ref{})
+with two alternatives: randomly selecting the same number of
+profiles as similarity-based strategies does, and using
+all profiles in the database. Table~\ref{} shows the experimental results.
+
+We can see that varying the comparison strategy has result in
+substantially different effects on the diagnosis results,
+depending on the application being analyzed.
 
 The result difference derives from the nature of the applications.
 We found....  . On the other hand,
 
+It does not make sense to compare different profiles...
 
-What would the technique produce when feeding it with different inputs (e.g.,
-radically different inputs instead of similar ones)?
+%What would the technique produce when feeding it with different inputs (e.g.,
+%radically different inputs instead of similar ones)?
 
-In our approach, we first select a set of similar profiles from the  database,
-and then to do comparison. What about just using a single trace, i.e., the
-most similar trace? the most dissimilar traces? or what about just using a set
-of random selected trace.
+%In our approach, we first select a set of similar profiles from the  database,
+%and then to do comparison. What about just using a single trace, i.e., the
+%most similar trace? the most dissimilar traces? or what about just using a set
+%of random selected trace.
 
-Comparison of different distance metrics to find similar statements.
+%Comparison of different distance metrics to find similar statements.
 
 \vspace{1mm}
 \noindent \textbf{\textit{Summary.}} how effective
 
 \subsubsection{Performance of \ourtool}
-low time cost when doing
-selective instrumentation, permitting the use in fielded software.
-
-The overhead, the cost of diagnosis, acceptable?
-
-The performance of \ourtool is reasonable. The time to diagnose
-an error varies among applications.  XXX app takes less than xxx,
-while xxx takes xxx to complete.
 
 \ourtool performs very well on these errors. The average time
 to diagnose xxx (with max, min xx).
+
+The cost of slicing
+
+The cost of instrumentation, permit the use in fielded software?
+
+
+%The performance of \ourtool is reasonable. The time to diagnose
+%an error varies among applications.  XXX app takes less than xxx,
+%while xxx takes xxx to complete.
+
 
 \vspace{1mm}
 \noindent \textbf{\textit{Summary.}} how effective
@@ -435,6 +463,10 @@ to a single computer system, such as a home computer, personal workstation, or s
 \vspace{1mm}
 
 \noindent \textbf{\textit{Threats to Validity.}} similar inputs, if no inputs is available.
+
+how easy to construct such database in practice.
+
+User study of usefulness of the results
 
 \vspace{1mm}
 
