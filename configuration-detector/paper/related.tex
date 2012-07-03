@@ -21,28 +21,28 @@ OS-level speculation execution to try possible
 configurations, examine their effects, and roll them back when necessary.
 PeerPressure~\cite{Wang:2004:AMT} 
 uses statistical methods to compare
-configuration state in the Windows registry on different machines.
+configuration states in the Windows registry on different machines.
 When a registry entry value on a machine exhibiting erroneous behavior differs
 from the value usually chosen by other machines, PeerPressure
 flags the value as a potential error. More recently, ConfAid~\cite{Attariyan:2010:ACT}
-takes a dynamic-taint-based approach to infer configuration problems 
+uses dynamic taint analysis to diagnose configuration problems 
 by monitoring causality within the program binary as it executes.
 ConfAnalyzer~\cite{Rabkin:2011:PPC} combines static dataflow analysis
-and dynamic taint analysis to precompute
+and dynamic information flow analysis to precompute
 possible configuration error diagnoses for every possible crashing point
 in a program. 
 
 Our technique is significantly different
 from the existing approaches.
-First, almost all existing approaches focus exclusively on configuration errors
+First, most existing approaches focus exclusively on configuration errors
 that lead to software crash or assertion failures, by leveraging
 valuable crashing information such as stack traces.
 By contrast, our technique can diagnose both
 \textit{crashing} and \textit{non-crashing} errors~\cite{Yin:2011:ESC}.
-Second, existing approaches~\cite{Attariyan:2010:ACT, Whitaker:2004:CDS}
+Second, many existing approaches~\cite{Attariyan:2010:ACT, Whitaker:2004:CDS}
 assume the existence of a testing oracle that can safely
 reveal the error during the diagnosis. However, such error-revealing oracles are often
-absent in practice, and writing them may
+absent in practice. Writing them may
 require a substantial amount of time and effort that a
 typical software user would not prefer, and should not be expected, to invest.
 By constrast, our technique eliminates this assumption.
@@ -80,7 +80,7 @@ could affect a particular variable value. Despite their effectiveness
 in diagnosing a crashing configuration error by performing backward
 reachability analysis from the crashing point~\cite{Rabkin:2011:PPC,
 Attariyan:2010:ACT}, these two techniques
-can not be directly applied to diagnose a crashing error.
+can not be directly applied to diagnose a non-crashing error.
 
 %By performing
 %backward reachability analysis from the crashing point, these two
@@ -90,7 +90,7 @@ can not be directly applied to diagnose a crashing error.
 
 Delta debugging~\cite{Zeller:2002:ICC} is a general
 algorithm for isolating software error causes.
-It works by differences between a working state and broken
+It works by differences between a working state and a broken
 state to isolate a set of failure-inducing inputs.
 However, it requires users to provide a testing oracle to check
 whether an intermediate program state behaves correctly.
@@ -141,16 +141,16 @@ to automatically learn good configurations from historical data.
 However, their approach has a quite different
 focus than ours. Their approach aims to reduce the burden of
 configuration management and prevent certain errors from happening,
-rather than diagnose an exhibited error.
+while our technique is designed to diagnose an exhibited error.
 Qu et al.~\cite{Qu:2008:CRT} proposed to use combinatorial interaction
 testing techniques to model and generate configuration samples for
 use in regression testing. Recently, Song et al.~\cite{itrees}
 presented iTree to improve combinatorial interaction testing
 by discovering sets of configurations to test that are smaller
-but can achieve higher teesting coverage. Compared to \ourtool,
+but can achieve higher testing coverage. Compared to \ourtool,
 those testing techniques can be used to find possible errors in
-a configurable software sysem earlier, but our technique is
-designed to localize the root cause of a configuration error.
+a configurable software sysem earlier, but can not
+localize the root cause of a configuration error.
 
 
 

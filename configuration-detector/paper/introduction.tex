@@ -27,29 +27,30 @@ During the maintenance of the Randoop
 automated test generation tool~\cite{randoop}, we received a ``bug report''
 from a testing expert who had been using Randoop for quite a while.
 The ``bug report'' indicated that Randoop terminated normally but
-failed to generate any tests for the NanoXML~\cite{nanoxml} program. 
+failed to generate tests for the NanoXML~\cite{nanoxml} program. 
 %The sympton is that
 %Randoop terminates normally but does not generate any tests.
 %on NanoXML, it 
 
 Although the reported problem is deterministic and fully-reproducible,
-this silent failure (or called, non-crashing error) is
-particularly difficult to diagnose. Differing from
+it is a silent failure (or called, non-crashing error) and is
+not easy to diagnose. Differing from
 a crashing error, Randoop did not exhibit a crashing point, dump
- a stack trace, output an error message, or indicate suspicious program variables
-with incorrect values. This makes many well-known
+ a stack trace, output an error message, or indicate suspicious program
+variables that may have incorrect values. Lacking such information
+makes many well-known
 techniques such as dynamic slicing~\cite{Zhang:2003:PDS},
 dynamic information flow tracking~\cite{Attariyan:2010:ACT},
 failure trace analysis~\cite{Rabkin:2011:PPC} inapplicable.
 In addition, for this scenario, there is no obvious testing oracle to check whether
-Randoop behaves as desired, which further makes many
+Randoop behaves as desired, which further makes 
 search-based fault isolation techniques such as Delta debugging~\cite{Zeller:2002:ICC}
 ineffective. Moreover, the configuration and
 inputs attached in the bug report have already been
-minimized: if any part is removed, this behavior
+minimized: if any part is removed, this error
 is no longer triggered. 
 
-Actually, this bug report is not real. It does not reveal a bug
+Actually, this bug report does not reveal a real bug
 in the Randoop code. Its root cause is simply because
 the user forgot to set one configuration option.
 Despite the simplicity of the solution, to the best of our knowledge, none of the
@@ -92,7 +93,7 @@ error in a \ourtool-enabled environment, and then let \ourtool analyze the
 recorded execution trace to diagnose this root cause.
 As a result, \ourtool produces
 an error report (Figure~\ref{fig:output}) in the form of an ordered list of
-suspicious configuration options that should be changed.
+suspicious configuration options that should be inspected.
 The error report in Figure~\ref{fig:output} suggests that
 a configuration option named
 \CodeIn{maxsize} is the most likely one.
@@ -118,7 +119,7 @@ Randoop discards the generated test to avoid length explosion.
 For most programs, using \CodeIn{maxsize}'s default value works remarkably
 well, and only 14.4\% of the generated sequences have been discarded.
 However, for NanoXML, the generated sequences are
-much longer than usual; using \CodeIn{maxsize}'s default value
+much longer than usual. Thus, using \CodeIn{maxsize}'s default value
 results in 32.2\% of the generated sequences being discarded.
 %are discarded because the generated sequences are much longer.  
 \ourtool captures such deviated behavior, pinpoints the
@@ -179,7 +180,7 @@ outed in Figure~\ref{fig:output}.
 
 \subsection{Diagnosing Configuration Errors}
 
-Diagnosing configuration errors can be divided into two
+Diagnosing a configuration error can be divided into two
 separate tasks: identifying which specific configuration option is
 responsible for the unexpected behavior, and determining how to fix that
 configuration option. In this paper, we address the former task: finding
@@ -201,30 +202,26 @@ to statically identify its affected predicates in the source code.
 
 \item \textbf{Configuration Behavior Profiling}. \ourtool
 \textit{selectively} performs instrumentation on those
-affected predicates, to capture the
-dynamic behaviors of the diagnosed code when erroneous behavior
-is observed.
+affected predicates, and records their
+dynamic behaviors in a trace file.
+%diagnosed code when erroneous behavior
+%is observed.
 
 \item \textbf{Configuration Deviation Analysis}.
-When erroneous behavior is revealed, \ourtool looks up a
-pre-built database, selects some similar profiles
-from know correct executions, and performs statistical analysis
-to identify which configuration option's behavior deviates the most
-between the recorded erroneous execution and the selected
-correct executions.
+When an configuration error occurs, \ourtool uses
+the recorded trace file to looks up a
+pre-built database, selects similar profiles
+from know correct executions, and identify which
+predicates' behaviors deviate the most (between
+the erroneous execution and the selected correct executions).
 
 \end{itemize}
 
 The output of \ourtool is a ranked list of
-configurations that could possibly explain why the program does not produce the desirable result. 
-%Those
-%configurations, if changed, may even fix the unexpected behavior.
+configurations that could possibly account for
+those deviated predicates, and should be checked
+by users.
 
-Essentially, \ourtool reduces the problem of diagnosing a
-configuration error to differencing the observed erroneous 
-execution with similar but correct executions recorded before,
-identifying the most deviated parts, and tracking the responsible
-option for those deviated parts.
 Compared to existing approaches~\cite{Zeller:2002:ICC, Zhang:2003:PDS,
 Rabkin:2011:PPC, Whitaker:2004:CDS, Attariyan:2010:ACT, Wang:2004:AMT}, \ourtool has
 several notable features:
@@ -234,7 +231,7 @@ several notable features:
 \ourtool does not require a user to specify
 \textit{when}, \textit{why} and \textit{how} the program fail. This is
 different than many well-known automated debugging techniques such
-as delta debugging~\cite{Zeller:2002:ICC}, information flow tracking~\cite{Attariyan:2010:ACT},
+as Delta debugging~\cite{Zeller:2002:ICC}, information flow analysis~\cite{Attariyan:2010:ACT},
  and dynamic slicing~\cite{Zhang:2003:PDS}.
 Besides, our technique also produces brief explanation on
 why a given option is suspicious. 
@@ -259,10 +256,13 @@ An important component in \ourtool is the pre-built
 database, which contains profiles
 from the known correct executions. We envision that this database is
 built by the software developers at release, and can be
-further enriched by software users. %during integration testing.
+further enriched by software users as more correct
+executions are observed. %during integration testing.
 In our experiments (Section~\ref{sec:evaluation}), we
-found that such a database is quite easy to built even by running
-a small number of illustrative examples from the user manual.
+built such a database by running examples from software
+user manuals, FAQs, and discussion mailing lists; and
+found even a small-sized database worked remarkably
+well in error diagnosis.
 
 %\ourtool is designed to help users find solutions to the configuration
 %problems they are facing.  
@@ -330,24 +330,26 @@ of the configuration errors as the top 3 root cause
 for \topnum configuration errors.
 This permits \ourtool user to focus on a few specific configuration
 options when deciding how to fix the problem. 
-In addition, \ourtool takes less than 1 minutes for diagnosing
+In addition, \ourtool takes less than $\blacksquare$ minutes for diagnosing
 one error, making it an attractive alternative
 to manual debugging.
 
-We also compared \ourtool to
-full existing approaches: full slicing~\cite{},
-statement-level profiling~\cite{Jones:2002}, method-level
-invariant detection~\cite{Ernst:1999}, and dynamic information flow
-tracking~\cite{Rabkin:2011:PPC}. The experimental results show that
+We also compared \ourtool to three variants and one
+existing technique. The three variants uses
+full slicing~\cite{}, statement-level profiling~\cite{Jones:2002},
+and method-level invariant detection~\cite{Ernst:1999}
+to replace one step in \ourtool, respectively.
+The existing technique, called ConfAnalyzer~\cite{Rabkin:2011:PPC}, is
+based on dynamic information flow analysis.
+The experimental results show that
 \ourtool significantly outperformed both statement-level profiling
 and method-level invariant detection in the diagnosis accuracy, suggesting
 that focusing on the behavior of program predicates can be a
-suitable abstraction. Compared to ConfAnalyzer~\cite{}, a dynamic
-information flow tracking-based technique
-which precisely tracks information flow at the bit level , \ourtool
-produced accurate diagnosis information for the 5 non-crashing errors that
-ConfAnalyzer failed to diagnose, and produced comparable results
-for 5 out of the 9 crashing errors. 
+suitable abstraction. Compared to ConfAnalyzer~\cite{}, 
+\ourtool produced accurate diagnosis information for the 5
+non-crashing errors that ConfAnalyzer failed to diagnose,
+and produced the same or better results
+for 5 out of the \crash crashing errors. 
 
 Finally, we investigated the effects of varying the comparison profiles
 from the pre-built database.
