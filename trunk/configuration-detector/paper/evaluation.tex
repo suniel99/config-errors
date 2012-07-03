@@ -115,7 +115,7 @@ numerical ranges, regular expressions, and text entries.
 \subsection{Evaluation Procedural}
 
 For each Java application, we constructed a profile database
-by running existing examples from its user manual, discussion
+by running existing (correct) examples from its user manual, discussion
 mailiing list, and the published papers. The number of obtained
  profiles is shown in Table~\ref{tab:subjects}. We
 found constructing such a database is quite easy. As shown
@@ -203,7 +203,7 @@ for the JVM), running Windows 7.
 \multicolumn{8}{|l|}{Non-crashing errors}   \\
  \hline
  1. Randoop& \CodeIn{maxsize} & 10 & 1 & & N & N &X \\
- 2. Weka&\CodeIn{m\_numFolds}&2&1& & 4 & &X\\
+ 2. Weka&\CodeIn{m\_numFolds}&2&1& & 4 & 5 &X\\
  3. JChord& \CodeIn{chord.kobj.k} & 3 & 2& & N &2  &X\\
  4. Synoptic& \CodeIn{partitionRegExp}& 2 & 1& & 1 & &X\\
  5. Soot& \CodeIn{keep\_line\_number} & 1 & 3 &  & N& &X\\
@@ -287,7 +287,7 @@ Crashing errors are often much easier to diagnose than non-crashing errors,
 because crashing errors usually happen shortly after the program
 is launched, and a crash often comes up with a stack trace that provides
 useful diagnosis clues. For example, \ourtool ranks the root cause of
-Error 14 (Table~\ref{}) 8th and ConfAnalyzer even fails to diagnose it.
+Error 14 (Table~\ref{tab:results}) 8th and ConfAnalyzer even fails to diagnose it.
 However, when JChord crashes, it dumps an \CodeIn{ClassNotFoundException}
 that explicitly leads users to check its classpath setting (via the
 \CodeIn{chord.class.path} option).
@@ -323,7 +323,7 @@ predicate behaviors to diagnose configuration errors. Specifically,
 we treat statements covered by the observed erroneous execution as
 potentially buggy, and statements covered the correct executions (from
 the pre-built database) as correct. Then, this variant uses
-a well-known fault localization technique, Tarantula~\cite{},
+a well-known fault localization technique, Tarantula~\cite{Jones:2002},
 to rank the likelihood of each statement being buggy.
 For each ranked statement, this variant uses backward thin slicing
 to compute the affecting configuration options. $\blacksquare$ clear in
@@ -334,7 +334,7 @@ how to rank?
 \noindent \textbf{Invariant Analysis.}
 In this variant, we use method-level invariant as the abstraction level
 to diagnose configuration errors. This variant first uses
-Daikon~\cite{} to dynamically
+Daikon~\cite{Ernst:1999} to dynamically
 detect invariants from the erroneous execution  and invariants
 from correct executions (in the pre-built database). Then, it
 treats a method potentially buggy if its invariants detected
@@ -400,7 +400,7 @@ Is our \textit{predicate}-level granularity a suitable one?
 \hline
 \end{tabular}
 
-\Caption{{\label{tab:subjects} Comparison with different profile selection
+\Caption{{\label{tab:selection} Comparison with different profile selection
 strategies (Section~\ref{sec:ranking}).
 The last column ``Similarity-based'' is the selection strategy
 used in \ourtool, and the data in that column is taken from Table~\ref{tab:results}.}}
@@ -410,19 +410,25 @@ used in \ourtool, and the data in that column is taken from Table~\ref{tab:resul
 \ourtool compares the predicate behaviors in the erroneous execution against
 correct and similar execution in the pre-built database.
 We next investigate the effect of using different comparison
-executions. We compare the current similarity-based strategy (Section~\ref{})
-with two alternatives: randomly selecting the same number of
+executions. We compare the current similarity-based strategy
+ (Section~\ref{sec:similar}) with two alternatives: randomly selecting the same number of
 profiles as the similarity-based strategy does, and using
-all profiles in the database. Table~\ref{} shows the experimental results.
+all profiles in the database. Table~\ref{tab:selection} shows the experimental results.
 
 We can see that varying the comparison strategy has result in
 substantially different effects on the diagnosis results,
 depending on the application being analyzed.
 
+$\blacksquare$
+
+Lacking a similar trace may indicate the inadequacy of
+integration testing.
+
 The result difference derives from the nature of the applications.
 We found....  . On the other hand,
 
 It does not make sense to compare different profiles...
+
 
 %What would the technique produce when feeding it with different inputs (e.g.,
 %radically different inputs instead of similar ones)?
@@ -460,36 +466,58 @@ The cost of instrumentation, permit the use in fielded software?
 \subsection{Experimental Discussions}
 
 
-\noindent \textbf{\textit{Limitations.}} similar inputs, if no input is available, test adequacy.
-
-We focus on named configuration options with a common key-value semantic.
-
-Our tool implementation and experiments were restricted to Java. Our analysis
-does not track options that are passed between processes via the command line.
-
-\ourtool currently does not support debugging non-deterministic errors. %Combining \ourtool with a deterministic replay system
+\noindent \textbf{\textit{Limitations.}} 
+Our technique is limited in four aspects.
+First, we only focus on named configuration options
+with a common key-value semantic, and our tool implementation
+and experiments are
+restricted to Java. 
+Second,  our tool implementation currently does not
+support debugging non-deterministic errors. 
 For non-deterministic errors, \ourtool could potentially leverage one of
 several deterministic replay systems~\cite{Huang:2010:LLD}
 that can capture a buggy non-deterministic
 execution and faithfully reproduce it for late analysis.
+Third, our analysis does not track configuration
+options that are passed between processes via the command line.
+Fourth, the effectiveness of \ourtool largely
+depends on the availability of a similar but correct trace.
+Using an abitrary trace (as we demonstrated in Section~\ref{sec:ranking}
+by random selection) may significantly affect the results.
 
-Our current \ourtool prototype assists in solving configuration errors that are confined
-to a single computer system, such as a home computer, personal workstation, or stand-alone server. (no process communication...)
+%similar inputs, if no input is available, test adequacy.
 
+
+
+%Our current \ourtool prototype assists in solving configuration errors that are confined
+%to a single computer system, such as a home computer, personal workstation, or stand-alone server. (no process communication...)
+
+%similar inputs, if no inputs is available.
+
+%how easy to construct such database in practice.
+
+%User study of usefulness of the results
 \vspace{1mm}
 
-\noindent \textbf{\textit{Threats to Validity.}} similar inputs, if no inputs is available.
+\noindent \textbf{\textit{Threats to Validity.}} 
+There are two major threats to validity in our evaluation. 
+First, the \subjectnum programs and the diagnosed errors may not be
+representative. Thus, we can not claim the results can be
+extended to an arbitrary program.
+Another threat is that we only employed two dependence
+analyses (thin slicing and full slicing) and three
+abstraction granularities (predicate level,
+statement level, and method level) in our evaluation.
+ Using other dependence analyses or abstraction levels
+might achieve different results.
 
-how easy to construct such database in practice.
 
-User study of usefulness of the results
 
-\vspace{1mm}
+%\vspace{1mm}
 
-\noindent \textbf{\textit{Experimental Conclusions.}} similar inputs, if no inputs is available.
-
-\ourtool makes configuration error diagnosis easier by suggesting
-the specific options that may lead to an unexpected behavior. Compared to
-alternative approaches, \ourtool distinguishes itself by being able to
-diagnose both crashing and non-crashing errors without requiring
-a user-provided testing oracle. $\blacksquare$
+%\noindent \textbf{\textit{Experimental Conclusions.}} 
+%\ourtool makes configuration error diagnosis easier by suggesting
+%the specific options that may lead to an unexpected behavior. Compared to
+%alternative approaches, \ourtool distinguishes itself by being able to
+%diagnose both crashing and non-crashing errors without requiring
+%a user-provided testing oracle. $\blacksquare$
