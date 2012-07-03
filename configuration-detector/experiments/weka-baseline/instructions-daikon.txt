@@ -8,7 +8,8 @@ go to the dir : D:\research\configurations\daikon\bin\weka
    
    //daikon command
    java -cp ./path/to/daikon.jar;./weka.jar; daikon.Chicory --dtrace-file= dtrace.gz TRACE_FILE_NAME
-   [xxx] --sample-start=10
+   --ppt-select-pattern=weka\.classifiers\.trees\..*  //no " or ' here
+   [xxx] --sample-start=100
    weka.classifiers.trees.J48 -t ./iris.arff -i
    
    
