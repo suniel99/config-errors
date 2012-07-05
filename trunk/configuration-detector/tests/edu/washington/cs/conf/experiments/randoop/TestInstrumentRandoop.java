@@ -37,6 +37,7 @@ public class TestInstrumentRandoop extends TestCase {
 	/**
 	 * Ignore the following test
 	 * */
+	@Deprecated
 	public void testInstrumentWithContext() throws Exception {
 		String filePath = "./randoop_option_instr_ser.dat";
 		String randoopSrcDir = "./subjects/randoop/randoop-src/"; //NOT used yet

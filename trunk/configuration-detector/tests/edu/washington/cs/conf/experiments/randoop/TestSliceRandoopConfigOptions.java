@@ -132,8 +132,8 @@ public class TestSliceRandoopConfigOptions extends TestCase {
 	}
 	
 	public static Collection<ConfPropOutput> getConfPropOutputsFullSlice(String path, List<ConfEntity> confList) {
-		return getConfPropOutputs(path, confList, DataDependenceOptions.FULL,
-				ControlDependenceOptions.FULL);
+		return getConfPropOutputs(path, confList, DataDependenceOptions.NO_BASE_NO_HEAP_NO_EXCEPTIONS,
+				ControlDependenceOptions.NO_EXCEPTIONAL_EDGES);
 	}
 	
 	public static Collection<ConfPropOutput> getConfPropOutputs(String path, List<ConfEntity> confList,
