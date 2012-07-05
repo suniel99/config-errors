@@ -10,31 +10,22 @@ and the Windows registry.
 
 \subsection{Overview}
 
-
-
-%put to the profiling section?
-%We also want to track caused effects of misconfigurations 
-
-%For non-deterministic errors, \ourtool could potentially leverage one of
-%several deterministic replay systems~\cite{Huang:2010:LLD}
-%that can capture a buggy non-deterministic
-%execution and faithfully reproduce it for late analysis.
-
 Figure~\ref{fig:workflow} sketches the high-level workflow of our technique.
 Our technique takes as input a Java program and its configuration options.
 It first performs a propagation analysis to identify
 the affected predicates for each configuration option (Section~\ref{sec:prop}).
-Then, our technique \textit{selectively} instruments
-the program only on those affected predicates. 
-When diagnosing an error, users can run the failing inputs and
-configurations on the instrumented program to obtain an execution
+After that, our technique \textit{selectively} instruments
+the program on the affected predicates. 
+To diagnose an error, users run the instrumented program
+with the error-revealing inputs and configurations
+ to obtain an execution
 profile (Section~\ref{sec:profiling}).
-Finally, our technique uses the obtained execution profile
-to compare with the existing profiles in the pre-built database,
-and diagnose the its root cause (Section~\ref{sec:analysis}).
+Then, our technique uses the obtained execution profile
+to identify the behaviorally-deviated predicates and their
+responsible options as the root causes (Section~\ref{sec:analysis}).
 
-The output error report is a ranked list
-of suspicious configuration options that may cause the exhibited problem.
+%The output error report is a ranked list
+%of suspicious configuration options that may cause the exhibited problem.
 
 %, linking each configuration
 %to its affected predicates
@@ -55,33 +46,31 @@ The other two phases: ``Propagation Analysis'' and ``Deviation Analysis'' corres
 \subsection{Configuration Propagation Analysis}
 \label{sec:prop}
 
-For each configuration option, this step statically determines its affected program
-fragments at the abstraction level of \textit{predicates}. Here, a \textit{predicate}
-is a boolean expression in conditional or loop statements, whose evaluation result
-decides to execute the followed statement or not. At runtime,
-A predicate's outcome affects the program control flow and may alter
-the consequent program state. In \ourtool, we focus on identifying and monitoring a program's
-control flow instead of an arbitrary data flow for the following two
-reasons: first, monitoring control flows
-is essential since they propagate the majority of
-configuration-related affects, while the value of a specific
-data flow point can be largely input-specific;
-and second, since the outcome of a program predicate can only be
-either true or false, the number of recorded states resulting by monitoring
-affected control flow is far less than monitoring possible  arbitrary
-value changes in a program's data flow. In spite of that
-predicate is not the only abstraction our technique could use,
-we show empirically in Section~\ref{sec:evaluation} that choosing other
-abstractions such as monitoring statement-level coverage information
-or method-level invariant information yields less
-diagnosis accuracy.
+For each configuration option, this step statically determines
+its affected \textit{predicates}. In our context, a \textit{predicate}
+is a boolean expression in a conditional or loop statement, whose evaluation result
+decides whether to execute the followed statement or not.
+A predicate's rutnime outcome affects the program control flow and could alter
+the the program's state consequently. In \ourtool, we focus on identifying and monitoring a program's
+control flow instead of an arbitrary data flow based on the
+following two observations. First, control flow 
+often propagates the majority of configuration-related affects
+and is essential to a program's execution path, while
+the value of a specific data flow point is largely input-dependent.
+And second, the outcome of a program predicate can only be
+either true or false; thus, the number of recorded states in monitoring
+affected control flow is far less than monitoring arbitrary
+data values.  Program predicate is not the only abstraction our technique can use;
+however, as we show empirically in Section~\ref{sec:evaluation},
+choosing other abstractions such as monitoring statement-level coverage
+or method-level invariant yields less accurate results.
 
 
 To identify predicates affectd by a configuration option, a straightforward
 way is using program slicing~\cite{Horwitz:1988} to compute
 a forward slice from the initialization statement of a
 configuration option. Unfortunately, traditional slicing has
-several limitations and can not be applied directly.
+several limitations that prevent it from being directly applicable.
 First, traditional slicing does not distinguish flows along
 pointers from flows along values; thus, a resulting slice includes all statements that
 \textit{may} affect a point of interest and often grows too large. Second,
@@ -89,14 +78,13 @@ in our context of configuration error diagnosis,
 when having no knowledge of what inputs a software user would provide,
 traditional slicing captures every single detail of the execution,
 much of which may not be needed at all by pinpointing an incorrect
-configuration option value.
+configuration option value. $\blacksquare$ this second claim needs revising.
 
 Take the code in Figure~\ref{fig:example} as an example to illustrate
-this problem.  The affected predicate set of 
-configuration option \CodeIn{maxsize} computed by 
-traditional slicing will include predicates in lines 104, 312, and 315.
-However, the predicates in lines 104 and 315, though can be
-affected by the value of \CodeIn{maxsize}, are incorrectly identified,
+this problem.  Tranditional slicing identifies the predicates
+in lines 104, 312, and 315 are affected by the configuration option \CodeIn{maxsize}.
+However, the predicates in lines 104 and 315, though possibly
+affected by the value of \CodeIn{maxsize}, should not be included. $\blacksquare$
 In other words, whether a sequence has an active flag (line 104) or
 whether a sequence has been executed before (line 315)
 is irrelevant with the value of \CodeIn{maxsize}. Monitoring
@@ -106,34 +94,27 @@ option may introduce noise and decrease the diagnosis accuracy.
 %However, if the provided input changes the workflow,
 %instead of all data flow into it. 
 
-To over this limitation, our technique uses thin
+To overcome this limitation, our technique uses thin
 slicing~\cite{Sridharan:2007} as a manner to include
-\textit{only} statements that are \textit{directly} affected by the configuration option.
+\textit{only} statements that are \textit{directly} affected by a configuration option.
 Differing from traditional slicing, thin slicing
-focuses on statements that flow values to the seed, ignoring the 
+focuses on statements that flow values to the seed (here, a
+seed is the initialization statement of a configuration option), ignoring the 
 control flow dependencies as well as the uses of
-base pointers. Essentially, thin slicing improves the relevance
-of the slice by focusing on the statements that compute
+base pointers. Thus, thin slicing improves the relevance
+of the slice by only including the statements that compute
 and copy a value to the seed.
 This property separates
 pointer computations from the flow of configuration option value,
 naturally connects a configuration option with its
 directly affected statements, and makes thin slicing
 especially attractive.
-
-%A thin data dependence graph has exactly
-%the same set of nodes as its corresponding data dependence
-%graph. However, for an access \CodeIn{v.f}, the base pointer value
-%in \CodeIn{v} is not considered to be used. 
-
-
-We illustrate the advantages of using thin slicing 
-by the same code excerpt in Figure~\ref{fig:example}.
-A forward thin slice computed from \CodeIn{maxsize}
+For example, in the code excerpt of Figure~\ref{fig:example},
+a forward thin slice computed for \CodeIn{maxsize}
 only includes the predicate in line 312.
 In our experiments (Section~\ref{sec:evaluation}), 
-we empirically compare traditional slicing with
-thin slicing in diagnosing configuration errors, and show
+we also empirically compare traditional slicing with
+thin slicing in diagnosing configuration errors, and demonstrate
 that thin slicing is a better chioce.
 
 %When Randoop is used to generate tests for different inputs (here,
@@ -151,19 +132,17 @@ that thin slicing is a better chioce.
 \subsection{Configuration Behavior Profiling}
 \label{sec:profiling}
 
-After identifying the affected predicates,
-this step instruments the tested program offline,
-inserting code to monitor the outcome of
-each affected predicate at runtime, and associates it
-with the affecting configuration option.
+This step instruments the tested program offline
+by inserting code to monitor
+each the outcome of each affected predicate at runtime.
 
 
-Take the code in Figure~\ref{fig:example} as an example,
-the configuration option \CodeIn{maxsize} affects
-the predicate at line 312. Thus, \ourtool inserts two instrumentation
-statements before and after line 312 to keep the count of
-the predicate being executed and the count of being evaluated to true,
-as follows (the underlined parts):
+For the code in Figure~\ref{fig:example} where
+the predicate at line 312 is affected by
+the configuration option \CodeIn{maxsize}, \ourtool inserts the
+following two instrumentation
+statements before and after line 312 to count the number of
+the predicate being executed and the number being evaluated to true.
 
 
 \begin{CodeOut}
@@ -180,17 +159,18 @@ as follows (the underlined parts):
 \end{CodeOut}
 
 
-The instrumented program summarizes an execution
-as a vector of \textit{predicate profiles}.
+$\blacksquare$The instrumented program expresses an execution
+as a trace comprising a vector of \textit{predicate profiles}.
 Each predicate profile is a pair of configuration
-option and one of its affected predicates.
-The predicate profile also keeps the runtime
-behavior of the affected predicate, including
-the count of the predicate being executed and the count of it
-being evaluated to true. 
+option and its affected predicate.
+The predicate profile also keeps the recorded runtime information.
+%of the affected predicate, including
+%the count of the predicate being executed and the count of it
+%being evaluated to true. 
 
-\ourtool expresses an execution as
-a predicate profile vector. As we
+%\ourtool expresses an execution as
+%a predicate profile vector. 
+As we
 show in the experiments (Section~\ref{sec:evaluation}), such predicate profile
 vectors, although by no mean complete, capture
 sufficient information to permit users
@@ -219,78 +199,80 @@ on foreground applications.
 \subsection{Configuration Deviation Analysis}
 \label{sec:analysis}
 
-After obtaining a vector of predicate profiles from
-an erroneous execution, \ourtool compares it with
+\ourtool starts error diagnosis 
+after obtaining the execution trace from
+an erroneous execution. It first compares it with
 existing traces from known correct executions, selects
 similar traces for comparison (Section~\ref{sec:similar}),
-identifies the most
-behavioral-deviated predicates (Section~\ref{sec:deviation}), and then determines
-its responsible options (Section~\ref{sec:linking}).
+identifies the most behavioral-deviated predicates
+(Section~\ref{sec:deviation}), and then determines
+its most likely responsible options (Section~\ref{sec:linking}).
 
 
 \subsubsection{Selecting Similar Traces for Comparison}
 \label{sec:similar}
 
 \ourtool's pre-built database contains a number of
-traces from known correct executions. The traces
-can be dramatically different from one another. To
-better understand how and why the observed trace behaves
+traces from known correct executions, in which one trace
+can be dramatically different from another. To
+determine how and why the observed trace behaves
 differently from the correct ones, \ourtool first
-compares and contrasts the predicate profiles between
-the erroneous execution and other correct ones, and
-then selects a set of similar ones.
+compares and contrasts the 
+the erroneous execution with other correct ones, and
+then selects a set of similar ones. $\blacksquare$
 
 Given a trace $t$, \ourtool first aggregates
-the observed predicate profiles, and creates a $n$-dimensional
+the observed predicate profiles into a $n$-dimensional
 vector $v_{t}$ =$\langle r_1, r_2, ..., r_n\rangle$ , where $n$
 is the number of predicates in the program and each $r_i$ is
 the ratio of the $i$-th predicate profile being evaluated
 to true at runtime. If a predicate is not executed in
-a particular execution, we assign \CodeIn{null} to its true ratio.
+a particular execution, \ourtool assigns \CodeIn{null} to its true ratio.
 
 
 When comparing two traces $t_1$ and $t_2$, \ourtool computes
-the inner-product distance of the normalized vectors, and treats
-they are similar if the distance is below a threshold (default value: 0.3,
+their inner-product distance of the normalized vectors, and selects
+those with distance below a threshold (default value: 0.3,
 as we used in experiments). When computing the inner-product distance,
 if the value of some dimensional is \CodeIn{null}. $\blacksquare$
 
-For crashing errors, \ourtool does not perform this step in selecting
-similar traces. Instead, it uses all available traces in the database
-for comparison, because all traces in the database are correct, and can
-be served as reference to identify the crashing root causes.
+For crashing errors, \ourtool does not select similar traces.
+Instead, it uses all available traces in the database
+for comparison, because all traces there are from correct
+executions, and can
+be served as reference to identify the crashing root causes. $\blacksquare$
 
 \subsubsection{Identifying Deviated Predicates}
 \label{sec:deviation}
 
 
 The comparison between an erroneous trace with a set
-of \textit{similar} traces form a basis for our
+of \textit{similar} traces forms a basis for our
 automated error diagnosis approach. Given an erroneous trace and a set of similar but correct trace,
 the differences in predicate profiles provide evidence for what parts of a program might be
 incorrect and why. This helps to further reason about its root cause.
 
 
 For each observed predicate $p$, \ourtool uses the following metric
-to characterize its deviation degree in two traces $t_1$ and $t_2$.
+to characterize its deviation degree in two traces $t_1$ and $t_2$:
 
 \[
-\|Deviation|(p) = |\phi(t_1) - \phi(t_2)|
+\|Deviation|(p) = |\phi(t_1, p) - \phi(t_2, p)|
 \]
 
 \[
-\|\phi|(p) = \frac{2}{\frac{1}{\|trueRatio|(p)} + \frac{1}{totalNum(p)}}
+\|\phi|(t, p) = \frac{2}{\frac{1}{\|trueRatio|(t, p)} + \frac{1}{totalNum(t, p)}}
 \]
 
-$trueRatio(p)$ is a function that returns the ratio of predicate $p$ being
-evaluated to true in its observed executions, and $totalNum(p)$ is a function
-that returns the total number of observations of predicate $p$.
+$trueRatio(t, p)$ is a function that returns the ratio of predicate $p$ being
+evaluated to true in trace $t$, and $totalNum(p)$ is a function
+that returns the total number of observations of predicate $p$ in trace $t$..
 
 The metric $\phi$ has some good properties in characterizing the $\blacksquare$
 
 For non-crashing errors, since the obtained trace is a complete one,
 \ourtool computes the $Deviation$ metric for each observed predicate in
-both traces, and ranks predicates decreasingly based on the computed value.
+both traces, and ranks them in a decreasing order based on the computed $Deviation$ value.
 
 For crashing erros, since the obtained trace is incomplete,
 \ourtool computes the $Deviation$ metric for the predicates only appearing
@@ -303,6 +285,8 @@ in the crashing trace, and ranks them decreasingly based on the computed value.
 
 \subsubsection{Linking Predicates to Root Causes}
 \label{sec:linking}
+
+$\blacksquare$
 
 The last step in \ourtool is to link those behavioral-deviated
 predicates to its root causes, and rank the suspicious
@@ -334,27 +318,38 @@ We next some design issues in \ourtool.
 
 \vspace{1mm}
 \noindent \textbf{Differences between program inputs and configuration options.}
+A configurable software system permits users to
+customize its behaviors before being used. Broadly speaking,
+there is not any fundamental difference between a configuration option
+value and a program input value. $\blacksquare$ a configuration option
+value is more like a meta-input, which pre-defines the overall expected program
+execution details and is usually fixed for a broad range of inputs.
+By contrast, an input is more specific for a certain execution $\blacksquare$
 
-The fundamental differences between inputs and options. A configuration
-option is fixed before input.
-
-Configuration customize the overall program behavior, when inputs is a specific
 
 \vspace{1mm}
-\noindent \textbf{Why cannot use unit test executions?}
-Why cannot use unit test to achieve the trace? since it is incomplete
+\noindent \textbf{Why cannot use executions from unit tests?}
+The pre-built database in \ourtool is designed to contain complete
+execution traces, while a unit test that focuses on verifying the
+isolated program component behavior in isolation often produces
+an incomplete trace. In contrast, a crashing or non-crashing configuration
+error from field software application often starts from the main method,
+comparing its resulting trace with the partial trace from unit tests
+may yield wrong results. $\blacksquare$
+%Why cannot use unit test to achieve the trace? since it is incomplete
 
 
 %why cannot delta debugging? no working state, no predicate
 
 \vspace{1mm}
 \noindent \textbf{Why not only store correct traces in the database?}
-
-why not store failed traces in the database? (developers
-cannot anticipate the error behaviors). A broader question is which
-informatin should be stored in the database for comparison, now, we use
-profiling info, what about statement info? invariant? they all
-summarize valuable info.
+It is more developers to provide correct executions, instead of
+anticipating the possibly error behaviors a user may encounter. $\blacksquare$
+A broader question is which kind of informatin should be recorded
+from program execution. \ourtool uses predicate as the abstraction level,
+and emprically compares with two other abstractions (a coarser abstraction
+at the method level, and a finer abstract at the statement level). Investigating
+other abstraction levles remains as our future work.
 
 %Why dynamic slicing is not usable? No seed statement, and great overhead. Using JSlicer incurs
 %a great overhead. It needs to track every instruction and
