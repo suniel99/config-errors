@@ -217,10 +217,19 @@ the erroneous execution and the selected correct executions).
 
 \end{itemize}
 
-The output of \ourtool is a ranked list of
-configurations that could possibly account for
-those deviated predicates, and should be checked
-by users.
+\ourtool is designed to be used by system administrators and end-users when they
+encountered a suspected configuration error that they do not
+know how to fix. Once a \ourtool user encounter an unexpected
+behavior, she can reproduce the problem on a \ourtool-enabled environment,
+where \ourtool monitors the program execution. \ourtool
+further uses the obtained execution trace to
+identify the likely root cause of a configuration error and
+outputs a ranked list of suspicious options.
+
+%The output of \ourtool is a ranked list of
+%configurations that could possibly account for
+%those deviated predicates, and should be checked
+%by users.
 
 Compared to existing approaches~\cite{Zeller:2002:ICC, Zhang:2003:PDS,
 Rabkin:2011:PPC, Whitaker:2004:CDS, Attariyan:2010:ACT, Wang:2004:AMT}, \ourtool has
