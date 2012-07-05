@@ -2,12 +2,14 @@ package edu.washington.cs.conf.experiments.weka;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
 import edu.washington.cs.conf.analysis.ConfEntity;
 import edu.washington.cs.conf.analysis.ConfPropOutput;
+import edu.washington.cs.conf.diagnosis.MethodBasedDiagnoser;
 import edu.washington.cs.conf.diagnosis.StmtCoverageBasedDiagnoser;
 import edu.washington.cs.conf.diagnosis.StmtCoverageBasedDiagnoserMain;
 import edu.washington.cs.conf.diagnosis.StmtExecuted;
@@ -47,7 +49,24 @@ public class TestWekaBaseline extends TestCase {
 	 * Diagnose by invariants
 	 * */
 	public void testDiagnoseByInvariant() {
+		String badInv = "D:\\research\\configurations\\daikon\\bin\\weka\\labor.inv.gz";
+		String goodIrisInv = "D:\\research\\configurations\\daikon\\bin\\weka\\iris.inv.gz";
+		String goodWeatherInv = "D:\\research\\configurations\\daikon\\bin\\weka\\weather.inv.gz";
 		
+		Collection<ConfPropOutput> confs = TestSliceWekaConfigOptions.getWekaConfOutputs();
+		
+		System.out.println("start diagnosing... ");
+		
+        List<ConfEntity> entities
+            = MethodBasedDiagnoser.computeResponsibleOptions(Arrays.asList(goodIrisInv, goodWeatherInv),
+            		badInv, confs);
+		
+		System.out.println(entities.size());
+		int i = 0;
+		for(ConfEntity entity : entities) {
+			System.out.println((i+1) + ". " + entity);
+			i++;
+		}
 	}
 
 }
