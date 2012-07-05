@@ -4,11 +4,14 @@
 We implemented a tool, called \ourtool, on top of the WALA
 framework~\cite{wala}. Our tool analyzes the bytecode.
 It first statically computes the affected predicates
-for each configuration option, and then performs offline instrumentation.
-The behaviors of all affected predicates are recorded at runtime, and
-kept in a trace file. Using the trace file,
-\ourtool works in a fully automatic and
-push-button way, and scales to realistic programs.
+for each configuration option, assigns a unique
+ID for each affect predicate, and then performs offline instrumentation.
+The behaviors of all affected predicates recording at runtime are 
+kept in a trace file. 
+
+%Using the trace file,
+%\ourtool works in a fully automatic and
+%push-button way, and scales to realistic programs.
 
 It is worth noting that after compiled into bytecode,
 a predicate in Java source code may be translated into multiple bytecode
