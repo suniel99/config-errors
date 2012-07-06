@@ -39,7 +39,12 @@ public class SlicePruner {
 				}
 				//re-create it
 				ConfPropOutput newOutput = new ConfPropOutput(output.getConfEntity(), prunedStmts);
-				retList.add(newOutput);
+				if(newOutput.statements.isEmpty()) {
+					System.err.println("It removes all, need to roll back.");
+					retList.add(output); //should not remove all
+				} else {
+				    retList.add(newOutput);
+				}
 			}
 		}
 		
