@@ -63,7 +63,7 @@ public class TestSliceSootConfigOptions extends TestCase {
 	}
 	
 	public void testCreateInstrumentSchemaFullSlice() {
-        Collection<ConfPropOutput> outputs = getSootConfOutputsFullSlice();
+        Collection<ConfPropOutput> outputs = getSootConfOutputsFullSlice(TYPE.SOURCE_PREDICATE);
 		
 		InstrumentSchema schema = new InstrumentSchema();
 		schema.setType(TYPE.SOURCE_PREDICATE);
@@ -95,10 +95,10 @@ public class TestSliceSootConfigOptions extends TestCase {
         return confs;
 	}
 	
-	public static Collection<ConfPropOutput> getSootConfOutputsFullSlice() {
+	public static Collection<ConfPropOutput> getSootConfOutputsFullSlice(TYPE t) {
 		List<ConfEntity> sootConfigs = SootExpUtils.getSootConfList();
-		Collection<ConfPropOutput> confs = CommonUtils.getConfPropOutputs(path, mainClass, sootConfigs, "SootExclusions.txt",
-				CG.ZeroCFA, false, DataDependenceOptions.FULL, ControlDependenceOptions.FULL); //cannot use 1-CFA, which is too expensive
+		Collection<ConfPropOutput> confs = CommonUtils.getConfPropOutputsFullSlicing(path, mainClass, sootConfigs, "SootExclusions.txt",
+				CG.RTA, false, DataDependenceOptions.NO_BASE_NO_HEAP_NO_EXCEPTIONS, ControlDependenceOptions.NO_EXCEPTIONAL_EDGES, t); //cannot use 1-CFA, which is too expensive
         return confs;
 	}
 }

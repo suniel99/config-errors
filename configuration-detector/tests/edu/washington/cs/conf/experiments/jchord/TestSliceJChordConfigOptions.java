@@ -76,10 +76,10 @@ public class TestSliceJChordConfigOptions extends TestCase {
 	static String mainClass = jchord_main;
 	static String exFile = jchord_exclusion;
 	
-	public static Collection<ConfPropOutput> getJChordConfOutputsFullSlice() {
+	public static Collection<ConfPropOutput> getJChordConfOutputsFullSlice(TYPE t) {
 		List<ConfEntity> jchordConfList = ChordExpUtils.getChordConfList();
-		Collection<ConfPropOutput> confs = CommonUtils.getConfPropOutputs(path, mainClass, jchordConfList, exFile, CG.OneCFA, false,
-				DataDependenceOptions.FULL, ControlDependenceOptions.FULL);
+		Collection<ConfPropOutput> confs = CommonUtils.getConfPropOutputsFullSlicing(path, mainClass, jchordConfList, exFile, CG.RTA, false,
+				DataDependenceOptions.NO_BASE_NO_HEAP_NO_EXCEPTIONS, ControlDependenceOptions.NO_EXCEPTIONAL_EDGES, t);
 		return confs;
 	}
 	
@@ -107,7 +107,7 @@ public class TestSliceJChordConfigOptions extends TestCase {
 	}
 	
 	public void testCreateInstrumentSchemaFullSlice() {
-		Collection<ConfPropOutput> outputs = getJChordConfOutputsFullSlice();
+		Collection<ConfPropOutput> outputs = getJChordConfOutputsFullSlice(TYPE.SOURCE_PREDICATE);
 		
 		InstrumentSchema schema = new InstrumentSchema();
 		schema.setType(TYPE.SOURCE_PREDICATE); //NOTE use the abstraction of source predicate

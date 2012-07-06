@@ -132,15 +132,17 @@ public class TestSliceRandoopConfigOptions extends TestCase {
 	}
 	
 	public static Collection<ConfPropOutput> getConfPropOutputsFullSlice(String path, List<ConfEntity> confList) {
-		return getConfPropOutputs(path, confList, DataDependenceOptions.NO_BASE_NO_HEAP_NO_EXCEPTIONS,
+		return getConfPropOutputs(path, confList,
+				CG.RTA,
+				DataDependenceOptions.NO_BASE_NO_HEAP_NO_EXCEPTIONS,
 				ControlDependenceOptions.NO_EXCEPTIONAL_EDGES);
 	}
 	
 	public static Collection<ConfPropOutput> getConfPropOutputs(String path, List<ConfEntity> confList,
-			DataDependenceOptions dataDep, ControlDependenceOptions controlDep) {
+			CG type, DataDependenceOptions dataDep, ControlDependenceOptions controlDep) {
 		String mainClass = "Lrandoop/main/Main";
 		ConfigurationSlicer helper = new ConfigurationSlicer(path, mainClass);
-		helper.setCGType(CG.OneCFA);
+		helper.setCGType(type);
 		helper.setExclusionFile("JavaAllExclusions.txt");
 		helper.setDataDependenceOptions(dataDep);
 		helper.setControlDependenceOptions(controlDep);
@@ -159,18 +161,25 @@ public class TestSliceRandoopConfigOptions extends TestCase {
 			ConfPropOutput output = helper.outputSliceConfOption(entity);
 			outputs.add(output);
 			System.err.println("  statement in slice: " + output.statements.size());
-			Set<IRStatement> filtered = ConfPropOutput.excludeIgnorableStatements(output.statements);
-			System.err.println("  statements after filtering: " + filtered.size());
 			
-			Set<IRStatement> sameStmts = ConfUtils.removeSameStmtsInDiffContexts(filtered);// filterSameStatements(filtered);
-			System.err.println("  filtered statements: " + sameStmts.size());
+			Set<IRStatement> filtered = ConfPropOutput.filterStatementsForFullSliceResult(output.statements);
+			output.statements.clear();
+			output.statements.addAll(filtered);
+			System.err.println("   after filtering: " + output.statements.size());
 			
-			Set<IRStatement> branchStmts = ConfPropOutput.extractBranchStatements(sameStmts);
-			System.err.println("  branching statements: " + branchStmts.size());
+//			Set<IRStatement> filtered = ConfPropOutput.excludeIgnorableStatements(output.statements);
+//			System.err.println("  statements after filtering: " + filtered.size());
+//			
+//			Set<IRStatement> sameStmts = ConfUtils.removeSameStmtsInDiffContexts(filtered);// filterSameStatements(filtered);
+//			System.err.println("  filtered statements: " + sameStmts.size());
+//			
+//			Set<IRStatement> branchStmts = ConfPropOutput.extractBranchStatements(sameStmts);
+//			System.err.println("  branching statements: " + branchStmts.size());
+			
 //			System.err.println("   numbered statements: " + output.getNumberedBranches().size());
 //			System.err.println("   number of src branching statements: " + output.getNumberedBranchesInSource().size());
 			
-			CommonUtils.dumpStatements(branchStmts);
+//			CommonUtils.dumpStatements(branchStmts);
 		}
 
 		assertEquals(randoopConfList.size(), outputs.size());
@@ -181,5 +190,10 @@ public class TestSliceRandoopConfigOptions extends TestCase {
 		}
 		
 		return outputs;
+	}
+	
+	public static Collection<ConfPropOutput> getConfPropOutputs(String path, List<ConfEntity> confList,
+			DataDependenceOptions dataDep, ControlDependenceOptions controlDep) {
+		return getConfPropOutputs(path, confList, CG.OneCFA, dataDep, controlDep);
 	}
 }
