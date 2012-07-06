@@ -153,7 +153,9 @@ public class ConfigurationSlicer {
 	}
 	
 	public ConfPropOutput outputSliceConfOption(ConfEntity entity) {
+		long startT = System.currentTimeMillis();
 		Collection<Statement> stmts = sliceConfOption(entity);
+		System.out.println("Time cost: " + (System.currentTimeMillis() - startT)/1000 + " s");
 		Collection<IRStatement> irs = convert(stmts);
 		ConfPropOutput output = new ConfPropOutput(entity, irs, this.targetPackageName);
 		//add distance or not
@@ -165,6 +167,17 @@ public class ConfigurationSlicer {
 			}
 		}
 		return output;
+	}
+	
+	public List<ConfPropOutput> outputSliceConfOptionInBatch(List<ConfEntity> entities) {
+		List<ConfPropOutput> outputs = new LinkedList<ConfPropOutput>();
+		
+		for(ConfEntity entity : entities) {
+			ConfPropOutput output = outputSliceConfOption(entity);
+			outputs.add(output);
+		}
+		
+		return outputs;
 	}
 	
 	public Collection<Statement> sliceConfOption(ConfEntity entity) {
