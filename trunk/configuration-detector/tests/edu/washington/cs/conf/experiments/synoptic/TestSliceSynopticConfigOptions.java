@@ -64,7 +64,7 @@ public class TestSliceSynopticConfigOptions extends TestCase {
 	}
 	
 	public void testCreateInstrumentSchemaFullSlice() {
-        Collection<ConfPropOutput> outputs = getSynopticConfOutputsFullSlice();
+        Collection<ConfPropOutput> outputs = getSynopticConfOutputsFullSlice(TYPE.SOURCE_PREDICATE);
 		
 		InstrumentSchema schema = new InstrumentSchema();
 		schema.setType(TYPE.SOURCE_PREDICATE);
@@ -91,11 +91,11 @@ public class TestSliceSynopticConfigOptions extends TestCase {
         return confs;
 	}
 	
-	public static Collection<ConfPropOutput> getSynopticConfOutputsFullSlice() {
+	public static Collection<ConfPropOutput> getSynopticConfOutputsFullSlice(TYPE t) {
         List<ConfEntity> synopticConfList = SynopticExpUtils.getSynopticList();
-        Collection<ConfPropOutput> confs = CommonUtils.getConfPropOutputs(path, mainClass, synopticConfList, 
-        		"JavaAllExclusions.txt", CG.OneCFA, false,
-        		DataDependenceOptions.FULL, ControlDependenceOptions.FULL);
+        Collection<ConfPropOutput> confs = CommonUtils.getConfPropOutputsFullSlicing(path, mainClass, synopticConfList, 
+        		"JavaAllExclusions.txt", CG.RTA, false,
+        		DataDependenceOptions.NO_BASE_NO_HEAP_NO_EXCEPTIONS, ControlDependenceOptions.NO_EXCEPTIONAL_EDGES, t);
         return confs;
 	}
 }

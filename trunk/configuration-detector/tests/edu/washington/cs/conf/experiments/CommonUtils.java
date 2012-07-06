@@ -24,6 +24,7 @@ import edu.washington.cs.conf.diagnosis.ProfileDistanceCalculator;
 import edu.washington.cs.conf.diagnosis.TraceAnalyzer;
 import edu.washington.cs.conf.diagnosis.PredicateProfileBasedDiagnoser.RankType;
 import edu.washington.cs.conf.diagnosis.ProfileDistanceCalculator.DistanceType;
+import edu.washington.cs.conf.instrument.InstrumentSchema.TYPE;
 import edu.washington.cs.conf.util.Log;
 import edu.washington.cs.conf.util.Utils;
 
@@ -62,7 +63,9 @@ public class CommonUtils {
 		for(ConfEntity entity : confList) {
 			Log.logln("entity: " + entity);
 			ConfPropOutput output = helper.outputSliceConfOption(entity);
+			
 			outputs.add(output);
+			
 			System.out.println("  statement in slice: " + output.statements.size());
 			Log.logln("  statement in slice: " + output.statements.size());
 			Set<IRStatement> filtered = ConfPropOutput.excludeIgnorableStatements(output.statements);
@@ -164,5 +167,59 @@ public class CommonUtils {
 	
 	public static void compareTraceDistance(String goodRunTrace, String badRunTrace, DistanceType t, Float expected) {
 		compareTraceDistance(goodRunTrace, badRunTrace, t, expected, true);
+	}
+	
+	//for full slicing, with special speedup
+	public static Collection<ConfPropOutput> getConfPropOutputsFullSlicing(String path, String mainClass, List<ConfEntity> confList, String exclusionFile, CG type, boolean doPruning,
+			DataDependenceOptions dataDep, ControlDependenceOptions controlDep, TYPE t) {
+		ConfigurationSlicer helper = new ConfigurationSlicer(path, mainClass);
+		helper.setCGType(type);
+		helper.setExclusionFile(exclusionFile);
+		helper.setDataDependenceOptions(dataDep);
+		helper.setControlDependenceOptions(controlDep);
+		helper.setContextSensitive(false); //context-insensitive
+		helper.buildAnalysis();
+		
+		//set computing distance
+//		helper.setSlicingDistance(true);
+		
+		//get all type info
+		ConfEntityRepository repo = new ConfEntityRepository(confList);
+		repo.initializeTypesInConfEntities(path);
+		
+		Collection<ConfPropOutput> outputs = new LinkedList<ConfPropOutput>();
+		for(ConfEntity entity : confList) {
+			Log.logln("entity: " + entity);
+			ConfPropOutput output = helper.outputSliceConfOption(entity);
+			System.out.println("slice num: " + output.statements.size());
+			
+			Set<IRStatement> filtered = ConfPropOutput.filterStatementsForFullSliceResult(output.statements);
+			output.statements.clear();
+			output.statements.addAll(filtered);
+			System.err.println("   after filtering: " + output.statements.size());
+			
+			outputs.add(output);
+		}
+
+		Utils.checkTrue(confList.size() == outputs.size());
+		
+		if(doPruning) {
+			System.out.println("pruning slices by overalp...");
+			outputs = SlicePruner.pruneSliceByOverlap(outputs);
+			for(ConfPropOutput output : outputs) {
+				Log.logln("entity: " + output.getConfEntity());
+				Set<IRStatement> filtered = ConfPropOutput.excludeIgnorableStatements(output.statements);
+				Set<IRStatement> sameStmts = ConfUtils.removeSameStmtsInDiffContexts(filtered);
+				Set<IRStatement> branchStmts = ConfPropOutput.extractBranchStatements(sameStmts);
+				Log.logln("  statement in the pruned slice: " + branchStmts.size());
+			}
+		}
+		
+		//save the slicer
+		for(ConfPropOutput output : outputs) {
+			output.setConfigurationSlicer(helper);
+		}
+		
+		return outputs;
 	}
 }
