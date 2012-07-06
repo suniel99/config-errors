@@ -2,6 +2,7 @@ package edu.washington.cs.conf.analysis;
 
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
@@ -186,6 +187,32 @@ public class ConfPropOutput implements Serializable {
 		Set<ShrikePoint> retPoints = this.getShrikePoints(irs);
 		
 		return retPoints;
+	}
+	
+	/**
+	 * A method designed specifically for speeding up processing full slicing results,
+	 * since the slice is so large that it is hard to fit into memory
+	 * */
+	public static Set<IRStatement> filterStatementsForFullSliceResult(Collection<IRStatement> set) {
+		Set<IRStatement> ret = new LinkedHashSet<IRStatement>();
+		Set<String> existed = new HashSet<String>();
+		
+		for(IRStatement s : set) {
+			if(s.shouldIgnore() || !s.isBranch()) {
+				continue;
+			}
+			String sig = s.getUniqueSignature(); //method name + instruction string + instruction index
+			if(existed.contains(sig)) {
+				continue;
+			}
+			existed.add(sig);
+			ret.add(s);
+		}
+		
+		//reclaim memory
+		existed.clear();
+		
+		return ret;
 	}
 	
 	public static Set<IRStatement> excludeIgnorableStatements(Collection<IRStatement> set) {
