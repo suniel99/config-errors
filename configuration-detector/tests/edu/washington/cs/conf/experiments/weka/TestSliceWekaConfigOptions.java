@@ -83,7 +83,7 @@ public class TestSliceWekaConfigOptions extends TestCase {
 	public static Collection<ConfPropOutput> getWekaConfOutputsFullSlice() {
         List<ConfEntity> wekaConfList = WekaExpUtils.getWekaConfList();
         Collection<ConfPropOutput> confs = CommonUtils.getConfPropOutputs(path, mainClass, wekaConfList,
-        		"JavaAllExclusions.txt", CG.RTA, false,
+        		"JavaAllExclusions.txt", CG.ZeroCFA, false,
         		DataDependenceOptions.NO_BASE_NO_HEAP_NO_EXCEPTIONS,
         		ControlDependenceOptions.NO_EXCEPTIONAL_EDGES);
         return confs;
