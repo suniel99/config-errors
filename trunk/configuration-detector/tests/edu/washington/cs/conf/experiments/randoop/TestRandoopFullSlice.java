@@ -2,6 +2,7 @@ package edu.washington.cs.conf.experiments.randoop;
 
 import edu.washington.cs.conf.analysis.ConfEntityRepository;
 import edu.washington.cs.conf.diagnosis.MainAnalyzer;
+import edu.washington.cs.conf.diagnosis.PredicateProfileTuple;
 import edu.washington.cs.conf.experiments.RandoopExpUtils;
 import junit.framework.TestCase;
 
@@ -28,12 +29,18 @@ public class TestRandoopFullSlice extends TestCase {
 	};
 
 	public void testDiangoseSimilar() {
+		PredicateProfileTuple.USE_CACHE = true;
+		
 		ConfEntityRepository repo = RandoopExpUtils.getRandoopConfRepository();
-		MainAnalyzer.doFiltering = true;
 		MainAnalyzer.diagnoseConfigErrors(fullSliceBadRun,
 				fullSliceDb,
 				repo,
 				null, null, null);
+	}
+	
+	@Override
+	public void tearDown() {
+		PredicateProfileTuple.USE_CACHE = false;
 	}
 	
 }
