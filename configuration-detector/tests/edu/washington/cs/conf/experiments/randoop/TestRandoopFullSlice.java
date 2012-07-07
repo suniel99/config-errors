@@ -5,7 +5,7 @@ import edu.washington.cs.conf.diagnosis.MainAnalyzer;
 import edu.washington.cs.conf.experiments.RandoopExpUtils;
 import junit.framework.TestCase;
 
-public class TestDiagnoseRandoopByFullSlice extends TestCase {
+public class TestRandoopFullSlice extends TestCase {
 	
 	String fullSliceBadRun = "./experiments/randoop-database/nanoxml-full-slice.txt";
 	
