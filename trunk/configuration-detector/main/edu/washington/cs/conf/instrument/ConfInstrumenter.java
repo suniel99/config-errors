@@ -24,6 +24,7 @@ import com.ibm.wala.shrikeCT.ClassReader;
 import com.ibm.wala.shrikeCT.ClassWriter;
 
 import edu.washington.cs.conf.util.Globals;
+import edu.washington.cs.conf.util.Utils;
 
 public class ConfInstrumenter extends AbstractInstrumenter {
 
@@ -31,14 +32,10 @@ public class ConfInstrumenter extends AbstractInstrumenter {
 	  protected boolean entry = false;
 	  protected boolean exit = false;
 	  protected boolean exception = false;
-//	  protected boolean dumpshrink = false;
 
-	  static final String fieldName = "_Conf_enable_trace";
+	  protected boolean reduce_instr_point = false;
 	  
-
-	  // Keep these commonly used instructions around
-//	  static final Instruction getSysErr = Util.makeGet(System.class, "err");
-//	  static final Instruction callPrintln = Util.makeInvoke(PrintStream.class, "println", new Class[] { String.class });
+	  static final String fieldName = "_Conf_enable_trace";
 	  
 	  static final Instruction getTracer = Util.makeGet(ConfTracer.class, "tracer");
 	  static final Instruction callTrace = Util.makeInvoke(ConfTracer.class, "trace", new Class[] { String.class });
@@ -51,6 +48,14 @@ public class ConfInstrumenter extends AbstractInstrumenter {
 	  
 	  public ConfInstrumenter(InstrumentSchema schema) {
 		  this.schema = schema;
+	  }
+	  
+	  public void setReduceInstrPoint(boolean reduce) {
+		  this.reduce_instr_point = reduce;
+		  if(this.reduce_instr_point) {
+			  System.err.println("Reduce the # of instrumentation points," +
+			  		" must need further postprocessing.");
+		  }
 	  }
 	  
 	  public void turnOnContextInstrumentation() {
@@ -103,46 +108,66 @@ public class ConfInstrumenter extends AbstractInstrumenter {
 	        
 	        //profiling the predicates
 	        if(branch) {
-	        	//skip it
-//	        	if(confIndices.isEmpty()) {
-//	        		continue;
-//	        	}
 	        	int length = me.getInstructions().length;
 	        	for(int i = 0; i < length; i++) {
 	        		IInstruction inst = me.getInstructions()[i];
 	        		if(confIndices.containsKey(i)) {
 	        			System.out.println("inst: " + inst + " @ " + methodSig
 	        					+ ", config #: " + confIndices.get(i).size());
-	        			for(String conf : confIndices.get(i)) {
-	        				
-	        				//FIXME expensive operations
-//	        				int lineNumber = schema.getSourceLineNumber(conf, methodSig, i);
-//	        				String sourceTxt = schema.getSourceCodeText(conf, methodSig, i);
-	        				
-	        				final String msg0 = PRE + SEP + conf + SEP + /*lineNumber + SUB_SEP + sourceTxt + SUB_SEP +*/ methodSig + INDEX_SEP + i; //FIXME methodSig is not a distinguisable sig
-		        			final String msg1 = POST + SEP + conf + SEP + /*+ lineNumber + SUB_SEP + sourceTxt + SUB_SEP +*/ methodSig + INDEX_SEP + i; //it may follow some context in ConfTracer
-		            		me.insertBefore(i, new MethodEditor.Patch() {
-		                      @Override
-		                      public void emitTo(MethodEditor.Output w) {
-		                        //w.emit(getSysErr);
-		                    	w.emit(getTracer);
-		                        w.emit(ConstantInstruction.makeString(msg0));
-		                        w.emit(callTrace);
-		                        //w.emit(callPrintln);
-		                        InstrumentStats.addInsertedInstructions(1);
-		                      }
-		                   });
-		            	   me.insertAfter(i, new MethodEditor.Patch() {
-		                        @Override
-		                        public void emitTo(MethodEditor.Output w) {
-		                          //w.emit(getSysErr);
-		                          w.emit(getTracer);
-		                          w.emit(ConstantInstruction.makeString(msg1));
-		                          w.emit(callTrace);
-		                          //w.emit(callPrintln);
-		                          InstrumentStats.addInsertedInstructions(1);
-		                        }
-		                   });
+	        			//do instrumentations
+	        			if(this.reduce_instr_point) {
+	        				//this concatenate all configurations together but need an extra
+	        				//postprocessing in the class:  TraceAnanlyzer or ConfTracer (when dumping to the file)
+	        				Set<String> confAtThisPoint = confIndices.get(i);
+	        				String allConfs = Utils.concatenate(confAtThisPoint, CONF_SEP);
+	        				final String msg0 = PRE + SEP + allConfs + SEP + methodSig + INDEX_SEP + i;
+	        				final String msg1 = POST + SEP + allConfs + SEP + methodSig + INDEX_SEP + i;
+	        				me.insertBefore(i, new MethodEditor.Patch() {
+	                            @Override
+	                            public void emitTo(MethodEditor.Output w) {
+	                    	        w.emit(getTracer);
+	                                w.emit(ConstantInstruction.makeString(msg0));
+	                                w.emit(callTrace);
+	                                InstrumentStats.addInsertedInstructions(1);
+	                            }
+	                        });
+	            	        me.insertAfter(i, new MethodEditor.Patch() {
+	                            @Override
+	                            public void emitTo(MethodEditor.Output w) {
+	                                w.emit(getTracer);
+	                                w.emit(ConstantInstruction.makeString(msg1));
+	                                w.emit(callTrace);
+	                                InstrumentStats.addInsertedInstructions(1);
+	                            }
+	                       });
+	        			} else {
+	        				//the default way
+	        			    //instrument it without any postprecessing
+	        			    for(String conf : confIndices.get(i)) {
+	        				    //methodSig is not a uniquely-identifiable, so plus the instruction index
+	        				    //before evaluation
+	        				    final String msg0 = PRE + SEP + conf + SEP + methodSig + INDEX_SEP + i;
+	        				    //after evaluation
+		        			    final String msg1 = POST + SEP + conf + SEP + methodSig + INDEX_SEP + i;
+		            		    me.insertBefore(i, new MethodEditor.Patch() {
+		                            @Override
+		                            public void emitTo(MethodEditor.Output w) {
+		                    	        w.emit(getTracer);
+		                                w.emit(ConstantInstruction.makeString(msg0));
+		                                w.emit(callTrace);
+		                                InstrumentStats.addInsertedInstructions(1);
+		                            }
+		                        });
+		            	        me.insertAfter(i, new MethodEditor.Patch() {
+		                            @Override
+		                            public void emitTo(MethodEditor.Output w) {
+		                                w.emit(getTracer);
+		                                w.emit(ConstantInstruction.makeString(msg1));
+		                                w.emit(callTrace);
+		                                InstrumentStats.addInsertedInstructions(1);
+		                            }
+		                       });
+	        			   }
 	        			}
 	        		}
 

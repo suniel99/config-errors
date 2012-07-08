@@ -27,13 +27,13 @@ public class ConfTracer {
 	                synchronized(traceMap) {
 	                	StringBuilder sb = new StringBuilder();
 	                	for(String key : traceMap.keySet()) {
-		                	sb.append(key + "#" + traceMap.get(key));
+		                	sb.append(key + AbstractInstrumenter.SEP + traceMap.get(key));
 		                	sb.append(Globals.lineSep);
 		                }
 	                	try {
 	                		long time = System.currentTimeMillis();
 	                		System.out.println("At: " + time);
-	                		String fileName = "./trace_dump_"+time+".txt";
+	                		String fileName = "./trace_dump_" + time + ".txt";
 	                		File f = new File(fileName);
 	                		System.out.println("write to file: " + f.getAbsolutePath());
 	                		

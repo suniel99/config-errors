@@ -2,8 +2,10 @@ package edu.washington.cs.conf.diagnosis;
 
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import edu.washington.cs.conf.util.Utils;
@@ -15,6 +17,8 @@ import edu.washington.cs.conf.util.Utils;
  * Here, a cell value is akin to a "PredicateProfile" object
  * */
 public class PredicateProfileTuple {
+	
+	public static boolean USE_CACHE = false;
 
 	/**use which run to get the following profiles */
 	public final String name;
@@ -51,8 +55,30 @@ public class PredicateProfileTuple {
 		return this.profiles;
 	}
 	
+	//FIXME must ensure this class is immutable once after being created
+	private Map<String, PredicateProfile> cachedMap = null;
+	private void initCacheMap() {
+		if(cachedMap != null) {
+			this.cachedMap.clear();
+		} else {
+			cachedMap = new LinkedHashMap<String, PredicateProfile>();
+		}
+		for(PredicateProfile p : this.profiles) {
+			cachedMap.put(p.getUniqueKey(), p);
+		}
+	}
+	
 	public PredicateProfile lookUpByUniqueKey(String key) {
 		Utils.checkNotNull(key);
+		
+		if(USE_CACHE) {
+		    if(cachedMap == null) {
+			//initialize this
+			initCacheMap();
+		    }
+		    return cachedMap.get(key);
+		}
+		
 		for(PredicateProfile p : this.profiles) {
 			if(p.getUniqueKey().equals(key)) {
 				return p;

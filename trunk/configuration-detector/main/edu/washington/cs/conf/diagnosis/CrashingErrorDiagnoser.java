@@ -17,7 +17,6 @@ import edu.washington.cs.conf.analysis.ConfUtils;
 import edu.washington.cs.conf.analysis.IRStatement;
 import edu.washington.cs.conf.diagnosis.PredicateProfileBasedDiagnoser.RankType;
 import edu.washington.cs.conf.util.Files;
-import edu.washington.cs.conf.util.Log;
 import edu.washington.cs.conf.util.Utils;
 import edu.washington.cs.conf.util.WALAUtils;
 
@@ -26,7 +25,7 @@ import edu.washington.cs.conf.util.WALAUtils;
  * 
  * Diagnosing crashing errors is significantly different than diagnosing non-crashing ones.
  * 
- * 1. it is unlikely to exist a similar trace in the database for the crashing runs
+ * 1. it is unlikely to find a similar trace in the database for the crashing runs
  * 2. it does not need to compare the whole trace to identify the different parts, since
  *    the crashing trace is an incomplete profile over the whole execution.
  *    

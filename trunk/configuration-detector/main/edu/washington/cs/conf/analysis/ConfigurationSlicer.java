@@ -379,8 +379,13 @@ public class ConfigurationSlicer {
 		for(Statement s : stmts) {
 			if(s instanceof StatementWithInstructionIndex) {
 				if(s.getNode().getMethod() instanceof ShrikeBTMethod) {
+					try {
 				    IRStatement ir = new IRStatement((StatementWithInstructionIndex)s);
-				    irs.add(ir);
+				        irs.add(ir);
+					} catch (Throwable e) {
+						//System.err.println("Error in IR: " + s);
+						continue;
+					}
 			    } else {
 			    	//skip fake method 
 			    	//Log.logln("skip stmt: " + s + " in method: " + s.getNode().getClass());
