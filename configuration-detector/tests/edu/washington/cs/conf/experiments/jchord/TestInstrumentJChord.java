@@ -34,6 +34,9 @@ public class TestInstrumentJChord extends TestCase {
 //		Log.logConfig("./instrument-jchord-log.txt");
 		
 		ConfInstrumenter instrumenter = new ConfInstrumenter(schema);
+		//reduce the number of instrumentation point
+		instrumenter.setReduceInstrPoint(true);
+		
 		instrumenter.instrument(jchord_notrace, jchord_instrument_full_slice);
 		
 //		Log.removeLogging();
