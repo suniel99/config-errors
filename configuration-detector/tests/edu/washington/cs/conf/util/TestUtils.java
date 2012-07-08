@@ -54,4 +54,11 @@ public class TestUtils extends TestCase {
 		assertNotNull(f);
 		System.out.println(f);
 	}
+	
+	public void testStringSplit() {
+		String s  ="hello-world";
+		String[] splits = s.split("not");
+		assertEquals(1, splits.length);
+		System.out.println(splits[0]);
+	}
 }
