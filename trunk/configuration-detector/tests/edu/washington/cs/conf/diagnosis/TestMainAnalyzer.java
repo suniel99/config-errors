@@ -26,5 +26,4 @@ public class TestMainAnalyzer extends TestCase {
 		
 		assertEquals(outputs.size(), 6);
 	}
-	
 }
