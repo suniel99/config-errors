@@ -2,9 +2,18 @@ package edu.washington.cs.conf.diagnosis;
 
 import java.util.Collection;
 
+import edu.washington.cs.conf.util.Files;
+
 import junit.framework.TestCase;
 
 public class TestTraceFileParsing extends TestCase {
+		
+	public void testReadSepConfs() {
+		String trace_file = "./experiments/jchord-database/simpletest-has-race-full-slice.txt";
+		Collection<PredicateProfile> colls = TraceAnalyzer.createProfiles(trace_file);
+		System.out.println(colls.size());
+		System.out.println("File length: " + Files.readWholeNoExp(trace_file).size());
+	}
 	
 	public void testParseRandoopTraceFile() {
 		String goodRandoopTrace = "./output/trace_dump_binarytree.txt";
