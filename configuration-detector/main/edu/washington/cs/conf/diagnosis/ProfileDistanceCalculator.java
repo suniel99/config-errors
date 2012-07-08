@@ -68,6 +68,10 @@ public class ProfileDistanceCalculator {
 //		System.out.println(similarity_sum);
 		Float distance = 1 - (similarity_sum / allKeys.size());
 //		Float distance = (float) (1 - (Math.sqrt((double)similarity_sum) / allKeys.size()));
+		
+		//reclaim memory
+		allKeys.clear();
+		
 		return distance;
 	}
 	

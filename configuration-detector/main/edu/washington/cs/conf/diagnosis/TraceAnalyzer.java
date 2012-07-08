@@ -5,6 +5,7 @@ import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
 
+import edu.washington.cs.conf.instrument.AbstractInstrumenter;
 import edu.washington.cs.conf.instrument.ConfInstrumenter;
 import edu.washington.cs.conf.util.Files;
 import edu.washington.cs.conf.util.Utils;
@@ -55,10 +56,14 @@ public class TraceAnalyzer {
 		
 		for(String trace : traces) {
 			String[] splits = splitLine(trace, 4);
-			String confId = splits[1];
+			//it may have recorded multiple confs, see ConfInstrumenter for details
+			String confs = splits[1];
 			String fullRecordedContext = splits[2];
 			String point = splits[0];
 			int count = Integer.parseInt(splits[3]);
+			
+			String[] confIds = confs.split(AbstractInstrumenter.CONF_SEP);
+			Utils.checkTrue(confIds.length > 0);
 			
 			//check the context field
 			String[] items = fullRecordedContext.split(ConfInstrumenter.SUB_SEP);
@@ -71,24 +76,26 @@ public class TraceAnalyzer {
 			    predicateTxt = items[1];
 			    context = items[2];
 			}
-			
-			String key = confId + context; //assume this could uniquely identify a position FIXME
-			//can not check this, since is an entering and an evaluation
-//			Utils.checkTrue(!profileMap.containsKey(key), "key is: " + key);
-			if(!profileMap.containsKey(key)) {
-				//FIXME this constructor should be replaced, since the count is setting below
-				profileMap.put(key, new PredicateProfile(confId, context));
-			}
-			PredicateProfile p = profileMap.get(key);
-			Utils.checkTrue(p.getEnteringCount() == 0 || p.getEvaluatingCount() == 0);
-			p.setSourceLineNumber(srcLineNum); //set source line number of source code
-			p.setPredicateInSource(predicateTxt);
-			if(point.equals(ConfInstrumenter.PRE)) {
-				p.setEvaluatingCount(count);
-			} else if (point.equals(ConfInstrumenter.POST)) {
-				p.setEnteringCount(count);
-			} else {
-				throw new Error(point);
+			//process each configuration
+			for(String confId : confIds) {
+				String key = confId + context; //assume this could uniquely identify a position FIXME
+				//can not check this, since is an entering and an evaluation
+//				Utils.checkTrue(!profileMap.containsKey(key), "key is: " + key);
+				if(!profileMap.containsKey(key)) {
+					//FIXME this constructor should be replaced, since the count is setting below
+					profileMap.put(key, new PredicateProfile(confId, context));
+				}
+				PredicateProfile p = profileMap.get(key);
+				Utils.checkTrue(p.getEnteringCount() == 0 || p.getEvaluatingCount() == 0);
+				p.setSourceLineNumber(srcLineNum); //set source line number of source code
+				p.setPredicateInSource(predicateTxt);
+				if(point.equals(ConfInstrumenter.PRE)) {
+					p.setEvaluatingCount(count);
+				} else if (point.equals(ConfInstrumenter.POST)) {
+					p.setEnteringCount(count);
+				} else {
+					throw new Error(point);
+				}
 			}
 		}
 		

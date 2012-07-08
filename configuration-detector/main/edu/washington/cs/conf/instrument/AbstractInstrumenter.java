@@ -20,7 +20,12 @@ public abstract class AbstractInstrumenter {
 	  public static String PRE = "evaluating";
 	  public static String POST = "entering";
 	  public static String SEP = "#";
-	  public static String SUB_SEP = "%%";
+	  public static String CONF_SEP = "=-="; //separate multiple confs to reduce instrumentatiion num
+	  
+	  //this is for separating context with other relevant information
+	  //such as line number, source text, etc.
+	  //see TraceAnalyzer for usage example
+	  public static String SUB_SEP = "%%"; //not used for context separation
 	  public static String INDEX_SEP = "_index_";
 	  
 	  public void instrument(String inputElement, String outputJar) throws Exception {
