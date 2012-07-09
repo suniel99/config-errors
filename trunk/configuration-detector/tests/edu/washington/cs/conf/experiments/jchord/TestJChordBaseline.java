@@ -2,31 +2,37 @@ package edu.washington.cs.conf.experiments.jchord;
 
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
 import edu.washington.cs.conf.analysis.ConfEntity;
 import edu.washington.cs.conf.analysis.ConfPropOutput;
 import edu.washington.cs.conf.diagnosis.MethodBasedDiagnoser;
 import edu.washington.cs.conf.diagnosis.StmtCoverageBasedDiagnoserMain;
-import edu.washington.cs.conf.experiments.RandoopExpUtils;
-import edu.washington.cs.conf.experiments.randoop.TestSliceRandoopConfigOptions;
-import edu.washington.cs.conf.experiments.soot.TestSliceSootConfigOptions;
 import edu.washington.cs.conf.instrument.EveryStmtInstrumenter;
 import edu.washington.cs.conf.instrument.InstrumentStats;
 import junit.framework.TestCase;
 
 public class TestJChordBaseline extends TestCase {
+	
+	public static String jchord_everystmt = "./subjects/jchord/chord-everystmt.jar";
 
 	public void testStmtInstrumentation() throws Exception {
 		EveryStmtInstrumenter instrumenter = new EveryStmtInstrumenter();
 		
 		Collection<String> skippedClasses
 		    = Arrays.asList("joeq.Class.jq_ClassFileConstants",
-		    		"javassist.bytecode.Opcode");
+		    		"javassist.bytecode.Opcode",
+		    		"joeq.Class.jq_DontAlign",
+		    		"net.sf.saxon.",
+		    		"joeq.",
+		    		"javassist.");
 		instrumenter.setSkippedClasses(skippedClasses);
 		
-        instrumenter.instrument("./subjects/jchord/chord-no-trace.jar", "./subjects/jchord/chord-everystmt.jar");
+		Collection<String> instrumentedClasses
+		   = Arrays.asList("chord.");
+		instrumenter.setInstrumentedClassPrefix(instrumentedClasses);
+		
+        instrumenter.instrument(TestInstrumentJChord.jchord_notrace, jchord_everystmt);
 		
 		InstrumentStats.showInstrumentationStats();
 	}
