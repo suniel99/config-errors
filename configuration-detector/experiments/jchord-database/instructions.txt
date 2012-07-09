@@ -26,3 +26,8 @@ java -cp ./chord-no-trace-instrumented.jar;../../bin
  3.ant -Dchord.work.dir=<WORK_DIR> -Dchord.run.analyses=deadlock-java run
  
  4. ant -Dchord.out.dir=<OUT_DIR> -Dchord.print.project=true run
+ 
+ 5. ant -Dchord.out.dir=<OUT_DIR> -Dchord.run.analyses=ctxts-java
+ 
+ 6. do nothing
+    without append any option
