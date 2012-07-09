@@ -5,6 +5,12 @@ go to dir: subjects/jchord/
 when running daikon, must put a configuration file: chord.properties
 in the directory of ./jchord
 
+//change the chord.properties file to inject crashing errors
+
+use the command: java -cp ../../libs/daikon.jar;./chord-no-trace.jar 
+   daikon.Chicory chord.project.Boot
+
+
 1. the good run
 
 java -cp ./chord-everystmt.jar;../../bin
