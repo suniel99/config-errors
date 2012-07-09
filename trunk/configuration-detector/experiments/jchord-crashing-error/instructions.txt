@@ -7,6 +7,9 @@ Generally, locating crashing errors are much easier than locating non-crashing e
 - crashing errors sometimes come with an error message. The error message, though may not be descriptive enough, severs as a starting point
   in problem diagnosis
 
+//if you want to record the line coverage, just replace the jar
+with chord-everystmt.jar
+
 1. no main class:
    
    go to dir: subjects/jchord/  (should not go to simpletest folder, it will have a very
@@ -157,13 +160,12 @@ Generally, locating crashing errors are much easier than locating non-crashing e
 	    at chord.project.Main.run(Main.java:82)
 	    at chord.project.Main.main(Main.java:50)
 	    
-	    
 7. no main class
       java -cp ./chord-no-trace-instrumented.jar;../../bin
      -Dchord.class.path=../../../bin;classes/
      -Dchord.work.dir=./simpletest
      -Dchord.run.analyses=datarace-java
-     -Dchord.main.class=notexist   [an exist class but does not contain main method]
+     -Dchord.main.class=test.Client   [an exist class but does not contain main method]
      chord.project.Boot
      
      java.lang.Error: ERROR: RTA: Could not find main class 'test.Client' or main method in that class.
@@ -189,14 +191,15 @@ Generally, locating crashing errors are much easier than locating non-crashing e
      
 8.  no context kind
 
+   also long running
+
    the good run:
       java -cp ./chord-no-trace-instrumented.jar;../../bin
      -Dchord.class.path=../../../bin;classes/
      -Dchord.work.dir=./simpletest
-     -Dchord.run.analyses=datarace-java
+     -Dchord.run.analyses=ctxts-java
      //-Dchord.ctxt.kind= notexist
      chord.project.Boot
-   
    
    java -cp ./chord-no-trace-instrumented.jar;../../bin
      -Dchord.class.path=../../../bin;classes/
