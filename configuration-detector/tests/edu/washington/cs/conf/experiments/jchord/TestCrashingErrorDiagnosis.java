@@ -72,6 +72,32 @@ public class TestCrashingErrorDiagnosis extends TestCase {
 	//the good run
 	public String goodRunTrace
 	   = "./experiments/jchord-database/simpletest-has-race.txt";
+	public String goodRunTrace1
+	  = "./experiments/jchord-database/deadlock_simpletest.txt";
+	public String goodRunTrace2
+	  = "./experiments/jchord-database/dlog_simpletest.txt";
+	public String goodRunTrace3
+	  = "./experiments/jchord-database/ctxtanalysis_default.txt";
+	public String goodRunTrace4
+	  = "./experiments/jchord-database/do_nothing.txt";
+	public String goodRunTrace5
+	  = "./experiments/jchord-database/print_projects.txt";
+	
+	//the runs from full slicing
+	public String badRunTraceFullSlice
+	   =  "./experiments/jchord-database/simpletest-no-race-full-slice.txt";
+	
+	public String goodRunTraceFullSlice
+	   = "./experiments/jchord-database/simpletest-has-race-full-slice.txt";
+	public String goodRunTrace1FullSlice
+	   = "./experiments/jchord-database/simpletest-deadlock-full-slice.txt";
+	public String goodRunTrace2FullSlice
+	   = "./experiments/jchord-database/simpletest-dlog-full-slice.txt";
+	
+	public String goodRunTrace4FullSlice
+	   = "./experiments/jchord-database/simpletest-do-nothing-full-slice.txt";
+	public String goodRunTrace5FullSlice
+	   = "./experiments/jchord-database/simpletest-print-project-full-slice.txt";
 	
 	public String goodCtxtRun = "./experiments/jchord-database/ctxtsanalysis_default.txt";
 	
