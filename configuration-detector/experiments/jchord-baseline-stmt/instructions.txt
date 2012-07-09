@@ -1,3 +1,5 @@
+filter out all other statemetns besides the chord.* package
+
 go to dir: subjects/jchord/
 
 1. the good run
