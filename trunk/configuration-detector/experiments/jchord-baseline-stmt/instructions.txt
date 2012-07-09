@@ -2,6 +2,9 @@ filter out all other statemetns besides the chord.* package
 
 go to dir: subjects/jchord/
 
+when running daikon, must put a configuration file: chord.properties
+in the directory of ./jchord
+
 1. the good run
 
 java -cp ./chord-everystmt.jar;../../bin
