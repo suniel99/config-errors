@@ -22,6 +22,7 @@ import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.Set;
 import java.util.Map.Entry;
 import java.util.zip.ZipEntry;
@@ -372,6 +373,29 @@ public class Utils {
 		}
 		sb.append("Num in total: " + num);
 		return sb.toString();
+	}
+	
+	static Random random = new Random();
+	
+	public static int nextRandomInt(int range) {
+		return random.nextInt(range);
+	}
+	
+	public static <T> Object[] randomSubArray(T[] array) {
+		Utils.checkTrue(array.length > 0);
+		int length = nextRandomInt(array.length) + 1;
+		if(length == array.length) {
+			return array;
+		}
+		Set<Integer> indexSet = new HashSet<Integer>();
+		while(indexSet.size() != length) {
+			indexSet.add(nextRandomInt(array.length));
+		}
+		List<T> elements = new LinkedList<T>();
+		for(Integer index : indexSet) {
+			elements.add(array[index]);
+		}
+		return elements.toArray();
 	}
 	
 	public static <T> String dumpArray(T[] ts) {

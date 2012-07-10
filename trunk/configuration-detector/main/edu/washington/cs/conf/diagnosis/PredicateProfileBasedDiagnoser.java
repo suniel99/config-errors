@@ -19,6 +19,8 @@ import edu.washington.cs.conf.util.Utils;
  * */
 public class PredicateProfileBasedDiagnoser {
 	
+	public static boolean SAVE_MEMORY = false;
+	
 	public enum RankType {TFIDF_RATIO, TFIDF_IMPORT, SINGLE_RATIO, SINGLE_IMPORT, RATIO_SUM, IMPORT_SUM,
 		IMPORT_RANK_CHANGE, RATIO_RANK_CHANGE};
 	
@@ -50,7 +52,18 @@ public class PredicateProfileBasedDiagnoser {
 	public List<ConfDiagnosisOutput> computeResponsibleOptions(RankType type) {
 		Collection<List<ConfDiagnosisEntity>> coll = summarizeAllDiagnosisEntity(this.goodRuns,
 				this.badRun, this.repository);
-		return rankResponsibleOptions(coll, type);
+		List<ConfDiagnosisOutput> outputsList = rankResponsibleOptions(coll, type);
+		
+		//reclaim memory
+		for(List<ConfDiagnosisEntity> list : coll) {
+//			for(ConfDiagnosisEntity e : list) {
+//				e.r
+//			}
+			list.clear();
+		}
+		coll.clear();
+		
+		return outputsList;
 	}
 	
 	/**********
@@ -159,16 +172,18 @@ public class PredicateProfileBasedDiagnoser {
 		
 		//check the correctness here
 		//a temp data structure to check the correctness, no affect to the return result
-		Set<String> uniquePredicates = new HashSet<String>();
-		for(PredicateProfile p : goodRun.getAllProfiles()) {
-			uniquePredicates.add(p.getUniqueKey());
-		}
-		for(PredicateProfile p : badRun.getAllProfiles()) {
-			uniquePredicates.add(p.getUniqueKey());
-		}
-		Utils.checkTrue(retList.size() == uniquePredicates.size(), "The size is not equal: "
+		if(!SAVE_MEMORY) {
+		    Set<String> uniquePredicates = new HashSet<String>();
+		    for(PredicateProfile p : goodRun.getAllProfiles()) {
+			    uniquePredicates.add(p.getUniqueKey());
+		    }
+		    for(PredicateProfile p : badRun.getAllProfiles()) {
+			    uniquePredicates.add(p.getUniqueKey());
+		    }
+		    Utils.checkTrue(retList.size() == uniquePredicates.size(), "The size is not equal: "
 				+ retList.size() + ", v.s., unique predicates size: " + uniquePredicates.size());
-		uniquePredicates.clear();
+		    uniquePredicates.clear();
+		}
 		
 		return retList;
 	}
@@ -377,19 +392,23 @@ public class PredicateProfileBasedDiagnoser {
 				ranking++;
 				String configName = rankedEntity.getConfigFullName(); //no context here
 				if(visitedConfigs.containsKey(configName)) {
-					visitedConfigs.get(configName).addExplain("Omit Rank: " + ranking
+					if(!SAVE_MEMORY) {
+					    visitedConfigs.get(configName).addExplain("Omit Rank: " + ranking
 							+ ": " + configName + " at context : " + rankedEntity.getContext()
 							+ ",  " + t.name() + ": " + rankedEntity.getScore(t)
 							+ ", its provence: " + rankedEntity.getScoreProvenance(t));
+					}
 				} else {
 					//initially create and add the output
 					ConfDiagnosisOutput output = new ConfDiagnosisOutput(rankedEntity.getConfEntity());
 					output.setFinalScore(rankedEntity.getScore(t));
 					visitedConfigs.put(configName, output);
-					output.addExplain("Choose Rank: " + ranking
+					if(!SAVE_MEMORY) {
+					    output.addExplain("Choose Rank: " + ranking
 							+ ": " + configName + " at context : " + rankedEntity.getContext()
 							+ ",  " + t.name() + ": " + rankedEntity.getScore(t)
 							+ ", its provence: " + rankedEntity.getScoreProvenance(t));
+					}
 					rankedOutput.add(output);
 				}
 			}
@@ -415,15 +434,19 @@ public class PredicateProfileBasedDiagnoser {
 					Float updatedValue = configOutputSums.get(output) + rankedEntity.getScore(t);
 //					output.setFinalScore(updatedValue);
 					visitedConfigs.get(configName).setFinalScore(updatedValue);
-					visitedConfigs.get(configName).addExplain("Add new score: " + rankedEntity.getScore(t)
+					if(!SAVE_MEMORY) {
+					     visitedConfigs.get(configName).addExplain("Add new score: " + rankedEntity.getScore(t)
 							+ "  at context: " + rankedEntity.getContext() + ", now updated value: " + updatedValue);
+					}
 					configOutputSums.put(output, updatedValue);
 				} else {
 					ConfDiagnosisOutput output = new ConfDiagnosisOutput(rankedEntity.getConfEntity());
 					output.setFinalScore(rankedEntity.getScore(t));
 					visitedConfigs.put(configName, output);
-					output.addExplain("First add new score: " + rankedEntity.getScore(t)
+					if(!SAVE_MEMORY) {
+					    output.addExplain("First add new score: " + rankedEntity.getScore(t)
 							+ "  at context: " + rankedEntity.getContext());
+					}
 					configOutputSums.put(output, rankedEntity.getScore(t));
 				}
 			}
@@ -468,8 +491,10 @@ public class PredicateProfileBasedDiagnoser {
 				Utils.checkTrue(numOfShares > 0);
 				ConfDiagnosisOutput o =createdOutputMap.get(config);
 				Float myScore = score/numOfShares;
-				o.addExplain("num of shares: " + numOfShares + ",  original tfidf value: " + tfidfValues.get(o)
+				if(!SAVE_MEMORY) {
+				    o.addExplain("num of shares: " + numOfShares + ",  original tfidf value: " + tfidfValues.get(o)
 						+ ", adding score: " + myScore + ", becomes: " + (tfidfValues.get(o) + myScore));
+				}
 				o.setFinalScore(tfidfValues.get(o) + myScore);
 				tfidfValues.put(o, tfidfValues.get(o) + myScore);
 			}
