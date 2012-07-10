@@ -16,6 +16,7 @@ import edu.washington.cs.conf.analysis.ConfPropOutput;
 import edu.washington.cs.conf.analysis.ConfUtils;
 import edu.washington.cs.conf.analysis.IRStatement;
 import edu.washington.cs.conf.diagnosis.PredicateProfileBasedDiagnoser.RankType;
+import edu.washington.cs.conf.diagnosis.ProfileDistanceCalculator.DistanceType;
 import edu.washington.cs.conf.util.Files;
 import edu.washington.cs.conf.util.Utils;
 import edu.washington.cs.conf.util.WALAUtils;
@@ -42,6 +43,9 @@ public class CrashingErrorDiagnoser {
 	
 	public final ConfEntityRepository repository;
 	
+	public static float default_experiment_value = -1f;
+	private float similar_threshold_experiment = default_experiment_value;
+	
 	private String[] stackTraces = null;
 	
 	public CrashingErrorDiagnoser(Collection<PredicateProfileTuple> goodRuns,
@@ -57,6 +61,11 @@ public class CrashingErrorDiagnoser {
 	public void setStackTraces(String file) {
 		String[] traces = Files.readWholeNoExp(file).toArray(new String[0]);
 		this.setStackTraces(traces);
+	}
+	
+	public void setSimilarThreshold(float threshold) {
+		Utils.checkTrue(threshold > 0.0f);
+		this.similar_threshold_experiment = threshold;
 	}
 	
 	public void setStackTraces(String[] stackTraces) {
@@ -87,6 +96,16 @@ public class CrashingErrorDiagnoser {
 			System.out.println(" - number of profiles in the good run before filtering: " + goodRun.getAllProfiles().size());
 			System.out.println(" - number of profiles in the good run after filtering: " + filteredTuple.getAllProfiles().size());
 			System.out.println();
+		}
+		
+		if(similar_threshold_experiment > 0.0f) {
+			//need to do filtering
+			PredicateProfileDatabase db = new PredicateProfileDatabase("db", filteredGoodRuns);
+			List<PredicateProfileTuple > similarOnes = db.findSimilarTuples(this.badRun, DistanceType.INTERPRODUCT, this.similar_threshold_experiment);
+			//re-assign to filtered good runs
+			filteredGoodRuns = similarOnes;
+			System.out.println("Use similar threshold: " + this.similar_threshold_experiment + ", select: "
+					+ filteredGoodRuns.size() + " out of: " + db.getAllTuples().size());
 		}
 		
 		PredicateProfileBasedDiagnoser diagnoser

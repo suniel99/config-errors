@@ -30,6 +30,8 @@ public class EveryStmtInstrumenter extends AbstractInstrumenter {
 	
 	private Set<String> skippedClasses = null;
 	
+	private Set<String> instrumentedClasses = null;
+	
 	public EveryStmtInstrumenter() {
 		//empty on purpose
 	}
@@ -40,6 +42,11 @@ public class EveryStmtInstrumenter extends AbstractInstrumenter {
 		skippedClasses.addAll(classes);
 	}
 	
+	public void setInstrumentedClassPrefix(Collection<String> classes) {
+		instrumentedClasses = new LinkedHashSet<String>();
+		instrumentedClasses.addAll(classes);
+	}
+	
 	@Override
 	protected void doClass(ClassInstrumenter ci, Writer w) throws Exception {
 		final String className = ci.getReader().getName();
@@ -48,8 +55,17 @@ public class EveryStmtInstrumenter extends AbstractInstrumenter {
 	    
 	    if(this.skippedClasses != null) {
 	    	String cName = Utils.translateSlashToDot(className);
-	    	if(this.skippedClasses.contains(cName)) {
+	    	if(Utils.startWith(cName, this.skippedClasses.toArray(new String[0]))) {
+//	    	if(this.skippedClasses.contains(cName)) {
 	    		System.out.print("Skip. " + cName + "\n");
+	    		return;
+	    	}
+	    }
+	    
+	    if(this.instrumentedClasses != null) {
+	    	String cName = Utils.translateSlashToDot(className);
+	    	if(!Utils.startWith(cName, this.instrumentedClasses.toArray(new String[0]))) {
+	    		System.out.print("Not in instrumented class: " + cName + "\n");
 	    		return;
 	    	}
 	    }

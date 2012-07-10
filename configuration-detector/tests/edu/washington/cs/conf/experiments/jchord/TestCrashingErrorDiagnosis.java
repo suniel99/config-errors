@@ -177,6 +177,11 @@ public class TestCrashingErrorDiagnosis extends TestCase {
     
     public static List<ConfDiagnosisOutput>  doDiagnosis(DiagnosisType t, String badTraceFile, String badStackTraceFiles,
     		String[] goodTraceFiles) {
+    	return doDiagnosis(t, badTraceFile, badStackTraceFiles, goodTraceFiles, CrashingErrorDiagnoser.default_experiment_value);
+    }
+    
+    public static List<ConfDiagnosisOutput>  doDiagnosis(DiagnosisType t, String badTraceFile, String badStackTraceFiles,
+    		String[] goodTraceFiles, float threshold) {
     	//create the repo
     	List<ConfEntity> jchordConfList = ChordExpUtils.getChordConfList();
 		ConfEntityRepository repo = new ConfEntityRepository(jchordConfList);
@@ -188,8 +193,11 @@ public class TestCrashingErrorDiagnosis extends TestCase {
     		goodTuples.add(TraceAnalyzer.createGoodProfileTuple(goodTrace, "goodTrace"));
     	}
     	
+    	System.out.println("use crashing error diagnoser: " + t);
+    	
     	//start the diagnosis
     	CrashingErrorDiagnoser diagnoser = new CrashingErrorDiagnoser(goodTuples, badTuple, repo);
+    	diagnoser.setSimilarThreshold(threshold);
     	diagnoser.setStackTraces(badStackTraceFiles);
 
     	if(t.equals(DiagnosisType.NONCRASHING)) {
