@@ -219,8 +219,11 @@ public class PredicateProfileBasedDiagnoser {
  		//do ranking according to the highest avg ranking
  		Collection<List<ConfDiagnosisOutput>> rankedOutputs = getRankedCollectionsBySingleScore(rankedListsByImport, ScoreType.IMPORT_DELTA);
  		//do ranking according to the highest avg ranking
- 		List<ConfDiagnosisOutput> finalRankedList = ConfDiagnosisOutput.rankByAvgRanking(rankedOutputs);
+ 		//it must remove outlier
+ 		List<ConfDiagnosisOutput> //finalRankedList = ConfDiagnosisOutput.rankByAvgRanking(rankedOutputs);
 
+ 		finalRankedList = ConfDiagnosisOutput.rankByMajorityVotes(rankedOutputs);
+ 		
 		return finalRankedList;
 	}
 

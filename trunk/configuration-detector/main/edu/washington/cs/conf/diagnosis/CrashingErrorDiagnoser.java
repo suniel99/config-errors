@@ -64,7 +64,7 @@ public class CrashingErrorDiagnoser {
 	}
 	
 	public void setSimilarThreshold(float threshold) {
-		Utils.checkTrue(threshold > 0.0f);
+		//Utils.checkTrue(threshold > 0.0f);
 		this.similar_threshold_experiment = threshold;
 	}
 	
@@ -103,9 +103,15 @@ public class CrashingErrorDiagnoser {
 			PredicateProfileDatabase db = new PredicateProfileDatabase("db", filteredGoodRuns);
 			List<PredicateProfileTuple > similarOnes = db.findSimilarTuples(this.badRun, DistanceType.INTERPRODUCT, this.similar_threshold_experiment);
 			//re-assign to filtered good runs
-			filteredGoodRuns = similarOnes;
 			System.out.println("Use similar threshold: " + this.similar_threshold_experiment + ", select: "
-					+ filteredGoodRuns.size() + " out of: " + db.getAllTuples().size());
+					+ similarOnes.size() + " out of: " + db.getAllTuples().size());
+			if(!similarOnes.isEmpty()) {
+			    filteredGoodRuns = similarOnes;
+			} else {
+				System.out.println("No similar found. use all.");
+			}
+			//record
+			Files.writeToFileNoExp("number for comparison: " + filteredGoodRuns.size(), this.badRun.name + "_num_cmp.txt");
 		}
 		
 		PredicateProfileBasedDiagnoser diagnoser
@@ -210,21 +216,61 @@ public class CrashingErrorDiagnoser {
         return diagnoser.computeResponsibleOptions(type);
 	}
 	
-	public static List<ConfDiagnosisOutput> rankConfigurationOptions(Map<ConfDiagnosisOutput, Integer> stackCoverage, Collection<ConfDiagnosisOutput> rankedList) {
-		Map<ConfDiagnosisOutput, Float> scores = new LinkedHashMap<ConfDiagnosisOutput, Float>();
+	public static List<ConfDiagnosisOutput> rankConfigurationOptions(Map<ConfDiagnosisOutput, Integer> stackCoverage,
+			Collection<ConfDiagnosisOutput> rankedList) {
+		//first sort by rankedList's final value
+		//if there is a tie with the final value, then compare the stack coverage
+		//the more the better
 		
+		//the output with the number of beat
+		Map<ConfDiagnosisOutput, Integer> outputScoreMap = new LinkedHashMap<ConfDiagnosisOutput, Integer>();
 		for(ConfDiagnosisOutput o : rankedList) {
-			scores.put(o, o.getFinalScore() + stackCoverage.get(o));
+			int numberOfBeat = 0;
+			for(ConfDiagnosisOutput cmp : rankedList) {
+				if(cmp.equals(o)) {
+					continue;
+				}
+				//which one should ranked high o, or cmp
+				if(o.getFinalScore() > cmp.getFinalScore()) {
+					numberOfBeat++;
+				} else {
+					if(!(o.getFinalScore() < cmp.getFinalScore())) {
+//						System.out.println("comparing o: " + o.getConfEntity().getFullConfName()
+//								+ ", with cmp: " + o.getConfEntity().getFullConfName());
+//						System.out.println("    final score: " + o.getFinalScore()
+//								+ ", v.s., " + cmp.getFinalScore());
+//						System.out.println("    stack coverage: " + stackCoverage.get(o)
+//								+ ", v.s., " + stackCoverage.get(cmp));
+						if(stackCoverage.get(o) > stackCoverage.get(cmp)) {
+							numberOfBeat++;
+						}
+					}
+				}
+			}
+			outputScoreMap.put(o, numberOfBeat);
+			
+			System.out.println(o.getConfEntity().getFullConfName() + ", final score: " + o.getFinalScore()
+					+ ", stack coverage: " + stackCoverage.get(o) + ",  beat num: " + numberOfBeat);
+			
 		}
+		return Utils.sortByValueAndReturnKeys(outputScoreMap, false);
 		
-		scores = Utils.sortByValue(scores, false);
-		System.out.println("-----------------intermediate results----------------");
-		for(ConfDiagnosisOutput o : scores.keySet()) {
-			System.out.println(o.getConfEntity().getFullConfName() + ",   " + scores.get(o));
-		}
-		List<ConfDiagnosisOutput> finalRankedList = Utils.sortByValueAndReturnKeys(scores, false);
 		
-		return finalRankedList;
+		//original implementation, not obsoleted
+//		Map<ConfDiagnosisOutput, Float> scores = new LinkedHashMap<ConfDiagnosisOutput, Float>();
+//		for(ConfDiagnosisOutput o : rankedList) {
+//			scores.put(o, o.getFinalScore() + stackCoverage.get(o));
+//			System.out.println("result: " + o.getConfEntity().getFullConfName()
+//					+ ",  final score: " + o.getFinalScore() + ",   coverage: " + stackCoverage.get(o));
+//		}
+//		scores = Utils.sortByValue(scores, false);
+//		System.out.println("-----------------intermediate results----------------");
+//		for(ConfDiagnosisOutput o : scores.keySet()) {
+//			System.out.println(o.getConfEntity().getFullConfName() + ",   " + scores.get(o) );
+//		}
+//		List<ConfDiagnosisOutput> finalRankedList = Utils.sortByValueAndReturnKeys(scores, false);
+//		
+//		return finalRankedList;
 	}
 	
 	//check when the configuration can affect the line number in the stack trace
@@ -255,8 +301,8 @@ public class CrashingErrorDiagnoser {
 				String method = methods.get(i);
 				int lineNum = lines.get(i);
 				if(confSlice.includeStatement(method, lineNum)) {
-					matchedStackTraceNum ++;
-//					matchedStackTraceNum += (methods.size() - i + 1);
+//					matchedStackTraceNum ++;
+					matchedStackTraceNum += (methods.size() - i + 1);
 				}
 			}
 			//put to the map
