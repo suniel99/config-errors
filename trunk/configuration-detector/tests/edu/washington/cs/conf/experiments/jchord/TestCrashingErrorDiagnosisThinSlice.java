@@ -1,7 +1,10 @@
 package edu.washington.cs.conf.experiments.jchord;
 
 import java.util.Collection;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import junit.framework.TestCase;
 import edu.washington.cs.conf.analysis.ConfPropOutput;
@@ -10,6 +13,7 @@ import edu.washington.cs.conf.diagnosis.CrashingErrorDiagnoser;
 import edu.washington.cs.conf.diagnosis.MainAnalyzer;
 import edu.washington.cs.conf.diagnosis.PredicateProfileBasedDiagnoser;
 import edu.washington.cs.conf.diagnosis.PredicateProfileTuple;
+import edu.washington.cs.conf.diagnosis.RankingTieResolver;
 import edu.washington.cs.conf.experiments.ChordExpUtils;
 import edu.washington.cs.conf.experiments.jchord.TestCrashingErrorDiagnosisExperimental.DiagnosisType;
 import edu.washington.cs.conf.util.Files;
@@ -52,6 +56,7 @@ public class TestCrashingErrorDiagnosisThinSlice extends TestCase {
 		testScopeKindSimilar();
 		testContextKindSimilar();
 		testNoMainMethodInClassSimilar();
+		testNoMainMethodSimilar();
 	}
 	
 	//the only covered by the stack
@@ -72,7 +77,6 @@ public class TestCrashingErrorDiagnosisThinSlice extends TestCase {
 		testInvalidCtxtKind();
 	}
 	
-	//seems to be hopeless
 	public void testNoMainMethodSimilar() {
 		similarSelection = true;
 		testNoMainMethod();
@@ -81,6 +85,11 @@ public class TestCrashingErrorDiagnosisThinSlice extends TestCase {
 	public void testNoMainMethodInClassSimilar() {
 		similarSelection = true;
 		testNoMainInClass();
+	}
+	
+	public void testPrintRelsSimilar() {
+		similarSelection = true;
+		testNoPrintRels();
 	}
 	
 	public void testClassPathSimilar() {
@@ -109,7 +118,6 @@ public class TestCrashingErrorDiagnosisThinSlice extends TestCase {
 	static Collection<ConfPropOutput> slices = null;
 	
 	void diagnoseCauses(String badTraceFile, String stackTraceFile, String[] goodTraceDb) {
-		
 		System.out.println("Start diagnosing...");
 		float threshold = similarSelection ? MainAnalyzer.default_threshold : CrashingErrorDiagnoser.default_experiment_value;
 		List<ConfDiagnosisOutput> results = TestCrashingErrorDiagnosisExperimental.doDiagnosis(DiagnosisType.CRASHING, badTraceFile, stackTraceFile,
@@ -122,7 +130,10 @@ public class TestCrashingErrorDiagnosisThinSlice extends TestCase {
 			//thin slicing here
 			slices = TestSliceJChordConfigOptions.sliceOptionsInJChord(ChordExpUtils.getChordConfList(), false);
 		}
-		results = TestCrashingErrorDiagnosisExperimental.rankByStackTraceCoverage(stackTraceFile, results, slices); //make it number 1
+		
+		/** the old implementation */
+		//results = TestCrashingErrorDiagnosisExperimental.rankByStackTraceCoverage(stackTraceFile, results, slices); //make it number 1
+		results = RankingTieResolver.resolveTiesInRanking(stackTraceFile, results, slices);
 		
 		//dump out the results
 		StringBuilder sb = new StringBuilder();
@@ -150,6 +161,7 @@ public class TestCrashingErrorDiagnosisThinSlice extends TestCase {
 		//reclaim memory
 		results.clear();
 	}
+	
 	
 	@Override
 	public void tearDown() {

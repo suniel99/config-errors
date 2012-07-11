@@ -301,8 +301,8 @@ public class CrashingErrorDiagnoser {
 				String method = methods.get(i);
 				int lineNum = lines.get(i);
 				if(confSlice.includeStatement(method, lineNum)) {
-//					matchedStackTraceNum ++;
-					matchedStackTraceNum += (methods.size() - i + 1);
+					matchedStackTraceNum ++;
+//					matchedStackTraceNum += (methods.size() - i + 1);
 				}
 			}
 			//put to the map

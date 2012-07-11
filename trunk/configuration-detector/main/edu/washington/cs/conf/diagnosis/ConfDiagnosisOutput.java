@@ -1,6 +1,5 @@
 package edu.washington.cs.conf.diagnosis;
 
-import java.io.OutputStream;
 import java.io.PrintStream;
 import java.util.Collection;
 import java.util.Collections;
@@ -214,7 +213,7 @@ public class ConfDiagnosisOutput {
 		Integer min2 = Collections.min(l2);
 		Integer sum2 = Utils.sum(l2);
 		
-		return (sum1 - max1 - min1) <= (sum2 - min2 - max2);
+		return (sum1 - max1 - min1) < (sum2 - min2 - max2);
 	}
 	
 	@Deprecated
