@@ -1,7 +1,6 @@
 package edu.washington.cs.conf.analysis;
 
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
@@ -60,7 +59,7 @@ public class SlicePruner {
 			for(IRStatement stmt : stmts) {
 				String sig = stmt.getUniqueSignature();
 				if(!stmtConfMap.containsKey(sig)) {
-					stmtConfMap.put(sig, new HashSet<ConfPropOutput>());
+					stmtConfMap.put(sig, new LinkedHashSet<ConfPropOutput>());
 				}
 				stmtConfMap.get(sig).add(output);
 			}

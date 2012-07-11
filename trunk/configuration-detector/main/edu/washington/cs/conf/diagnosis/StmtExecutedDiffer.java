@@ -1,8 +1,7 @@
 package edu.washington.cs.conf.diagnosis;
 
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.Map;
@@ -34,11 +33,11 @@ public class StmtExecutedDiffer {
 	
 	//fill in the stmtScores map
 	public void computeStmtScores() {
-		Map<String, Integer> goodCounts = new HashMap<String, Integer>();
-		Map<String, Integer> badCounts = new HashMap<String, Integer>();
+		Map<String, Integer> goodCounts = new LinkedHashMap<String, Integer>();
+		Map<String, Integer> badCounts = new LinkedHashMap<String, Integer>();
 		
 		for(Collection<StmtExecuted> aGoodRun : goodRuns) {
-			Set<String> stmts = new HashSet<String>();
+			Set<String> stmts = new LinkedHashSet<String>();
 			for(StmtExecuted s : aGoodRun) {
 				stmts.add(s.toString());
 			}
@@ -51,7 +50,7 @@ public class StmtExecutedDiffer {
 			}
 		}
         for(Collection<StmtExecuted> aBadRun : badRuns) {
-        	Set<String> stmts = new HashSet<String>();
+        	Set<String> stmts = new LinkedHashSet<String>();
         	for(StmtExecuted s : aBadRun) {
 				stmts.add(s.toString());
 			}
@@ -65,7 +64,7 @@ public class StmtExecutedDiffer {
 		}
         
         //do count
-        Set<String> allStmtStrs = new HashSet<String>();
+        Set<String> allStmtStrs = new LinkedHashSet<String>();
         allStmtStrs.addAll(goodCounts.keySet());
         allStmtStrs.addAll(badCounts.keySet());
         int totalGoodRun = goodRuns.size();

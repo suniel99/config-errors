@@ -1,6 +1,6 @@
 package edu.washington.cs.conf.diagnosis;
 
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 import edu.washington.cs.conf.util.Globals;
@@ -218,7 +218,7 @@ public class ProfileDistanceCalculator {
 	}
 	
 	private static Set<String> getAllUniqueKeys(PredicateProfileTuple t1, PredicateProfileTuple t2) {
-		Set<String> t = new HashSet<String>();
+		Set<String> t = new LinkedHashSet<String>();
 		t.addAll(t1.getAllUniqueKeys());
 		t.addAll(t2.getAllUniqueKeys());
 		return t;

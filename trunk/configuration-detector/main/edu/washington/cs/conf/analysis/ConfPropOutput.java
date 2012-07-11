@@ -2,7 +2,6 @@ package edu.washington.cs.conf.analysis;
 
 import java.io.Serializable;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
@@ -195,7 +194,7 @@ public class ConfPropOutput implements Serializable {
 	 * */
 	public static Set<IRStatement> filterStatementsForFullSliceResult(Collection<IRStatement> set) {
 		Set<IRStatement> ret = new LinkedHashSet<IRStatement>();
-		Set<String> existed = new HashSet<String>();
+		Set<String> existed = new LinkedHashSet<String>();
 		
 		for(IRStatement s : set) {
 			if(s.shouldIgnore() || !s.isBranch()) {

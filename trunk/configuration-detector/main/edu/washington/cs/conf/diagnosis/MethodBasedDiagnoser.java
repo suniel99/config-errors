@@ -1,7 +1,7 @@
 package edu.washington.cs.conf.diagnosis;
 
 import java.util.Collection;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -64,7 +64,7 @@ public class MethodBasedDiagnoser extends AbstractBaselineDiagnoser {
 		List<ConfEntity> entityList = diagnoser.computeResponsibleOptions();
 		
 		List<ConfEntity> finalList = new LinkedList<ConfEntity>();
-		Set<String> entityStrs = new HashSet<String>();
+		Set<String> entityStrs = new LinkedHashSet<String>();
 		for(ConfEntity e : entityList) {
 			if(entityStrs.contains(e.toString())) {
 				continue;

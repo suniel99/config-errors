@@ -1,7 +1,7 @@
 package edu.washington.cs.conf.diagnosis;
 
 import java.util.Collection;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -173,7 +173,7 @@ public class PredicateProfileBasedDiagnoser {
 		//check the correctness here
 		//a temp data structure to check the correctness, no affect to the return result
 		if(!SAVE_MEMORY) {
-		    Set<String> uniquePredicates = new HashSet<String>();
+		    Set<String> uniquePredicates = new LinkedHashSet<String>();
 		    for(PredicateProfile p : goodRun.getAllProfiles()) {
 			    uniquePredicates.add(p.getUniqueKey());
 		    }

@@ -3,7 +3,7 @@ package edu.washington.cs.conf.diagnosis;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
@@ -170,7 +170,7 @@ public class MainAnalyzer {
 		List<PredicateProfileTuple> allTuples = db.getAllTuples();
 		Utils.checkTrue(num > 0 && num <= allTuples.size(), "Incorrect num.");
 		
-		Set<Integer> indices = new HashSet<Integer>();
+		Set<Integer> indices = new LinkedHashSet<Integer>();
 		while(indices.size() < num) {
 			int index = randomGenerator.nextInt(allTuples.size());
 			indices.add(index);
