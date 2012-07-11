@@ -1,0 +1,82 @@
+For each configuration option, this step statically determines
+its affected \textit{predicates}. In our context, a \textit{predicate}
+is a boolean expression in a conditional or loop statement, whose evaluation result
+decides whether to execute the followed statement or not.
+A predicate's rutnime outcome affects the program control flow and could alter
+the the program's state consequently. In \ourtool, we focus on identifying and monitoring a program's
+control flow instead of an arbitrary data flow based on the
+following two observations. First, control flow 
+often propagates the majority of configuration-related affects
+and is essential to a program's execution path, while
+the value of a specific data flow point is largely input-dependent.
+And second, the outcome of a program predicate can only be
+either true or false; thus, the number of recorded states in monitoring
+affected control flow is far less than monitoring arbitrary
+data values.  Program predicate is not the only abstraction our technique can use;
+however, as we show empirically in Section~\ref{sec:evaluation},
+choosing other abstractions such as monitoring statement-level coverage
+or method-level invariant yields less accurate results.
+
+
+To identify predicates affectd by a configuration option, a straightforward
+way is using program slicing~\cite{Horwitz:1988} to compute
+a forward slice from the initialization statement of a
+configuration option. Unfortunately, traditional slicing has
+several limitations that prevent it from being directly applicable.
+First, traditional slicing does not distinguish flows along
+pointers from flows along values; thus, a resulting slice includes all statements that
+\textit{may} affect a point of interest and often grows too large. Second,
+in our context of configuration error diagnosis,
+when having no knowledge of what inputs a software user would provide,
+traditional slicing captures every single detail of the execution,
+much of which may not be needed at all by pinpointing an incorrect
+configuration option value. $\blacksquare$ this second claim needs revising.
+
+Take the code in Figure~\ref{fig:example} as an example to illustrate
+this problem.  Tranditional slicing identifies the predicates
+in lines 104, 312, and 315 are affected by the configuration option \CodeIn{maxsize}.
+However, the predicates in lines 104 and 315, though possibly
+affected by the value of \CodeIn{maxsize}, should not be included. $\blacksquare$
+In other words, whether a sequence has an active flag (line 104) or
+whether a sequence has been executed before (line 315)
+is irrelevant with the value of \CodeIn{maxsize}. Monitoring
+such predicates and linking their behaviors with the \CodeIn{maxsize}
+option may introduce noise and decrease the diagnosis accuracy.
+
+%However, if the provided input changes the workflow,
+%instead of all data flow into it. 
+
+To overcome this limitation, our technique uses thin
+slicing~\cite{Sridharan:2007} as a manner to include
+\textit{only} statements that are \textit{directly} affected by a configuration option.
+Differing from traditional slicing, thin slicing
+focuses on statements that flow values to the seed (here, a
+seed is the initialization statement of a configuration option), ignoring the 
+control flow dependencies as well as the uses of
+base pointers. Thus, thin slicing improves the relevance
+of the slice by only including the statements that compute
+and copy a value to the seed.
+This property separates
+pointer computations from the flow of configuration option value,
+naturally connects a configuration option with its
+directly affected statements, and makes thin slicing
+especially attractive.
+For example, in the code excerpt of Figure~\ref{fig:example},
+a forward thin slice computed for \CodeIn{maxsize}
+only includes the predicate in line 312.
+In our experiments (Section~\ref{sec:evaluation}), 
+we also empirically compare traditional slicing with
+thin slicing in diagnosing configuration errors, and demonstrate
+that thin slicing is a better chioce.
+
+%When Randoop is used to generate tests for different inputs (here,
+%input mean programs under test), the created tests (method-call
+%sequence at line 12) would be dramatically different.
+%However, for similar inputs, the program execution flow should
+%be similar.
+
+
+%In fact, there is another configuration option $\blacksquare$
+%that affect line 6.
+
+% 
