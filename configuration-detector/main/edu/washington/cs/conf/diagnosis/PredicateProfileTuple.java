@@ -1,7 +1,7 @@
 package edu.washington.cs.conf.diagnosis;
 
 import java.util.Collection;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -88,7 +88,7 @@ public class PredicateProfileTuple {
 	}
 	
 	public Set<String> getAllUniqueKeys() {
-		Set<String> keys = new HashSet<String>();
+		Set<String> keys = new LinkedHashSet<String>();
 		for(PredicateProfile p : this.profiles) {
 			keys.add(p.getUniqueKey());
 		}
@@ -96,7 +96,7 @@ public class PredicateProfileTuple {
 	}
 	
 	private void checkValidity() {
-		Set<String> uniqueKeys = new HashSet<String>();
+		Set<String> uniqueKeys = new LinkedHashSet<String>();
 		for(PredicateProfile profile : profiles) {
 			String key = profile.getUniqueKey();
 			Utils.checkTrue(!uniqueKeys.contains(key), "The key: " + key + " should not be contained.");

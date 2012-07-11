@@ -2,7 +2,7 @@ package edu.washington.cs.conf.util;
 
 import java.lang.reflect.Field;
 import java.util.Collection;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -12,7 +12,7 @@ import junit.framework.TestCase;
 public class TestUtils extends TestCase {
 
 	public void testMapRank() {
-		Map<String, Integer> map = new HashMap<String, Integer>();
+		Map<String, Integer> map = new LinkedHashMap<String, Integer>();
 		map.put("a", 1);
 		map.put("b", 5);
 		map.put("c", 3);
@@ -23,7 +23,7 @@ public class TestUtils extends TestCase {
 	}
 	
 	public void testSortMapByKey() {
-		Map<String, Integer> map = new HashMap<String, Integer>();
+		Map<String, Integer> map = new LinkedHashMap<String, Integer>();
 		map.put("c", 3);
 		map.put("d", 2);
 		map.put("b", 5);

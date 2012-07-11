@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Collection;
 import java.util.Enumeration;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
@@ -155,7 +154,7 @@ public class WALAUtils {
 	  }
 	  
 	  public static Set<IClass> getAllAppClasses(ClassHierarchy cha) {
-		  Set<IClass> set = new HashSet<IClass>();
+		  Set<IClass> set = new LinkedHashSet<IClass>();
 		  for(IClass c : cha) {
 			  if(c.getClassLoader().getReference().equals(ClassLoaderReference.Application)) {
 	    			set.add(c);
@@ -170,7 +169,7 @@ public class WALAUtils {
 	  
 	  public static Set<String> getAllAppClassNames(ClassHierarchy cha) {
 		  Set<IClass> set = getAllAppClasses(cha);
-		  Set<String> names = new HashSet<String>();
+		  Set<String> names = new LinkedHashSet<String>();
 		  for(IClass c : set) {
 			  names.add(WALAUtils.getJavaFullClassName(c));
 		  }
@@ -258,7 +257,7 @@ public class WALAUtils {
 		public static Set<String> getUnloadedClasses(ClassHierarchy cha, String jarFile) throws IOException {
 			assert (jarFile != null && jarFile.endsWith(".jar"));
 	    	
-	    	Set<String> classInJar = new HashSet<String>();
+	    	Set<String> classInJar = new LinkedHashSet<String>();
 		    JarFile file = new JarFile(new File(jarFile));
 		    for (Enumeration<JarEntry> e = file.entries(); e.hasMoreElements();) {
 		        ZipEntry Z = (ZipEntry) e.nextElement();
@@ -270,11 +269,11 @@ public class WALAUtils {
 		        }
 		    }
 		    //all loaded class
-		    Set<String> loadedClasses = new HashSet<String>();
+		    Set<String> loadedClasses = new LinkedHashSet<String>();
 		    for(IClass c : cha) {
 		    	loadedClasses.add(iclassToClassName(c));
 		    }
-		    Set<String> unloadedClasses = new HashSet<String>();
+		    Set<String> unloadedClasses = new LinkedHashSet<String>();
 		    for(String cj : classInJar) {
 		    	if(!loadedClasses.contains(cj)) {
 		    		unloadedClasses.add(cj);
@@ -403,7 +402,7 @@ public class WALAUtils {
 	    	if(packages == null) {
 	    		throw new RuntimeException("The package name can not be null.");
 	    	}
-	    	Collection<CGNode> filteredNodes = new HashSet<CGNode>();
+	    	Collection<CGNode> filteredNodes = new LinkedHashSet<CGNode>();
 	    	for(CGNode node : nodes) {
 	    		IMethod method = node.getMethod();
 	    		String packageName = getJavaPackageName(method.getDeclaringClass());

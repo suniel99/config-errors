@@ -1,7 +1,6 @@
 package edu.washington.cs.conf.diagnosis;
 
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -28,11 +27,11 @@ public class ConfDiagnosisEntity {
 	private final int srcLineNumber;
 	private final String predicateText;
 	//store different scoring criteria and the corresponding score
-	private final Map<RawDataType, Object> rawData = new HashMap<RawDataType, Object>();
+	private final Map<RawDataType, Object> rawData = new LinkedHashMap<RawDataType, Object>();
 	//all computed scores
-	private final Map<ScoreType, Float> scores = new HashMap<ScoreType, Float>();
+	private final Map<ScoreType, Float> scores = new LinkedHashMap<ScoreType, Float>();
 	//keep the original data of a score
-	private final Map<ScoreType, String> scoreProvenance = new HashMap<ScoreType, String>();
+	private final Map<ScoreType, String> scoreProvenance = new LinkedHashMap<ScoreType, String>();
 	
 	private ConfEntity entity = null;
 

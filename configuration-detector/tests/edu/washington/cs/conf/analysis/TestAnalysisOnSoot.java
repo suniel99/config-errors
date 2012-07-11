@@ -1,7 +1,7 @@
 package edu.washington.cs.conf.analysis;
 
 import java.util.Collection;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
@@ -76,7 +76,7 @@ public class TestAnalysisOnSoot extends TestCase {
 			slice = slicer.computeForwardThinSlice(seed);
 			
 			int count = 0;
-			Set<Integer> nums = new HashSet<Integer>();
+			Set<Integer> nums = new LinkedHashSet<Integer>();
 			List<Statement> pruned = new LinkedList<Statement>();
 			for(Statement s : slice) {
 				String fullClassName = WALAUtils.getFullMethodName(s.getNode().getMethod());

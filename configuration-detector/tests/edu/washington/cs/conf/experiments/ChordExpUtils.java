@@ -27,7 +27,7 @@ public class ChordExpUtils {
 		ConfEntity entity3 = new ConfEntity("chord.project.Config", "jvmargs", true);
 		ConfEntity entity4 = new ConfEntity("chord.project.Config", "workDirName", true);
 		ConfEntity entity5 = new ConfEntity("chord.project.Config", "mainClassName", true);
-		ConfEntity entity6 = new ConfEntity("chord.project.Config", "userClassPathName", true);
+		ConfEntity entity6 = new ConfEntity("chord.project.Config", "traceFileName", true);
 		ConfEntity entity7 = new ConfEntity("chord.project.Config", "srcPathName", true);
 		ConfEntity entity8 = new ConfEntity("chord.project.Config", "runIDs", true);
 		ConfEntity entity9 = new ConfEntity("chord.project.Config", "runtimeJvmargs", true);
@@ -42,11 +42,11 @@ public class ChordExpUtils {
 		ConfEntity entity18 = new ConfEntity("chord.project.Config", "checkExtExcludeStr", true);
 		ConfEntity entity19 = new ConfEntity("chord.project.Config", "checkExcludeStr", true);
 		ConfEntity entity20 = new ConfEntity("chord.project.Config", "buildScope", true);
-		ConfEntity entity21 = new ConfEntity("chord.project.Config", "runAnalyses", true);
+		ConfEntity entity21 = new ConfEntity("chord.project.Config", "useJvmti", true);
 		ConfEntity entity22 = new ConfEntity("chord.project.Config", "printClasses", true);
 		ConfEntity entity23 = new ConfEntity("chord.project.Config", "printAllClasses", true);
-		ConfEntity entity24 = new ConfEntity("chord.project.Config", "printRels", true);
-		ConfEntity entity25 = new ConfEntity("chord.project.Config", "printProject", true);
+		ConfEntity entity24 = new ConfEntity("chord.project.Config", "userClassesDirName", true);
+		ConfEntity entity25 = new ConfEntity("chord.project.Config", "instrSchemeFileName", true);
 		ConfEntity entity26 = new ConfEntity("chord.project.Config", "printResults", true);
 		ConfEntity entity27 = new ConfEntity("chord.project.Config", "saveDomMaps", true);
 		ConfEntity entity28 = new ConfEntity("chord.project.Config", "verbose", true);
@@ -57,7 +57,7 @@ public class ChordExpUtils {
 		ConfEntity entity33 = new ConfEntity("chord.project.Config", "stdDlogAnalysisPathName", true);
 		ConfEntity entity34 = new ConfEntity("chord.project.Config", "extDlogAnalysisPathName", true);
 		ConfEntity entity35 = new ConfEntity("chord.project.Config", "dlogAnalysisPathName", true);
-		ConfEntity entity36 = new ConfEntity("chord.project.Config", "useJvmti", true);
+		ConfEntity entity36 = new ConfEntity("chord.project.Config", "runAnalyses", true);
 		ConfEntity entity37 = new ConfEntity("chord.project.Config", "instrKind", true);
 		ConfEntity entity38 = new ConfEntity("chord.project.Config", "traceKind", true);
 		ConfEntity entity39 = new ConfEntity("chord.project.Config", "traceBlockSize", true);
@@ -77,9 +77,9 @@ public class ChordExpUtils {
 		ConfEntity entity53 = new ConfEntity("chord.project.Config", "classesFileName", true);
 		ConfEntity entity54 = new ConfEntity("chord.project.Config", "bddbddbWorkDirName", true);
 		ConfEntity entity55 = new ConfEntity("chord.project.Config", "bootClassesDirName", true);
-		ConfEntity entity56 = new ConfEntity("chord.project.Config", "userClassesDirName", true);
-		ConfEntity entity57 = new ConfEntity("chord.project.Config", "instrSchemeFileName", true);
-		ConfEntity entity58 = new ConfEntity("chord.project.Config", "traceFileName", true);
+		ConfEntity entity56 = new ConfEntity("chord.project.Config", "printRels", true);
+		ConfEntity entity57 = new ConfEntity("chord.project.Config", "printProject", true);
+		ConfEntity entity58 = new ConfEntity("chord.project.Config", "userClassPathName", true);
 		
 		//for datarace detection
 		ConfEntity entity59 = new ConfEntity("chord.analyses.datarace.RelExcludeInitMethods", "init", true);

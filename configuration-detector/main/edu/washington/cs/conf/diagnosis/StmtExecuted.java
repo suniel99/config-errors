@@ -2,7 +2,7 @@ package edu.washington.cs.conf.diagnosis;
 
 import java.io.IOException;
 import java.util.Collection;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -107,7 +107,7 @@ public class StmtExecuted {
 	//
 	//for each StmtExecuted object, add the line number tag to it
 	public static void addSourceNumber(ClassHierarchy cha, Collection<StmtExecuted> stmts) throws InvalidClassFileException {
-		Set<String> allMethodSigs = new HashSet<String>();
+		Set<String> allMethodSigs = new LinkedHashSet<String>();
 		for(StmtExecuted s : stmts) {
 			allMethodSigs.add(s.methodSig);
 		}

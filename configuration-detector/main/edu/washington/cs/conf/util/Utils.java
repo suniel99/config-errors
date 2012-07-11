@@ -15,7 +15,6 @@ import java.net.URLClassLoader;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
@@ -178,7 +177,7 @@ public class Utils {
 	}
 	
 	public static Collection<String> extractClassFromPlugXMLFiles(String...fileNames) {
-		Collection<String> classNames = new HashSet<String>();
+		Collection<String> classNames = new LinkedHashSet<String>();
 		
 		for(String fileName : fileNames) {
 			if(!fileName.endsWith(".xml")) {
@@ -387,7 +386,7 @@ public class Utils {
 		if(length == array.length) {
 			return array;
 		}
-		Set<Integer> indexSet = new HashSet<Integer>();
+		Set<Integer> indexSet = new LinkedHashSet<Integer>();
 		while(indexSet.size() != length) {
 			indexSet.add(nextRandomInt(array.length));
 		}
