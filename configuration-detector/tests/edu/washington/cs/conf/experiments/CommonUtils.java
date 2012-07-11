@@ -171,7 +171,7 @@ public class CommonUtils {
 	
 	//for full slicing, with special speedup
 	public static Collection<ConfPropOutput> getConfPropOutputsFullSlicing(String path, String mainClass, List<ConfEntity> confList, String exclusionFile, CG type, boolean doPruning,
-			DataDependenceOptions dataDep, ControlDependenceOptions controlDep, TYPE t) {
+			DataDependenceOptions dataDep, ControlDependenceOptions controlDep, TYPE ty /*not used?*/) {
 		ConfigurationSlicer helper = new ConfigurationSlicer(path, mainClass);
 		helper.setCGType(type);
 		helper.setExclusionFile(exclusionFile);

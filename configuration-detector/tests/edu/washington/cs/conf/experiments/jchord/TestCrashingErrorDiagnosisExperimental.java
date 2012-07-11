@@ -5,7 +5,6 @@ import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import edu.washington.cs.conf.analysis.ConfEntity;
 import edu.washington.cs.conf.analysis.ConfEntityRepository;
@@ -21,85 +20,70 @@ import edu.washington.cs.conf.util.Files;
 import edu.washington.cs.conf.util.Utils;
 import junit.framework.TestCase;
 
-public class TestCrashingErrorDiagnosis extends TestCase {
+public class TestCrashingErrorDiagnosisExperimental extends TestCase {
 
-	public String invalidReflectKind
+	public static String invalidReflectKind
 	    = "./experiments/jchord-crashing-error/chord-crash-invalid-reflect-kind.txt";
 	public static String invalidReflectKindStackTrace
     = "./experiments/jchord-crashing-error/chord-crash-invalid-reflect-kind-stacktrace.txt";
 	
-	public String invalidScopeKind
+	public static String invalidScopeKind
        = "./experiments/jchord-crashing-error/chord-crash-invalid-scope-kind.txt";
 	public static String invalidScopeKindStackTrace
        = "./experiments/jchord-crashing-error/chord-crash-invalid-scope-kind-stacktrace.txt";
 	
-	public String noMainClass
+	public static String noMainClass
        = "./experiments/jchord-crashing-error/chord-crash-no-main-method.txt";
 	public static String noMainClassStackTrace
        = "./experiments/jchord-crashing-error/chord-crash-no-main-method-stacktrace.txt";
 	
-	public String noSuchAnalysis
+	public static String noSuchAnalysis
        = "./experiments/jchord-crashing-error/chord-crash-no-such-analyses.txt";
 	public static String noSuchAnalysisStackTrace
        = "./experiments/jchord-crashing-error/chord-crash-no-such-analyses-stacktrace.txt";
 	
-	public String printInvalidRels
+	public static String printInvalidRels
        = "./experiments/jchord-crashing-error/chord-crash-print-invalid-rels.txt";
 	public static String printInvalidRelsStackTrace
        = "./experiments/jchord-crashing-error/chord-crash-print-invalid-rels-stacktrace.txt";
 	
-	public String wrongClassPath
+	public static String wrongClassPath
        = "./experiments/jchord-crashing-error/chord-crash-wrong-class-path.txt";
 	public static String wrongClassPathStackTrace
        = "./experiments/jchord-crashing-error/chord-crash-wrong-class-path-stacktrace.txt";
 	
-	public String noMainMethodInClass
-	   = "./experiments/jchord-crashing-error/chord-crash-no-main-method.txt";
+	public static String noMainMethodInClass
+	   = "./experiments/jchord-crashing-error/chord-crash-class-has-no-main-method.txt";
 	public static String noMainMethodInClassStackTrace
-	   = "./experiments/jchord-crashing-error/chord-crash-no-main-method-stacktrace.txt";
+	   = "./experiments/jchord-crashing-error/chord-crash-class-has-no-main-method-stacktrace.txt";
 	
-	public String noCtxtKind
+	public static String noCtxtKind
 	   = "./experiments/jchord-crashing-error/chord-crash-no-ctxt-kind.txt";
 	public static String noCtxtKindStackTrace
 	   = "./experiments/jchord-crashing-error/chord-crash-no-ctxt-kind-stacktrace.txt";
 	
-	public String printNoClass
+	public static String printNoClass
 	   = "./experiments/jchord-crashing-error/chord-crash-print-no-class.txt";
 	public static String printNoClassStackTrace
 	   = "./experiments/jchord-crashing-error/chord-crash-print-no-class-stacktrace.txt";
 	
 	
 	//the good run
-	public String goodRunTrace
+	public static String goodRunTrace
 	   = "./experiments/jchord-database/simpletest-has-race.txt";
-	public String goodRunTrace1
+	public static String goodRunTrace1
 	  = "./experiments/jchord-database/deadlock_simpletest.txt";
-	public String goodRunTrace2
+	public static String goodRunTrace2
 	  = "./experiments/jchord-database/dlog_simpletest.txt";
-	public String goodRunTrace3
-	  = "./experiments/jchord-database/ctxtanalysis_default.txt";
-	public String goodRunTrace4
+	public static String goodRunTrace3
+	  = "./experiments/jchord-database/ctxtsanalysis_default.txt";
+	public static String goodRunTrace4
 	  = "./experiments/jchord-database/do_nothing.txt";
-	public String goodRunTrace5
+	public static String goodRunTrace5
 	  = "./experiments/jchord-database/print_projects.txt";
 	
-	//the runs from full slicing
-	public String badRunTraceFullSlice
-	   =  "./experiments/jchord-database/simpletest-no-race-full-slice.txt";
-	
-	public String goodRunTraceFullSlice
-	   = "./experiments/jchord-database/simpletest-has-race-full-slice.txt";
-	public String goodRunTrace1FullSlice
-	   = "./experiments/jchord-database/simpletest-deadlock-full-slice.txt";
-	public String goodRunTrace2FullSlice
-	   = "./experiments/jchord-database/simpletest-dlog-full-slice.txt";
-	
-	public String goodRunTrace4FullSlice
-	   = "./experiments/jchord-database/simpletest-do-nothing-full-slice.txt";
-	public String goodRunTrace5FullSlice
-	   = "./experiments/jchord-database/simpletest-print-project-full-slice.txt";
-	
-	public String goodCtxtRun = "./experiments/jchord-database/ctxtsanalysis_default.txt";
+	public static String[] goodRunDb = new String[]{goodRunTrace, goodRunTrace1, goodRunTrace2,
+			goodRunTrace3, goodRunTrace4, goodRunTrace5};
 	
 	public void testCalcDistances() {
 		CommonUtils.compareTraceDistance(goodRunTrace, invalidReflectKind, DistanceType.INTERPRODUCT, 0.9998555f);
@@ -187,7 +171,7 @@ public class TestCrashingErrorDiagnosis extends TestCase {
 		ConfEntityRepository repo = new ConfEntityRepository(jchordConfList);
 		
 		//create profile tuples
-    	PredicateProfileTuple badTuple = TraceAnalyzer.createBadProfileTuple(badTraceFile, "badTrace1");
+    	PredicateProfileTuple badTuple = TraceAnalyzer.createBadProfileTuple(badTraceFile, badStackTraceFiles);
     	List<PredicateProfileTuple> goodTuples = new LinkedList<PredicateProfileTuple>();
     	for(String goodTrace : goodTraceFiles) {
     		goodTuples.add(TraceAnalyzer.createGoodProfileTuple(goodTrace, "goodTrace"));
@@ -241,7 +225,9 @@ public class TestCrashingErrorDiagnosis extends TestCase {
     		System.out.println(o.getConfEntity().getFullConfName());
     		System.out.println("     " + map.get(o));
     	}
+    	
     	System.out.println("------------final ranking---------------");
+    	
     	List<ConfDiagnosisOutput> rankedOutputs = CrashingErrorDiagnoser.rankConfigurationOptions(map, outputs);
     	for(ConfDiagnosisOutput o : rankedOutputs) {
     		System.out.println(o.getConfEntity().getFullConfName());
@@ -328,13 +314,19 @@ public class TestCrashingErrorDiagnosis extends TestCase {
     //1, scopeKind
     public void testDiagnoseWithCrashingTrace2() {
     	List<ConfDiagnosisOutput> results = doDiagnosis(DiagnosisType.CRASHING, invalidScopeKind, invalidScopeKindStackTrace,
-    			new String[]{goodRunTrace});
+//    			new String[]{goodRunTrace, goodRunTrace1,
+//    			goodRunTrace2, goodRunTrace3, goodRunTrace4
+//    			, goodRunTrace5
+//    			}
+    	        goodRunDb
+    	        , 0.3f
+    	        );
     	dumpOutputs(results);
-    	//rankByStackTraceCoverage(invalidScopeKindStackTrace, results, false);
+//    	rankByStackTraceCoverage(invalidScopeKindStackTrace, results, false);
 	}
     
     //24, mainClassName
-    //can rank to 1
+    //can rank to 1 - by distance
     //0.985317
 //    chord.project.Config.mainClassName
 //    chord.project.analyses.BasicDynamicAnalysis.runBefore
@@ -343,9 +335,12 @@ public class TestCrashingErrorDiagnosis extends TestCase {
     //
     public void testDiagnoseWithCrashingTrace3() {
     	List<ConfDiagnosisOutput> results = doDiagnosis(DiagnosisType.CRASHING, noMainClass, noMainClassStackTrace,
-    			new String[]{goodRunTrace});
+    			new String[]{goodRunTrace, goodRunTrace1,
+    			    goodRunTrace2, goodRunTrace3, goodRunTrace4,
+    	            goodRunTrace5
+    	            },
+    			0.3f);
     	dumpOutputs(results);
-//    	rankByStackTraceCoverage(noMainMethodStackTrace, results, false);
     	rankByStackTraceDistanceInSlice(noMainClassStackTrace, results, false);
 	}
     
@@ -378,7 +373,11 @@ public class TestCrashingErrorDiagnosis extends TestCase {
     //rank 8
     public void testDiagnoseWithCrashingTrace6() {
     	List<ConfDiagnosisOutput> results = doDiagnosis(DiagnosisType.CRASHING, wrongClassPath, wrongClassPathStackTrace,
-    			new String[]{goodRunTrace});
+    			new String[]{goodRunTrace, goodRunTrace1,
+			    goodRunTrace2, goodRunTrace3, goodRunTrace4,
+	            goodRunTrace5
+	            },
+	            0.3f);
     	dumpOutputs(results);
 //    	rankByStackTraceCoverage(wrongClassPathStackTrace, results, false);
     	rankByStackTraceDistanceInSlice(wrongClassPathStackTrace, results, false);
@@ -395,13 +394,13 @@ public class TestCrashingErrorDiagnosis extends TestCase {
     //rank 1
     public void testDiagnoseWithCrashingTrace8() {
     	List<ConfDiagnosisOutput> results = doDiagnosis(DiagnosisType.CRASHING, noCtxtKind, noCtxtKindStackTrace,
-    			new String[]{this.goodCtxtRun}); //NOTE a diff ctxt run
+    			new String[]{goodRunTrace3}); //NOTE a diff ctxt run
     	dumpOutputs(results);
 	}
     
     public void testDiagnoseWithCrashingTrace8_1() {
     	List<ConfDiagnosisOutput> results = doDiagnosis(DiagnosisType.CRASHING, noCtxtKind, noCtxtKindStackTrace,
-    			new String[]{this.goodRunTrace}); //NOTE a diff ctxt run
+    			new String[]{goodRunTrace}); //NOTE a diff ctxt run
     	dumpOutputs(results);
 	}
     

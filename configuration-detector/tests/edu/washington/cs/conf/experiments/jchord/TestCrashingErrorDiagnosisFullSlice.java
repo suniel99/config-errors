@@ -10,7 +10,7 @@ import edu.washington.cs.conf.diagnosis.MainAnalyzer;
 import edu.washington.cs.conf.diagnosis.PredicateProfileBasedDiagnoser;
 import edu.washington.cs.conf.diagnosis.PredicateProfileTuple;
 import edu.washington.cs.conf.experiments.ChordExpUtils;
-import edu.washington.cs.conf.experiments.jchord.TestCrashingErrorDiagnosis.DiagnosisType;
+import edu.washington.cs.conf.experiments.jchord.TestCrashingErrorDiagnosisExperimental.DiagnosisType;
 import edu.washington.cs.conf.util.Files;
 import edu.washington.cs.conf.util.Globals;
 import edu.washington.cs.conf.util.Utils;
@@ -63,14 +63,15 @@ public class TestCrashingErrorDiagnosisFullSlice extends TestCase {
 	void diagnoseCauses(String badTraceFile, String stackTraceFile, String[] goodTraceDb) {
 		if(slices == null) {
 			System.out.println("Compute slice...");
-			slices = TestSliceJChordConfigOptions.sliceOptionsInJChord(ChordExpUtils.getChordConfList(), false);
+			slices = TestSliceJChordConfigOptions.getJChordConfOutputsFullSlice(null);
+//			slices = TestSliceJChordConfigOptions.sliceOptionsInJChord(ChordExpUtils.getChordConfList(), false);
 		}
 		System.out.println("Start diagnosing...");
 		float threshold = similarSelection ? MainAnalyzer.default_threshold : CrashingErrorDiagnoser.default_experiment_value;
-		List<ConfDiagnosisOutput> results = TestCrashingErrorDiagnosis.doDiagnosis(DiagnosisType.CRASHING, badTraceFile, stackTraceFile,
+		List<ConfDiagnosisOutput> results = TestCrashingErrorDiagnosisExperimental.doDiagnosis(DiagnosisType.CRASHING, badTraceFile, stackTraceFile,
 				goodTraceDb,  threshold);
 		System.out.println("Start to rank by stack trace coverage...");
-		List<ConfDiagnosisOutput> outputs = TestCrashingErrorDiagnosis.rankByStackTraceCoverage(stackTraceFile, results, slices); //make it number 1
+		List<ConfDiagnosisOutput> outputs = TestCrashingErrorDiagnosisExperimental.rankByStackTraceCoverage(stackTraceFile, results, slices); //make it number 1
 		StringBuilder sb = new StringBuilder();
 		int i = 1; 
 		for(ConfDiagnosisOutput o : outputs) {
@@ -129,46 +130,46 @@ public class TestCrashingErrorDiagnosisFullSlice extends TestCase {
 	public void testInvalidCtxtKind() {
 		PredicateProfileTuple.USE_CACHE = true;
 		PredicateProfileBasedDiagnoser.SAVE_MEMORY = true;
-		diagnoseCauses(invalidCtxtKind, TestCrashingErrorDiagnosis.noCtxtKindStackTrace, getDb());
+		diagnoseCauses(invalidCtxtKind, TestCrashingErrorDiagnosisExperimental.noCtxtKindStackTrace, getDb());
 	}
 	public void testInvalidReflectKind () {
 		PredicateProfileTuple.USE_CACHE = true;
 		PredicateProfileBasedDiagnoser.SAVE_MEMORY = true;
-		diagnoseCauses(invalidReflectKind, TestCrashingErrorDiagnosis.invalidReflectKindStackTrace, getDb());
+		diagnoseCauses(invalidReflectKind, TestCrashingErrorDiagnosisExperimental.invalidReflectKindStackTrace, getDb());
 	}
 	public void testInvalidScopeKind() {
 		PredicateProfileTuple.USE_CACHE = true;
 		PredicateProfileBasedDiagnoser.SAVE_MEMORY = true;
-		diagnoseCauses(invalidScopeKind, TestCrashingErrorDiagnosis.invalidScopeKindStackTrace, getDb());
+		diagnoseCauses(invalidScopeKind, TestCrashingErrorDiagnosisExperimental.invalidScopeKindStackTrace, getDb());
 	}
 	public void testNoMainMethod() {
 		PredicateProfileTuple.USE_CACHE = true;
 		PredicateProfileBasedDiagnoser.SAVE_MEMORY = true;
-		diagnoseCauses(noMainMethod, TestCrashingErrorDiagnosis.noMainClassStackTrace, getDb());
+		diagnoseCauses(noMainMethod, TestCrashingErrorDiagnosisExperimental.noMainClassStackTrace, getDb());
 	}
 	public void testNoMainInClass() {
 		PredicateProfileTuple.USE_CACHE = true;
 		PredicateProfileBasedDiagnoser.SAVE_MEMORY = true;
-		diagnoseCauses(noMainInClass, TestCrashingErrorDiagnosis.noMainMethodInClassStackTrace, getDb());
+		diagnoseCauses(noMainInClass, TestCrashingErrorDiagnosisExperimental.noMainMethodInClassStackTrace, getDb());
 	}
 	public void testNoPrintRels () {
 		PredicateProfileTuple.USE_CACHE = true;
 		PredicateProfileBasedDiagnoser.SAVE_MEMORY = true;
-		diagnoseCauses(noPrintRels, TestCrashingErrorDiagnosis.printInvalidRelsStackTrace, getDb());
+		diagnoseCauses(noPrintRels, TestCrashingErrorDiagnosisExperimental.printInvalidRelsStackTrace, getDb());
 	}
 	public void testNoSuchAnalysis() {
 		PredicateProfileTuple.USE_CACHE = true;
 		PredicateProfileBasedDiagnoser.SAVE_MEMORY = true;
-		diagnoseCauses(noSuchAnalysis, TestCrashingErrorDiagnosis.noSuchAnalysisStackTrace, getDb());
+		diagnoseCauses(noSuchAnalysis, TestCrashingErrorDiagnosisExperimental.noSuchAnalysisStackTrace, getDb());
 	}
 	public void testPrintNonexist() {
 		PredicateProfileTuple.USE_CACHE = true;
 		PredicateProfileBasedDiagnoser.SAVE_MEMORY = true;
-		diagnoseCauses(printNonexist, TestCrashingErrorDiagnosis.printNoClassStackTrace, getDb());
+		diagnoseCauses(printNonexist, TestCrashingErrorDiagnosisExperimental.printNoClassStackTrace, getDb());
 	}
 	public void testWrongClasspath() {
 		PredicateProfileTuple.USE_CACHE = true;
 		PredicateProfileBasedDiagnoser.SAVE_MEMORY = true;
-		diagnoseCauses(wrongClasspath, TestCrashingErrorDiagnosis.wrongClassPathStackTrace, getDb());
+		diagnoseCauses(wrongClasspath, TestCrashingErrorDiagnosisExperimental.wrongClassPathStackTrace, getDb());
 	}
 }

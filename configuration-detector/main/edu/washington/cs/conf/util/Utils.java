@@ -423,6 +423,15 @@ public class Utils {
 		return sum/ts.size();
 	}
 	
+	public static Integer sum(Collection<Integer> ts) {
+		Utils.checkTrue(ts.size() > 0);
+		Integer sum = 0;
+		for(Integer t : ts) {
+			sum = sum + t;
+		}
+		return sum;
+	}
+	
 	public static <K, V> Map<K, V> sortByKey(Map<K, V> map, final boolean increase) {
 	     List<Entry<K, V>> list = new LinkedList<Entry<K, V>>(map.entrySet());
 	     Collections.sort(list, new Comparator() {
@@ -473,6 +482,8 @@ public class Utils {
 		list.addAll(sorted.keySet());
 		return list;
 	}
+	
+//	public static <K, V> Map<Integer, K>
 	
 	public static String extractClassName(String fullElement) {
 		return fullElement.substring(0, fullElement.lastIndexOf("."));

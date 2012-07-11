@@ -167,6 +167,15 @@ public final class Files {
   public static void writeToFile(String s, String fileName) throws IOException {
     writeToFile(s, fileName, false);
   }
+  
+  public static void writeToFileNoExp(String s, String fileName)  {
+	  try {
+		Files.createIfNotExist(fileName);
+		writeToFile(s, fileName);
+	  } catch (IOException e) {
+		e.printStackTrace();
+	  }
+  }
 
   public static void writeToFile(String s, File file, Boolean append) throws IOException {
     BufferedWriter writer= new BufferedWriter(new FileWriter(file, append));
