@@ -1,0 +1,63 @@
+This step instruments the tested program offline
+by inserting code to monitor
+each the outcome of each affected predicate at runtime.
+
+
+For the code in Figure~\ref{fig:example} where
+the predicate at line 312 is affected by
+the configuration option \CodeIn{maxsize}, \ourtool inserts the
+following two instrumentation
+statements before and after line 312 to count the number of
+the predicate being executed and the number being evaluated to true.
+
+
+\begin{CodeOut}
+\begin{alltt}
+310. private ExecutableSequence createNewUniqueSequence() \ttlcb
+311.   Sequence newSequence = ...; 
+       \underline{incrExecCount("maxsize", "newSequence.size() > maxsize");}
+312.   if (newSequence.size() > maxsize) \ttlcb
+         \underline{incrTrueCount("maxsize", "newSequence.size() > maxsize");}
+314.     return null;
+      ...
+319. \ttrcb
+\end{alltt}
+\end{CodeOut}
+
+
+$\blacksquare$The instrumented program expresses an execution
+as a trace comprising a vector of \textit{predicate profiles}.
+Each predicate profile is a pair of configuration
+option and its affected predicate.
+The predicate profile also keeps the recorded runtime information.
+%of the affected predicate, including
+%the count of the predicate being executed and the count of it
+%being evaluated to true. 
+
+%\ourtool expresses an execution as
+%a predicate profile vector. 
+As we
+show in the experiments (Section~\ref{sec:evaluation}), such predicate profile
+vectors, although by no mean complete, capture
+sufficient information to permit users
+to reason about the causal effects of configurations
+and how they relate to a software's behavior, while
+also imposing a moderate amount of performance impact
+on foreground applications.
+
+
+%health as the results of executing a set of predicates.
+
+%As we will show in the experiments~\cite{}, this profile
+%provides valuable information about the
+%program execution and can help validate a test suite
+%or indicate the usage context of a function
+%or other computation.
+
+%A software user seeking on specific piece of
+%information or aiming to verify a specific invariant
+%and uninterested in any other facts about the code
+%may be able to use xxx to advantage, but will not
+%get as much from it as a programmer open to other,
+%possibly valuable information.
+

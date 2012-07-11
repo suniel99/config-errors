@@ -1,0 +1,111 @@
+\ourtool starts error diagnosis 
+after obtaining the execution trace from
+an erroneous execution. It first compares it with
+existing traces from known correct executions, selects
+similar traces for comparison (Section~\ref{sec:similar}),
+identifies the most behavioral-deviated predicates
+(Section~\ref{sec:deviation}), and then determines
+its most likely responsible options (Section~\ref{sec:linking}).
+
+
+\subsubsection{Selecting Similar Traces for Comparison}
+\label{sec:similar}
+
+\ourtool's pre-built database contains a number of
+traces from known correct executions, in which one trace
+can be dramatically different from another. To
+determine how and why the observed trace behaves
+differently from the correct ones, \ourtool first
+compares and contrasts the 
+the erroneous execution with other correct ones, and
+then selects a set of similar ones. $\blacksquare$
+
+Given a trace $t$, \ourtool first aggregates
+the observed predicate profiles into a $n$-dimensional
+vector $v_{t}$ =$\langle r_1, r_2, ..., r_n\rangle$ , where $n$
+is the number of predicates in the program and each $r_i$ is
+the ratio of the $i$-th predicate profile being evaluated
+to true at runtime. If a predicate is not executed in
+a particular execution, \ourtool assigns \CodeIn{null} to its true ratio.
+
+
+When comparing two traces $t_1$ and $t_2$, \ourtool computes
+their inner-product distance of the normalized vectors, and selects
+those with distance below a threshold (default value: 0.3,
+as we used in experiments). When computing the inner-product distance,
+if the value of some dimensional is \CodeIn{null}. $\blacksquare$
+
+For crashing errors, \ourtool does not select similar traces.
+Instead, it uses all available traces in the database
+for comparison, because all traces there are from correct
+executions, and can
+be served as reference to identify the crashing root causes. $\blacksquare$
+
+\subsubsection{Identifying Deviated Predicates}
+\label{sec:deviation}
+
+
+The comparison between an erroneous trace with a set
+of \textit{similar} traces forms a basis for our
+automated error diagnosis approach. Given an erroneous trace and a set of similar but correct trace,
+the differences in predicate profiles provide evidence for what parts of a program might be
+incorrect and why. This helps to further reason about its root cause.
+
+
+For each observed predicate $p$, \ourtool uses the following metric
+to characterize its deviation degree in two traces $t_1$ and $t_2$:
+
+\[
+\|Deviation|(p) = |\phi(t_1, p) - \phi(t_2, p)|
+\]
+
+\[
+\|\phi|(t, p) = \frac{2}{\frac{1}{\|trueRatio|(t, p)} + \frac{1}{totalNum(t, p)}}
+\]
+
+$trueRatio(t, p)$ is a function that returns the ratio of predicate $p$ being
+evaluated to true in trace $t$, and $totalNum(p)$ is a function
+that returns the total number of observations of predicate $p$ in trace $t$..
+
+The metric $\phi$ has some good properties in characterizing the $\blacksquare$
+
+For non-crashing errors, since the obtained trace is a complete one,
+\ourtool computes the $Deviation$ metric for each observed predicate in
+both traces, and ranks them in a decreasing order based on the computed $Deviation$ value.
+
+For crashing erros, since the obtained trace is incomplete,
+\ourtool computes the $Deviation$ metric for the predicates only appearing
+in the crashing trace, and ranks them decreasingly based on the computed value.
+
+
+%\subsubsection{Filtering Execution Noises}
+%remove some off-by-one
+
+
+\subsubsection{Linking Predicates to Root Causes}
+\label{sec:linking}
+
+$\blacksquare$
+
+The last step in \ourtool is to link those behavioral-deviated
+predicates to its root causes, and rank the suspicious
+configuration options as the output.
+
+The intuition behind is that \ourtool determines that
+altering a configuration option may change the application’s
+control flow such that it deviates from the correct trace,
+ it reports that option as a possible root cause.
+
+When comparing an erroneous trace with a set of correc traces,
+\ourtool first ranks suspicious configuration options between
+each trace pair, and then averages the ranking across traces.
+
+It first identifies the most deviated predicate profile, and
+its affecting predicate.
+It identifies the configuration option
+affecting the highest ranked predicate profile as the most likely
+root cause; in the case of ties, it ranks all tied options
+based on its distance in a thin slicing SDG.
+%as being equally likely to be the root cause.
+
+Finally, needs to average the results
