@@ -108,31 +108,28 @@ configuration problems that users have experienced with our
 target applications. Combining with our own experience,
 we chose \errors representative configuration errors.
 Table~\ref{tab:errors} lists the configuration errors for each application.
-The configuration error list includes \noncrash non-crashing errors and \crash
-crashing errors, covering various data types, such as enumerated types,
+The configuration errors cover various data types, such as enumerated types,
 numerical ranges, regular expressions, and text entries.
 
 \subsection{Evaluation Procedural}
 
-For each Java application, we constructed a profile database
+For each Java application, we constructed a trace database
 by running existing (correct) examples from its user manual, discussion
 mailiing list, and the published papers. The number of obtained
- profiles is shown in Table~\ref{tab:subjects}. We
-found constructing such a database is quite easy. As shown
-in Section~\ref{sec:results}, even a database containing
-a small number of profiles is sufficient to
-diagnose many configuration errors.
+ traces is shown in Table~\ref{tab:subjects}. 
+We found constructing such a database is quite easy. On average,
+we spent 3 hours on one application.
 
 %Run examples from user manual to form the database. The effort
 %can be amortized in development time.
 
-We made a 30-line change to the JChord code. This change
+We made a 88-line change to the JChord code. This change
 does not modify JChord's semantic; rather, it just encapsulates
 all scattered configuration option initialization statements 
 as static class fields. This is purely an implementation
-choice because having a separate initialization statement
+choice because having a centralized initialization statement
 makes us relatively easier to specify the seed statement
-in slicing. Here is a sample modification:
+in performing slicing during experiments. Here is a sample modification:
 
 
 
@@ -171,20 +168,15 @@ in slicing. Here is a sample modification:
 %To evaluate \ourtool, 
 
 When diagnosing a configuration error, we first reproduce the
-error on a \ourtool-instrumented version to obtain the
+error on a \ourtool-enabled environment to obtain the
 trace file. Then, using the obtained trace file, we use \ourtool
 to identify its root cause.
 
 We use two metrics to evaluate \ourtool's effectiveness:
 the absolute ranking of the actual root cause in \ourtool's output,
 and the time cost used in diagnosis.
-
-
-%This step
-%could be automated by combining with some existing  work on
-%automated configuration option extraction~\cite{}.
 All of our experiments were run on a
-2.67GHz Intel Core PC with 4GB physical memory (1GB is allocated
+2.67GHz Intel Core PC with 4GB physical memory (2GB is allocated
 for the JVM), running Windows 7.
 
 
@@ -227,15 +219,16 @@ for the JVM), running Windows 7.
 configuration errors. Column ``Responsible Option'' shows the actual
 configuration option for the error. Column ``\ourtool'' shows the results of using
 our technique. Columns ``Full Slicing'', ``Coverage Analysis'',
-and ``Invariant Analysis'' shows the results of three variants of \ourtool~\ref{sec:comparison}.
+and ``Invariant Analysis'' show the results of three variants of \ourtool
+as described in Section~\ref{sec:comparison}.
 Column ``ConfAnalyzer'' shows the results of an existing
 technique~\cite{Rabkin:2011:PPC}.
 Column ``\#Cmp Profiles'' shows the number of similar profiles selected
 from the pre-built database for comparison.
 For each technique, Column ``Rank'' shows the rank of the actual responsible
 option in its output (lower is better). ``X''
-means the technique is not applicable, and ``N'' means the technique
-does not output the actual responsible option.}}
+means the technique is not applicable (i.e., requiring a crashing point), and ``N'' means the technique
+does not identify the actual responsible option.}}
 \end{table*}
 
 
@@ -245,37 +238,45 @@ Table~\ref{tab:results} shows the experimental results.
 We can see that \ourtool is highly effective in pinpointing the root cause of
 misconfigurations. For all \noncrash non-crashing errors
 and 5 out of the \crash crashing errors, it lists the actual root cause as one of the
-top 3 options. For the rest
-4 crashing errors, the actual causes are ranked lower.
-This is because $\blacksquare$
+top 3 options. 
 
 
-We next briefly explain the root cause of each non-crashing configuration
-errors as shown Table~\ref{tab:results}, and discuss why
-\ourtool could identy them. 
+As shown in Table~\ref{tab:results}, \ourtool is particularly effective
+in diagnosing non-crashing configuration errors, which are not supported
+by most existing tools. $\blacksquare$ why effective? observation?
+statically significance? Give some examples here... Randoop \CodeIn{maxsize},
+Weka behaves overfitting..
 
-\begin{itemize}
-\item \textbf{Randoop}. reason
-\item \textbf{Weka}. reason
-\item \textbf{JChord}. reason
-\item \textbf{Synoptic}. reason
-\item \textbf{Soot}. reason
-\end{itemize}
 
 Compared to non-crashing errors, \ourtool is less effective
-in localizing non-crashing errors. They are several reasons
-for this.
+in localizing non-crashing errors. For 4 crashing errors,
+the actual causes are ranked lower.
+This is because $\blacksquare$ the configuration option has
+a long propagation chain, and seems hard for \ourtool
+to diagnose correctly.
 
-The nature of the root-cause configuration option is only one factor.
-The ranking also depends on how the root-cause option relates to
-other options in the suspect set. A highly configurable software system 
-likely produces more noises, 
+Although \ourtool ranks the actual root course of several
+crashing errors lower, crashing errors are often much easier to diagnose than non-crashing errors.
+This is because a crashing error usually happens shortly after the program
+is launched, and often produces a stack trace with valuable diagnosis clues.
+For example, \ourtool ranks the root cause of
+Error 14 (Table~\ref{tab:results}) 8th.
+However, when JChord crashes, it dumps an \CodeIn{ClassNotFoundException}
+that explicitly leads users to check its classpath setting (via the
+\CodeIn{chord.class.path} option). For the other three crashing errors (Error ID: 8, 10, and 11),
+JChord even dumps out the actual wrong configuration option value, which
+directly guides users to the root cause.
+
+%The nature of the root-cause configuration option is only one factor.
+%The ranking also depends on how the root-cause option relates to
+%other options in the suspect set. A highly configurable software system 
+%likely produces more noises, 
 
 %The detailed illustration
 %for those crashing errors can be found in~\cite{Rabkin:2011:PPC}.
 
-The remaining errors are a direct result of $\blacksquare$ and seems
-hard for \ourtool to diagnose correctly.
+%The remaining errors are a direct result of $\blacksquare$ and seems
+%hard for \ourtool to diagnose correctly.
 
 
 %\ourtool also successfully diagnoses xx\% of the xxx errors. For the
@@ -283,87 +284,82 @@ hard for \ourtool to diagnose correctly.
 %error is that the xxx. Thus, the root cause gets ranked lower
 %in the list.
 
-Crashing errors are often much easier to diagnose than non-crashing errors,
-because crashing errors usually happen shortly after the program
-is launched, and a crash often comes up with a stack trace that provides
-useful diagnosis clues. For example, \ourtool ranks the root cause of
-Error 14 (Table~\ref{tab:results}) 8th and ConfAnalyzer even fails to diagnose it.
-However, when JChord crashes, it dumps an \CodeIn{ClassNotFoundException}
-that explicitly leads users to check its classpath setting (via the
-\CodeIn{chord.class.path} option).
 
 
 \vspace{1mm}
 \noindent \textbf{\textit{Summary.}} \ourtool is effectively
 in diagnosing both crashing and non-crashing configuration errors. $\blacksquare$
-
+As shown
+in Section~\ref{sec:results}, even a database containing
+a small number of profiles is sufficient to
+diagnose many configuration errors.
 
 \subsubsection{Comparison with Alternative Approaches}
 \label{sec:comparison}
 
-We next compare \ourtool with four alternative approaches
-in diagnosing configuration errors.
-The first three approaches are variants of \ourtool,
-and the fourth one is an existing technique~\cite{Rabkin:2011:PPC}
+We next compare \ourtool with three variants and
+one existing technique~\cite{Rabkin:2011:PPC}.
 
 \vspace{1mm}
-\noindent \textbf{\ourtool with Full Slicing.} 
-In \ourtool, we choose thin slicing to compute the affected predicates for
-each configuration option. However, such affected predicates
-can also be computed by using the traditional full slicing algorithm~\cite{Horwitz:1988}.
-To evaluate the trade-offs, this alternative replaces
-thin slicing with the traditional
-full slicing~\cite{Horwitz:1988} in configuration
-propagation analysis (Section~\ref{sec:prop}).
+\noindent \textbf{Variant 1. \ourtool with Full Slicing.} 
+\ourtool uses thin slicing~\cite{Sridharan:2007} to compute the affected predicates
+of each configuration option. Another way to do so is
+using the full slicing algorithm~\cite{Horwitz:1988}.
+This variant replaces thin slicing with 
+full slicing~\cite{Horwitz:1988} in the configuration
+propagation analysis (Section~\ref{sec:prop}) step.
 
 \vspace{1mm}
-\noindent \textbf{Coverage Analysis.}
-In this variant, we use statement coverage rather than
-predicate behaviors to diagnose configuration errors. Specifically,
-we treat statements covered by the observed erroneous execution as
-potentially buggy, and statements covered the correct executions (from
-the pre-built database) as correct. Then, this variant uses
-a well-known fault localization technique, Tarantula~\cite{Jones:2002},
-to rank the likelihood of each statement being buggy.
-For each ranked statement, this variant uses backward thin slicing
-to compute the affecting configuration options. $\blacksquare$ clear in
-how to rank?
+\noindent \textbf{Variant 2. \ourtool with Coverage Analysis.}
+This variant uses statement-level coverage information
+to diagnose a configuration error. It treats statements covered
+by the erroneous trace as potentially buggy, and statements
+covered the correct traces (in the pre-built database) as correct.
+Then, this variant uses a well-known fault localization technique,
+Tarantula~\cite{Jones:2002}, to rank the likelihood of each
+statement being buggy, and query the result of thin slice
+to identify its affecting configuration options as the root causes. 
 
 
 \vspace{1mm}
-\noindent \textbf{Invariant Analysis.}
-In this variant, we use method-level invariant as the abstraction level
-to diagnose configuration errors. This variant first uses
-Daikon~\cite{Ernst:1999} to dynamically
-detect invariants from the erroneous execution  and invariants
-from correct executions (in the pre-built database). Then, it
-treats a method potentially buggy if its invariants detected
-from the erroneous execution differ from invariants detected
-by a correct execution. Finally, it ranks each suspicious
-method by the number of different invariants. $\blacksquare$
-
-
+\noindent \textbf{Variant 3. \ourtool with Invariant Analysis.}
+This variant uses method-level invariant as the abstraction level
+to diagnose configuration errors. It stores invariants detected
+by Daikon~\cite{Ernst:1999} from correct traces in the database. When a configuration
+error occurs, this variant detects invariants from the erroneous trace;
+and compares the invariants detected from
+the erroneous trace with those stored in the database.
+It treats a method to have suspicious behaviors if the observed invariants
+from the erroneous trace are different than those stored in the database. Then, it ranks
+a method's suspiciousness by the number of different variants, and
+queries the result of thin slice
+to identify its affecting configuration options as the root causes. 
 
 \vspace{1mm}
-\noindent \textbf{Dynamic information flow.}
-Rabkin and Katz proposed a family of techniques (and its tool implementation called ConfAnalyzer)
-to precompute possible
+\noindent \textbf{ConfAnalyzer: A Dynamic Information Flow-based Approach~\cite{Rabkin:2011:PPC}.}
+Rabkin and Katz proposed a family of techniques to precompute possible
 configuration diagnosis for Java software~\cite{Rabkin:2011:PPC}. In their work,
-the most accurate technique (also the most precise technique in the literature,
-to the best of our knowledge) is based on dynamic information flow analysis, which precisely
-tracks the flow of each configuration option value during program execution at the bit level.
-Their technique works remarkably well for crashing errors, but can
+the most accurate technique (also the most precise technique in the literature)
+is based on dynamic information flow analysis.
+This technique works remarkably well for crashing errors, but can
 not diagnose non-crashing errors.
 
 \vspace{1mm}
-%Compare with statistical debugging?
-$\blacksquare$ put the results here
+
+The experimental results of comparing \ourtool with the above
+four alternative approaches are shown in Table~\ref{tab:results}.
+$\blacksquare$ discuss the results here
 
 \vspace{1mm}
-\noindent \textbf{\textit{Summary.}} how effective
-Is our \textit{predicate}-level granularity a suitable one?
+\noindent \textbf{\textit{Summary.}} Using thin slicing to identify
+the affected predicates produce more accurate results than using
+full slicing. Monitoring dynamic behaviors of the affected
+predicates are more effective in diagnosing a configuration error
+than statement-level profiling and method-level invariant detection.
+Dynamic information flow-based approach is slightly precise in diagnosing
+a crashing error, but fails to diagnose non-crashing errors.
 
-\subsubsection{Effects of Varying Comparison Profiles}
+\subsubsection{Effects of Varying Comparison Traces}
 \label{sec:ranking}
 
 
@@ -374,7 +370,7 @@ Is our \textit{predicate}-level granularity a suitable one?
  Error ID. & \multicolumn{3}{|c|}{Rank of the Actual Responsible Option } \\
   %& \multicolumn{3}{|c|}{Different Comparison Profile Selection Strategy} \\
 \cline{2-4}
- Program & All Profiles & Random Selection&  Similarity-Based\\
+ Program & All Traces & Random Selection&  Similarity-Based\\
  \hline
 \hline
 \multicolumn{4}{|l|}{Non-crashing errors}   \\
@@ -400,57 +396,96 @@ Is our \textit{predicate}-level granularity a suitable one?
 \hline
 \end{tabular}
 
-\Caption{{\label{tab:selection} Comparison with different profile selection
+\Caption{{\label{tab:selection} Comparison with different trace selection
 strategies (Section~\ref{sec:ranking}).
 The last column ``Similarity-based'' is the selection strategy
 used in \ourtool, and the data in that column is taken from Table~\ref{tab:results}.}}
 \end{table}
 
 
-\ourtool compares the predicate behaviors in the erroneous execution against
-correct and similar execution in the pre-built database.
+\ourtool compares the predicate behaviors in the erroneous trace against
+correct traces in the pre-built database.
 We next investigate the effect of using different comparison
-executions. We compare the current similarity-based strategy
- (Section~\ref{sec:similar}) with two alternatives: randomly selecting the same number of
-profiles as the similarity-based strategy does, and using
-all profiles in the database. Table~\ref{tab:selection} shows the experimental results.
+traces. We compare the similarity-based strategy used in \ourtool
+ (Section~\ref{sec:similar}) with two alternatives: using all
+available traces in the database, and randomly selecting
+traces from the database. Table~\ref{tab:selection} shows the experimental results.
 
 We can see that varying the comparison strategy has result in
 substantially different effects on the diagnosis results,
-depending on the application being analyzed.
+depending on the application being analyzed. Diagnosing
+a non-crashing error is more sensitive in selecting similar
+comparison traces $\blacksquare$ than diagnosing
+a crashing error.
+For the \crash crashing errors, the only difference yielded
+from using different trace selection strategies is on
+the error 13. $\blacksquare$
 
-$\blacksquare$
-
-Lacking a similar trace may indicate the inadequacy of
-integration testing.
-
-The result difference derives from the nature of the applications.
-We found....  . On the other hand,
-
-It does not make sense to compare different profiles...
-
-
-%What would the technique produce when feeding it with different inputs (e.g.,
-%radically different inputs instead of similar ones)?
-
-%In our approach, we first select a set of similar profiles from the  database,
-%and then to do comparison. What about just using a single trace, i.e., the
-%most similar trace? the most dissimilar traces? or what about just using a set
-%of random selected trace.
-
-%Comparison of different distance metrics to find similar statements.
 
 \vspace{1mm}
-\noindent \textbf{\textit{Summary.}} how effective
+\noindent \textbf{\textit{Summary.}} Diagnosing a non-crashing
+error is more sensitive to the comparison traces than a crashing one.
 
 \subsubsection{Performance of \ourtool}
 
-\ourtool performs very well on these errors. The average time
-to diagnose xxx (with max, min xx).
+We measure \ourtool's performance in two ways: the time cost
+in diagnosing an error; and the overhead introduced
+in reproducing an error during diagnosis.  Table~\ref{tab:performance}
+shows the results.
 
-The cost of slicing
+\begin{table}[t]
+\setlength{\tabcolsep}{.44\tabcolsep}
+\begin{tabular}{|l|c|c|c|}
+\hline
+ Error ID. & \multicolumn{2}{|c|}{Time Cost (minutes)} & Slowdown ($\times$)\\
+  %& \multicolumn{3}{|c|}{Different Comparison Profile Selection Strategy} \\
+\cline{2-3}
+ Program & Thin Slicing & Error Diagnosis &  \\
+ \hline
+\hline
+\multicolumn{4}{|l|}{Non-crashing errors}   \\
+ \hline
+ 1. Randoop &  &  & \\
+ 2. Weka &  &  & \\
+ 3. JChord &  &  & \\
+ 4. Synoptic &  &  & \\
+ 5. Soot &  &  & \\
+\hline
+\hline
+\multicolumn{4}{|l|}{Crashing errors}   \\
+\hline
+ 6. JChord &  &  &\\
+ 7. JChord &  &  &\\
+ 8. JChord &  &  &\\
+ 9. JChord &  &  &\\
+ 10. JChord &  &  &\\
+ 11. JChord &  &  &\\
+ 12. JChord &  &  &\\
+ 13. JChord &  &  &\\
+ 14. JChord &  &  &\\
+\hline
+\hline
+Average & & &\\
+\hline
+\end{tabular}
 
-The cost of instrumentation, permit the use in fielded software?
+\Caption{{\label{tab:performance} \ourtool's
+performance in diagnosing configuration
+errors. The time cost has been divided into
+two parts: computing thin slices and diagnosing
+an error.}}
+\end{table}
+
+Overall, \ourtool performs very well on these errors.
+On average, it uses $\blacksquare$ minutes to
+diagnose one configuration error. The time cost for
+computing a thin slice from each configuration option
+is high. However, this step is a one-time effort
+for each program and computed results can be further cached.
+
+This performance overhead in error reproduction,
+admittedly high, has nonetheless proved acceptable
+for offline error diagnosis.
 
 
 %The performance of \ourtool is reasonable. The time to diagnose
@@ -459,7 +494,7 @@ The cost of instrumentation, permit the use in fielded software?
 
 
 \vspace{1mm}
-\noindent \textbf{\textit{Summary.}} how effective
+\noindent \textbf{\textit{Summary.}} say about \ourtool's performance
 
 \vspace{1mm}
 
@@ -467,7 +502,7 @@ The cost of instrumentation, permit the use in fielded software?
 
 
 \noindent \textbf{\textit{Limitations.}} 
-Our technique is limited in four aspects.
+Our technique is limited in three aspects.
 First, we only focus on named configuration options
 with a common key-value semantic, and our tool implementation
 and experiments are
@@ -478,9 +513,7 @@ For non-deterministic errors, \ourtool could potentially leverage one of
 several deterministic replay systems~\cite{Huang:2010:LLD}
 that can capture a buggy non-deterministic
 execution and faithfully reproduce it for late analysis.
-Third, our analysis does not track configuration
-options that are passed between processes via the command line.
-Fourth, the effectiveness of \ourtool largely
+Third, the effectiveness of \ourtool largely
 depends on the availability of a similar but correct trace.
 Using an abitrary trace (as we demonstrated in Section~\ref{sec:ranking}
 by random selection) may significantly affect the results.
@@ -501,12 +534,12 @@ by random selection) may significantly affect the results.
 
 \noindent \textbf{\textit{Threats to Validity.}} 
 There are two major threats to validity in our evaluation. 
-First, the \subjectnum programs and the diagnosed errors may not be
+First, the \subjectnum programs and the configuration errors may not be
 representative. Thus, we can not claim the results can be
 extended to an arbitrary program.
 Another threat is that we only employed two dependence
 analyses (thin slicing and full slicing) and three
-abstraction granularities (predicate level,
+abstraction granularities (at the predicate level,
 statement level, and method level) in our evaluation.
  Using other dependence analyses or abstraction levels
 might achieve different results.
