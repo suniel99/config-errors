@@ -1,14 +1,17 @@
 This step instruments the tested program offline
-by inserting code to monitor
-each the outcome of each affected predicate at runtime.
+by inserting code to monitor each affected predicate's outcome
+at runtime.
 
-
-For the code in Figure~\ref{fig:example} where
-the predicate at line 312 is affected by
-the configuration option \CodeIn{maxsize}, \ourtool inserts the
-following two instrumentation
-statements before and after line 312 to count the number of
-the predicate being executed and the number being evaluated to true.
+The instrumentation is cheap, and incurs acceptable runtime
+overhead (as demonstrated in our experiments). The instrumentation step
+simply inserts 2 statements
+before and after each affected program predicate. Take
+the code in Figure~\ref{fig:example} as an example.
+In Figure~\ref{fig:example}, the predicate at line 312 is affected by
+the configuration option \CodeIn{maxsize}. Thus, \ourtool inserts
+two instrumentation statements before and after line 312 to count the number of
+the predicate being executed and the number being evaluated to true,
+as follows.
 
 
 \begin{CodeOut}
