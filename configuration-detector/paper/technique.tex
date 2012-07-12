@@ -56,48 +56,66 @@ The other two phases: ``Propagation Analysis'' and ``Deviation Analysis'' corres
 
 \subsection{Discussions}
 
-We next some design issues in \ourtool.
+We next discuss some design issues in \ourtool.
 
 \vspace{1mm}
 \noindent \textbf{Differences between program inputs and configuration options.}
-A configurable software system permits users to
-customize its behaviors before being used. Broadly speaking,
-there is not any fundamental difference between a configuration option
-value and a program input value. $\blacksquare$ a configuration option
-value is more like a meta-input, which pre-defines the overall expected program
-execution details and is usually fixed for a broad range of inputs.
-By contrast, an input is more specific for a certain execution $\blacksquare$
+A configurable software system exposes a range of configuration
+options that permit users to
+customize its behaviors. Broadly speaking,
+a configuration option can be seen as a special program input
+(or \textit{meta-}input), which needs to be set before the
+software is used. Unlike porgram inputs, a configuration option is often
+used to control a program's execution rather than
+produce results for a certain task, and thus
+is often independent of the concrete input values that a user might provide.
 
 
 \vspace{1mm}
-\noindent \textbf{Why cannot use executions from unit tests?}
-The pre-built database in \ourtool is designed to contain complete
-execution traces, while a unit test that focuses on verifying the
-isolated program component behavior in isolation often produces
-an incomplete trace. In contrast, a crashing or non-crashing configuration
-error from field software application often starts from the main method,
-comparing its resulting trace with the partial trace from unit tests
-may yield wrong results. $\blacksquare$
-%Why cannot use unit test to achieve the trace? since it is incomplete
+\noindent \textbf{Why not use traces from unit test executions?}
+\ourtool's database stores traces from correct 
+executions. However, it needs every trace to be complete
+(i.e., executing from the main method).
+\ourtool does not use traces from unit test executions
+because erroneous executions
+in fielded software must start from its main method, while
+a unit test merely checks the correctness
+of a single program component, and often produces
+an incomplete trace that is not representative for
+the whole program workflow. 
 
 
-%why cannot delta debugging? no working state, no predicate
 
 \vspace{1mm}
-\noindent \textbf{Why not only store failing traces in the database?}
-It is more developers to provide correct executions, instead of
-anticipating the possibly error behaviors a user may encounter. $\blacksquare$
+\noindent \textbf{Why not store traces from failing executions in the database?}
+We envision the trace database is built by developers at release.
+For a developer, it is more natural for her to provide correct execution
+traces as debugging references, instead of
+anticipating the possible errors a user may encounter.
+$\blacksquare$
 A broader question is which kind of informatin should be recorded
-from program execution. \ourtool uses predicate as the abstraction level,
-and emprically compares with two other abstractions (a coarser abstraction
-at the method level, and a finer abstract at the statement level). Investigating
-other abstraction levles remains as our future work.
+from program execution. 
+In the design of \ourtool, we store the behavioral information
+of each affected predicate from correct executions in the database,
+
+%and empirically compared with two other abstractions (a coarser abstraction
+%at the method level, and a finer abstract at the statement level).
+%Investigating the trade-
+%\ourtool uses predicate as the abstraction level,
+%and emprically compares with two other abstractions . Investigating
+%other abstraction levels remains as our future work.
 
 \vspace{1mm}
-\noindent \textbf{What if a similar correct trace is not available?}
-This indicate the inadequacy of testing. We show this in experiments, if a
-similar trace is not available,... combine with existing
-traces creation techniques, cite Xiangyu's work on selecting peer
+\noindent \textbf{What if a similar trace is not available?}
+\ourtool's effectiveness largely depends on the availability of
+similar traces from the database. For a given erroneous trace, lacking a similar
+trace in \ourtool's database may lead \ourtool to produce
+less useful reasults, and also indicates the testing inadequancy,
+We list approaches to remedy this problem as our future work. One
+possible way is to synthesize a new execution, either by
+generating new input for the program or by directly mutating a
+existing execution itself~\cite{sumnerICSE2011}.
+
 
 %Why dynamic slicing is not usable? No seed statement, and great overhead. Using JSlicer incurs
 %a great overhead. It needs to track every instruction and
