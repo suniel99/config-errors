@@ -2,16 +2,16 @@ This step instruments the tested program offline
 by inserting code to monitor each affected predicate's outcome
 at runtime.
 
-The instrumentation is cheap, and incurs acceptable runtime
-overhead (as demonstrated in our experiments). The instrumentation step
-simply inserts 2 statements
-before and after each affected program predicate. Take
+The instrumentation step simple. It inserts 2 statements
+before and after each affected program predicate to monitor
+a predicate's behavior before and after being evaluated, respectively. Take
 the code in Figure~\ref{fig:example} as an example.
-In Figure~\ref{fig:example}, the predicate at line 312 is affected by
-the configuration option \CodeIn{maxsize}. Thus, \ourtool inserts
-two instrumentation statements before and after line 312 to count the number of
-the predicate being executed and the number being evaluated to true,
-as follows.
+The predicate at line 312 is affected by
+the configuration option \CodeIn{maxsize}. \ourtool inserts
+one instrumentation statement before line 312 to
+count the number of this predicate being executed, and
+inserts another statement after line 312 to count the number
+of this predicate being evaluated to true, as follows.
 
 
 \begin{CodeOut}
@@ -28,23 +28,26 @@ as follows.
 \end{CodeOut}
 
 
-$\blacksquare$The instrumented program expresses an execution
-as a trace comprising a vector of \textit{predicate profiles}.
-Each predicate profile is a pair of configuration
-option and its affected predicate.
-The predicate profile also keeps the recorded runtime information.
-%of the affected predicate, including
-%the count of the predicate being executed and the count of it
-%being evaluated to true. 
+Executing the instrumented program with inputs and configurations
+produces a trace, consists of a set of \textit{predicate profiles}.
+Each predicate profile corresponds to a pair of configuration option
+and one of its affected predicates. A predicate profile also includes
+the predicate's execution count and evaluation result. For example,
+suppose the predicate on line 312 has been executed 100 times, in which
+30 times has been evaluated to true. \ourtool creates a predicate
+profile to represent such observation as follows:
+
+$\langle$ \CodeIn{``maxsize''}, \CodeIn{``newSequence.size() > maxsize''}, 100, 30$\rangle$ 
+
+
 
 %\ourtool expresses an execution as
 %a predicate profile vector. 
-As we
-show in the experiments (Section~\ref{sec:evaluation}), such predicate profile
-vectors, although by no mean complete, capture
-sufficient information to permit users
-to reason about the causal effects of configurations
-and how they relate to a software's behavior, while
+As we show in the experiments (Section~\ref{sec:evaluation}),
+such predicate profiles, although by no mean complete in
+recording the whole trace, capture
+sufficient information to reason about the causal effects of configurations
+and how a configuration option relates to a software's behavior, while
 also imposing a moderate amount of performance impact
 on foreground applications.
 

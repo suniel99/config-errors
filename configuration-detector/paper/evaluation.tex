@@ -46,7 +46,7 @@ to customize its behaviors.
 %\setlength{\tabcolsep}{.84\tabcolsep}
 \begin{tabular}{|l|c|c|c|}
 \hline
- Program (version) & LOC & \#Conf Options & \#Profiles\\
+ Program (version) & LOC & \#Conf Options & \#Traces\\
  \hline
  \hline
  Randoop (1.3.2) & 18587 & 57 & 12\\
@@ -61,8 +61,8 @@ to customize its behaviors.
 \Caption{{\label{tab:subjects} Subject programs. 
 Column ``LOC'' is the number of lines of code,
 as counted by CLOC~\cite{cloc}. Column ``\#Conf Options''
-is the number of available configuration options. Column ``\#Profiles''
-is the number of profiles in the pre-built database.}}
+is the number of available configuration options. Column ``\#Traces''
+is the number of traces in the pre-built database.}}
 \end{table}
 
 
@@ -189,7 +189,7 @@ for the JVM), running Windows 7.
 \hline
  Error ID.  & & \multicolumn{2}{|c||}{\ourtool} & Full Slicing & Coverage Analysis& Invariant Analysis & ConfAnalyzer~\cite{Rabkin:2011:PPC}\\
 \cline{3-8}
- Program & Reponsible Option & \#Cmp Profile & Rank  & Rank & Rank & Rank & Rank \\
+ Program & Reponsible Option & \#Cmp Traces& Rank  & Rank & Rank & Rank & Rank \\
  \hline
 \hline
 \multicolumn{8}{|l|}{Non-crashing errors}   \\
@@ -223,7 +223,7 @@ and ``Invariant Analysis'' show the results of three variants of \ourtool
 as described in Section~\ref{sec:comparison}.
 Column ``ConfAnalyzer'' shows the results of an existing
 technique~\cite{Rabkin:2011:PPC}.
-Column ``\#Cmp Profiles'' shows the number of similar profiles selected
+Column ``\#Cmp Traces'' shows the number of similar traces selected
 from the pre-built database for comparison.
 For each technique, Column ``Rank'' shows the rank of the actual responsible
 option in its output (lower is better). ``X''
@@ -256,14 +256,13 @@ a long propagation chain, and seems hard for \ourtool
 to diagnose correctly.
 
 Although \ourtool ranks the actual root course of several
-crashing errors lower, crashing errors are often much easier to diagnose than non-crashing errors.
+crashing errors lower, crashing errors are generally much easier to diagnose than non-crashing errors.
 This is because a crashing error usually happens shortly after the program
 is launched, and often produces a stack trace with valuable diagnosis clues.
-For example, \ourtool ranks the root cause of
-Error 14 (Table~\ref{tab:results}) 8th.
-However, when JChord crashes, it dumps an \CodeIn{ClassNotFoundException}
-that explicitly leads users to check its classpath setting (via the
-\CodeIn{chord.class.path} option). For the other three crashing errors (Error ID: 8, 10, and 11),
+For example, in Table~\ref{tab:results}, \ourtool ranks the root cause of
+Error 14  8th.
+However, when JChord crashes, it dumps a \CodeIn{ClassNotFoundException}
+that reminds users to check the classpath setting. For the other three crashing errors (Error ID: 8, 10, and 11),
 JChord even dumps out the actual wrong configuration option value, which
 directly guides users to the root cause.
 
