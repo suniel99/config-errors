@@ -44,7 +44,10 @@ public class TestSliceSootConfigOptions extends TestCase {
 	}
 	
 	public void testSliceOptionsInSoot() {
+		long start = System.currentTimeMillis();
 		getSootConfOutputs();
+		long end = System.currentTimeMillis();
+		System.out.println("Elapsed: " + (end-start)/1000);
 	}
 	
 	public void testCreateInstrumentSchema() {

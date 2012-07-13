@@ -39,6 +39,13 @@ public class TestDiagnoseSootOptions extends TestCase {
 				repo, null, null, SelectionStrategy.RandomK);
 	}
 	
+	public void testMeasureTime() {
+		long start = System.currentTimeMillis();
+		this.testDiagnoseSimilar();
+		long end = System.currentTimeMillis();
+		System.out.println("elapsed: " + (end - start));
+	}
+	
 	public void testDiagnoseSimilar() {
 		String badRunTrace = "./experiments/soot-database/soot_helloworld_no_keepline.txt";
 		ConfEntityRepository repo = SootExpUtils.getConfEntityRepository();

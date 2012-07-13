@@ -137,14 +137,6 @@ public class ConfDiagnosisOutput {
 					selfMapping.put(copy, copy);
 				}
 				
-				//do padding here
-				int numToPad = numOfList - outputAndRanks.get(output).size();
-				if(numToPad > 0) {
-					for(int i = 0; i < numToPad; i++) {
-						outputAndRanks.get(output).add(Integer.MIN_VALUE);
-					}
-				}
-				
 				//add others
 				Utils.checkTrue(outputAndRanks.size() == selfMapping.size());
 				outputAndRanks.get(output).add(outputRankMap.get(output)); //it was rank
@@ -154,7 +146,18 @@ public class ConfDiagnosisOutput {
 				}
 			}
 			
+			//do padding here
 			numOfList ++;
+			for(ConfDiagnosisOutput output : outputAndRanks.keySet()) {
+				int numToPad = numOfList - outputAndRanks.get(output).size();
+				if(numToPad > 0) {
+					for(int i = 0; i < numToPad; i++) {
+						outputAndRanks.get(output).add(Integer.MIN_VALUE);
+					}
+				}
+				Utils.checkTrue(outputAndRanks.get(output).size() == numOfList, "numOfList: " + numOfList
+				    + ",  size: " + outputAndRanks.get(output).size());
+			}
 		}
 		
 		//check the ranking here
@@ -204,6 +207,30 @@ public class ConfDiagnosisOutput {
 	//if l1 is higher than l2, returns true, otherwise, returns false
 	static boolean rankHigher(List<Integer> l1, List<Integer> l2) {
 		Utils.checkTrue(l1.size() == l2.size(), "l1: " + l1.size() + ",  l2: " + l2.size());
+		
+		List<Integer> list1 = new LinkedList<Integer>();
+		for(Integer i : l1) {
+			if(!i.equals(Integer.MIN_VALUE)) {
+				list1.add(i);
+			}
+		}
+		List<Integer> list2 = new LinkedList<Integer>();
+		for(Integer i : l2) {
+			if(!i.equals(Integer.MIN_VALUE)) {
+				list2.add(i);
+			}
+		}
+		
+		l1 = list1;
+		l2 = list2;
+		
+		if(l2.isEmpty()) {
+			return true;
+		}
+		
+		if(Math.max(l1.size(), l2.size()) <= 3) {
+			return (Utils.sum(l1) / (float)l1.size())  < (Utils.sum(l2) / (float)l2.size()) ;
+		}
 		
 		Integer max1 = Collections.max(l1);
 		Integer min1 = Collections.min(l1);

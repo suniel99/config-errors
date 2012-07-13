@@ -79,8 +79,11 @@ public class TestSliceRandoopConfigOptions extends TestCase {
 	}
 	
 	public void testSliceRandoopCheaply() {
+		long start = System.currentTimeMillis();
 		String path = "./subjects/randoop-jamie-no-trace.jar;./subjects/plume.jar";
 		getConfPropOutputs(path, RandoopExpUtils.getRandoopConfList());
+		long end = System.currentTimeMillis();
+		System.out.println("Eclapsed time: " + (end - start)/1000);
 	}
 	
 	public void testLargeSliceRandoopOptions() {

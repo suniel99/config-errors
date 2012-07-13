@@ -27,6 +27,13 @@ public class TestDiagnoseSynopticOptions extends TestCase {
 				repo, null, null, SelectionStrategy.RandomK);
 	}
 	
+	public void testmeasureTime() {
+		long start = System.currentTimeMillis();
+		this.testDiagnoseSimilarity();
+		long end = System.currentTimeMillis();
+		System.out.println("elapsed: " + (end - start));
+	}
+	
 	public void testDiagnoseSimilarity() {
 		String badRun = TestComparingSynopticTraces.badRunTrace;
 		ConfEntityRepository repo = SynopticExpUtils.getConfEntityRepository();

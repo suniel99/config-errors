@@ -35,7 +35,10 @@ public class TestDiagnoseWekaOptions extends TestCase {
 	
 	//diagnosing the weka profiles
 	public void testDiagnoseAll() {
+		long start = System.currentTimeMillis();
 		diagnoseWeka(null);
+		long end = System.currentTimeMillis();
+		System.out.println("eclapsed: " + ((float)end - (float)start)/1000);
 	}
 	
 	public void testDiagnoseAllRandom() {

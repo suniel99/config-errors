@@ -39,7 +39,10 @@ public class TestSliceWekaConfigOptions extends TestCase {
 	}
 	
 	public void testSliceOptionsInWeka() {
+		long start = System.currentTimeMillis();
 		getWekaConfOutputs();
+		long end = System.currentTimeMillis();
+		System.out.println("Elapsed: " + (end - start)/1000);
 	}
 	
 	public void testCreateInstrumentSchema() {
