@@ -35,15 +35,17 @@ much of which may not be needed at all by pinpointing an incorrect
 configuration option value. $\blacksquare$ this second claim needs revising.
 
 Take the code in Figure~\ref{fig:example} as an example to illustrate
-this problem.  Tranditional slicing identifies the predicates
+this problem.  Tranditional slicing concludes that the predicates
 in lines 104, 312, and 315 are affected by the configuration option \CodeIn{maxsize}.
 However, the predicates in lines 104 and 315, though possibly
-affected by the value of \CodeIn{maxsize}, are not closely related. $\blacksquare$
-In other words, whether a sequence has an active flag (line 104) or
+affected by the \CodeIn{maxsize}, are not actually closely related
+its value. $\blacksquare$
+Specifically, whether a sequence has an active flag (line 104) or
 whether a sequence has been executed before (line 315)
-is irrelevant with the value of \CodeIn{maxsize}. Monitoring
-such predicates and linking their behaviors with the \CodeIn{maxsize}
-option may introduce noise and decrease the diagnosis accuracy.
+is largely independent with its length. Thus, monitoring
+such slightly-related predicates (computed by full slicing) and linking their behaviors with a
+configuration option may decrease the diagnosis accuracy.
+%This has also been confirmed by our experiments.
 
 %However, if the provided input changes the workflow,
 %instead of all data flow into it. 

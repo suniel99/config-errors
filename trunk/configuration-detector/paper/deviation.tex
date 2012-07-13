@@ -1,45 +1,65 @@
 \ourtool starts error diagnosis 
-after obtaining the execution trace from
+after obtaining the trace from
 an erroneous execution. It first compares it with
 existing traces from known correct executions, selects
 similar traces for comparison (Section~\ref{sec:similar}),
 identifies the most behavioral-deviated predicates
 (Section~\ref{sec:deviation}), and then determines
-its most likely responsible options (Section~\ref{sec:linking}).
+the most likely responsible options (Section~\ref{sec:linking}).
 
 
 \subsubsection{Selecting Similar Traces for Comparison}
 \label{sec:similar}
 
-\ourtool's pre-built database contains a number of
+\ourtool's database contains a number of
 traces from known correct executions, in which one trace
 can be dramatically different from another. To
 determine how and why the observed trace behaves
 differently from the correct ones, \ourtool first
-compares and contrasts the 
-the erroneous execution with other correct ones, and
-then selects a set of similar ones. $\blacksquare$
+compares the erroneous trace with the existing
+correct traces, and selects a set of similar ones
+as the basis of diagnosis.
 
 Given a trace $t$, \ourtool first aggregates
 the observed predicate profiles into a $n$-dimensional
-vector $v_{t}$ =$\langle r_1, r_2, ..., r_n\rangle$ , where $n$
-is the number of predicates in the program and each $r_i$ is
-the ratio of the $i$-th predicate profile being evaluated
-to true at runtime. If a predicate is not executed in
-a particular execution, \ourtool assigns \CodeIn{null} to its true ratio.
+vector $v_{t}$ =$\langle r_{t1}, r_{t2}, ..., r_{tn}\rangle$ , where $n$
+is the number of all possible predicate profiles in the program
+and each $r_{ti}$ is the ratio of the $i$-th predicate profile being evaluated
+to true at runtime in trace $t$. For a particular trace, if a predicate is not executed,
+\ourtool uses \CodeIn{N/A} as its true ratio.
 
 
-When comparing two traces $t_1$ and $t_2$, \ourtool computes
-their inner-product distance of the normalized vectors, and selects
-those with distance below a threshold (default value: 0.3,
-as we used in experiments). When computing the inner-product distance,
-if the value of some dimensional is \CodeIn{null}. $\blacksquare$
+For two traces $t_1$ and $t_2$, \ourtool computes their similarity
+by computing the distance of their corresponding vectors, as follows:
 
-For crashing errors, \ourtool does not select similar traces.
-Instead, it uses all available traces in the database
-for comparison, because all traces there are from correct
-executions, and can
-be served as reference to identify the crashing root causes. $\blacksquare$
+\[
+\|Distance|(t_1, t_2) = 1 - \frac{\sum_{i = 1}^{n}Delta(r_{1i}, r_{2i})^2}{n}
+\]
+
+\[
+\|Delta|(r_1, r_2) = 
+\left\{
+\begin{array}{l l l l}
+  0 & \ \mbox{if $r_1$ = \CodeIn{N/A} and $r_2$ $\neq$ \CodeIn{N/A}}\\
+  0 & \ \mbox{if $r_1$ $\neq$ \CodeIn{N/A} and $r_2$ = \CodeIn{N/A}}\\
+  1 & \ \mbox{if $r_1$ = \CodeIn{N/A} and $r_2$ = \CodeIn{N/A}}\\
+  \CodeIn{min}\{r_2/r_1, r_1/r_2\} & \; \mbox{otherwise}\\ \end{array} \right.
+\]
+
+
+$\blacksquare$ need to illustrate why use the distance metric.
+
+Given an erroneous trace, \ourtool selects all traces from the database
+with a distance below a threshold (default value: 0.3 as used in our
+experiments).
+
+For the trace produced in a crashing error, \ourtool 
+chops a correct trace from the database by only remaining the predicate
+profiles covered by the erroneous trace. \ourtool performs
+this simple preprocessing because a crashing error $\blacksquare$
+often produces an incomplete trace, and it is unlikely
+to find a similar one from the database.
+
 
 \subsubsection{Identifying Deviated Predicates}
 \label{sec:deviation}
@@ -48,11 +68,11 @@ be served as reference to identify the crashing root causes. $\blacksquare$
 The comparison between an erroneous trace with a set
 of \textit{similar} traces forms a basis for our
 automated error diagnosis approach. Given an erroneous trace and a set of similar but correct trace,
-the differences in predicate profiles provide evidence for what parts of a program might be
+the behavioral differences in predicate profiles provide evidence for what parts of a program might be
 incorrect and why. This helps to further reason about its root cause.
 
 
-For each observed predicate $p$, \ourtool uses the following metric
+For each observed predicate profile $p$, \ourtool uses the following metric
 to characterize its deviation degree in two traces $t_1$ and $t_2$:
 
 \[
@@ -60,22 +80,32 @@ to characterize its deviation degree in two traces $t_1$ and $t_2$:
 \]
 
 \[
-\|\phi|(t, p) = \frac{2}{\frac{1}{\|trueRatio|(t, p)} + \frac{1}{totalNum(t, p)}}
+\|\phi|(t, p) = \frac{2}{{1}/{\|trueRatio|(t, p)} + {1}/{totalExecNum(t, p)}}
 \]
 
-$trueRatio(t, p)$ is a function that returns the ratio of predicate $p$ being
-evaluated to true in trace $t$, and $totalNum(p)$ is a function
-that returns the total number of observations of predicate $p$ in trace $t$..
+where $trueRatio(t, p)$ is a function that returns the ratio of predicate $p$ being
+evaluated to true in trace $t$, and $totalExecNum(p)$ is a function
+that returns the total number of predicate $p$ being executed in trace $t$.
 
-The metric $\phi$ has some good properties in characterizing the $\blacksquare$
+The metric $\phi$ has some good properties in characterizing the
+runtime behaviors of a predicate $p$.$\blacksquare$.
+%The intuition behind is that \ourtool determines that
+%altering a configuration option may change the application’s
+%control flow such that it deviates from the correct trace,
+% it reports that option as a possible root cause.
+It balances
+a predicate's evaluation result and the total number of executions.
+Intuitively, for two predicates $p_1$ and $p_2$, if they have the same
+the true ratio but $p_1$ has been observed in more executions, we
+should have more confidence in its statistical significance. $\blacksquare$
+(the wording here is bad)
 
-For non-crashing errors, since the obtained trace is a complete one,
-\ourtool computes the $Deviation$ metric for each observed predicate in
-both traces, and ranks them in a decreasing order based on the computed $Deviation$ value.
 
-For crashing erros, since the obtained trace is incomplete,
-\ourtool computes the $Deviation$ metric for the predicates only appearing
-in the crashing trace, and ranks them decreasingly based on the computed value.
+After comparing the erroneous trace with one selected correct trace,
+\ourtool ranks all observed predicate profiles in
+a decreasing order based on the computed $Deviation$ value.
+
+
 
 
 %\subsubsection{Filtering Execution Noises}
@@ -85,27 +115,30 @@ in the crashing trace, and ranks them decreasingly based on the computed value.
 \subsubsection{Linking Predicates to Root Causes}
 \label{sec:linking}
 
-$\blacksquare$
 
-The last step in \ourtool is to link those behavioral-deviated
-predicates to its root causes, and rank the suspicious
-configuration options as the output.
+\ourtool finally links those behavioral-deviated
+predicate profiles to their root causes, and ranks the suspicious
+configuration options in the output.
 
-The intuition behind is that \ourtool determines that
-altering a configuration option may change the application’s
-control flow such that it deviates from the correct trace,
- it reports that option as a possible root cause.
-
-When comparing an erroneous trace with a set of correc traces,
-\ourtool first ranks suspicious configuration options between
-each trace pair, and then averages the ranking across traces.
-
-It first identifies the most deviated predicate profile, and
-its affecting predicate.
+\ourtool consultes the results of thin slicing to identify
+the affecting configuration options of each deviated predicate.
 It identifies the configuration option
 affecting the highest ranked predicate profile as the most likely
 root cause; in the case of ties, it ranks all tied options
-based on its distance in a thin slicing SDG.
+based on the length of the shortest path from the initialization
+statement of a configuration option to the crashing point
+in the system dependence graph constructed by thin slicing. 
+The intuition behind is that when multiple options are equally
+responsible for one predicate, the closest option is more likely
+and should be inspected first.
+
+When multiple correct traces are selected to compare against
+the erroneous one, \ourtool produces a ranked list of suspicious
+configuration options for each comparison pair, and then outputs
+a final list by using majority voting on all produced ranking lists.
+In the final output list, one configuration option ranks higher
+than another one if it ranks higher in more than half of the ranking lists.
+
+
 %as being equally likely to be the root cause.
 
-Finally, needs to average the results
