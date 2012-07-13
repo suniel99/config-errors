@@ -7,11 +7,10 @@ Our evaluation answers the following research questions:
 
 \begin{itemize}
 \item How effective is \ourtool in diagnosing the root cause of
-configuration errors?
+a configuration error?
 \item Can \ourtool provide more accurate diagnosis information than
 the existing approaches? 
-\item What are the effects of varying the comparison profiles from
-the pre-built database?
+\item What are the effects of varying the comparison traces?
 \item How long does \ourtool take to diagnose a configuration error?
 \end{itemize}
 
@@ -21,18 +20,17 @@ the pre-built database?
 
 \subsection{Subject Programs}
 
-We evaluated \ourtool on \subjectnum Java applications shown
+We evaluated \ourtool on \subjectnum Java programs shown
 in Table~\ref{tab:subjects}.
 Randoop~\cite{randoop} is a robust automated test generator
 for Java programs. Weka~\cite{weka} is a useful toolkit implementing
 a broad variety of machine learning algorithms. Our evaluation
-uses its decision tree module component. JChord~\cite{jchord}
+only uses its decision tree module. JChord~\cite{jchord}
 is a program analysis platform that enables users to design, implement,
-and evaluate static and dynamic program analyses for Java bytecode.
+and evaluate static and dynamic program analyses for Java.
 Synoptic~\cite{synoptic} is a tool to mine a finite state machine
 model representations of a system from logs.
-Soot~\cite{soot} is a Java optimization framework, which provides four
-intermediate representations for analyzing and transforming Java bytecode:
+Soot~\cite{soot} is a Java optimization framework for analyzing and transforming Java bytecode:
 
 As shown in Table~\ref{tab:subjects}, each subject program has a non-trivial
 codebase, and exposes a number of configuration options for users
@@ -106,19 +104,19 @@ We searched forums, FAQ pages and the literature of
 configuration error diagnosis research to find actual
 configuration problems that users have experienced with our
 target applications. Combining with our own experience,
-we chose \errors representative configuration errors.
-Table~\ref{tab:errors} lists the configuration errors for each application.
-The configuration errors cover various data types, such as enumerated types,
-numerical ranges, regular expressions, and text entries.
+we chose \errors configuration errors
+covering various data types, such as enumerated types,
+numerical ranges, regular expressions, and text entries;
+as listed in Table~\ref{tab:errors}.
 
 \subsection{Evaluation Procedural}
 
-For each Java application, we constructed a trace database
+For each subject program, we constructed a trace database
 by running existing (correct) examples from its user manual, discussion
 mailiing list, and the published papers. The number of obtained
  traces is shown in Table~\ref{tab:subjects}. 
-We found constructing such a database is quite easy. On average,
-we spent 3 hours on one application.
+Constructing a trace database requires a moderate amount of
+effort and costs us 3 hours for one program, on average.
 
 %Run examples from user manual to form the database. The effort
 %can be amortized in development time.
@@ -128,8 +126,8 @@ does not modify JChord's semantic; rather, it just encapsulates
 all scattered configuration option initialization statements 
 as static class fields. This is purely an implementation
 choice because having a centralized initialization statement
-makes us relatively easier to specify the seed statement
-in performing slicing during experiments. Here is a sample modification:
+makes our tool implementation easier to specify the seed statement
+in performing slicing. Here is a sample modification:
 
 
 
@@ -249,13 +247,13 @@ Weka behaves overfitting..
 
 
 Compared to non-crashing errors, \ourtool is less effective
-in localizing non-crashing errors. For 4 crashing errors,
+in diagnosing non-crashing errors. For 4 crashing errors,
 the actual causes are ranked lower.
 This is because $\blacksquare$ the configuration option has
 a long propagation chain, and seems hard for \ourtool
 to diagnose correctly.
 
-Although \ourtool ranks the actual root course of several
+Although \ourtool ranked the actual root course of several
 crashing errors lower, crashing errors are generally much easier to diagnose than non-crashing errors.
 This is because a crashing error usually happens shortly after the program
 is launched, and often produces a stack trace with valuable diagnosis clues.
@@ -303,33 +301,33 @@ one existing technique~\cite{Rabkin:2011:PPC}.
 \noindent \textbf{Variant 1. \ourtool with Full Slicing.} 
 \ourtool uses thin slicing~\cite{Sridharan:2007} to compute the affected predicates
 of each configuration option. Another way to do so is
-using the full slicing algorithm~\cite{Horwitz:1988}.
+using the traditional full slicing algorithm~\cite{Horwitz:1988}.
 This variant replaces thin slicing with 
 full slicing~\cite{Horwitz:1988} in the configuration
-propagation analysis (Section~\ref{sec:prop}) step.
+propagation analysis step (Section~\ref{sec:prop}).
 
 \vspace{1mm}
 \noindent \textbf{Variant 2. \ourtool with Coverage Analysis.}
 This variant uses statement-level coverage information
 to diagnose a configuration error. It treats statements covered
 by the erroneous trace as potentially buggy, and statements
-covered the correct traces (in the pre-built database) as correct.
+covered the correct traces (from the pre-built database) as correct.
 Then, this variant uses a well-known fault localization technique,
 Tarantula~\cite{Jones:2002}, to rank the likelihood of each
-statement being buggy, and query the result of thin slice
+statement being buggy, and queries the result of thin slice
 to identify its affecting configuration options as the root causes. 
 
 
 \vspace{1mm}
 \noindent \textbf{Variant 3. \ourtool with Invariant Analysis.}
-This variant uses method-level invariant as the abstraction level
+This variant uses method-level invariant
 to diagnose configuration errors. It stores invariants detected
 by Daikon~\cite{Ernst:1999} from correct traces in the database. When a configuration
-error occurs, this variant detects invariants from the erroneous trace;
+error occurs, this variant detects invariants by using the erroneous trace;
 and compares the invariants detected from
 the erroneous trace with those stored in the database.
-It treats a method to have suspicious behaviors if the observed invariants
-from the erroneous trace are different than those stored in the database. Then, it ranks
+It treats a method to have suspicious behaviors if its observed invariants
+from the erroneous trace are different than those stored in the database. Finally, this variant ranks
 a method's suspiciousness by the number of different variants, and
 queries the result of thin slice
 to identify its affecting configuration options as the root causes. 
@@ -338,7 +336,7 @@ to identify its affecting configuration options as the root causes.
 \noindent \textbf{ConfAnalyzer: A Dynamic Information Flow-based Approach~\cite{Rabkin:2011:PPC}.}
 Rabkin and Katz proposed a family of techniques to precompute possible
 configuration diagnosis for Java software~\cite{Rabkin:2011:PPC}. In their work,
-the most accurate technique (also the most precise technique in the literature)
+the most accurate technique (also probably one of the most precise techniques in the literature)
 is based on dynamic information flow analysis.
 This technique works remarkably well for crashing errors, but can
 not diagnose non-crashing errors.
@@ -351,9 +349,9 @@ $\blacksquare$ discuss the results here
 
 \vspace{1mm}
 \noindent \textbf{\textit{Summary.}} Using thin slicing to identify
-the affected predicates produce more accurate results than using
+the affected predicates produces more accurate results than using
 full slicing. Monitoring dynamic behaviors of the affected
-predicates are more effective in diagnosing a configuration error
+predicates is more effective in diagnosing a configuration error
 than statement-level profiling and method-level invariant detection.
 Dynamic information flow-based approach is slightly precise in diagnosing
 a crashing error, but fails to diagnose non-crashing errors.
@@ -403,14 +401,15 @@ used in \ourtool, and the data in that column is taken from Table~\ref{tab:resul
 
 
 \ourtool compares the predicate behaviors in the erroneous trace against
-correct traces in the pre-built database.
-We next investigate the effect of using different comparison
-traces. We compare the similarity-based strategy used in \ourtool
- (Section~\ref{sec:similar}) with two alternatives: using all
-available traces in the database, and randomly selecting
-traces from the database. Table~\ref{tab:selection} shows the experimental results.
+similar traces from the pre-built database.
+We next investigate the effect of using different trace selection strategies.
+In particular, we compare the similarity-based selection strategy used in \ourtool
+ (Section~\ref{sec:similar}) with two alternatives: selecting
+all available traces in the database, and
+randomly selecting a number of traces from the database.
+Table~\ref{tab:selection} shows the experimental results.
 
-We can see that varying the comparison strategy has result in
+We can see that varying the comparison strategy can result in
 substantially different effects on the diagnosis results,
 depending on the application being analyzed. Diagnosing
 a non-crashing error is more sensitive in selecting similar
@@ -429,7 +428,7 @@ error is more sensitive to the comparison traces than a crashing one.
 
 We measure \ourtool's performance in two ways: the time cost
 in diagnosing an error; and the overhead introduced
-in reproducing an error during diagnosis.  Table~\ref{tab:performance}
+in reproducing an error before diagnosis.  Table~\ref{tab:performance}
 shows the results.
 
 \begin{table}[t]
@@ -479,10 +478,10 @@ Overall, \ourtool performs very well on these errors.
 On average, it uses $\blacksquare$ minutes to
 diagnose one configuration error. The time cost for
 computing a thin slice from each configuration option
-is high. However, this step is a one-time effort
-for each program and computed results can be further cached.
+is high. However, this step is one-time effort
+for each program and the computed results can be cached for future use.
 
-This performance overhead in error reproduction,
+The performance overhead in error reproduction,
 admittedly high, has nonetheless proved acceptable
 for offline error diagnosis.
 
