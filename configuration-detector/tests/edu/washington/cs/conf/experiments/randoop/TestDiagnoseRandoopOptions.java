@@ -42,6 +42,13 @@ public class TestDiagnoseRandoopOptions extends TestCase {
 				null, null, SelectionStrategy.RandomK);
 	}
 	
+	public void testMeasureTime() {
+		long start = System.currentTimeMillis();
+		testDiagnoseSimilar();
+		long end = System.currentTimeMillis();
+		System.out.println("elapsed: " + (end - start) / 1000);
+	}
+	
 	public void testDiagnoseSimilar() {
 		ConfEntityRepository repo = RandoopExpUtils.getRandoopConfRepository();
 		MainAnalyzer.doFiltering = true;

@@ -43,8 +43,11 @@ public class TestSliceSynopticConfigOptions extends TestCase {
 	}
 	
 	public void testSliceOptionsInSynoptic() {
-		Log.logConfig("./synoptic-options-log.txt");
+		//Log.logConfig("./synoptic-options-log.txt");
+		long start = System.currentTimeMillis();
 		getSynopticConfOutputs();
+		long end = System.currentTimeMillis();
+		System.out.println("Eclapsed: " + (end - start)/1000);
 		Log.removeLogging();
 	}
 	

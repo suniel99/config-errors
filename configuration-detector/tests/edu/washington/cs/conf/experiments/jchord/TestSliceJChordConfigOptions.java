@@ -68,6 +68,13 @@ public class TestSliceJChordConfigOptions extends TestCase {
 		sliceOptionsInJChord(ChordExpUtils.getSampleConfList(), false);
 	}
 	
+	public void testSliceOptions() {
+		long start = System.currentTimeMillis();
+		getJChordConfOutputs();
+		long end = System.currentTimeMillis();
+		System.out.println("elapsed: " + (end - start)/1000);
+	}
+	
 	public static Collection<ConfPropOutput> getJChordConfOutputs() {
 		return sliceOptionsInJChord(ChordExpUtils.getChordConfList(), false);
 	}

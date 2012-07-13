@@ -39,6 +39,13 @@ public class TestDiagnoseJChordOptions extends TestCase {
 				null, null, SelectionStrategy.RandomK);
 	}
 	
+	public void testMeasureTime() {
+		long start = System.currentTimeMillis();
+		testDiagnoseSimilar();
+		long end = System.currentTimeMillis();
+		System.out.println("elapsed: " + (end - start));
+	}
+	
 	public void testDiagnoseSimilar() {
 		String badRunTrace = TestComparingJChordTraces.no_race;
 		String[] goodRunTraceArray = TestComparingJChordTraces.db;
