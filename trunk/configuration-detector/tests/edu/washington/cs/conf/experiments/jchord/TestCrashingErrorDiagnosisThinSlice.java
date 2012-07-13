@@ -27,15 +27,50 @@ public class TestCrashingErrorDiagnosisThinSlice extends TestCase {
 	boolean randomSelection = false;
 	
 	public void testAll() {
+		long start = System.currentTimeMillis();
 		testInvalidCtxtKind();
+		long end = System.currentTimeMillis();
+		System.out.println("invalid ctxt kind: " + (end - start));
+		
+		start = System.currentTimeMillis();
 		testInvalidReflectKind();
+		end = System.currentTimeMillis();
+		System.out.println("invalid reflect kind: " + (end - start));
+		
+		start = System.currentTimeMillis();
 		testInvalidScopeKind();
+		end = System.currentTimeMillis();
+		System.out.println("invalid scope kind: " + (end - start));
+		
+		start = System.currentTimeMillis();
 		testNoMainMethod();
+		end = System.currentTimeMillis();
+		System.out.println("no main method: " + (end - start));
+		
+		start = System.currentTimeMillis();
 		testNoMainInClass();
+		end = System.currentTimeMillis();
+		System.out.println("no main method in class: " + (end - start));
+		
+		start = System.currentTimeMillis();
 		testNoPrintRels ();
+		end = System.currentTimeMillis();
+		System.out.println("no print rels: " + (end - start));
+		
+		start = System.currentTimeMillis();
 		testNoSuchAnalysis();
+		end = System.currentTimeMillis();
+		System.out.println("no such analysis: " + (end - start));
+		
+		start = System.currentTimeMillis();
 		testPrintNonexist();
+		end = System.currentTimeMillis();
+		System.out.println("print no existence: " + (end - start));
+		
+		start = System.currentTimeMillis();
 		testWrongClasspath();
+		end = System.currentTimeMillis();
+		System.out.println("wrong classpath: " + (end - start));
 	}
 	
 	public void testRunAll() {
@@ -126,9 +161,12 @@ public class TestCrashingErrorDiagnosisThinSlice extends TestCase {
 		//if thre is a tie, use stack trace distance for comparison
 		System.out.println("Start to rank by stack trace coverage...");
 		if(slices == null) {
+			long start = System.currentTimeMillis();
 			System.out.println("Compute slice...");
 			//thin slicing here
 			slices = TestSliceJChordConfigOptions.sliceOptionsInJChord(ChordExpUtils.getChordConfList(), false);
+			long end = System.currentTimeMillis();
+			System.out.println("Slicing cost: " + (end - start));
 		}
 		
 		/** the old implementation */
