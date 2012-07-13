@@ -2,16 +2,16 @@ This step instruments the tested program offline
 by inserting code to monitor each affected predicate's outcome
 at runtime.
 
-The instrumentation step simple. It inserts 2 statements
-before and after each affected program predicate to monitor
-a predicate's behavior before and after being evaluated, respectively. Take
+The instrumentation step simply inserts 2 statements
+before and after each affected predicate to monitor
+its behavior before and after being evaluated, respectively. Take
 the code in Figure~\ref{fig:example} as an example.
 The predicate at line 312 is affected by
 the configuration option \CodeIn{maxsize}. \ourtool inserts
 one instrumentation statement before line 312 to
-count the number of this predicate being executed, and
+keep track of the number of the predicate being executed, and
 inserts another statement after line 312 to count the number
-of this predicate being evaluated to true, as follows.
+of the predicate being evaluated to true, as follows.
 
 
 \begin{CodeOut}
@@ -29,13 +29,13 @@ of this predicate being evaluated to true, as follows.
 
 
 Executing the instrumented program with inputs and configurations
-produces a trace, consists of a set of \textit{predicate profiles}.
+produces a trace, which consists of a set of \textit{predicate profiles}.
 Each predicate profile corresponds to a pair of configuration option
 and one of its affected predicates. A predicate profile also includes
-the predicate's execution count and evaluation result. For example,
+the predicate's execution count and evaluation result as recorded at runtime. For example,
 suppose the predicate on line 312 has been executed 100 times, in which
-30 times has been evaluated to true. \ourtool creates a predicate
-profile to represent such observation as follows:
+30 times it has been evaluated to true. \ourtool creates a predicate
+profile to capture this observation as follows:
 
 $\langle$ \CodeIn{``maxsize''}, \CodeIn{``newSequence.size() > maxsize''}, 100, 30$\rangle$ 
 
@@ -45,9 +45,9 @@ $\langle$ \CodeIn{``maxsize''}, \CodeIn{``newSequence.size() > maxsize''}, 100, 
 %a predicate profile vector. 
 As we show in the experiments (Section~\ref{sec:evaluation}),
 such predicate profiles, although by no mean complete in
-recording the whole trace, capture
+recording the whole trace, do capture
 sufficient information to reason about the causal effects of configurations
-and how a configuration option relates to a software's behavior, while
+and how a configuration option relates to software's behavior, while
 also imposing a moderate amount of performance impact
 on foreground applications.
 

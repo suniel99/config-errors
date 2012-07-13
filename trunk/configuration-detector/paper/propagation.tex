@@ -20,7 +20,7 @@ such as monitoring statement-level coverage
 or method-level invariant yields less accurate results.
 
 
-To identify predicates affectd by a configuration option, a straightforward
+To identify predicates affected by a configuration option, a straightforward
 way is using program slicing~\cite{Horwitz:1988} to compute
 a forward slice from the initialization statement of a
 configuration option. Unfortunately, traditional slicing has
@@ -30,19 +30,20 @@ pointers from flows along values; thus, a resulting slice includes all statement
 \textit{may} affect a point of interest and often grows too large. Second,
 in our context of configuration error diagnosis,
 when having no knowledge of what inputs a software user would provide,
-traditional slicing captures every single detail of the execution,
+traditional slicing captures every single detail of the program,
 much of which may not be needed at all by pinpointing an incorrect
 configuration option value. $\blacksquare$ this second claim needs revising.
 
 Take the code in Figure~\ref{fig:example} as an example to illustrate
-this problem.  Tranditional slicing concludes that the predicates
+this problem.  Traditional slicing concludes that the predicates
 in lines 104, 312, and 315 are affected by the configuration option \CodeIn{maxsize}.
-However, the predicates in lines 104 and 315, though possibly
-affected by the \CodeIn{maxsize}, are not actually closely related
-its value. $\blacksquare$
+However, the predicates in lines 104 and 315, though can be
+affected by the \CodeIn{maxsize}, are actually not closely related
+to the value of \CodeIn{maxsize}. $\blacksquare$
 Specifically, whether a sequence has an active flag (line 104) or
 whether a sequence has been executed before (line 315)
-is largely independent with its length. Thus, monitoring
+is largely independent with its length, as long as the
+sequence is not discarded. Thus, monitoring
 such slightly-related predicates (computed by full slicing) and linking their behaviors with a
 configuration option may decrease the diagnosis accuracy.
 %This has also been confirmed by our experiments.
@@ -57,7 +58,7 @@ Differing from traditional slicing, thin slicing
 focuses on statements that flow values to the seed (here, a
 seed is the initialization statement of a configuration option), ignoring the 
 control flow dependencies as well as the uses of
-base pointers. Thus, thin slicing improves the relevance
+base pointers. By doing this, thin slicing improves the relevance
 of the slice by only including the statements that compute
 and copy a value to the seed.
 This property separates
@@ -68,9 +69,9 @@ especially attractive.
 For example, in the code excerpt of Figure~\ref{fig:example},
 a forward thin slice computed for \CodeIn{maxsize}
 only includes the predicate in line 312.
-In our experiments (Section~\ref{sec:evaluation}), 
+In Section~\ref{sec:evaluation}, 
 we also empirically compare traditional slicing with
-thin slicing, and demonstrate that thin slicing is a better chioce
+thin slicing, and demonstrate that thin slicing is a better choice
 over traditional slicing.
 
 %When Randoop is used to generate tests for different inputs (here,

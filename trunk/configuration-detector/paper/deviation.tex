@@ -25,12 +25,12 @@ the observed predicate profiles into a $n$-dimensional
 vector $v_{t}$ =$\langle r_{t1}, r_{t2}, ..., r_{tn}\rangle$ , where $n$
 is the number of all possible predicate profiles in the program
 and each $r_{ti}$ is the ratio of the $i$-th predicate profile being evaluated
-to true at runtime in trace $t$. For a particular trace, if a predicate is not executed,
+to true at runtime in the trace $t$. For one trace, if a predicate is not executed,
 \ourtool uses \CodeIn{N/A} as its true ratio.
 
 
-For two traces $t_1$ and $t_2$, \ourtool computes their similarity
-by computing the distance of their corresponding vectors, as follows:
+\ourtool computes the distance between two traces $t_1$ and $t_2$ using
+the following equations:
 
 \[
 \|Distance|(t_1, t_2) = 1 - \frac{\sum_{i = 1}^{n}Delta(r_{1i}, r_{2i})^2}{n}
@@ -67,13 +67,13 @@ to find a similar one from the database.
 
 The comparison between an erroneous trace with a set
 of \textit{similar} traces forms a basis for our
-automated error diagnosis approach. Given an erroneous trace and a set of similar but correct trace,
-the behavioral differences in predicate profiles provide evidence for what parts of a program might be
-incorrect and why. This helps to further reason about its root cause.
+automated error diagnosis approach. 
+The behavioral differences in the recroded predicate profiles provide evidence for what parts of a program might be
+incorrect and why. %This helps to further reason about its root cause.
 
 
-For each observed predicate profile $p$, \ourtool uses the following metric
-to characterize its deviation degree in two traces $t_1$ and $t_2$:
+For an recorded predicate profile $p$, \ourtool uses the following $Deviation$ metric
+to characterize its deviation degree between two traces $t_1$ and $t_2$:
 
 \[
 \|Deviation|(p) = |\phi(t_1, p) - \phi(t_2, p)|
@@ -83,7 +83,7 @@ to characterize its deviation degree in two traces $t_1$ and $t_2$:
 \|\phi|(t, p) = \frac{2}{{1}/{\|trueRatio|(t, p)} + {1}/{totalExecNum(t, p)}}
 \]
 
-where $trueRatio(t, p)$ is a function that returns the ratio of predicate $p$ being
+$trueRatio(t, p)$ is a function that returns the ratio of the predicate $p$ being
 evaluated to true in trace $t$, and $totalExecNum(p)$ is a function
 that returns the total number of predicate $p$ being executed in trace $t$.
 
@@ -120,24 +120,24 @@ a decreasing order based on the computed $Deviation$ value.
 predicate profiles to their root causes, and ranks the suspicious
 configuration options in the output.
 
-\ourtool consultes the results of thin slicing to identify
+\ourtool consults the results of thin slicing to identify
 the affecting configuration options of each deviated predicate.
 It identifies the configuration option
 affecting the highest ranked predicate profile as the most likely
 root cause; in the case of ties, it ranks all tied options
-based on the length of the shortest path from the initialization
+based on the shortest distance from the initialization
 statement of a configuration option to the crashing point
 in the system dependence graph constructed by thin slicing. 
 The intuition behind is that when multiple options are equally
 responsible for one predicate, the closest option is more likely
-and should be inspected first.
+to be the root cause and should be inspected first.
 
-When multiple correct traces are selected to compare against
-the erroneous one, \ourtool produces a ranked list of suspicious
+When multiple correct traces are selected for comparison,
+\ourtool first produces a ranked list of suspicious
 configuration options for each comparison pair, and then outputs
-a final list by using majority voting on all produced ranking lists.
-In the final output list, one configuration option ranks higher
-than another one if it ranks higher in more than half of the ranking lists.
+a final list by using majority voting over all ranking lists.
+In the final ranking list, one configuration option ranks higher
+than another if it ranks higher in more than half of the ranking lists.
 
 
 %as being equally likely to be the root cause.
