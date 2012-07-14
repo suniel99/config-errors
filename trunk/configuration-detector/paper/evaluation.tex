@@ -104,8 +104,8 @@ We searched forums, FAQ pages and the literature of
 configuration error diagnosis research to find actual
 configuration problems that users have experienced with our
 target applications. Combining with our own experience,
-we chose \errors configuration errors
-covering various data types, such as enumerated types,
+we chose \errors configuration errors, in which
+the misconfigured values cover various data types, such as enumerated types,
 numerical ranges, regular expressions, and text entries;
 as listed in Table~\ref{tab:errors}.
 
@@ -170,6 +170,9 @@ error on a \ourtool-enabled environment to obtain the
 trace file. Then, using the obtained trace file, we use \ourtool
 to identify its root cause.
 
+%since we know the misconfigured, root-cause entry for each case,
+%we use the ranking of the entry as our evaluation metric.
+
 We use two metrics to evaluate \ourtool's effectiveness:
 the absolute ranking of the actual root cause in \ourtool's output,
 and the time cost used in diagnosis.
@@ -198,6 +201,8 @@ for the JVM), running Windows 7.
  4. Synoptic& \CodeIn{partitionRegExp}& 2 & 1& 6 & 1 & &X\\
  5. Soot& \CodeIn{keep\_line\_number} & 1 & 3 & N & N& N &X\\
 \hline
+ \multicolumn{2}{|l|}{Average}   & 3.6 & 1.6 & 33.5 & 2.5 &  & X \\
+\hline
 \hline
 \multicolumn{8}{|l|}{Crashing errors}   \\
 \hline
@@ -210,6 +215,8 @@ for the JVM), running Windows 7.
  12. JChord& \CodeIn{chord.scope.kind}&5 & 1& 10 & 1 & N &1\\
  13. JChord& \CodeIn{chord.reflect.kind} &6 & 1& 11 & 6 & 9 &3\\
  14. JChord& \CodeIn{chord.class.path}&5 & 8 & 6 & 2 & 5 &N\\
+\hline
+ \multicolumn{2}{|l|}{Average}   & 4.7 & 6.7 & 19.8 & 9.2 & 13.3 &1.5\\
 \hline
 \end{tabular}
 
@@ -226,7 +233,8 @@ from the pre-built database for comparison.
 For each technique, Column ``Rank'' shows the rank of the actual responsible
 option in its output (lower is better). ``X''
 means the technique is not applicable (i.e., requiring a crashing point), and ``N'' means the technique
-does not identify the actual responsible option.}}
+does not identify the actual responsible option. When computing the average
+rank, we only include the case when a technique can output the root cause.}}
 \end{table*}
 
 
@@ -251,18 +259,19 @@ in diagnosing non-crashing errors. For 4 crashing errors,
 the actual causes are ranked lower.
 This is because $\blacksquare$ the configuration option has
 a long propagation chain, and seems hard for \ourtool
-to diagnose correctly.
+to diagnose correctly. no statistical significance...
 
 Although \ourtool ranked the actual root course of several
 crashing errors lower, crashing errors are generally much easier to diagnose than non-crashing errors.
 This is because a crashing error usually happens shortly after the program
 is launched, and often produces a stack trace with valuable diagnosis clues.
 For example, in Table~\ref{tab:results}, \ourtool ranks the root cause of
-Error 14  8th.
+error 14  8th.
 However, when JChord crashes, it dumps a \CodeIn{ClassNotFoundException}
-that reminds users to check the classpath setting. For the other three crashing errors (Error ID: 8, 10, and 11),
-JChord even dumps out the actual wrong configuration option value, which
-directly guides users to the root cause.
+that reminds users to check the classpath setting. For the other three crashing errors (error 8, 10, and 11),
+JChord even outputs the wrong configuration option value in the
+error message, which
+directly guides users to the root cause. We speculated that $\blacksquare$
 
 %The nature of the root-cause configuration option is only one factor.
 %The ranking also depends on how the root-cause option relates to
@@ -314,7 +323,7 @@ by the erroneous trace as potentially buggy, and statements
 covered the correct traces (from the pre-built database) as correct.
 Then, this variant uses a well-known fault localization technique,
 Tarantula~\cite{Jones:2002}, to rank the likelihood of each
-statement being buggy, and queries the result of thin slice
+statement being buggy, and queries the results of thin slice
 to identify its affecting configuration options as the root causes. 
 
 
@@ -323,13 +332,13 @@ to identify its affecting configuration options as the root causes.
 This variant uses method-level invariant
 to diagnose configuration errors. It stores invariants detected
 by Daikon~\cite{Ernst:1999} from correct traces in the database. When a configuration
-error occurs, this variant detects invariants by using the erroneous trace;
-and compares the invariants detected from
-the erroneous trace with those stored in the database.
+error occurs, this variant detects invariants from the erroneous trace;
+and compares the detected invariants
+with those stored in the database.
 It treats a method to have suspicious behaviors if its observed invariants
-from the erroneous trace are different than those stored in the database. Finally, this variant ranks
+from the erroneous trace are different from the invariants stored in the database. Finally, this variant ranks
 a method's suspiciousness by the number of different variants, and
-queries the result of thin slice
+queries the results of thin slice
 to identify its affecting configuration options as the root causes. 
 
 \vspace{1mm}
@@ -349,12 +358,12 @@ $\blacksquare$ discuss the results here
 
 \vspace{1mm}
 \noindent \textbf{\textit{Summary.}} Using thin slicing to identify
-the affected predicates produces more accurate results than using
-full slicing. Monitoring dynamic behaviors of the affected
+the affected predicates leads to more accurate diagnosis than using
+full slicing. Monitoring the runtime behaviors of the affected
 predicates is more effective in diagnosing a configuration error
-than statement-level profiling and method-level invariant detection.
-Dynamic information flow-based approach is slightly precise in diagnosing
-a crashing error, but fails to diagnose non-crashing errors.
+than using statement-level profiling and method-level invariant detection.
+Dynamic information flow-based approach is slightly better in diagnosing
+crashing errors than \ourtool, but fails to diagnose non-crashing errors.
 
 \subsubsection{Effects of Varying Comparison Traces}
 \label{sec:ranking}
@@ -378,6 +387,8 @@ a crashing error, but fails to diagnose non-crashing errors.
  4. Synoptic & 1 & 1 & 1\\
  5. Soot & 13 & 13 & 3\\
 \hline
+Average & 7.6 & 8.2 & 1.6 \\
+\hline
 \hline
 \multicolumn{4}{|l|}{Crashing errors}   \\
 \hline
@@ -390,6 +401,8 @@ a crashing error, but fails to diagnose non-crashing errors.
  12. JChord & 1 & 1 &1\\
  13. JChord & 25 & 25 &1\\
  14. JChord & 8 & 8 &8\\
+\hline
+Average & 9.4 & 9.4 & 6.7\\
 \hline
 \end{tabular}
 
@@ -443,27 +456,28 @@ shows the results.
 \hline
 \multicolumn{4}{|l|}{Non-crashing errors}   \\
  \hline
- 1. Randoop & 50 & $<$ 1 & \\
- 2. Weka & 43 & $<$ 1 & \\
- 3. JChord & 147 & 82 & \\
- 4. Synoptic & 24 & $<$ 1 & \\
- 5. Soot & 95 & 21 & \\
+ 1. Randoop & 50 & $<$ 1 & 1.1\\
+ 2. Weka & 43 & $<$ 1 & 1.2 \\
+ 3. JChord & 147 & 82 & 13.2\\
+ 4. Synoptic & 24 & $<$ 1 & 3.6 \\
+ 5. Soot & 95 & 21 & 3.1 \\
+\hline
+Average & 72 & 21 & 4.4\\
 \hline
 \hline
 \multicolumn{4}{|l|}{Crashing errors}   \\
 \hline
- 6. JChord & 147 &  &\\
- 7. JChord & 147 &  &\\
- 8. JChord & 147 &  &\\
- 9. JChord & 147 &  &\\
- 10. JChord & 147 &  &\\
- 11. JChord & 147 &  &\\
- 12. JChord & 147 &  &\\
- 13. JChord & 147 &  &\\
- 14. JChord & 147 &  &\\
+ 6. JChord & 147 & 79 & 2.4\\
+ 7. JChord & 147 & 75 & 1.4\\
+ 8. JChord & 147 & 17 &1.5\\
+ 9. JChord & 147 & 30 & 28.5\\
+ 10. JChord & 147 & 13 &13.7\\
+ 11. JChord & 147 & 10 &65.1 \\
+ 12. JChord & 147 & 83 &1.6\\
+ 13. JChord & 147 & 8 &1.9\\
+ 14. JChord & 147 & 80 &1.4\\
 \hline
-\hline
-Average & & &\\
+Average & 147 & 44 & 13\\
 \hline
 \end{tabular}
 
@@ -474,16 +488,21 @@ two parts: computing thin slices and diagnosing
 an error.}}
 \end{table}
 
-Overall, \ourtool performs very well on these errors.
+The performance of \ourtool is reasonable.
 On average, it uses $\blacksquare$ minutes to
 diagnose one configuration error. The time cost for
 computing a thin slice from each configuration option
 is high. However, this step is one-time effort
-for each program and the computed results can be cached for future use.
+for each program and the computed results can be cached
+to share across diagnosis. %for future use.
 
+The performance overhead to reproduce the buggy behavior varies
+among applications.
 The performance overhead in error reproduction,
 admittedly high, has nonetheless proved acceptable
-for offline error diagnosis.
+for offline error diagnoses.
+
+The size of trace files in the database $\blacksquare$
 
 
 %The performance of \ourtool is reasonable. The time to diagnose

@@ -1,5 +1,4 @@
-\ourtool starts error diagnosis 
-after obtaining the trace from
+\ourtool starts error diagnosis after obtaining the trace from
 an erroneous execution. It first compares it with
 existing traces from known correct executions, selects
 similar traces for comparison (Section~\ref{sec:similar}),
@@ -66,39 +65,74 @@ to find a similar one from the database.
 
 
 The comparison between an erroneous trace with a set
-of \textit{similar} traces forms a basis for our
+of \textit{similar} and \textit{correct} traces forms a basis for our
 automated error diagnosis approach. 
 The behavioral differences in the recroded predicate profiles provide evidence for what parts of a program might be
 incorrect and why. %This helps to further reason about its root cause.
 
+Given a predicate, there are two primary variables to
+characterize its dynamic behavior: the number of executions
+observed, and the ratio of it being evaluated to true.
 
-For an recorded predicate profile $p$, \ourtool uses the following $Deviation$ metric
-to characterize its deviation degree between two traces $t_1$ and $t_2$:
 
-\[
-\|Deviation|(p) = |\phi(t_1, p) - \phi(t_2, p)|
-\]
+Ideally, we would like to have a metric that
+is precise enough to capture the predicates' behaviors
+in the known correct traces, but is robust enough and
+able to tolerate small noises so that it does
+not overfit a specific trace.
+
+Looking more closely, we realized that although
+the general execution control flows may be similar for many correct
+traces under similar inputs, the absolute execution number of the same predicate
+can vary greatly across traces, since it may
+largely depend on the given inputs. Moreover, $\blacksquare$ it is entirely
+possible that in two traces , a predicate's is only executed
+in very few times but the true ratios are dramatically different.
+%As another example, some program has preprocessing... $\blacksquare$
+
+
+%Thus, if we can generate a signature that
+%captures the execution path of a predicate, we should be
+%able to more precisely identify a configuration error
+
+$\blacksquare$Thus, we are looking for metrics that can identify
+predicates with high sensitivity, meaning the predicate's true
+ratio accounts for error. But we also want
+high specificity, meaning predicates that do not mis-characterize
+a predicate's behavior only based on a small number of
+observed executions. To do so, we define the following
+$\phi$ metric by using a standard way to
+combine sensitivity and specificity to compute their
+harmonic mean; this metric prefers high scores in both dimensions. 
+
+\vspace{-3mm}
 
 \[
 \|\phi|(t, p) = \frac{2}{{1}/{\|trueRatio|(t, p)} + {1}/{totalExecNum(t, p)}}
 \]
 
-$trueRatio(t, p)$ is a function that returns the ratio of the predicate $p$ being
+In $\phi(t, p)$, $trueRatio(t, p)$ is a function that returns the ratio of the predicate $p$ being
 evaluated to true in trace $t$, and $totalExecNum(p)$ is a function
 that returns the total number of predicate $p$ being executed in trace $t$.
 
-The metric $\phi$ has some good properties in characterizing the
+Metric $\phi$ has some good properties in characterizing the
 runtime behaviors of a predicate $p$.$\blacksquare$.
-%The intuition behind is that \ourtool determines that
-%altering a configuration option may change the application’s
-%control flow such that it deviates from the correct trace,
-% it reports that option as a possible root cause.
-It balances
-a predicate's evaluation result and the total number of executions.
+It balances a predicate's evaluation result and the total number of executions.
 Intuitively, for two predicates $p_1$ and $p_2$, if they have the same
 the true ratio but $p_1$ has been observed in more executions, we
 should have more confidence in its statistical significance. $\blacksquare$
 (the wording here is bad)
+
+To capture behavioral difference of a predicate profile $p$
+across trace, we devise the  $Deviation$ metric
+to characterize its deviation degree between two traces $t_1$ and $t_2$:
+
+\vspace{-3mm}
+
+\[
+\|Deviation|(p) = |\phi(t_1, p) - \phi(t_2, p)|
+\]
+
 
 
 After comparing the erroneous trace with one selected correct trace,
@@ -124,13 +158,17 @@ configuration options in the output.
 the affecting configuration options of each deviated predicate.
 It identifies the configuration option
 affecting the highest ranked predicate profile as the most likely
-root cause; in the case of ties, it ranks all tied options
-based on the shortest distance from the initialization
-statement of a configuration option to the crashing point
-in the system dependence graph constructed by thin slicing. 
-The intuition behind is that when multiple options are equally
-responsible for one predicate, the closest option is more likely
-to be the root cause and should be inspected first.
+root cause; in the case of ties, we use a simple heuristic to break it.
+The heuristic prefers configuration options whose initialization
+statements are \textit{closer} to the
+crashing point. Intuitively, statements closer to the
+crashing point seem more likely to be relevant to its behavior.
+Hence, we assume the user gradually explores statements of
+increasing distance (defined by the dependence graph of thin slicing)
+from the crashing point until the desired statements (where a configuration
+option is initialized) are found; a breadth-first
+search of the dependence graph simulates this strategy.
+
 
 When multiple correct traces are selected for comparison,
 \ourtool first produces a ranked list of suspicious
