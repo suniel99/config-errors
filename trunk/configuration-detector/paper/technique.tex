@@ -1,7 +1,7 @@
 \section{Technique}
 \label{sec:technique}
 
-We model configurations as a set of key-value pairs, where
+We model a configuration as a set of key-value pairs, where
 the keys are strings and the values have arbitrary type. This is
 a common abstraction offered
 by the POSIX system environment, the Java Properties API,
@@ -16,12 +16,12 @@ It first performs a propagation analysis to identify
 the affected predicates for each configuration option (Section~\ref{sec:prop}).
 After that, our technique \textit{selectively} instruments
 the program on the affected predicates. 
-To diagnose an error, users run the instrumented program
-with the error-revealing inputs and configurations
- to obtain an execution trace (Section~\ref{sec:profiling}).
+To diagnose an error, a user runs the instrumented program
+with the error-revealing input and configuration
+to obtain an execution trace (Section~\ref{sec:profiling}).
 Then, our technique analyzes the obtained trace
 to identify the behaviorally-deviated predicates and their
-responsible options as the root causes (Section~\ref{sec:analysis}).
+responsible options, and reports these to the user (Section~\ref{sec:analysis}).
 
 %The output error report is a ranked list
 %of suspicious configuration options that may cause the exhibited problem.
