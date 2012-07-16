@@ -1,10 +1,9 @@
 \ourtool starts error diagnosis after obtaining the trace from
-an erroneous execution. It first compares it with
-existing traces from known correct executions, selects
-similar traces for comparison (Section~\ref{sec:similar}),
-identifies the most behavioral-deviated predicates
+an erroneous execution. It first selects similar
+traces from the database (Section~\ref{sec:similar}), compares it with
+the erroneous one to identify the most behavioral-deviated predicates
 (Section~\ref{sec:deviation}), and then determines
-the most likely responsible options (Section~\ref{sec:linking}).
+the likely responsible options (Section~\ref{sec:linking}).
 
 
 \subsubsection{Selecting Similar Traces for Comparison}
@@ -24,7 +23,7 @@ the observed predicate profiles into a $n$-dimensional
 vector $v_{t}$ =$\langle r_{t1}, r_{t2}, ..., r_{tn}\rangle$ , where $n$
 is the number of all possible predicate profiles in the program
 and each $r_{ti}$ is the ratio of the $i$-th predicate profile being evaluated
-to true at runtime in the trace $t$. For one trace, if a predicate is not executed,
+to true at runtime in $t$. For one trace, if a predicate is not executed,
 \ourtool uses \CodeIn{N/A} as its true ratio.
 
 
@@ -71,23 +70,26 @@ The behavioral differences in the recroded predicate profiles provide evidence f
 incorrect and why. %This helps to further reason about its root cause.
 
 Given a predicate, there are two primary variables to
-characterize its dynamic behavior: the number of executions
-observed, and the ratio of it being evaluated to true.
+characterize its dynamic behavior: the number of the
+observed executions, and the ratio of it being evaluated to true.
 
 
 Ideally, we would like to have a metric that
-is precise enough to capture the predicates' behaviors
-in the known correct traces, but is robust enough and
+is precise enough to capture the desirable predicates' behaviors
+from the known correct traces, but is robust enough and
 able to tolerate small noises so that it does
 not overfit a specific trace.
-
-Looking more closely, we realized that although
-the general execution control flows may be similar for many correct
+Looking more closely, we found that although
+the general execution control flows may be similar for many 
 traces under similar inputs, the absolute execution number of the same predicate
 can vary greatly across traces, since it may
-largely depend on the given inputs. Moreover, $\blacksquare$ it is entirely
-possible that in two traces , a predicate's is only executed
-in very few times but the true ratios are dramatically different.
+largely depend on the given inputs. Moreover, for
+some predicates, it is entirely possible they are
+only executed very few times but the true ratios
+are dramatically different in difference traces.
+
+%that in two traces , a predicate's is only executed
+%in very few times but the true ratios are 
 %As another example, some program has preprocessing... $\blacksquare$
 
 
@@ -95,7 +97,7 @@ in very few times but the true ratios are dramatically different.
 %captures the execution path of a predicate, we should be
 %able to more precisely identify a configuration error
 
-$\blacksquare$Thus, we are looking for metrics that can identify
+Thus, we are looking for metrics that can identify
 predicates with high sensitivity, meaning the predicate's true
 ratio accounts for error. But we also want
 high specificity, meaning predicates that do not mis-characterize

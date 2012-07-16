@@ -20,7 +20,7 @@ such as monitoring statement-level coverage
 or method-level invariant yields less accurate results.
 
 
-To identify predicates affected by a configuration option, a straightforward
+To identify the predicates affected by a configuration option, a straightforward
 way is using program slicing~\cite{Horwitz:1988} to compute
 a forward slice from the initialization statement of a
 configuration option. Unfortunately, traditional slicing has
@@ -28,30 +28,31 @@ several limitations that prevent it from being used.
 First, traditional slicing does not distinguish flows along
 pointers from flows along values; thus, a resulting slice includes all statements that
 \textit{may} affect a point of interest and often grows too large. Second,
-in our context of configuration error diagnosis,
-when having no knowledge of what inputs a software user would provide,
-traditional slicing captures every single detail of the program,
-much of which may not be needed at all by pinpointing an incorrect
-configuration option value. $\blacksquare$ this second claim needs revising.
+many statements included in the resulting slice are indirectly
+affected by a configuration option value but may not be pertinent
+to the task of diagnosing a configuration error.
+Monitoring the control flow of such indirectly-affected statements 
+and then linking their behaviors to specific configuration option values
+may lead to less accurate diagnosis.
 
 Take the code in Figure~\ref{fig:example} as an example to illustrate
 this problem.  Traditional slicing concludes that the predicates
 in lines 104, 312, and 315 are affected by the configuration option \CodeIn{maxsize}.
-However, the predicates in lines 104 and 315, though can be
-affected by the \CodeIn{maxsize}, are actually not closely related
-to the value of \CodeIn{maxsize}. $\blacksquare$
-Specifically, whether a sequence has an active flag (line 104) or
-whether a sequence has been executed before (line 315)
-is largely independent with its length, as long as the
-sequence is not discarded. Thus, monitoring
-such slightly-related predicates (computed by full slicing) and linking their behaviors with a
-configuration option may decrease the diagnosis accuracy.
+However, the predicates in lines 104 and 315, though possibly
+affected by the \CodeIn{maxsize}, are actually irrelevant
+to \CodeIn{maxsize}'s value. That is, the value of \CodeIn{maxsize}
+controls the length of a generated a sequence rather
+than deciding whether a sequence has an active flag (line 104) or
+a sequence has been executed before (line 315).
+
+%such slightly-related predicates (computed by full slicing) and linking their behaviors with a
+%configuration option may decrease the diagnosis accuracy.
 %This has also been confirmed by our experiments.
 
 %However, if the provided input changes the workflow,
 %instead of all data flow into it. 
 
-To overcome this limitation, our technique uses thin
+To address this limitation, our technique uses thin
 slicing~\cite{Sridharan:2007} as a manner to include
 \textit{only} statements that are \textit{directly} affected by a configuration option.
 Differing from traditional slicing, thin slicing
@@ -60,7 +61,7 @@ seed is the initialization statement of a configuration option), ignoring the
 control flow dependencies as well as the uses of
 base pointers. By doing this, thin slicing improves the relevance
 of the slice by only including the statements that compute
-and copy a value to the seed.
+and copy a value to a configuration option.
 This property separates
 pointer computations from the flow of configuration option value,
 naturally connects a configuration option with its

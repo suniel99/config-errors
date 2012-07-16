@@ -4,14 +4,14 @@ at runtime.
 
 The instrumentation step simply inserts 2 statements
 before and after each affected predicate to monitor
-its behavior before and after being evaluated, respectively. Take
+its behavior. Take
 the code in Figure~\ref{fig:example} as an example.
 The predicate at line 312 is affected by
 the configuration option \CodeIn{maxsize}. \ourtool inserts
 one instrumentation statement before line 312 to
-keep track of the number of the predicate being executed, and
+keep track of the number of the predicate being evaluated, and
 inserts another statement after line 312 to count the number
-of the predicate being evaluated to true, as follows.
+of the predicate being evaluated to true.
 
 
 \begin{CodeOut}
@@ -28,7 +28,7 @@ of the predicate being evaluated to true, as follows.
 \end{CodeOut}
 
 
-Executing the instrumented program with inputs and configurations
+Executing the instrumented program
 produces a trace, which consists of a set of \textit{predicate profiles}.
 Each predicate profile corresponds to a pair of configuration option
 and one of its affected predicates. A predicate profile also includes
@@ -39,6 +39,7 @@ profile to capture this observation as follows:
 
 $\langle$ \CodeIn{``maxsize''}, \CodeIn{``newSequence.size() > maxsize''}, 100, 30$\rangle$ 
 
+\vspace{1mm}
 
 
 %\ourtool expresses an execution as
