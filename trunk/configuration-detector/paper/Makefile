@@ -20,7 +20,7 @@ main.dvi:
 main.ps: main.dvi
 	dvips main
 
-main.pdf: main.dvi ${PDF_FIGURES}
+main.pdf: main.dvi
 	pdflatex main
 
 TAGS: tags
