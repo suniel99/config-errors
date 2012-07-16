@@ -11,16 +11,16 @@ clean:
 	rm main.log
 	rm main.bbl
 
-autodoc.dvi:
+main.dvi:
 	latex main.tex
 	bibtex main
 	latex main.tex
 	latex main.tex
 
-autodoc.ps: main.dvi
+main.ps: main.dvi
 	dvips main
 
-autodoc.pdf: main.dvi ${PDF_FIGURES}
+main.pdf: main.dvi ${PDF_FIGURES}
 	pdflatex main
 
 TAGS: tags
