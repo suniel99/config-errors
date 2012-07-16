@@ -1,21 +1,17 @@
 \begin{abstract}
 
-Moderm software often requires substantial configuration
-before being used. Small configuration errors can lead to
-hard-to-diagnose erreneous behaviors.
-%Software configuration errors are often time-consuming
-%and difficult to diagnosize.
-In this paper, we focus specifically on software configuration errors,
-in which the application code is correct, but the software
-is inappropriately configured so that it does not
-behave as desired. 
+The behavior of a software system often depends on how that system is
+confifured. 
+Small configuration errors can lead to
+hard-to-diagnose undesired behaviors.
 We present a technique (and its tool implementation,
-called \ourtool) to identify the root cause of configuration errors.
+called \ourtool) to identify the root cause of a configuration error ---
+a single configuration option that can be changed to produce desired behavior.
 Our technique differs from existing approaches in
-two key aspects: it does \textit{not}
+two key aspects: it does not
 require users to provide a testing oracle (to check whether
-the software functions correctly) and thus is fully-automated; and it is
-capable to diagnose both \textit{crashing} and \textit{non-crashing}
+the software functions correctly) and thus is fully-automated; and it can
+diagnose both crashing and non-crashing
 errors.
 
 %, and uses statistical inference to link the observed
@@ -27,13 +23,24 @@ errors.
 %We have built a tool called \ourtool for Java software.
 We evaluated \ourtool on \noncrash non-crashing configuration errors
 and \crash crashing configuration errors from
-\subjectnum configurable software systems. \ourtool identifies the
-source of the misconfiguration
-as the top 3 root cause for \topnum out of all \errors errors,
-making it a promising solution. %in automated debugging. %error diagnosis. %alternative to manual debugging.
+\subjectnum configurable software systems written in Java.
+On average, the root cause was \ourtool's fifth-ranked suggestion, and more
+than half of the time, the root cause was the first suggestion.
+
+% \ourtool identifies the
+% source of the misconfiguration
+% as the top 3 root cause for \topnum out of all \errors errors,
+% making it a promising solution. %in automated debugging. %error diagnosis. %alternative to manual debugging.
 
 %that xxx -- \ourtool uses these
 %xxx to link the erroneous behavior to specific configuration options. Our
 %results using \ourtool to solve misconfigurations in xxx, xxx, xxx show
 %that \ourtool identifies the soruce of the misconfiguration xxxx.
+
+\todo{Add this somewhere in the abstract:  Our technique uses static analysis,
+dynamic profiling, and statistical analysis to link the
+erroneous behavior to specific configuration options.}
+
 \end{abstract}
+
+\label{fake-label-for-etags}
