@@ -7,7 +7,10 @@ hard-to-diagnose undesired behaviors.
 We present a technique (and its tool implementation,
 called \ourtool) to identify the root cause of a configuration error ---
 a single configuration option that can be changed to produce desired behavior.
-Our technique differs from existing approaches in
+Our technique uses static analysis,
+dynamic profiling, and statistical analysis to link the
+undesirable behavior to specific configuration options.
+It differs from existing approaches in
 two key aspects: it does not
 require users to provide a testing oracle (to check whether
 the software functions correctly) and thus is fully-automated; and it can
@@ -37,9 +40,9 @@ than half of the time, the root cause was the first suggestion.
 %results using \ourtool to solve misconfigurations in xxx, xxx, xxx show
 %that \ourtool identifies the soruce of the misconfiguration xxxx.
 
-\todo{Add this somewhere in the abstract:  Our technique uses static analysis,
-dynamic profiling, and statistical analysis to link the
-erroneous behavior to specific configuration options.}
+%\todo{Add this somewhere in the abstract:  Our technique uses static analysis,
+%dynamic profiling, and statistical analysis to link the
+%erroneous behavior to specific configuration options.}
 
 \end{abstract}
 
