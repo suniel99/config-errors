@@ -42,15 +42,17 @@ makes many well-known
 techniques such as dynamic slicing~\cite{Zhang:2003:PDS},
 dynamic information flow tracking~\cite{Attariyan:2010:ACT}, and
 failure trace analysis~\cite{Rabkin:2011:PPC} inapplicable.
-In addition, for this scenario, there is no obvious testing oracle\todo{Why
-  not?  Wouldn't ``some output vs.\ no output'' be a testing oracle?} to check whether
-Randoop behaves as desired, which further makes 
-search-based fault isolation techniques such as Delta debugging~\cite{Zeller:2002:ICC}
-ineffective. Moreover, the person who reported the bug had already
+In addition, for this scenario, the person who reported the bug had already
 minimized the bug report:  if any part of the 
-configuration or
-input is removed, Randoop either crashes or
+configuration or input is removed, Randoop either crashes or
 no longer exhibits this error.
+This further makes 
+search-based fault isolation techniques such as Delta debugging~\cite{Zeller:2002:ICC}
+ineffective.
+
+%there is no obvious testing oracle\todo{Why
+%  not?  Wouldn't ``some output vs.\ no output'' be a testing oracle?} to check whether
+%Randoop behaves as desired, which  Moreover, 
 
 In fact, this bug report does not reveal a real bug
 in the Randoop code. Its root cause is simply because
@@ -139,13 +141,20 @@ the user changes \CodeIn{maxsize} to a larger value, for example 500.
 
 \begin{figure}[t]
 \vspace{-2mm}
-{In class: randoop.ForwardGenerator}\\
+{In class: randoop.main.GenInputsAbstract}\\
 %\small{//a configuration option to control a sequence's max length}
-\vspace{-4mm}
+\vspace{-5mm}
 \begin{CodeOut}
 \begin{alltt}
-int maxsize = readFromCommandLine(); //{initialize the option value}
+     //{initialize the option value}
+157. public static int maxsize = readFromCommandLine(); 
+\end{alltt}
+\end{CodeOut}
 
+{In class: randoop.ForwardGenerator}\\
+\vspace{-5mm}
+\begin{CodeOut}
+\begin{alltt}
 99.  public ExecutableSequence step() \ttlcb
 100.   ExecutableSequence eSeq = createNewUniqueSequence();
 101.   AbstractGenerator.currSeq = eSeq.sequence;
@@ -159,7 +168,7 @@ int maxsize = readFromCommandLine(); //{initialize the option value}
 
 310. private ExecutableSequence createNewUniqueSequence() \ttlcb
 311.   Sequence newSequence = ...; //sequence creation step omitted
-312.   if (newSequence.size() > maxsize) \ttlcb
+312.   if (newSequence.size() > GenInputsAbstract.maxsize) \ttlcb
 313.     return null;
 314.   \ttrcb
 315.   if (this.allSequences.contains(newSequence)) \ttlcb
@@ -173,7 +182,7 @@ int maxsize = readFromCommandLine(); //{initialize the option value}
 \vspace*{-3.0ex} \Caption{{\label{fig:example} 
 Simplified code excerpt from Randoop~\cite{randoop}
 corresponding to the configuration problem reported in Figure~\ref{fig:output}.
-\todo{Need line number for \<int maxsize = ...> line at top.}
+%\todo{Need line number for \<int maxsize = ...> line at top.}
 %A forward slice computed by the traditional slicing algorithm~\cite{Horwitz:1988:ISU}
 %from the seed statement includes statements 2, 3,
 %4, 5, 6, 7, 9, 13, 14, 16, 17, and 19.
@@ -214,7 +223,7 @@ to statically identify its affected predicates in the source code.
 
 \item \textbf{Configuration Behavior Profiling}. \ourtool
 \textit{selectively} instruments the program-to-diagnose
-so that it and records the runtime behaviors of affected predicates
+so that it records the runtime behaviors of affected predicates
 in a trace file.
 %diagnosed code when erroneous behavior
 %is observed.
@@ -226,9 +235,9 @@ reproduces the error using the instrumented version of the program.
 similar as possible to the incorrect one.
 Then, it identifies the predicates whose dynamic behaviors deviate the most
 between correct and incorrect executions.
-\ourtool uses\todo{vague; clarify} the obtained deviated predicates to
-identify the likely root causes.  Finally, it
-outputs a ranked list of suspicious options and explanations.
+For each deviated predicate, \ourtool further identifies
+its affecting configuration options as the likely root causes.
+Finally, it outputs a ranked list of suspicious options and explanations.
 % (between
 %the erroneous execution and the selected correct executions).
 
@@ -274,8 +283,7 @@ why a configuration option is suspicious.
 Most existing techniques~\cite{Rabkin:2011:PPC,
 Whitaker:2004:CDS, Attariyan:2010:ACT} focus exclusively on configuration errors
 that cause a crash point, an error message, or a stack trace
-, while
-By contract, \ourtool diagnoses
+, while by contract, \ourtool diagnoses
 ignoring configuration problems that manifest themselves as
 either visible or silent failures.
 
@@ -337,10 +345,7 @@ error troubleshooting~\cite{Whitaker:2004:CDS}.% or dynamic taint tracking~\cite
 
 
 
-
-
 \input{workflow-fig}
-
 
 %\vspace{1mm}
 %\noindent \textbf{\textit{Evaluations.}} 
@@ -355,37 +360,32 @@ cases, the root cause was \ourtool's first report.
 % This permits \ourtool user to focus on a few specific configuration
 % options when deciding how to fix the problem. 
 Assuming the database of correct executions already exists,
-\ourtool takes less than $\blacksquare$ minutes on average to diagnose
+\ourtool takes less than 4 minutes on average to diagnose
 one error.  \ourtool's accuracy and speed make it an attractive alternative
 to manual debugging.
 
-\todo{Defer most or all of the below details, especially ones related to
-  internal implementation choices.  This is too many low-level details at
-  this point in the paper.}
+%\todo{Defer most or all of the below details, especially ones related to
+%  internal implementation choices.  This is too many low-level details at
+%  this point in the paper.}
 
-We compared \ourtool to three variants and one\todo{explain why only one}
-existing technique. The first variant replaces
-thin slicing with traditional slicing~\cite{Horwitz:1988}
-to identify affected predicates for each
-configuration option. The second and third variant use
-statement-level profiling~\cite{Jones:2002} and method-level
-invariant detection~\cite{Ernst:1999}
-to replace the predicate-level profiling in
-\ourtool, respectively.
-The existing technique, called ConfAnalyzer~\cite{Rabkin:2011:PPC}, is
-based on dynamic information flow analysis to reason
-about the root cause of a configuration error.
-Our experimental results show that: using thin slicing
-provides more accurate diagnosis results than traditional
-slicing; and \ourtool significantly outperformed the
-other two variants, suggesting
-that focusing on the behavior of relevant program predicates can be a
-better choice. 
-Compared to ConfAnalyzer~\cite{Rabkin:2011:PPC}, 
+We compared \ourtool to three variants and one existing
+technique, called ConfAnalyzer~\cite{Rabkin:2011:PPC}.
+The three variants is based on \ourtool, but use different
+abstractions rather than
+the affected predicates as computed by thin slicing in
+error diagnosis. ConfAnalyzer, one of the most precise
+configuration error diagnosis technique, uses dynamic
+information flow anlaysis to reason about the root cause of a
+configuration error.
+Our experimental results show that \ourtool significantly
+outperformed three variants.
+Compared to ConfAnalyzer,
 \ourtool produced accurate diagnosis information for the 5
 non-crashing errors that ConfAnalyzer failed to diagnose,
 and produced better or the same results
 for 6 out of the \crash crashing errors. 
+
+
 
 Finally, we investigated the effects of varying the comparison traces
 from \ourtool's database.
