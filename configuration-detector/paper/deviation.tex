@@ -1,30 +1,33 @@
 \ourtool starts error diagnosis after obtaining the trace from
-an erroneous execution. It first selects similar
-traces from the database (Section~\ref{sec:similar}), compares it with
+an erroneous execution. It selects similar
+traces from know correct executions (Section~\ref{sec:similar}), compares
+each selected trace with
 the erroneous one to identify the most behavioral-deviated predicates
 (Section~\ref{sec:deviation}), and then determines
-the likely responsible options (Section~\ref{sec:linking}).
+the likely responsible configuration options (Section~\ref{sec:linking}).
 
 
 \subsubsection{Selecting Similar Traces for Comparison}
 \label{sec:similar}
 
 \ourtool's database contains a number of
-traces from known correct executions, in which one trace
-can be dramatically different from another. To
-determine how and why the observed trace behaves
+traces from known correct executions.  These traces
+can be dramatically different from another.  To avoid reporting irrelevant
+differences when 
+determining how and why the observed trace behaves
 differently from the correct ones, \ourtool first
 compares the erroneous trace with the existing
-correct traces, and selects a set of similar ones
+correct traces, then selects a set of similar ones
 as the basis of diagnosis.
 
 Given a trace $t$, \ourtool first aggregates
 the observed predicate profiles into a $n$-dimensional
-vector $v_{t}$ =$\langle r_{t1}, r_{t2}, ..., r_{tn}\rangle$ , where $n$
+vector $v_{t}$ =$\langle r_{t1}, r_{t2}, ..., r_{tn}\rangle$, where $n$
 is the number of all possible predicate profiles in the program
-and each $r_{ti}$ is the ratio of the $i$-th predicate profile being evaluated
-to true at runtime in $t$. For one trace, if a predicate is not executed,
-\ourtool uses \CodeIn{N/A} as its true ratio.
+and each $r_{ti}$ is a ratio representing how often the $i$-th predicate
+profile evaluated
+to true at runtime in $t$. For each trace, if a predicate is not executed,
+\ourtool uses \CodeIn{N/A} as its ratio.
 
 
 \ourtool computes the distance between two traces $t_1$ and $t_2$ using
@@ -46,11 +49,13 @@ the following equations:
 
 
 $\blacksquare$ need to illustrate why use the distance metric.
+\todo{Also explain/justify.  Give intuition for the metric.}
 
 Given an erroneous trace, \ourtool selects all traces from the database
 with a distance below a threshold (default value: 0.3 as used in our
 experiments).
 
+\todo{Mike does not understand this paragraph.}
 For the trace produced in a crashing error, \ourtool 
 chops a correct trace from the database by only remaining the predicate
 profiles covered by the erroneous trace. \ourtool performs
@@ -63,10 +68,13 @@ to find a similar one from the database.
 \label{sec:deviation}
 
 
-The comparison between an erroneous trace with a set
-of \textit{similar} and \textit{correct} traces forms a basis for our
-automated error diagnosis approach. 
-The behavioral differences in the recroded predicate profiles provide evidence for what parts of a program might be
+Our
+automated error diagnosis approach compares an erroneous trace with a set
+of \textit{similar} and \textit{correct} traces. 
+\todo{I like the following sentence.  This intuition should appear in the
+  introduction as well.  The introduction should say what we do (it does
+  this) and also give a hint as to the approach.}
+The behavioral differences in the recorded predicate profiles provide evidence for what parts of a program might be
 incorrect and why. %This helps to further reason about its root cause.
 
 Given a predicate, there are two primary variables to
@@ -152,15 +160,16 @@ a decreasing order based on the computed $Deviation$ value.
 \label{sec:linking}
 
 
-\ourtool finally links those behavioral-deviated
-predicate profiles to their root causes, and ranks the suspicious
-configuration options in the output.
+\ourtool finally links the behavioral-deviated
+predicate profiles to their root causes, and outputs a ranked list of suspicious
+configuration options.
 
-\ourtool consults the results of thin slicing to identify
-the affecting configuration options of each deviated predicate.
+\ourtool consults the results of thin slicing (computed in the propagation
+analysis phase, Section~\ref{sec:propagation}) to determine which
+configuration options affect each deviated predicate.
 It identifies the configuration option
 affecting the highest ranked predicate profile as the most likely
-root cause; in the case of ties, we use a simple heuristic to break it.
+root cause.  It uses a simple heuristic to break ties.
 The heuristic prefers configuration options whose initialization
 statements are \textit{closer} to the
 crashing point. Intuitively, statements closer to the
@@ -178,7 +187,8 @@ configuration options for each comparison pair, and then outputs
 a final list by using majority voting over all ranking lists.
 In the final ranking list, one configuration option ranks higher
 than another if it ranks higher in more than half of the ranking lists.
-
+\todo{Such a ranking can have cycles.  Does the implementation suffer this
+  problem?}
 
 %as being equally likely to be the root cause.
 

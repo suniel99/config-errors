@@ -2,20 +2,20 @@
 \label{sec:implementation}
 
 We implemented a tool, called \ourtool, on top of the WALA
-framework~\cite{wala}. Our tool analyzes the bytecode.
-It first statically computes the affected predicates
+framework~\cite{wala}. Our tool analyzes Java bytecode.
+It statically computes the affected predicates
 for each configuration option, assigns a unique
-ID for each affect predicate, and then performs offline instrumentation.
-The behaviors of all affected predicates recording at runtime are 
-kept in a trace file. 
+ID for each affected predicate, and then performs offline instrumentation.
+The runtime behavior of all affected predicates are recorded
+in a trace file. 
 
 %Using the trace file,
 %\ourtool works in a fully automatic and
 %push-button way, and scales to realistic programs.
 
-It is worth noting that after compiled into bytecode,
+After being compiled into bytecode,
 a predicate in Java source code may be translated into multiple bytecode
-instructions. Thus, a computed thin slice
+instructions. Thus, a computed thin slice may
 miss predicates that should be included.
 Consider the following simplified code snippet from JChord~\cite{jchord}
 and its translated WALA bytecode:
