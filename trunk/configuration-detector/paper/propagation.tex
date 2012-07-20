@@ -25,16 +25,16 @@ because it includes too much of the program.  This is due to conservatism
 (for example, in handling pointers) and to following both data and control
 dependences.
 
-\todo{I propose to cut this paragraph; it feels redundant with the above.}
-First, traditional slicing does not distinguish flows along
-pointers from flows along values; thus, a resulting slice includes all statements that
-\textit{may} affect a point of interest and often grows too large. Second,
-many statements included in the resulting slice are indirectly
-affected by a configuration option value but may not be pertinent
-to the task of diagnosing a configuration error.
-Monitoring the control flow of such indirectly-affected statements 
-and then linking their behaviors to specific configuration option values
-may lead to less accurate diagnosis.
+%\todo{I propose to cut this paragraph; it feels redundant with the above.}
+%First, traditional slicing does not distinguish flows along
+%pointers from flows along values; thus, a resulting slice includes all statements that
+%\textit{may} affect a point of interest and often grows too large. Second,
+%many statements included in the resulting slice are indirectly
+%affected by a configuration option value but may not be pertinent
+%to the task of diagnosing a configuration error.
+%Monitoring the control flow of such indirectly-affected statements 
+%and then linking their behaviors to specific configuration option values
+%may lead to less accurate diagnosis.
 
 Figure~\ref{fig:example} illustrates
 this problem.  Traditional slicing concludes that the predicates
