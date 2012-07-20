@@ -44,7 +44,7 @@ responsible options, and reports these to the user (Section~\ref{sec:analysis}).
 \input{deviation}
 
 
-\subsection{Discussions}
+\subsection{Discussion}
 
 We next discuss some design issues in \ourtool.
 
@@ -63,23 +63,20 @@ is often independent of the concrete input values that a user might provide.
 
 \vspace{1mm}
 \noindent \textbf{Why not use traces from unit test executions?}
-\ourtool's database stores traces from correct 
-executions. However, it needs every trace to be complete
-(i.e., executing from the main method).
-\ourtool does not use traces from unit test executions
-because erroneous executions
-in fielded software must start from its main method, while
-a unit test merely checks the correctness
-of a single program component, and often produces
-an incomplete trace that is not representative for
+\ourtool's database stores correct traces from complete 
+executions that start at the main method.
+\ourtool does not use traces from unit test executions, which check the
+correctness
+of a single program component and produce
+an incomplete trace that is not representative of
 the whole program workflow. 
 
 
 
 \vspace{1mm}
 \noindent \textbf{Why not store traces from failing executions in the database?}
-We envision the trace database is built by developers at release.
-For a developer, it is more natural for her to provide correct execution
+We envision the trace database is built by developers at release time.
+It is more natural for a developer to provide correct execution
 traces as debugging references, instead of
 anticipating the possible errors a user may encounter.
 $\blacksquare$
@@ -100,11 +97,12 @@ of each affected predicate from correct executions in the database,
 \ourtool's effectiveness largely depends on the availability of
 similar traces from the database. For a given erroneous trace, lacking a similar
 trace in \ourtool's database may lead \ourtool to produce
-less useful reasults, and also indicates the testing inadequancy,
-We list approaches to remedy this problem as our future work. One
-possible way is to synthesize a new execution, either by
-generating new input for the program or by directly mutating a
-existing execution itself~\cite{sumnerICSE2011}.
+less useful reasults.  It also indicates inadequancy of the tests from
+which the database was constructed.
+Future work should remedy this problem. One
+possible approach is to synthesize a new execution, either by
+generating a new input for the program or by mutating an
+existing execution~\cite{sumnerICSE2011}.
 
 
 %Why dynamic slicing is not usable? No seed statement, and great overhead. Using JSlicer incurs

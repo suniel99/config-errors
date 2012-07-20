@@ -5,6 +5,24 @@
 
 Our evaluation answers the following research questions:
 
+\todo{I would organize the research questions as:
+\begin{itemize}
+\item
+How effective is \ourtool?
+\begin{itemize}
+\item
+in absolute terms
+\item
+compared to other tools
+\end{itemize}
+This can include run time
+\item
+Discussion of internal implementation choices of \ourtool
+\end{itemize}
+}
+
+\todo{Give cross-references to sections that address these.}
+
 \begin{itemize}
 \item How effective is \ourtool in diagnosing the root cause of
 a configuration error?
@@ -20,21 +38,21 @@ the existing approaches?
 
 \subsection{Subject Programs}
 
+\todo{The citations are websites.  Add academic citations as well, if
+  possible.  (If we don't have enough space, so be it.)}
+
 We evaluated \ourtool on \subjectnum Java programs shown
 in Table~\ref{tab:subjects}.
-Randoop~\cite{randoop} is a robust automated test generator
-for Java programs. Weka~\cite{weka} is a useful toolkit implementing
-a broad variety of machine learning algorithms. Our evaluation
+Randoop~\cite{randoop} is an automated test generator
+for Java programs. Weka~\cite{weka} is a toolkit that implements
+machine learning algorithms. Our evaluation
 only uses its decision tree module. JChord~\cite{jchord}
 is a program analysis platform that enables users to design, implement,
 and evaluate static and dynamic program analyses for Java.
-Synoptic~\cite{synoptic} is a tool to mine a finite state machine
+Synoptic~\cite{synoptic} mines a finite state machine
 model representations of a system from logs.
-Soot~\cite{soot} is a Java optimization framework for analyzing and transforming Java bytecode:
+Soot~\cite{soot} is a Java optimization framework for analyzing and transforming Java bytecode.
 
-As shown in Table~\ref{tab:subjects}, each subject program has a non-trivial
-codebase, and exposes a number of configuration options for users
-to customize its behaviors.
 
 \subsubsection{Configuration Errors}
 
@@ -55,6 +73,7 @@ to customize its behaviors.
 \hline
 \end{tabular}
 
+\todo{Give a date for Synoptic}
 
 \Caption{{\label{tab:subjects} Subject programs. 
 Column ``LOC'' is the number of lines of code,
@@ -73,7 +92,7 @@ is the number of traces in the pre-built database.}}
 \hline
 \multicolumn{3}{|l|}{Non-crashing errors}   \\
  \hline
- 1 & \randoop & No tests generated for NanoXML~\cite{nanoxml}\\
+ 1 & \randoop & No tests generated\\
  2 & \weka & Low accuracy of the decision tree\\
  3 & \jchord & No datarace reported for a racy program\\
  4 & \synoptic & Generate an incorrect model\\
@@ -103,38 +122,41 @@ The 9 crashing errors in the bottom table are taken from~\cite{Rabkin:2011:PPC}.
 We searched forums, FAQ pages and the literature of
 configuration error diagnosis research to find actual
 configuration problems that users have experienced with our
-target applications. Combining with our own experience,
-we chose \errors configuration errors, in which
+target applications. 
+We chose \errors configuration errors, in which
 the misconfigured values cover various data types, such as enumerated types,
 numerical ranges, regular expressions, and text entries;
 as listed in Table~\ref{tab:errors}.
+\todo{Were any of them used in previous research?  Was that the reason we
+  chose them?}
 
-\subsection{Evaluation Procedural}
+
+\subsection{Evaluation Procedure}
 
 For each subject program, we constructed a trace database
 by running existing (correct) examples from its user manual, discussion
-mailiing list, and the published papers. The number of obtained
- traces is shown in Table~\ref{tab:subjects}. 
-Constructing a trace database requires a moderate amount of
-effort and costs us 3 hours for one program, on average.
+mailiing list, and published papers\todo{any such papers should have been
+  cited above or here}.
+We spent 3 hours per program, on average, and obtained 6--16 traces.
 
 %Run examples from user manual to form the database. The effort
 %can be amortized in development time.
 
-We made a 88-line change to the JChord code. This change
-does not modify JChord's semantic; rather, it just encapsulates
-all scattered configuration option initialization statements 
-as static class fields. This is purely an implementation
+We made a simple syntactic change to JChord, which affected 88
+lines of code. This change
+does not modify JChord's semantics; rather, it just encapsulates
+scattered configuration option initialization statements 
+as static class fields. \todo{This sentence needs a rewrite:}This is purely an implementation
 choice because having a centralized initialization statement
 makes our tool implementation easier to specify the seed statement
-in performing slicing. Here is a sample modification:
-
+in performing slicing. Here is a sample modification, where 
+\<chord.kobj.k> 
+is a configuration option
+passed as a system property:
 
 
 \begin{CodeOut}
 \begin{alltt}
-   // chord.kobj.k is a configuration option
-   // passed as a system property
    public void run() \ttlcb
      ...
      int kobjK = Integer.getInteger("chord.kobj.k");
@@ -166,9 +188,9 @@ in performing slicing. Here is a sample modification:
 %To evaluate \ourtool, 
 
 When diagnosing a configuration error, we first reproduce the
-error on a \ourtool-enabled environment to obtain the
+error on a \ourtool-instrumented program to obtain the
 trace file. Then, using the obtained trace file, we use \ourtool
-to identify its root cause.
+to identify suspicious configuration options.
 
 %since we know the misconfigured, root-cause entry for each case,
 %we use the ranking of the entry as our evaluation metric.
@@ -176,7 +198,7 @@ to identify its root cause.
 We use two metrics to evaluate \ourtool's effectiveness:
 the absolute ranking of the actual root cause in \ourtool's output,
 and the time cost used in diagnosis.
-All of our experiments were run on a
+Our experiments were run on a
 2.67GHz Intel Core PC with 4GB physical memory (2GB is allocated
 for the JVM), running Windows 7.
 
@@ -188,37 +210,41 @@ for the JVM), running Windows 7.
 \setlength{\tabcolsep}{.24\tabcolsep}
 \begin{tabular}{|l||c||c|c||c|c|c||c|}
 \hline
- Error ID.  & & \multicolumn{2}{|c||}{\ourtool} & Full Slicing & Coverage Analysis& Invariant Analysis & ConfAnalyzer~\cite{Rabkin:2011:PPC}\\
+ Error ID.  & Root cause & \multicolumn{2}{|c||}{\ourtool} & Full Slicing & Coverage Analysis& Invariant Analysis & ConfAnalyzer~\cite{Rabkin:2011:PPC}\\
 \cline{3-8}
- Program & Reponsible Option & \#Cmp Traces& Rank  & Rank & Rank & Rank & Rank \\
+ Program & configuration option & \#Traces& Rank  & Rank & Rank & Rank & Rank \\
  \hline
 \hline
 \multicolumn{8}{|l|}{Non-crashing errors}   \\
  \hline
- 1. Randoop& \CodeIn{maxsize} & 10 & 1 & 46 & N & N &X \\
- 2. Weka&\CodeIn{m\_numFolds}&2&1& 9 & 4 & 5 &X\\
- 3. JChord& \CodeIn{chord.kobj.k} & 3 & 2& 73 & N &2  &X\\
- 4. Synoptic& \CodeIn{partitionRegExp}& 2 & 1& 6 & 1 & &X\\
- 5. Soot& \CodeIn{keep\_line\_number} & 1 & 3 & N & N& N &X\\
+\phz 1. Randoop& \CodeIn{maxsize} & 10 / 12 & 1 & 46 & N & N &X \\
+\phz 2. Weka&\CodeIn{m\_numFolds}&2 / 12 &1& 9 & 4 & 5 &X\\
+\phz 3. JChord& \CodeIn{chord.kobj.k} & 3 / 6 & 2& 73 & N &2  &X\\
+\phz 4. Synoptic& \CodeIn{partitionRegExp}& 2 / 6 & 1& 6 & 1 & \todo{missing?} &X\\
+\phz 5. Soot& \CodeIn{keep\_line\_number} & 1 / 16 & 3 & N & N& N &X\\
 \hline
  \multicolumn{2}{|l|}{Average}   & 3.6 & 1.6 & 33.5 & 2.5 &  & X \\
 \hline
 \hline
 \multicolumn{8}{|l|}{Crashing errors}   \\
 \hline
- 6. JChord& \CodeIn{chord.main.class}&5& 1& 5 & 1 & 4 &1\\
- 7. JChord& \CodeIn{chord.main.class}&5 & 1 & 5 & 1 & 4 &1\\
- 8. JChord& \CodeIn{chord.run.analyses}&5 & 17& 21 &14 & 17 &1\\
- 9. JChord& \CodeIn{chord.ctxt.kind}&4 & 1 & 75 & 27 & 30 &3\\
- 10. JChord& \CodeIn{chord.print.rels}& 4& 15 & 24 & 16 & 19 &1\\
- 11. JChord& \CodeIn{chord.print.classes}&4 & 16 & 22 & 15 & 18 &1\\
- 12. JChord& \CodeIn{chord.scope.kind}&5 & 1& 10 & 1 & N &1\\
- 13. JChord& \CodeIn{chord.reflect.kind} &6 & 1& 11 & 6 & 9 &3\\
- 14. JChord& \CodeIn{chord.class.path}&5 & 8 & 6 & 2 & 5 &N\\
+\phz 6. JChord& \CodeIn{chord.main.class}&5 / 6 & 1& 5 & 1 & 4 &1\\
+\phz 7. JChord& \CodeIn{chord.main.class}&5 / 6 & 1 & 5 & 1 & 4 &1\\
+\phz 8. JChord& \CodeIn{chord.run.analyses}&5 / 6 & 17& 21 &14 & 17 &1\\
+\phz 9. JChord& \CodeIn{chord.ctxt.kind}&4 / 6 & 1 & 75 & 27 & 30 &3\\
+ 10. JChord& \CodeIn{chord.print.rels}& 4 / 6& 15 & 24 & 16 & 19 &1\\
+ 11. JChord& \CodeIn{chord.print.classes}&4 / 6 & 16 & 22 & 15 & 18 &1\\
+ 12. JChord& \CodeIn{chord.scope.kind}&5 / 6 & 1& 10 & 1 & N &1\\
+ 13. JChord& \CodeIn{chord.reflect.kind} &6 / 6 & 1& 11 & 6 & 9 &3\\
+ 14. JChord& \CodeIn{chord.class.path}&5 / 6 & 8 & 6 & 2 & 5 &N\\
 \hline
  \multicolumn{2}{|l|}{Average}   & 4.7 & 6.7 & 19.8 & 9.2 & 13.3 &1.5\\
 \hline
 \end{tabular}
+
+\todo{Perhaps add a new column, after ``root cause configuration option'', giving
+  the total number of configuration options in the program.  This will
+  emphasize how good the ``rank'' numbers are.}
 
 \Caption{{\label{tab:results} Experimental results in diagnosing software
 configuration errors. Column ``Responsible Option'' shows the actual
@@ -228,8 +254,8 @@ and ``Invariant Analysis'' show the results of three variants of \ourtool
 as described in Section~\ref{sec:comparison}.
 Column ``ConfAnalyzer'' shows the results of an existing
 technique~\cite{Rabkin:2011:PPC}.
-Column ``\#Cmp Traces'' shows the number of similar traces selected
-from the pre-built database for comparison.
+Column ``\#Traces'' shows the number of similar traces selected
+from the pre-built database for comparison, and the total size of the database.
 For each technique, Column ``Rank'' shows the rank of the actual responsible
 option in its output (lower is better). ``X''
 means the technique is not applicable (i.e., requiring a crashing point), and ``N'' means the technique
@@ -293,7 +319,7 @@ directly guides users to the root cause. We speculated that $\blacksquare$
 
 
 \vspace{1mm}
-\noindent \textbf{\textit{Summary.}} \ourtool is effectively
+\noindent \textbf{\textit{Summary.}} \ourtool is effective
 in diagnosing both crashing and non-crashing configuration errors. $\blacksquare$
 As shown
 in Section~\ref{sec:results}, even a database containing
@@ -314,6 +340,13 @@ using the traditional full slicing algorithm~\cite{Horwitz:1988}.
 This variant replaces thin slicing with 
 full slicing~\cite{Horwitz:1988} in the configuration
 propagation analysis step (Section~\ref{sec:prop}).
+
+\todo{Are variants 2 and three really variants of \ourtool, or are they
+  completely different techniques that should be presented as such?  In
+  particular, can you characterize variant 2 (here and in the table) as
+  Tarantula, possibly with some small enhancements.  I have a similar
+  question about variant 3.  In any event, make clearer what part of the
+  architecture is replaced by each variant.}
 
 \vspace{1mm}
 \noindent \textbf{Variant 2. \ourtool with Coverage Analysis.}
@@ -347,8 +380,11 @@ Rabkin and Katz proposed a family of techniques to precompute possible
 configuration diagnosis for Java software~\cite{Rabkin:2011:PPC}. In their work,
 the most accurate technique (also probably one of the most precise techniques in the literature)
 is based on dynamic information flow analysis.
-This technique works remarkably well for crashing errors, but can
-not diagnose non-crashing errors.
+This technique works remarkably well for crashing errors, though as
+described above these are often easy to diagnose even without tool
+support.  ConfAnalyzer cannot diagnose non-crashing errors.
+
+\todo{Is ConfAnalyzer heavyweight?  If so, say so.}
 
 \vspace{1mm}
 
@@ -419,7 +455,8 @@ We next investigate the effect of using different trace selection strategies.
 In particular, we compare the similarity-based selection strategy used in \ourtool
  (Section~\ref{sec:similar}) with two alternatives: selecting
 all available traces in the database, and
-randomly selecting a number of traces from the database.
+randomly selecting a number\todo{Be specific about exactly how many.  Ideally it
+  would be exactly the same number, in each case, as \ourtool used.} of traces from the database.
 Table~\ref{tab:selection} shows the experimental results.
 
 We can see that varying the comparison strategy can result in
