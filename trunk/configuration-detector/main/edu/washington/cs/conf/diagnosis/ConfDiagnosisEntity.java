@@ -111,6 +111,18 @@ public class ConfDiagnosisEntity {
     	this.scoreProvenance.put(type, provenance);
     }
     
+    public String createErrorReport() {
+    	//based on the current observation
+    	String report = ExplanationGenerator.createWellFormattedExpanation(this.configFullName,
+    			this.context, this.predicateText, this.srcLineNumber,
+    			this.rawData.containsKey(RawDataType.GOOD_EVAL_COUNT) ? (Integer)this.rawData.get(RawDataType.GOOD_EVAL_COUNT) : 0,
+    			this.rawData.containsKey(RawDataType.GOOD_ENTER_COUNT) ? (Integer)this.rawData.get(RawDataType.GOOD_ENTER_COUNT) : 0,
+    			this.rawData.containsKey(RawDataType.BAD_EVAL_COUNT) ? (Integer)this.rawData.get(RawDataType.BAD_EVAL_COUNT) : 0,
+    			this.rawData.containsKey(RawDataType.BAD_ENTER_COUNT) ? (Integer)this.rawData.get(RawDataType.BAD_ENTER_COUNT) : 0);
+    	
+    	return report;
+    }
+    
     public void computeAllScores() {
     	this.computeScore(ScoreType.RATIO_DELTA);
     	this.computeScore(ScoreType.IMPORT_DELTA);
@@ -277,52 +289,5 @@ public class ConfDiagnosisEntity {
     	return this.configFullName + "@" + this.context + Globals.lineSep + "   " + this.rawData
     	    + Globals.lineSep + "   " + this.scores
     	    + Globals.lineSep + "   config entity: " + this.entity;
-    }
-    
-    /**
-     * A utility method for sorting config by its score
-     * FIXME this class may not be the right place to put
-     * */
-    public static List<ConfDiagnosisEntity> rankByCriteria(Collection<ConfDiagnosisEntity> results, ScoreType scoreType,
-    		boolean increase) {
-    	//check the existence of the scoreType
-    	for(ConfDiagnosisEntity result : results) {
-    		if(!result.hasScore(scoreType)) {
-    			result.computeScore(scoreType);
-    			Utils.checkTrue(result.hasScore(scoreType));
-    		}
-    	}
-    	//do the ranking here
-    	Map<ConfDiagnosisEntity, Float> scoreMap = new LinkedHashMap<ConfDiagnosisEntity, Float>();
-    	for(ConfDiagnosisEntity result : results) {
-    		scoreMap.put(result, result.getScore(scoreType));
-    	}
-    	List<ConfDiagnosisEntity> rankedList = Utils.sortByValueAndReturnKeys(scoreMap, increase);
-    	
-    	if(MainAnalyzer.amortizeNoise) {
-    		Map<Float, List<ConfDiagnosisEntity>> revMap = new LinkedHashMap<Float, List<ConfDiagnosisEntity>>();
-    		for(ConfDiagnosisEntity e : scoreMap.keySet()) {
-    			Float f = scoreMap.get(e);
-    			if(!revMap.containsKey(f)) {
-    				revMap.put(f, new LinkedList<ConfDiagnosisEntity>());
-    			}
-    			revMap.get(f).add(e);
-    		}
-    		Map<ConfDiagnosisEntity, Float> reweightMap = new LinkedHashMap<ConfDiagnosisEntity, Float>();
-    		for(Float score : revMap.keySet()) {
-    			Float amortize = score;
-    			if(revMap.get(score).size() >= MainAnalyzer.thresholdcount) {
-    			    amortize = score / revMap.get(score).size();
-    			}
-    			for(ConfDiagnosisEntity e : revMap.get(score)) {
-    				reweightMap.put(e, amortize);
-    			}
-    		}
-    		Utils.checkTrue(reweightMap.size() == scoreMap.size());
-    		//resort
-    		rankedList = Utils.sortByValueAndReturnKeys(reweightMap, increase);
-    	}
-    	
-    	return rankedList;
     }
 }

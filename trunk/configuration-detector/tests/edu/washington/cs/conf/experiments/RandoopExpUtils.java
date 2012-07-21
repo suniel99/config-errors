@@ -18,6 +18,10 @@ import edu.washington.cs.conf.analysis.ConfEntityRepository;
 
 public class RandoopExpUtils {
 	
+	public static String getRandoopSrcDir() {
+		return "./subjects/randoop/randoop-src";
+	}
+	
 	public static ConfEntityRepository getRandoopConfRepository(){
 		ConfEntityRepository repo = new ConfEntityRepository(getRandoopConfList());
 		return repo;
