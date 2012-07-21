@@ -33,6 +33,7 @@ to true at runtime in $t$. For each trace, if a predicate is not executed,
 \ourtool computes the distance between two traces $t_1$ and $t_2$ using
 the following equations:
 
+{\small{
 \[
 \|Distance|(t_1, t_2) = 1 - \frac{\sum_{i = 1}^{n}Delta(r_{1i}, r_{2i})^2}{n}
 \]
@@ -46,6 +47,8 @@ the following equations:
   1 & \ \mbox{if $r_1$ = \CodeIn{N/A} and $r_2$ = \CodeIn{N/A}}\\
   \CodeIn{min}\{r_2/r_1, r_1/r_2\} & \; \mbox{otherwise}\\ \end{array} \right.
 \]
+}
+}
 
 
 $\blacksquare$ need to illustrate why use the distance metric.
@@ -117,9 +120,13 @@ harmonic mean; this metric prefers high scores in both dimensions.
 
 \vspace{-3mm}
 
+{\small{
 \[
 \|\phi|(t, p) = \frac{2}{{1}/{\|trueRatio|(t, p)} + {1}/{totalExecNum(t, p)}}
 \]
+}}
+
+\vspace{-3mm}
 
 In $\phi(t, p)$, $trueRatio(t, p)$ is a function that returns the ratio of the predicate $p$ being
 evaluated to true in trace $t$, and $totalExecNum(t, p)$ is a function
@@ -137,13 +144,14 @@ To capture behavioral difference of a predicate profile $p$
 across trace, we devise the  $Deviation$ metric
 to characterize its deviation degree between two traces $t_1$ and $t_2$:
 
-\vspace{-3mm}
+\vspace{-2mm}
 
+{\small{
 \[
 \|Deviation|(p) = |\phi(t_1, p) - \phi(t_2, p)|
 \]
-
-
+}}
+\vspace{-4mm}
 
 After comparing the erroneous trace with one selected correct trace,
 \ourtool ranks all observed predicate profiles in

@@ -77,8 +77,8 @@ It affects the behavior of predicate:
 (line 312, class: randoop.ForwardGenerator) 
 
 This predicate evaluates to true:
-  14.4\% of the time in normal executions (1315 observations)
-  32.3\% of the time in the unexpected execution (2727 observations)
+  14.4\% of the time in normal runs (1315 observations)
+  32.3\% of the time in the undesirable run (2727 observations)
 
 \end{alltt}
 \end{CodeOut}
@@ -141,7 +141,7 @@ the user changes \CodeIn{maxsize} to a larger value, for example 500.
 
 \begin{figure}[t]
 \vspace{-2mm}
-{In class: randoop.main.GenInputsAbstract}\\
+\small{In class: randoop.main.GenInputsAbstract}\\
 %\small{//a configuration option to control a sequence's max length}
 \vspace{-5mm}
 \begin{CodeOut}
@@ -151,7 +151,7 @@ the user changes \CodeIn{maxsize} to a larger value, for example 500.
 \end{alltt}
 \end{CodeOut}
 
-{In class: randoop.ForwardGenerator}\\
+{\small{In class: randoop.ForwardGenerator}}\\
 \vspace{-5mm}
 \begin{CodeOut}
 \begin{alltt}
@@ -167,7 +167,7 @@ the user changes \CodeIn{maxsize} to a larger value, for example 500.
 108. \ttrcb
 
 310. private ExecutableSequence createNewUniqueSequence() \ttlcb
-311.   Sequence newSequence = ...; //sequence creation step omitted
+311.   Sequence newSequence = ...; //create a sequence
 312.   if (newSequence.size() > GenInputsAbstract.maxsize) \ttlcb
 313.     return null;
 314.   \ttrcb
