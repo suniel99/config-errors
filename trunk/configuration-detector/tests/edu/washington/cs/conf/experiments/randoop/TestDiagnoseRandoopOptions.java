@@ -55,7 +55,9 @@ public class TestDiagnoseRandoopOptions extends TestCase {
 		MainAnalyzer.diagnoseConfigErrors(TestComparingRandoopGoodBadTraces.badRun,
 				TestComparingRandoopGoodBadTraces.db,
 				repo,
-				null, null, null);
+				null, //source dir 
+				null, //conf slice
+				null);
 	}
 
 	public void test1() {

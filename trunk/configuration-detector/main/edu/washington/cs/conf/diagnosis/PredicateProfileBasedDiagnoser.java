@@ -201,7 +201,7 @@ public class PredicateProfileBasedDiagnoser {
 		//do ranking according to the highest avg ranking
 		Collection<List<ConfDiagnosisOutput>> rankedOutputs = getRankedCollectionsBySingleScore(rankedListsByRatio, ScoreType.RATIO_DELTA);
 		//do the final ranking
-		List<ConfDiagnosisOutput> finalRankedList = ConfDiagnosisOutput.rankByAvgRanking(rankedOutputs);
+		List<ConfDiagnosisOutput> finalRankedList = DiagnosisOutputRanking.rankByAvgRanking(rankedOutputs);
 		
 		return finalRankedList;
 	}
@@ -222,7 +222,7 @@ public class PredicateProfileBasedDiagnoser {
  		//it must remove outlier
  		List<ConfDiagnosisOutput> //finalRankedList = ConfDiagnosisOutput.rankByAvgRanking(rankedOutputs);
 
- 		finalRankedList = ConfDiagnosisOutput.rankByMajorityVotes(rankedOutputs);
+ 		finalRankedList = DiagnosisOutputRanking.rankByMajorityVotes(rankedOutputs);
  		
 		return finalRankedList;
 	}
@@ -238,7 +238,7 @@ public class PredicateProfileBasedDiagnoser {
 		}
 		
 		Collection<List<ConfDiagnosisOutput>> rankedOutputs = getRankedCollectionsByScoreSum(rankedListsByRatio, ScoreType.RATIO_DELTA);
-		List<ConfDiagnosisOutput> finalRankedList = ConfDiagnosisOutput.rankByAvgRanking(rankedOutputs);
+		List<ConfDiagnosisOutput> finalRankedList = DiagnosisOutputRanking.rankByAvgRanking(rankedOutputs);
 		
 		return finalRankedList;
 	}
@@ -254,7 +254,7 @@ public class PredicateProfileBasedDiagnoser {
  		}
  		
  		Collection<List<ConfDiagnosisOutput>> rankedOutputs = getRankedCollectionsByScoreSum(rankedListsByImport, ScoreType.IMPORT_DELTA);
-		List<ConfDiagnosisOutput> finalRankedList = ConfDiagnosisOutput.rankByAvgRanking(rankedOutputs);
+		List<ConfDiagnosisOutput> finalRankedList = DiagnosisOutputRanking.rankByAvgRanking(rankedOutputs);
 		
 		return finalRankedList;
 	}
@@ -270,7 +270,7 @@ public class PredicateProfileBasedDiagnoser {
 		}
 		
 		Collection<List<ConfDiagnosisOutput>> rankedOutputs = getRankedCollectionsByScoreTfidf(rankedListsByRatio, ScoreType.RATIO_DELTA);
-		List<ConfDiagnosisOutput> finalRankedList = ConfDiagnosisOutput.rankByAvgRanking(rankedOutputs);
+		List<ConfDiagnosisOutput> finalRankedList = DiagnosisOutputRanking.rankByAvgRanking(rankedOutputs);
 		
 		return finalRankedList;
 	}
@@ -286,7 +286,7 @@ public class PredicateProfileBasedDiagnoser {
  		}
  		
  		Collection<List<ConfDiagnosisOutput>> rankedOutputs = getRankedCollectionsByScoreTfidf(rankedListsByImport, ScoreType.IMPORT_DELTA);
-		List<ConfDiagnosisOutput> finalRankedList = ConfDiagnosisOutput.rankByAvgRanking(rankedOutputs);
+		List<ConfDiagnosisOutput> finalRankedList = DiagnosisOutputRanking.rankByAvgRanking(rankedOutputs);
 		
 		return finalRankedList;
 	}
@@ -362,7 +362,7 @@ public class PredicateProfileBasedDiagnoser {
  		
  		Collection<List<ConfDiagnosisOutput>> rankedOutputs = getRankedCollectionsBySingleScore(rankedListsByRankChange, t);
 // 		
-		List<ConfDiagnosisOutput> finalRankedList = ConfDiagnosisOutput.rankByAvgRanking(rankedOutputs);
+		List<ConfDiagnosisOutput> finalRankedList = DiagnosisOutputRanking.rankByAvgRanking(rankedOutputs);
 //		
 		
 		return finalRankedList;
