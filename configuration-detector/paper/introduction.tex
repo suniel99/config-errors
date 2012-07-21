@@ -13,7 +13,7 @@ is a large part of technical support~\cite{confevidence}.
 Software misconfigurations may lead to incorrect output (i.e., non-crashing
 errors) or to unexpected termination
 (i.e., crashing errors).  Even when an application outputs an error
-message, ift is often cryptic or misleading~\cite{Yin:2011:ESC, Attariyan:2010:ACT, Hubaux:2012, rangefix}.
+message, it is often cryptic or misleading~\cite{Yin:2011:ESC, Attariyan:2010:ACT, Hubaux:2012, rangefix}.
 Users may not even think of configuration as a cause of their problem.
 % Thus, users must search manuals, FAQs, and online forums to find potential
 % solutions.% to the problem. %$\blacksquare$ this process is frustrating..
@@ -126,7 +126,7 @@ results in 32.2\% of the generated sequences being discarded
 \ourtool captures such abnormal behavior from Randoop's
 silent failure, pinpoints the
 \CodeIn{maxsize} option, and suggests users to reset its value.
-Finally, this problem isu resolved if
+Finally, this problem is resolved if
 the user changes \CodeIn{maxsize} to a larger value, for example 500.
 
 
@@ -235,6 +235,8 @@ reproduces the error using the instrumented version of the program.
 similar as possible to the incorrect one.
 Then, it identifies the predicates whose dynamic behaviors deviate the most
 between correct and incorrect executions.
+The behavioral differences in the recorded predicate profiles provide evidence for what parts of a program might be
+incorrect and why. %This helps to further reason about its root cause.
 For each deviated predicate, \ourtool further identifies
 its affecting configuration options as the likely root causes.
 Finally, it outputs a ranked list of suspicious options and explanations.
@@ -355,12 +357,14 @@ error troubleshooting~\cite{Whitaker:2004:CDS}.% or dynamic taint tracking~\cite
 We evaluated \ourtool on \errors real configuration errors
 (\crash crashing errors and \noncrash non-crashing errors)
 from \subjectnum projects.
-On average, \ourtool's 5th report was the root cause; in over half of all
+On average, \ourtool's 7th report was the root cause; in
+\topnum out of \errors cases, the root cause was \ourtool's
+top 3 reports; and in over half of all
 cases, the root cause was \ourtool's first report.
 % This permits \ourtool user to focus on a few specific configuration
 % options when deciding how to fix the problem. 
 Assuming the database of correct executions already exists,
-\ourtool takes less than 4 minutes on average to diagnose
+\ourtool takes less than \avgtime minutes on average to diagnose
 one error.  \ourtool's accuracy and speed make it an attractive alternative
 to manual debugging.
 

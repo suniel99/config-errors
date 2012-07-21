@@ -138,6 +138,10 @@ by running existing (correct) examples from its user manual, discussion
 mailiing list, and published papers\todo{any such papers should have been
   cited above or here}.
 We spent 3 hours per program, on average, and obtained 6--16 traces.
+The average size of the trace database is 35MB, and the largest one (Randoop's
+database) is 72MB.
+
+%The size of trace files in the database $\blacksquare$
 
 %Run examples from user manual to form the database. The effort
 %can be amortized in development time.
@@ -526,7 +530,7 @@ an error.}}
 \end{table}
 
 The performance of \ourtool is reasonable.
-On average, it uses $\blacksquare$ minutes to
+On average, it uses \avgtime minutes to
 diagnose one configuration error. The time cost for
 computing a thin slice from each configuration option
 is high. However, this step is one-time effort
@@ -534,12 +538,13 @@ for each program and the computed results can be cached
 to share across diagnosis. %for future use.
 
 The performance overhead to reproduce the buggy behavior varies
-among applications.
-The performance overhead in error reproduction,
-admittedly high, has nonetheless proved acceptable
+among applications. The current tool implementation
+imposes an average slowdown of 13 times when reproducing
+an error in a \ourtool-enabled environment.
+Such performance overhead, admittedly high, has nonetheless proved acceptable
 for offline error diagnoses.
 
-The size of trace files in the database $\blacksquare$
+%The size of trace files in the database $\blacksquare$
 
 
 %The performance of \ourtool is reasonable. The time to diagnose
