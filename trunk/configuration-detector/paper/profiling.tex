@@ -17,9 +17,11 @@ the predicate evaluated to true.
 \begin{alltt}
 310. private ExecutableSequence createNewUniqueSequence() \ttlcb
 311.   Sequence newSequence = ...; 
-       \underline{incrExecCount("maxsize", "newSequence.size() > maxsize");}
-312.   if (newSequence.size() > maxsize) \ttlcb
-         \underline{incrTrueCount("maxsize", "newSequence.size() > maxsize");}
+       \underline{incrExecCount("maxsize",}
+                     \underline{"newSequence.size() > maxsize");}
+312.   if (newSequence.size() > GenInputsAbstract.maxsize) \ttlcb
+         \underline{incrTrueCount("maxsize",}
+                       \underline{"newSequence.size() > maxsize");}
 314.     return null;
       ...
 319. \ttrcb

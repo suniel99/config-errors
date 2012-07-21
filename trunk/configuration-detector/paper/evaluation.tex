@@ -38,11 +38,11 @@ the existing approaches?
 
 \subsection{Subject Programs}
 
-\todo{The citations are websites.  Add academic citations as well, if
-  possible.  (If we don't have enough space, so be it.)}
+%\todo{The citations are websites.  Add academic citations as well, if
+%  possible.  (If we don't have enough space, so be it.)}
 
 We evaluated \ourtool on \subjectnum Java programs shown
-in Table~\ref{tab:subjects}.
+in Figure~\ref{tab:subjects}.
 Randoop~\cite{PachecoLET2007} is an automated test generator
 for Java programs. Weka~\cite{wekaarticle} is a toolkit that implements
 machine learning algorithms. Our evaluation
@@ -58,33 +58,36 @@ Soot~\cite{Vallee-Rai-1999} is a Java optimization framework for analyzing and t
 
 
 
-\begin{table}[t]
-%\setlength{\tabcolsep}{.84\tabcolsep}
+\begin{figure}[t]
+\centering
+\small{
+\setlength{\tabcolsep}{.64\tabcolsep}
 \begin{tabular}{|l|c|c|c|}
 \hline
- Program (version) & LOC & \#Conf Options & \#Traces\\
+ Program (version) & LOC & \#Config Options & \#Traces\\
  \hline
  \hline
  Randoop (1.3.2) & 18587 & 57 & 12\\
  Weka (3.6.7) & 256305 & 14 & 12\\
  JChord (2.1) & 23391 &  79 & 6 \\
- Synoptic (trunk) & 19153 & 37 & 6\\
+ Synoptic (trunk, 04/17/2012) & 19153 & 37 & 6\\
  Soot (2.5.0) & 159273 & 49 & 16 \\
 \hline
 \end{tabular}
+}
 
-\todo{Give a date for Synoptic}
-
+%\todo{Give a date for Synoptic}
 \Caption{{\label{tab:subjects} Subject programs. 
 Column ``LOC'' is the number of lines of code,
-as counted by CLOC~\cite{cloc}. Column ``\#Conf Options''
+as counted by CLOC~\cite{cloc}. Column ``\#Config Options''
 is the number of available configuration options. Column ``\#Traces''
 is the number of traces in the pre-built database.}}
-\end{table}
+\end{figure}
 
 
-\begin{table}[t]
-\setlength{\tabcolsep}{.24\tabcolsep}
+\begin{figure}[t]
+\setlength{\tabcolsep}{.94\tabcolsep}
+\small{
 \begin{tabular}{|l|l|l|}
 \hline
  Error ID & Program & Description \\
@@ -112,12 +115,12 @@ is the number of traces in the pre-built database.}}
  14 & \jchord & Wrong classpath\\
 \hline
 \end{tabular}
-
+}
 \Caption{{\label{tab:errors} A list of \errors
 configuration errors used in the evaluation.
 The 9 crashing errors in the bottom table are taken from~\cite{Rabkin:2011:PPC}.
 }}
-\end{table}
+\end{figure}
 
 We searched forums, FAQ pages and the literature of
 configuration error diagnosis research to find actual
@@ -126,7 +129,7 @@ target applications.
 We chose \errors configuration errors, in which
 the misconfigured values cover various data types, such as enumerated types,
 numerical ranges, regular expressions, and text entries;
-as listed in Table~\ref{tab:errors}.
+as listed in Figure~\ref{tab:errors}.
 \todo{Were any of them used in previous research?  Was that the reason we
   chose them?}
 
@@ -161,11 +164,11 @@ passed as a system property:
 
 \begin{CodeOut}
 \begin{alltt}
-   public void run() \ttlcb
-     ...
-     int kobjK = Integer.getInteger("chord.kobj.k");
-     ...
-   \ttrcb
+public void run() \ttlcb
+  ...
+  int kobjK = Integer.getInteger("chord.kobj.k");
+  ...
+\ttrcb
 \end{alltt}
 \end{CodeOut}
 \vspace{-4mm}
@@ -173,12 +176,12 @@ passed as a system property:
 %\vspace{-2mm}
 \begin{CodeOut}
 \begin{alltt}
-   static int chord\_kobj\_k = Integer.getInteger("chord.kobj.k");
-   public void run() \ttlcb
-     ...
-     int kobjK = chord\_kobj\_k; 
-     ...
-   \ttrcb
+static int chord\_kobj\_k = Integer.getInteger("chord.kobj.k");
+public void run() \ttlcb
+  ...
+  int kobjK = chord\_kobj\_k; 
+  ...
+\ttrcb
 \end{alltt}
 \end{CodeOut}
 
@@ -210,8 +213,9 @@ for the JVM), running Windows 7.
 \subsection{Results}
 \label{sec:results}
 
-\begin{table*}[t]
-\setlength{\tabcolsep}{.09\tabcolsep}
+\begin{figure*}[t]
+\setlength{\tabcolsep}{.29\tabcolsep}
+\small{
 \begin{tabular}{|l||c|c||c|c||c|c|c||c|}
 \hline
  Error ID.  & Root cause & \#Options& \multicolumn{2}{|c||}{\ourtool} & Full Slicing & Coverage Analysis& Invariant Analysis & ConfAnalyzer~\cite{Rabkin:2011:PPC}\\
@@ -245,13 +249,14 @@ for the JVM), running Windows 7.
  \multicolumn{2}{|l|}{Average} & 79 & 4.7 & 6.7 & 19.8 & 9.2 & 13.3 &1.5\\
 \hline
 \end{tabular}
+}
 %\todo{Perhaps add a new column, after ``root cause configuration option'', giving
 %  the total number of configuration options in the program.  This will
 %  emphasize how good the ``rank'' numbers are.}
 \Caption{{\label{tab:results} Experimental results in diagnosing software
 configuration errors. Column ``Responsible Option'' shows the actual
 configuration option for the error. Column ``\#Options'' shows the
-number of available configuration options, taken from Table~\ref{tab:subjects}.
+number of available configuration options, taken from Figure~\ref{tab:subjects}.
 Column ``\ourtool'' shows the results of using
 our technique. Columns ``Full Slicing'', ``Coverage Analysis'',
 and ``Invariant Analysis'' show the results of three variants of \ourtool
@@ -265,19 +270,19 @@ option in its output (lower is better). ``X''
 means the technique is not applicable (i.e., requiring a crashing point), and ``N'' means the technique
 does not identify the actual responsible option. When computing the average
 rank, we only include the case when a technique can output the root cause.}}
-\end{table*}
+\end{figure*}
 
 
 \subsubsection{Accuracy in Diagnosing Configuration Errors}
 
-Table~\ref{tab:results} shows the experimental results.
+Figure~\ref{tab:results} shows the experimental results.
 We can see that \ourtool is highly effective in pinpointing the root cause of
 misconfigurations. For all \noncrash non-crashing errors
 and 5 out of the \crash crashing errors, it lists the actual root cause as one of the
 top 3 options. 
 
 
-As shown in Table~\ref{tab:results}, \ourtool is particularly effective
+As shown in Figure~\ref{tab:results}, \ourtool is particularly effective
 in diagnosing non-crashing configuration errors, which are not supported
 by most existing tools. $\blacksquare$ why effective? observation?
 statically significance? Give some examples here... Randoop \CodeIn{maxsize},
@@ -295,7 +300,7 @@ Although \ourtool ranked the actual root course of several
 crashing errors lower, crashing errors are generally much easier to diagnose than non-crashing errors.
 This is because a crashing error usually happens shortly after the program
 is launched, and often produces a stack trace with valuable diagnosis clues.
-For example, in Table~\ref{tab:results}, \ourtool ranks the root cause of
+For example, in Figure~\ref{tab:results}, \ourtool ranks the root cause of
 error 14  8th.
 However, when JChord crashes, it dumps a \CodeIn{ClassNotFoundException}
 that reminds users to check the classpath setting. For the other three crashing errors (error 8, 10, and 11),
@@ -393,7 +398,7 @@ support.  ConfAnalyzer cannot diagnose non-crashing errors.
 \vspace{1mm}
 
 The experimental results of comparing \ourtool with the above
-four alternative approaches are shown in Table~\ref{tab:results}.
+four alternative approaches are shown in Figure~\ref{tab:results}.
 $\blacksquare$ discuss the results here
 
 \vspace{1mm}
@@ -409,8 +414,9 @@ crashing errors than \ourtool, but fails to diagnose non-crashing errors.
 \label{sec:ranking}
 
 
-\begin{table}[t]
-\setlength{\tabcolsep}{.24\tabcolsep}
+\begin{figure}[t]
+\setlength{\tabcolsep}{.74\tabcolsep}
+\small{
 \begin{tabular}{|l|c|c||c|}
 \hline
  Error ID. & \multicolumn{3}{|c|}{Rank of the Actual Responsible Option } \\
@@ -445,12 +451,12 @@ Average & 7.6 & 8.2 & 1.6 \\
 Average & 9.4 & 9.4 & 6.7\\
 \hline
 \end{tabular}
-
+}
 \Caption{{\label{tab:selection} Comparison with different trace selection
 strategies (Section~\ref{sec:ranking}).
 The last column ``Similarity-based'' is the selection strategy
-used in \ourtool, and the data in that column is taken from Table~\ref{tab:results}.}}
-\end{table}
+used in \ourtool, and the data in that column is taken from Figure~\ref{tab:results}.}}
+\end{figure}
 
 
 \ourtool compares the predicate behaviors in the erroneous trace against
@@ -461,7 +467,7 @@ In particular, we compare the similarity-based selection strategy used in \ourto
 all available traces in the database, and
 randomly selecting a number\todo{Be specific about exactly how many.  Ideally it
   would be exactly the same number, in each case, as \ourtool used.} of traces from the database.
-Table~\ref{tab:selection} shows the experimental results.
+Figure~\ref{tab:selection} shows the experimental results.
 
 We can see that varying the comparison strategy can result in
 substantially different effects on the diagnosis results,
@@ -482,11 +488,12 @@ error is more sensitive to the comparison traces than a crashing one.
 
 We measure \ourtool's performance in two ways: the time cost
 in diagnosing an error; and the overhead introduced
-in reproducing an error before diagnosis.  Table~\ref{tab:performance}
+in reproducing an error before diagnosis.  Figure~\ref{tab:performance}
 shows the results.
 
-\begin{table}[t]
-\setlength{\tabcolsep}{.44\tabcolsep}
+\begin{figure}[t]
+\setlength{\tabcolsep}{.94\tabcolsep}
+\small{
 \begin{tabular}{|l|c|c|c|}
 \hline
  Error ID. & \multicolumn{2}{|c|}{Time Cost (seconds)} & Slowdown ($\times$)\\
@@ -521,13 +528,13 @@ Average & 72 & 21 & 4.4\\
 Average & 147 & 44 & 13\\
 \hline
 \end{tabular}
-
+}
 \Caption{{\label{tab:performance} \ourtool's
 performance in diagnosing configuration
 errors. The time cost has been divided into
 two parts: computing thin slices and diagnosing
 an error.}}
-\end{table}
+\end{figure}
 
 The performance of \ourtool is reasonable.
 On average, it uses \avgtime minutes to
