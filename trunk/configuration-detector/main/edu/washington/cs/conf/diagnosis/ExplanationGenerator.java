@@ -11,6 +11,11 @@ public class ExplanationGenerator {
 	    (String confName, String context, String predicate, int lineNum,
 		 int goodRunNum, int goodEnter,
 		 int badRunNum, int badEnter) {
+		//avoid the dvide-by-zero bug
+		float goodEnterRatio = goodRunNum != 0 ? ((float)goodEnter/goodRunNum)*100 : Float.NaN;
+		float badEnterRatio = badRunNum != 0 ? ((float)badEnter/badRunNum)*100 : Float.NaN;
+		
+		//create the string below
 		StringBuilder sb = new StringBuilder();
 		sb.append("Suspicious configuration option: " + confName);
 		sb.append(Globals.lineSep);
@@ -24,9 +29,9 @@ public class ExplanationGenerator {
 		sb.append(Globals.lineSep);
 		sb.append("This predicate evaluates to true: ");
 		sb.append(Globals.lineSep);
-		sb.append("   " + ((float)goodEnter/goodRunNum)*100 + "% of the time in normal runs (" + goodRunNum + " observations)");
+		sb.append("   " + goodEnterRatio + "% of the time in normal runs (" + goodRunNum + " observations)");
 		sb.append(Globals.lineSep);
-		sb.append("   " + ((float)badEnter/badRunNum)*100 + "% of the time in an undesirable run (" + badRunNum + " observations)");
+		sb.append("   " + badEnterRatio + "% of the time in an undesirable run (" + badRunNum + " observations)");
 		sb.append(Globals.lineSep);
 		return sb.toString();
 	}
