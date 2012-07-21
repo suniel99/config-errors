@@ -211,48 +211,48 @@ for the JVM), running Windows 7.
 \label{sec:results}
 
 \begin{table*}[t]
-\setlength{\tabcolsep}{.24\tabcolsep}
-\begin{tabular}{|l||c||c|c||c|c|c||c|}
+\setlength{\tabcolsep}{.09\tabcolsep}
+\begin{tabular}{|l||c|c||c|c||c|c|c||c|}
 \hline
- Error ID.  & Root cause & \multicolumn{2}{|c||}{\ourtool} & Full Slicing & Coverage Analysis& Invariant Analysis & ConfAnalyzer~\cite{Rabkin:2011:PPC}\\
-\cline{3-8}
- Program & configuration option & \#Traces& Rank  & Rank & Rank & Rank & Rank \\
+ Error ID.  & Root cause & \#Options& \multicolumn{2}{|c||}{\ourtool} & Full Slicing & Coverage Analysis& Invariant Analysis & ConfAnalyzer~\cite{Rabkin:2011:PPC}\\
+\cline{4-9}
+ Program & configuration option & & \#Traces& Rank  & Rank & Rank & Rank & Rank \\
  \hline
 \hline
-\multicolumn{8}{|l|}{Non-crashing errors}   \\
+\multicolumn{9}{|l|}{Non-crashing errors}   \\
  \hline
-\phz 1. Randoop& \CodeIn{maxsize} & 10 / 12 & 1 & 46 & N & N &X \\
-\phz 2. Weka&\CodeIn{m\_numFolds}&2 / 12 &1& 9 & 4 & 5 &X\\
-\phz 3. JChord& \CodeIn{chord.kobj.k} & 3 / 6 & 2& 73 & N &2  &X\\
-\phz 4. Synoptic& \CodeIn{partitionRegExp}& 2 / 6 & 1& 6 & 1 & \todo{missing?} &X\\
-\phz 5. Soot& \CodeIn{keep\_line\_number} & 1 / 16 & 3 & N & N& N &X\\
+\phz 1. Randoop& \CodeIn{maxsize} & 57& 10 / 12 & 1 & 46 & N & N &X \\
+\phz 2. Weka&\CodeIn{m\_numFolds}& 14 &2 / 12 &1& 9 & 4 & 5 &X\\
+\phz 3. JChord& \CodeIn{chord.kobj.k}& 79 & 3 / 6 & 2& 73 & N &2  &X\\
+\phz 4. Synoptic& \CodeIn{partitionRegExp}& 37 & 2 / 6 & 1& 6 & 1 & \todo{missing?} &X\\
+\phz 5. Soot& \CodeIn{keep\_line\_number} &49 & 1 / 16 & 3 & N & N& N &X\\
 \hline
- \multicolumn{2}{|l|}{Average}   & 3.6 & 1.6 & 33.5 & 2.5 &  & X \\
+ \multicolumn{2}{|l|}{Average} & 47.2 & 3.6 & 1.6 & 33.5 & 2.5 &  & X \\
 \hline
 \hline
-\multicolumn{8}{|l|}{Crashing errors}   \\
+\multicolumn{9}{|l|}{Crashing errors}   \\
 \hline
-\phz 6. JChord& \CodeIn{chord.main.class}&5 / 6 & 1& 5 & 1 & 4 &1\\
-\phz 7. JChord& \CodeIn{chord.main.class}&5 / 6 & 1 & 5 & 1 & 4 &1\\
-\phz 8. JChord& \CodeIn{chord.run.analyses}&5 / 6 & 17& 21 &14 & 17 &1\\
-\phz 9. JChord& \CodeIn{chord.ctxt.kind}&4 / 6 & 1 & 75 & 27 & 30 &3\\
- 10. JChord& \CodeIn{chord.print.rels}& 4 / 6& 15 & 24 & 16 & 19 &1\\
- 11. JChord& \CodeIn{chord.print.classes}&4 / 6 & 16 & 22 & 15 & 18 &1\\
- 12. JChord& \CodeIn{chord.scope.kind}&5 / 6 & 1& 10 & 1 & N &1\\
- 13. JChord& \CodeIn{chord.reflect.kind} &6 / 6 & 1& 11 & 6 & 9 &3\\
- 14. JChord& \CodeIn{chord.class.path}&5 / 6 & 8 & 6 & 2 & 5 &N\\
+\phz 6. JChord& \CodeIn{chord.main.class}&79 &5 / 6 & 1& 5 & 1 & 4 &1\\
+\phz 7. JChord& \CodeIn{chord.main.class}& 79 &5 / 6 & 1 & 5 & 1 & 4 &1\\
+\phz 8. JChord& \CodeIn{chord.run.analyses}& 79 &5 / 6 & 17& 21 &14 & 17 &1\\
+\phz 9. JChord& \CodeIn{chord.ctxt.kind}& 79 &4 / 6 & 1 & 75 & 27 & 30 &3\\
+ 10. JChord& \CodeIn{chord.print.rels}& 79 & 4 / 6& 15 & 24 & 16 & 19 &1\\
+ 11. JChord& \CodeIn{chord.print.classes}& 79 &4 / 6 & 16 & 22 & 15 & 18 &1\\
+ 12. JChord& \CodeIn{chord.scope.kind}& 79 &5 / 6 & 1& 10 & 1 & N &1\\
+ 13. JChord& \CodeIn{chord.reflect.kind}& 79 &6 / 6 & 1& 11 & 6 & 9 &3\\
+ 14. JChord& \CodeIn{chord.class.path}& 79 &5 / 6 & 8 & 6 & 2 & 5 &N\\
 \hline
- \multicolumn{2}{|l|}{Average}   & 4.7 & 6.7 & 19.8 & 9.2 & 13.3 &1.5\\
+ \multicolumn{2}{|l|}{Average} & 79 & 4.7 & 6.7 & 19.8 & 9.2 & 13.3 &1.5\\
 \hline
 \end{tabular}
-
-\todo{Perhaps add a new column, after ``root cause configuration option'', giving
-  the total number of configuration options in the program.  This will
-  emphasize how good the ``rank'' numbers are.}
-
+%\todo{Perhaps add a new column, after ``root cause configuration option'', giving
+%  the total number of configuration options in the program.  This will
+%  emphasize how good the ``rank'' numbers are.}
 \Caption{{\label{tab:results} Experimental results in diagnosing software
 configuration errors. Column ``Responsible Option'' shows the actual
-configuration option for the error. Column ``\ourtool'' shows the results of using
+configuration option for the error. Column ``\#Options'' shows the
+number of available configuration options, taken from Table~\ref{tab:subjects}.
+Column ``\ourtool'' shows the results of using
 our technique. Columns ``Full Slicing'', ``Coverage Analysis'',
 and ``Invariant Analysis'' show the results of three variants of \ourtool
 as described in Section~\ref{sec:comparison}.
