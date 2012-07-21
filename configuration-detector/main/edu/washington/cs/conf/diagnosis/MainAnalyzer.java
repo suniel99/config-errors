@@ -112,6 +112,7 @@ public class MainAnalyzer {
 		   = selectSimilarProfileTuples(this.goodRunDb, this.badRun, this.distanceType, this.distanceThreshold);
 		System.err.println("Number of similar profiles: " + cmpProfiles.size());
 		
+		//this if branch is only for experiments
 		//do experiment here
 		if(this.strategy != null) {
 			if(this.strategy.equals(SelectionStrategy.RandomK)) {
@@ -127,6 +128,7 @@ public class MainAnalyzer {
 			System.err.println("re-select: " + cmpProfiles.size() + " profiles for comparison.");
 		}
 		
+		//the default setting below
 		PredicateProfileBasedDiagnoser diagnoser = createDiagnoser(cmpProfiles, this.badRun, this.repository);
 		List<ConfDiagnosisOutput> rankedOutput = diagnoser.computeResponsibleOptions(this.rankType);
 		return rankedOutput;
@@ -284,9 +286,13 @@ public class MainAnalyzer {
 		analyzer.setThreshold(threshold);
 		
 		List<ConfDiagnosisOutput> outputs = analyzer.computeResponsibleOptions();
+		int i = 1;
 		for(ConfDiagnosisOutput o : outputs) {
+			System.out.println(i++ + ".");
 			System.out.println(o.getConfEntity());
 			System.out.println(o.getBriefExplanation());
+			System.out.println();
+			System.out.println(o.getErrorReport());
 			System.out.println();
 		}
 	}

@@ -129,6 +129,12 @@ public class TestSliceRandoopConfigOptions extends TestCase {
 		assertEquals(schema.toString(), newSchema.toString());
 	}
 	
+	public static Collection<ConfPropOutput> getConfPropOutputs() {
+		String path = "./subjects/randoop-jamie-no-trace.jar;./subjects/plume.jar";
+	    Collection<ConfPropOutput> outputs = getConfPropOutputs(path, RandoopExpUtils.getRandoopConfList());
+	    return outputs;
+	}
+	
 	public static Collection<ConfPropOutput> getConfPropOutputs(String path, List<ConfEntity> confList) {
 		return getConfPropOutputs(path, confList, DataDependenceOptions.NO_BASE_NO_HEAP_NO_EXCEPTIONS,
 				ControlDependenceOptions.NONE);

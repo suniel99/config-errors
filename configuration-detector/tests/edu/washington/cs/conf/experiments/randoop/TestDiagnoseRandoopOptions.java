@@ -50,13 +50,31 @@ public class TestDiagnoseRandoopOptions extends TestCase {
 	}
 	
 	public void testDiagnoseSimilar() {
+		testDiagnoseSimilar(false);
+	}
+	
+	public void testDiagnoseSimilar_ErrorReport() {
+		testDiagnoseSimilar(true);
+	}
+	
+	public void testDiagnoseSimilar(boolean flag) {
 		ConfEntityRepository repo = RandoopExpUtils.getRandoopConfRepository();
 		MainAnalyzer.doFiltering = true;
+		
+		String randoopSrcDir = null;
+		Collection<ConfPropOutput> confSlices = null;
+		
+		//do experiment
+		if(flag) {
+			randoopSrcDir = RandoopExpUtils.getRandoopSrcDir();
+			confSlices = TestSliceRandoopConfigOptions.getConfPropOutputs();
+		}
+		
 		MainAnalyzer.diagnoseConfigErrors(TestComparingRandoopGoodBadTraces.badRun,
 				TestComparingRandoopGoodBadTraces.db,
 				repo,
-				null, //source dir 
-				null, //conf slice
+				randoopSrcDir, //source dir 
+				confSlices, //conf slice
 				null);
 	}
 

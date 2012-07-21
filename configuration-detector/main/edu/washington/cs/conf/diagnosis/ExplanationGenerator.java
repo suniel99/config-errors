@@ -15,6 +15,10 @@ public class ExplanationGenerator {
 		float goodEnterRatio = goodRunNum != 0 ? ((float)goodEnter/goodRunNum)*100 : Float.NaN;
 		float badEnterRatio = badRunNum != 0 ? ((float)badEnter/badRunNum)*100 : Float.NaN;
 		
+		//fetch the class name
+		int lastDot = context.lastIndexOf(")");
+		String method = lastDot == -1 ? context : context.substring(0, lastDot + 1);
+		
 		//create the string below
 		StringBuilder sb = new StringBuilder();
 		sb.append("Suspicious configuration option: " + confName);
@@ -24,7 +28,7 @@ public class ExplanationGenerator {
 		sb.append(Globals.lineSep);
 		sb.append("\"" + predicate + "\" ");
 		sb.append(Globals.lineSep);
-		sb.append("(line: " + lineNum + ", class: " + context + ")");
+		sb.append("(line: " + lineNum + ", method: " + method + ")");
 		sb.append(Globals.lineSep);
 		sb.append(Globals.lineSep);
 		sb.append("This predicate evaluates to true: ");

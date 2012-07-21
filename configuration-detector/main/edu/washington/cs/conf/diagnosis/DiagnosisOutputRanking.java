@@ -30,7 +30,6 @@ public class DiagnosisOutputRanking {
 		Map<ConfDiagnosisOutput, ConfDiagnosisOutput> selfMapping = new LinkedHashMap<ConfDiagnosisOutput, ConfDiagnosisOutput>();
 		int numOfList = 0;
 		for(List<ConfDiagnosisOutput> list : coll) {
-			
 			//construct a rank map here, since there may be a tie
 			Map<Float, List<ConfDiagnosisOutput>> confDiagnosisBuckets = new LinkedHashMap<Float, List<ConfDiagnosisOutput>>();
 			for(ConfDiagnosisOutput o : list) {
@@ -41,13 +40,14 @@ public class DiagnosisOutputRanking {
 			}
 			confDiagnosisBuckets = Utils.sortByKey(confDiagnosisBuckets, false);
 			Map<ConfDiagnosisOutput, Integer> outputRankMap = new LinkedHashMap<ConfDiagnosisOutput, Integer>();
-			int r = 1;
+			int r = 1; // r means ranking
 			for(List<ConfDiagnosisOutput> l : confDiagnosisBuckets.values()) {
 				for(ConfDiagnosisOutput o : l) {
 					outputRankMap.put(o, r);
 				}
-				r++;
+				r++; //many output may have the same ranking
 			}
+			
 			
 			//int rank = 0;
 			for(ConfDiagnosisOutput output : list) {
@@ -56,20 +56,32 @@ public class DiagnosisOutputRanking {
 					Utils.checkTrue(!selfMapping.containsKey(output));
 					ConfDiagnosisOutput copy = new ConfDiagnosisOutput(output.getConfEntity());
 					copy.setFinalScore(output.getFinalScore());
+					//set the error report
+					if(output.getErrorReport() != null) {
+					    copy.setErrorReport(output.getErrorReport());
+					}
+					
 					outputAndRanks.put(copy, new LinkedList<Integer>());
 					selfMapping.put(copy, copy);
 				}
 				
 				//add others
+				//XXX this following design can be improved, since now it needs to copy data from the same kind of object
 				Utils.checkTrue(outputAndRanks.size() == selfMapping.size());
-				outputAndRanks.get(output).add(outputRankMap.get(output)); //it was rank
-				selfMapping.get(output).addAllExplain(output.getExplanations());
+				outputAndRanks.get(output).add(outputRankMap.get(output)); //add the rank
+				selfMapping.get(output).addAllExplain(output.getExplanations());//only compare output by its confname
+				//why need to copy final score? since it selects the output with the highest final score 
 				if(output.getFinalScore() > selfMapping.get(output).getFinalScore()) {
+					//FIXME need to set other info here
+					//it is equiavlent to mutate the object in outputAndRanks
 					selfMapping.get(output).setFinalScore(output.getFinalScore());
+					if(output.getErrorReport() != null) {
+						selfMapping.get(output).setErrorReport(output.getErrorReport());
+					}
 				}
 			}
 			
-			//do padding here
+			//do padding here, since some configuration output may not be covered in some runs
 			numOfList ++;
 			for(ConfDiagnosisOutput output : outputAndRanks.keySet()) {
 				int numToPad = numOfList - outputAndRanks.get(output).size();
@@ -154,6 +166,8 @@ public class DiagnosisOutputRanking {
 		if(Math.max(l1.size(), l2.size()) <= 3) {
 			return (Utils.sum(l1) / (float)l1.size())  < (Utils.sum(l2) / (float)l2.size()) ;
 		}
+		
+		//FIXME, possibly not equal length
 		
 		Integer max1 = Collections.max(l1);
 		Integer min1 = Collections.min(l1);

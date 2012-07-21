@@ -19,6 +19,7 @@ import edu.washington.cs.conf.util.Utils;
  * */
 public class PredicateProfileBasedDiagnoser {
 	
+	//if this option is set, the tool will avoid expensive string concatenation operations
 	public static boolean SAVE_MEMORY = false;
 	
 	public enum RankType {TFIDF_RATIO, TFIDF_IMPORT, SINGLE_RATIO, SINGLE_IMPORT, RATIO_SUM, IMPORT_SUM,
@@ -54,11 +55,8 @@ public class PredicateProfileBasedDiagnoser {
 				this.badRun, this.repository);
 		List<ConfDiagnosisOutput> outputsList = rankResponsibleOptions(coll, type);
 		
-		//reclaim memory
+		//reclaim memory, otherwise, the code will run out of memory
 		for(List<ConfDiagnosisEntity> list : coll) {
-//			for(ConfDiagnosisEntity e : list) {
-//				e.r
-//			}
 			list.clear();
 		}
 		coll.clear();
@@ -78,7 +76,7 @@ public class PredicateProfileBasedDiagnoser {
 		} else if (type.equals(RankType.SINGLE_RATIO)) {
 			return rankOptionsByRatio(coll);
 		} else if (type.equals(RankType.SINGLE_IMPORT)) {
-			return rankOptionsByImportance(coll);
+			return rankOptionsByImportance(coll); //this is the default configuration
 		} else if (type.equals(RankType.RATIO_SUM)) {
 			return rankOptionsByRatioSum(coll);
 		} else if (type.equals(RankType.IMPORT_SUM)) {
@@ -215,14 +213,10 @@ public class PredicateProfileBasedDiagnoser {
  			List<ConfDiagnosisEntity> rankedList = sortDiagnosisEntityByImportance(list);
  			rankedListsByImport.add(rankedList);
  		}
- 		
- 		//do ranking according to the highest avg ranking
+ 		//rank by the delta of the importance value
  		Collection<List<ConfDiagnosisOutput>> rankedOutputs = getRankedCollectionsBySingleScore(rankedListsByImport, ScoreType.IMPORT_DELTA);
- 		//do ranking according to the highest avg ranking
- 		//it must remove outlier
- 		List<ConfDiagnosisOutput> //finalRankedList = ConfDiagnosisOutput.rankByAvgRanking(rankedOutputs);
-
- 		finalRankedList = DiagnosisOutputRanking.rankByMajorityVotes(rankedOutputs);
+ 		//can not use averaging ranking, must use majority ranking
+ 		List<ConfDiagnosisOutput> finalRankedList = DiagnosisOutputRanking.rankByMajorityVotes(rankedOutputs);
  		
 		return finalRankedList;
 	}
@@ -294,6 +288,7 @@ public class PredicateProfileBasedDiagnoser {
 	/**
 	 * Rank by relative rank changes
 	 * */
+	@Deprecated
 	static List<ConfDiagnosisOutput> rankOptionsByRankChanges(Collection<List<ConfDiagnosisEntity>> coll, ScoreType t) {
 		Collection<List<ConfDiagnosisEntity>> rankedListsByRankChange = new LinkedList<List<ConfDiagnosisEntity>>();
  		for(List<ConfDiagnosisEntity> list : coll) {
@@ -373,11 +368,11 @@ public class PredicateProfileBasedDiagnoser {
 	 * Two utility methods
 	 ** ***************************************/
 	static List<ConfDiagnosisEntity> sortDiagnosisEntityByRatio(List<ConfDiagnosisEntity> list) {
-		List<ConfDiagnosisEntity> rankedList = ConfDiagnosisEntity.rankByCriteria(list, ScoreType.RATIO_DELTA, false);
+		List<ConfDiagnosisEntity> rankedList = ConfDiagnosisEntityRanking.rankByCriteria(list, ScoreType.RATIO_DELTA, false);
 		return rankedList;
 	}
 	static List<ConfDiagnosisEntity> sortDiagnosisEntityByImportance(List<ConfDiagnosisEntity> list) {
-		List<ConfDiagnosisEntity> rankedList = ConfDiagnosisEntity.rankByCriteria(list, ScoreType.IMPORT_DELTA, false);
+		List<ConfDiagnosisEntity> rankedList = ConfDiagnosisEntityRanking.rankByCriteria(list, ScoreType.IMPORT_DELTA, false);
 		return rankedList;
 	}
 	
@@ -395,6 +390,7 @@ public class PredicateProfileBasedDiagnoser {
 				ranking++;
 				String configName = rankedEntity.getConfigFullName(); //no context here
 				if(visitedConfigs.containsKey(configName)) {
+					//it is possible that a configuration can affect multiple predicates in different places
 					if(!SAVE_MEMORY) {
 					    visitedConfigs.get(configName).addExplain("Omit Rank: " + ranking
 							+ ": " + configName + " at context : " + rankedEntity.getContext()
@@ -405,6 +401,10 @@ public class PredicateProfileBasedDiagnoser {
 					//initially create and add the output
 					ConfDiagnosisOutput output = new ConfDiagnosisOutput(rankedEntity.getConfEntity());
 					output.setFinalScore(rankedEntity.getScore(t));
+					//get the error report
+					String errorReport = rankedEntity.createErrorReport();
+					output.setErrorReport(errorReport);
+					
 					visitedConfigs.put(configName, output);
 					if(!SAVE_MEMORY) {
 					    output.addExplain("Choose Rank: " + ranking
@@ -421,6 +421,9 @@ public class PredicateProfileBasedDiagnoser {
 		return rankedOutputs;
 	}
 	
+	//FIXME do not call this method, it is only experiment purpose in the exploratory phase
+	//of ConfDiagnoser
+	@Deprecated
 	static Collection<List<ConfDiagnosisOutput>> getRankedCollectionsByScoreSum(Collection<List<ConfDiagnosisEntity>> rankedLists,
 			ScoreType t) {
 		Collection<List<ConfDiagnosisOutput>> rankedOutputs = new LinkedList<List<ConfDiagnosisOutput>>();
@@ -462,6 +465,9 @@ public class PredicateProfileBasedDiagnoser {
 		return rankedOutputs;
 	}
 	
+	//FIXME do not call this method, it is only experiment purpose in the exploratory phase
+	//of ConfDiagnoser
+	@Deprecated
 	static Collection<List<ConfDiagnosisOutput>> getRankedCollectionsByScoreTfidf(Collection<List<ConfDiagnosisEntity>> rankedLists,
 			ScoreType t) {
 		Collection<List<ConfDiagnosisOutput>> rankedOutputs = new LinkedList<List<ConfDiagnosisOutput>>();

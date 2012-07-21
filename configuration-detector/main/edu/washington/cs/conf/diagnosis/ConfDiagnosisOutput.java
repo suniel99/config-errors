@@ -2,11 +2,8 @@ package edu.washington.cs.conf.diagnosis;
 
 import java.io.PrintStream;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
 import edu.washington.cs.conf.analysis.ConfEntity;
 import edu.washington.cs.conf.util.Globals;
@@ -52,6 +49,33 @@ public class ConfDiagnosisOutput {
 		    + "     , with the last piece: "
 		    + (explanations.isEmpty() ? "N/A" : explanations.get(explanations.size() - 1) );
 	}
+	
+	private String errorReport = "NOT-GENERATED-YET";
+	
+	public void setErrorReport(String errorReport) {
+		Utils.checkNotNull(errorReport);
+		this.errorReport = errorReport;
+	}
+	
+	public String getErrorReport() {
+		return errorReport;
+	}
+	
+	/**
+	 * a rough outline of recovery:
+	 * 
+	 * String confName = this.conf.getFullConfName();
+		String context = null;
+		String predicateText = null;
+		int lineNum = -1;
+		int goodRunNum = -1;
+		int goodEnter = -1;
+		int badRunNum = -1;
+		int badEnter = -1;
+		String expl = ExplanationGenerator.createWellFormattedExpanation(confName, context, predicateText, lineNum,
+				goodRunNum, goodEnter, badRunNum, badEnter);
+		return expl;
+	 * */
 	
 	public Float getFinalScore() {
 		return this.finalScore;
