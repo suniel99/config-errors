@@ -34,7 +34,7 @@ public class TestConfDiagnosisOutput extends TestCase {
 		coll.add(Arrays.asList(o5, o2, o3, o1));
 		coll.add(Arrays.asList(o4, o3, o1));
 		
-		List<ConfDiagnosisOutput> ranking = ConfDiagnosisOutput.rankByAvgRanking(coll);
+		List<ConfDiagnosisOutput> ranking = DiagnosisOutputRanking.rankByAvgRanking(coll);
 		for(ConfDiagnosisOutput r : ranking) {
 			System.out.println(r);
 			r.showExplanations(System.out);
