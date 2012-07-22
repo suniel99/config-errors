@@ -372,31 +372,39 @@ to manual debugging.
 %  internal implementation choices.  This is too many low-level details at
 %  this point in the paper.}
 
-We compared \ourtool to three variants and one existing
-technique, called ConfAnalyzer~\cite{Rabkin:2011:PPC}.
-The three variants is based on \ourtool, but use different
-abstractions rather than
-the affected predicates as computed by thin slicing in
-error diagnosis. ConfAnalyzer, one of the most precise
-configuration error diagnosis technique, uses dynamic
-information flow anlaysis to reason about the root cause of a
-configuration error.
-Our experimental results show that \ourtool significantly
-outperformed three variants.
-Compared to ConfAnalyzer,
-\ourtool produced accurate diagnosis information for the 5
+We compared \ourtool to an existing technique, called ConfAnalyzer~\cite{Rabkin:2011:PPC},
+which uses information flow anlaysis to reason about the root cause of a
+configuration error. As a result, \ourtool produced accurate diagnosis information for the \noncrash
 non-crashing errors that ConfAnalyzer failed to diagnose,
 and produced better or the same results
 for 6 out of the \crash crashing errors. 
 
+We also compared \ourtool to two techniques that leverage existing fault localization
+techniques to diagnose configuration errors. Our experimental results show
+that \ourtool significantly outperforms these two techniques, suggesting
+the necessity of designing a new technique (such as \ourtool) for configuration error diagnosis.
+
+%three variants and one existing
+%technique, .
+%The three variants is based on \ourtool, but use different
+%abstractions rather than
+%the affected predicates as computed by thin slicing in
+%error diagnosis. ConfAnalyzer, one of the most precise
+%configuration error diagnosis technique, uses dynamic
+%Our experimental results show that \ourtool significantly
+%outperformed three variants.
+%Compared to ConfAnalyzer,
 
 
-Finally, we investigated the effects of varying the comparison execution profiles
-from \ourtool's database.
-Our experimental results show that varying the
+
+Finally, we evaluated two internal design choices of \ourtool.
+First, we show that using thin slicing~\cite{Sridharan:2007} to compute the affected
+predicates yielded more accurate diagnosis than using full slicing~\cite{Horwitz:1988}.
+Second, we %investigated the effects of varying the comparison execution profiles from \ourtool's database, and
+show that varying the execution
 profile selection strategy can result in substantially different
-diagnosis results, depending on the application being analyzed;
-and the similarity-based selection strategy used in \ourtool outperforms
+diagnosis results. %, depending on the application being analyzed;
+The similarity-based selection strategy used in \ourtool outperformed
 the other two comparison strategies.
 
 
