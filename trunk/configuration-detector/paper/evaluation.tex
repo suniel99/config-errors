@@ -226,9 +226,9 @@ for the JVM), running Windows 7.
 \small{
 \begin{tabular}{|l||c|c||c|c||c|c|c||c|}
 \hline
- Error ID.  & Root cause & \#Options& \multicolumn{2}{|c||}{\ourtool} & Full Slicing & Coverage Analysis& Invariant Analysis & ConfAnalyzer~\cite{Rabkin:2011:PPC}\\
+ Error ID.  & Root Cause & \#Options& \multicolumn{2}{|c||}{\ourtool} & Full Slicing & Coverage Analysis& Invariant Analysis & ConfAnalyzer~\cite{Rabkin:2011:PPC}\\
 \cline{4-9}
- Program & configuration option & & \#Profiles& Rank  & Rank & Rank & Rank & Rank \\
+ Program &  & & \#Profiles& Rank  & Rank & Rank & Rank & Rank \\
  \hline
 \hline
 \multicolumn{9}{|l|}{Non-crashing errors}   \\
@@ -262,7 +262,7 @@ for the JVM), running Windows 7.
 %  the total number of configuration options in the program.  This will
 %  emphasize how good the ``rank'' numbers are.}
 \Caption{{\label{tab:results} Experimental results in diagnosing software
-configuration errors. Column ``Responsible Option'' shows the actual
+configuration errors. Column ``Root Cause'' shows the actual
 configuration option for the error. Column ``\#Options'' shows the
 number of available configuration options, taken from Figure~\ref{tab:subjects}.
 Column ``\ourtool'' shows the results of using
@@ -273,10 +273,10 @@ Column ``ConfAnalyzer'' shows the results of an existing
 technique~\cite{Rabkin:2011:PPC}.
 Column ``\#Profiles'' shows the number of similar execution profiles selected
 from the pre-built database for comparison, and the total size of the database.
-For each technique, Column ``Rank'' shows the rank of the actual responsible
-option in its output (lower is better). ``X''
+For each technique, Column ``Rank'' shows the rank of the actual root 
+cause in its output (lower is better). ``X''
 means the technique is not applicable (i.e., requiring a crashing point), and ``N'' means the technique
-does not identify the actual responsible option. When computing the average
+does not identify the actual root cause. When computing the average
 rank, we only include the case when a technique can output the root cause.}}
 \end{figure*}
 
@@ -491,7 +491,7 @@ for offline error diagnoses.
 \small{
 \begin{tabular}{|l|c|c||c|}
 \hline
- Error ID. & \multicolumn{3}{|c|}{Rank of the Actual Responsible Option } \\
+ Error ID. & \multicolumn{3}{|c|}{Rank of the Actual Root Cause} \\
   %& \multicolumn{3}{|c|}{Different Comparison Profile Selection Strategy} \\
 \cline{2-4}
  Program & All Profiles& Random Selection&  Similarity-Based\\
