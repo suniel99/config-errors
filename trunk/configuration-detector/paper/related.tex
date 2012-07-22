@@ -27,21 +27,20 @@ from the value usually chosen by other machines, PeerPressure
 flags the value as a potential error. More recently, ConfAid~\cite{Attariyan:2010:ACT}
 uses dynamic taint analysis to diagnose configuration problems 
 by monitoring causality within the program binary as it executes.
-ConfAnalyzer~\cite{Rabkin:2011:PPC} combines static dataflow analysis
-and dynamic information flow analysis to precompute
+ConfAnalyzer~\cite{Rabkin:2011:PPC} uses dynamic information flow analysis to precompute
 possible configuration error diagnoses for every possible crashing point
 in a program. 
 
 Our technique is significantly different
 from the existing approaches.
 First, most existing approaches focus exclusively on configuration errors
-that lead to software crash or assertion failures, by leveraging
-valuable crashing information such as stack traces.
+that lead to software crash or assertion failures.
+%, by leveraging valuable crashing information such as stack traces.
 By contrast, our technique can diagnose both
-\textit{crashing} and \textit{non-crashing} errors~\cite{Yin:2011:ESC}.
+\textit{crashing} and \textit{non-crashing} errors.
 Second, many existing approaches~\cite{Attariyan:2010:ACT, Whitaker:2004:CDS}
 assume the existence of a testing oracle that can safely
-reveal the error during the diagnosis. However, such error-revealing oracles are often
+check whether the software functions correctly. However, such oracles are often
 absent in practice. Writing them may
 require a substantial amount of time and effort that a
 typical software user would not prefer, and should not be expected, to invest.
@@ -49,7 +48,7 @@ By constrast, our technique eliminates this assumption.
 Third, approaches like PeerPressure~\cite{Wang:2004:AMT} benefit from
 the known schema of the Windows registry, but cannot detect configuration errors
 that lie outside the registry. Our technique of analyzing the
-affected predicate behavior is more general for Java software.
+affected predicate behavior is more general for configurable software.
 
 %Most prior work on configuration debugging has relied
 %on large user communities or on modifying the program’s execution
@@ -72,11 +71,11 @@ affected predicate behavior is more general for Java software.
 \subsection{Automated Debugging Techniques}
 
 Many automated debugging techniques~\cite{Jones:2002, Zeller:2002:ICC,
- Horwitz:1988, clause07july} have been developed to localize errors in software.
+ Horwitz:1988, clause07july} have been developed to localize software errors.
 
 Program slicing~\cite{Horwitz:1988} and taint analysis~\cite{clause07july}
 are two techniques to determine which statements and inputs
-could affect a particular variable value. Despite their effectiveness
+could affect a particular variable. Despite their effectiveness
 in diagnosing a crashing configuration error by performing backward
 reachability analysis from the crashing point~\cite{Rabkin:2011:PPC,
 Attariyan:2010:ACT}, these two techniques
@@ -89,13 +88,31 @@ can not be directly applied to diagnose a non-crashing error.
 
 
 Delta debugging~\cite{Zeller:2002:ICC} is a general
-algorithm for isolating software error causes.
+algorithm to isolate software error causes.
 It works by differences between a working state and a broken
-state to isolate a set of failure-inducing inputs.
-However, it requires users to provide a testing oracle to check
-whether an intermediate program state behaves correctly.
-In addition, Delta debugging cannot diagnose errors
-where no working configuration is available. \ourtool overcomes the above limitations $\blacksquare$
+state to isolate a set of failure-inducing changes.
+When using Delta debugging, users must provide a testing oracle to check
+whether an intermediate program state behaves correctly,
+and a working state which Delta debugging can refer to.
+However, besides the difficulty in writing a good testing oracle,
+a working state is often absent in practice since the error-revealing
+input and configuration may have already been minimized (such as the
+\errors configuration errors in our experiments).
+By contrast, \ourtool eliminates these two assumptions by comparing
+the profiles from the undesirable execution with correct executions, and
+then inferring the root cause configuration options.
+
+%diagnoses a configuration error from a different perspective.
+%It compares the profile from an undesirable execution with 
+%similar correct profiles to identify behaviorally-d
+
+
+
+%.
+%In addition, when using Delta debugging to diagnose an error, the user must
+%also provide a working state. However, besides 
+% cannot diagnose errors
+%where no working configuration is available. \ourtool overcomes the above limitations $\blacksquare$
 
 %a particular failrue. It also pushes more of the work of troubleshooting
 %onto the user site.
@@ -105,11 +122,12 @@ debugging domain. Clarify~\cite{Ha:2007:IER} uses program features
 such as function call counts, call site, and stack dumps to improve
 error reporting. The improved error reporting, although helpful,
 does not disagnose the root cause. The CBI project~\cite{Liblit:2005:SSBI}
-analyzes execution traces collected from deployed software
-to isolate software failure causes. By constrast, CBI
+analyzes a large number of execution traces collected from deployed software
+to isolate software failure causes. However, CBI
 identifies likely buggy statements as final output, while
-\ourtool links the erroneous program behavior to specific
-configuration options and outputs. $\blacksquare$
+\ourtool identifies the behaviorally-deviated program predicates, and
+links the undesirable behavior to specific configuration options.
+%Furthermore, CBI 
 
 %a different abstraction 
 
@@ -126,7 +144,7 @@ configuration options and outputs. $\blacksquare$
 %causality-based technique~\cite{Attariyan:2008:UCD}.
 %problem shooting~\cite{ }. 
 
-\subsection{Configuration-Aware Software Analysis}
+\subsection{Configuration-Aware Software Analysis and Testing}
 
 Empirical studies show that configuration errors are pervasive, costly,
 and time-consuming to diagnose~\cite{Yin:2011:ESC, Hubaux:2012}.
@@ -134,23 +152,22 @@ To over this problem, researchers have designed various
 software analysis techniques to improve configuration
 management~\cite{Sarma:2007:TSA, Giese:2004:MDV, Jezequel:1999:RVC,
 Kloukinas:2000:ACM, hubaux:towards, Holl:2012:MEC}, understand
-and test the behavior of configurable software systems~\cite{Grundy:1998:ECU,
+and test the behavior of a configurable software system~\cite{Grundy:1998:ECU,
 Ma:2011:VDR, Georg:2001:UAU, Qu:2008:CRT, hoek02testbed, Reisner:2010:USE, itrees}.
 For example, Rao et al.~\cite{Rao:2009:VRL} developed a technique
-to automatically learn good configurations from historical data.
-However, their approach has a quite different
-focus than ours. Their approach aims to reduce the burden of
+to automatically learn a good configuration from historical data.
+However, their approach aims to reduce the burden of
 configuration management and prevent certain errors from happening,
 while our technique is designed to diagnose an exhibited error.
-Qu et al.~\cite{Qu:2008:CRT} proposed to use combinatorial interaction
-testing techniques to model and generate configuration samples for
+Qu et al.~\cite{Qu:2008:CRT} proposed a combinatorial interaction
+testing technique to model and generate configuration samples for
 use in regression testing. Recently, Song et al.~\cite{itrees}
 presented iTree to improve combinatorial interaction testing
 by discovering sets of configurations to test that are smaller
 but can achieve higher testing coverage. Compared to \ourtool,
-those testing techniques can be used to find possible errors in
+those testing techniques can be used to find new errors in
 a configurable software sysem earlier, but can not
-localize the root cause of a configuration error.
+identify the root cause of a revealed configuration error.
 
 
 
