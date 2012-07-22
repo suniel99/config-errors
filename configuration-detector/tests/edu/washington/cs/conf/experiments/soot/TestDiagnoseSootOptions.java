@@ -1,11 +1,14 @@
 package edu.washington.cs.conf.experiments.soot;
 
+import java.util.Collection;
 import java.util.List;
 
 import edu.washington.cs.conf.analysis.ConfEntity;
 import edu.washington.cs.conf.analysis.ConfEntityRepository;
+import edu.washington.cs.conf.analysis.ConfPropOutput;
 import edu.washington.cs.conf.diagnosis.MainAnalyzer;
 import edu.washington.cs.conf.diagnosis.MainAnalyzer.SelectionStrategy;
+import edu.washington.cs.conf.diagnosis.PredicateProfileBasedDiagnoser;
 import edu.washington.cs.conf.diagnosis.PredicateProfileBasedDiagnoser.RankType;
 import edu.washington.cs.conf.experiments.CommonUtils;
 import edu.washington.cs.conf.experiments.SootExpUtils;
@@ -56,5 +59,24 @@ public class TestDiagnoseSootOptions extends TestCase {
 				//new String[]{"./experiments/soot-database/soot_helloworld_with_keepline.txt"},
 				repo, null, null, null, 0.11f);
 		MainAnalyzer.doFiltering = false;
+	}
+	
+	public void testDiagnoseSimilar_ErrorReport() {
+		PredicateProfileBasedDiagnoser.SAVE_MEMORY = true;
+		
+		String sootSrc = SootExpUtils.getSootSourceDir();
+		Collection<ConfPropOutput> confSlices = TestSliceSootConfigOptions.getSootConfOutputs();
+		
+		String badRunTrace = "./experiments/soot-database/soot_helloworld_no_keepline.txt";
+		ConfEntityRepository repo = SootExpUtils.getConfEntityRepository();
+		
+		MainAnalyzer.doFiltering = true;
+		MainAnalyzer.diagnoseConfigErrors(badRunTrace, 
+				TestComparingSootTraces.db,
+				//new String[]{"./experiments/soot-database/soot_helloworld_with_keepline.txt"},
+				repo, sootSrc, confSlices, null, 0.11f);
+		
+		MainAnalyzer.doFiltering = false;
+		PredicateProfileBasedDiagnoser.SAVE_MEMORY = false;
 	}
 }

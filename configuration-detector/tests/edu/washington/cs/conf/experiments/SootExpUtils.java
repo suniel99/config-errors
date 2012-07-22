@@ -8,6 +8,10 @@ import edu.washington.cs.conf.analysis.ConfEntityRepository;
 
 public class SootExpUtils {
 	
+	public static String getSootSourceDir() {
+		return "D:\\research\\configurations\\workspace\\soot-2.5\\src";
+	}
+	
 	public static ConfEntityRepository getConfEntityRepository() {
 		List<ConfEntity> sootConfList = getSootConfList();
 		ConfEntityRepository repo = new ConfEntityRepository(sootConfList);
