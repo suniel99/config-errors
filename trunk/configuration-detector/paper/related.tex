@@ -44,7 +44,7 @@ check whether the software functions correctly. However, such oracles are often
 absent in practice. Writing them may
 require a substantial amount of time and effort that a
 typical software user would not prefer, and should not be expected, to invest.
-By constrast, our technique eliminates this assumption.
+By contrast, our technique eliminates this assumption.
 Third, approaches like PeerPressure~\cite{Wang:2004:AMT} benefit from
 the known schema of the Windows registry, but cannot detect configuration errors
 that lie outside the registry. Our technique of analyzing the
@@ -56,7 +56,7 @@ affected predicate behavior is more general for configurable software.
 
 %In contrast, current industrial practice uses stack traces to cluster
 %failure reports into equivalence classes. Two crash reports showing
-%the same stack trace, or perphas only the same top-of-stack function,
+%the same stack trace, or perhaps only the same top-of-stack function,
 %are presumed to be two reports of the same failure. This heuristic
 %works to the extent that a single cause corresponds to a single point
 %of failure, but our experience with xxx suggests that this
@@ -114,14 +114,14 @@ then inferring the root cause configuration options.
 % cannot diagnose errors
 %where no working configuration is available. \ourtool overcomes the above limitations $\blacksquare$
 
-%a particular failrue. It also pushes more of the work of troubleshooting
+%a particular failure. It also pushes more of the work of troubleshooting
 %onto the user site.
 
 Recently, statistical algorithms have been applied to the automated
 debugging domain. Clarify~\cite{Ha:2007:IER} uses program features
 such as function call counts, call site, and stack dumps to improve
 error reporting. The improved error reporting, although helpful,
-does not disagnose the root cause. The CBI project~\cite{Liblit:2005:SSBI}
+does not diagnose the root cause. The CBI project~\cite{Liblit:2005:SSBI}
 analyzes a large number of executions collected from deployed software
 to isolate software failure causes. However, CBI
 identifies likely buggy statements as final output, while
@@ -166,7 +166,7 @@ presented iTree to improve combinatorial interaction testing
 by discovering sets of configurations to test that are smaller
 but can achieve higher testing coverage. Compared to \ourtool,
 those testing techniques can be used to find new errors in
-a configurable software sysem earlier, but can not
+a configurable software system earlier, but can not
 identify the root cause of a revealed configuration error.
 
 
