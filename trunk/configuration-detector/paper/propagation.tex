@@ -11,7 +11,7 @@ and determines a program's execution path, while
 the value of a specific expression may be largely input-dependent.
 Second, it simplifies reporting because the outcome of a program predicate can only be
 either true or false.  Nevertheless, program predicate is not the only
-abstraction our technique can use. Our experiments (Section~\ref{sec:evaluation}),
+abstraction a technique can use. Our experiments (Section~\ref{sec:evaluation}),
 empirically demonstrate that choosing other abstractions,
 such as monitoring statement-level coverage
 or method-level invariants, yields less accurate results.
@@ -24,7 +24,6 @@ configuration option. Unfortunately, traditional slicing is impractical
 because it includes too much of the program.  This is due to conservatism
 (for example, in handling pointers) and to following both data and control
 dependences.
-
 %\todo{I propose to cut this paragraph; it feels redundant with the above.}
 %First, traditional slicing does not distinguish flows along
 %pointers from flows along values; thus, a resulting slice includes all statements that
@@ -35,7 +34,6 @@ dependences.
 %Monitoring the control flow of such indirectly-affected statements 
 %and then linking their behaviors to specific configuration option values
 %may lead to less accurate diagnosis.
-
 Figure~\ref{fig:example} illustrates
 this problem.  Traditional slicing concludes that the predicates
 in lines 104, 312, and 315 are affected by the configuration option \CodeIn{maxsize}.
@@ -74,7 +72,7 @@ only includes the predicate in line 312.
 Section~\ref{sec:evaluation}, 
 also empirically compares traditional slicing with
 thin slicing and demonstrates that thin slicing is a better choice
-than traditional slicing.
+than traditional full slicing.
 
 %When Randoop is used to generate tests for different inputs (here,
 %input mean programs under test), the created tests (method-call

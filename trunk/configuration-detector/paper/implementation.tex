@@ -7,7 +7,7 @@ It statically computes the affected predicates
 for each configuration option, assigns a unique
 ID for each affected predicate, and then performs offline instrumentation.
 The runtime behavior of all affected predicates are recorded
-in a profile file. 
+in a file. 
 
 %Using the profile file,
 %\ourtool works in a fully automatic and
@@ -23,7 +23,7 @@ and its translated WALA bytecode:
 
 \begin{CodeOut}
 \begin{alltt}
-   // eqth is a configuration option initialized somewhere else
+   // eqth is a configuration option 
 1. if (eqth.equals("run")) \ttlcb
 2.   add();
 3. \ttrcb
@@ -39,7 +39,7 @@ and its translated WALA bytecode:
 3. r2 = r0.equals(r1)
 4. r4 = true
 5. conditional branch(eq) r2, r4
-7. invokevirtual add() 
+6. invokevirtual add() 
 \end{alltt}
 \end{CodeOut}
 

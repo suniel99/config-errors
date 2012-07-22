@@ -224,7 +224,7 @@ to statically identify its affected predicates in the source code.
 \item \textbf{Configuration Behavior Profiling}. \ourtool
 \textit{selectively} instruments the program-to-diagnose
 so that it records the runtime behaviors of affected predicates
-in a profile file.
+in an execution profile.
 %diagnosed code when undesired behavior
 %is observed.
 When the user encounters a suspected configuration error, the user
@@ -283,7 +283,7 @@ why a configuration option is suspicious.
 
 \item \textbf{It can diagnose both non-crashing and crashing errors}.
 Most existing techniques~\cite{Rabkin:2011:PPC,
-Whitaker:2004:CDS, Attariyan:2010:ACT} focus exclusively on configuration errors
+Whitaker:2004:CDS, Attariyan:2010:ACT, Su:2007:AIC} focus exclusively on configuration errors
 that cause a crash point, an error message, or a stack trace
 , while by contract, \ourtool diagnoses
 ignoring configuration problems that manifest themselves as
@@ -292,7 +292,7 @@ either visible or silent failures.
 \item \textbf{It requires no OS-level support.} Our technique requires no alterations to
 the JVM or standard library. This distinguishes our work from
 competing techniques such as OS-level configuration
-error troubleshooting~\cite{Whitaker:2004:CDS}.% or dynamic taint tracking~\cite{clause07july}.
+error troubleshooting~\cite{Whitaker:2004:CDS, Su:2007:AIC}.% or dynamic taint tracking~\cite{clause07july}.
 
 \end{itemize}
 
@@ -381,8 +381,8 @@ for 6 out of the \crash crashing errors.
 
 We also compared \ourtool to two techniques that leverage existing fault localization
 approaches~\cite{Jones:2002, McCamant:2003} to diagnose configuration errors. Our experimental results show
-that \ourtool significantly outperforms these two techniques, suggesting
-the necessity of designing new configuration error diagnosis techniques such as \ourtool.
+that \ourtool significantly outperformed these two techniques, suggesting
+the necessity of designing new configuration error diagnosis techniques.% such as \ourtool.
 
 %three variants and one existing
 %technique, .
