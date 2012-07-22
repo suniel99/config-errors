@@ -35,14 +35,9 @@ different comparison execution profiles (Section~\ref{sec:ranking})?
 %\item What are the effects of varying the comparison execution profiles (Section~\ref{sec:ranking})?
 \end{itemize}
 
-%how well can \ourtool identify solutions to configuration problems?
-%How effective is predicate-level ..
-%Can \ourtool identify solutions to configuration problems involving xx
 
 \subsection{Subject Programs}
 
-%\todo{The citations are websites.  Add academic citations as well, if
-%  possible.  (If we don't have enough space, so be it.)}
 
 We evaluated \ourtool on \subjectnum Java programs shown
 in Figure~\ref{tab:subjects}.
@@ -152,11 +147,6 @@ We spent 3 hours per program, on average, and obtained 6--16 execution profiles.
 The average size of the profile database is 35MB, and the largest one (Randoop's
 database) is 72MB.
 
-%The size of profile files in the database $\blacksquare$
-
-%Run examples from user manual to form the database. The effort
-%can be amortized in development time.
-
 We made a simple syntactic change to JChord, which affected 24 
 lines of code. This change
 does not modify JChord's semantics; rather, it just encapsulates
@@ -194,14 +184,6 @@ public void run() \ttlcb
 \end{CodeOut}
 
 
-
-%Use 1-CFA to construct call graph, achieve much better precision
-%than 0-CFA. 
-
-%Use extraction~\cite{Rabkin:2011:SEP}
-
-%To evaluate \ourtool, 
-
 When diagnosing a configuration error, we first reproduce the
 error on a \ourtool-instrumented program to obtain the
 execution profile. Then, using the obtained execution profile, we use \ourtool
@@ -217,341 +199,30 @@ Our experiments were run on a
 2.67GHz Intel Core PC with 4GB physical memory (2GB was allocated
 for the JVM), running Windows 7.
 
+\input{result-fig}
 
 \subsection{Results}
 \label{sec:results}
 
-\begin{figure*}[t]
-\setlength{\tabcolsep}{.29\tabcolsep}
-\small{
-\begin{tabular}{|l||c|c||c|c||c|c|c||c|}
-\hline
- Error ID.  & Root Cause & \#Options& \multicolumn{2}{|c||}{\ourtool} & Full Slicing & Coverage Analysis& Invariant Analysis & ConfAnalyzer~\cite{Rabkin:2011:PPC}\\
-\cline{4-9}
- Program &  & & \#Profiles& Rank  & Rank & Rank & Rank & Rank \\
- \hline
-\hline
-\multicolumn{9}{|l|}{Non-crashing errors}   \\
- \hline
-\phz 1. Randoop& \CodeIn{maxsize} & 57& 10 / 12 & 1 & 46 & N & N &X \\
-\phz 2. Weka&\CodeIn{m\_numFolds}& 14 &2 / 12 &1& 9 & 4 & 5 &X\\
-\phz 3. JChord& \CodeIn{chord.kobj.k}& 79 & 3 / 6 & 2& 73 & N &2  &X\\
-\phz 4. Synoptic& \CodeIn{partitionRegExp}& 37 & 2 / 6 & 1& 6 & 1 & \todo{missing?} &X\\
-\phz 5. Soot& \CodeIn{keep\_line\_number} &49 & 1 / 16 & 3 & N & N& N &X\\
-\hline
- \multicolumn{2}{|l|}{Average} & 47.2 & 3.6 & 1.6 & 33.5 & 2.5 &  & X \\
-\hline
-\hline
-\multicolumn{9}{|l|}{Crashing errors}   \\
-\hline
-\phz 6. JChord& \CodeIn{chord.main.class}&79 &5 / 6 & 1& 5 & 1 & 4 &1\\
-\phz 7. JChord& \CodeIn{chord.main.class}& 79 &5 / 6 & 1 & 5 & 1 & 4 &1\\
-\phz 8. JChord& \CodeIn{chord.run.analyses}& 79 &5 / 6 & 17& 21 &14 & 17 &1\\
-\phz 9. JChord& \CodeIn{chord.ctxt.kind}& 79 &4 / 6 & 1 & 75 & 27 & 30 &3\\
- 10. JChord& \CodeIn{chord.print.rels}& 79 & 4 / 6& 15 & 24 & 16 & 19 &1\\
- 11. JChord& \CodeIn{chord.print.classes}& 79 &4 / 6 & 16 & 22 & 15 & 18 &1\\
- 12. JChord& \CodeIn{chord.scope.kind}& 79 &5 / 6 & 1& 10 & 1 & N &1\\
- 13. JChord& \CodeIn{chord.reflect.kind}& 79 &6 / 6 & 1& 11 & 6 & 9 &3\\
- 14. JChord& \CodeIn{chord.class.path}& 79 &5 / 6 & 8 & 6 & 2 & 5 &N\\
-\hline
- \multicolumn{2}{|l|}{Average} & 79 & 4.7 & 6.7 & 19.8 & 9.2 & 13.3 &1.5\\
-\hline
-\end{tabular}
-}
-%\todo{Perhaps add a new column, after ``root cause configuration option'', giving
-%  the total number of configuration options in the program.  This will
-%  emphasize how good the ``rank'' numbers are.}
-\Caption{{\label{tab:results} Experimental results in diagnosing software
-configuration errors. Column ``Root Cause'' shows the actual
-configuration option for the error. Column ``\#Options'' shows the
-number of available configuration options, taken from Figure~\ref{tab:subjects}.
-Column ``\ourtool'' shows the results of using
-our technique. Columns ``Full Slicing'', ``Coverage Analysis'',
-and ``Invariant Analysis'' show the results of three variants of \ourtool
-as described in Section~\ref{sec:comparison}.
-Column ``ConfAnalyzer'' shows the results of an existing
-technique~\cite{Rabkin:2011:PPC}.
-Column ``\#Profiles'' shows the number of similar execution profiles selected
-from the pre-built database for comparison, and the total size of the database.
-For each technique, Column ``Rank'' shows the rank of the actual root 
-cause in its output (lower is better). ``X''
-means the technique is not applicable (i.e., requiring a crashing point), and ``N'' means the technique
-does not identify the actual root cause. When computing the average
-rank, we only include the case when a technique can output the root cause.}}
-\end{figure*}
-
 
 \subsubsection{Accuracy in Diagnosing Configuration Errors}
 \label{sec:accuracy}
-
-Figure~\ref{tab:results} shows the experimental results.
-We can see that \ourtool is highly effective in pinpointing the root cause of
-misconfigurations. For all \noncrash non-crashing errors
-and 5 out of the \crash crashing errors, it lists the actual root cause as one of the
-top 3 options. 
-
-
-As shown in Figure~\ref{tab:results}, \ourtool is particularly effective
-in diagnosing non-crashing configuration errors, which are not supported
-by most existing tools. $\blacksquare$ why effective? observation?
-statically significance? Give some examples here... Randoop \CodeIn{maxsize},
-Weka behaves overfitting..
-
-
-Compared to non-crashing errors, \ourtool is less effective
-in diagnosing non-crashing errors. For 4 crashing errors,
-the actual causes are ranked lower.
-This is because $\blacksquare$ the configuration option has
-a long propagation chain, and seems hard for \ourtool
-to diagnose correctly. no statistical significance...
-
-Although \ourtool ranked the actual root course of several
-crashing errors lower, crashing errors are generally much easier to diagnose than non-crashing errors.
-This is because a crashing error usually happens shortly after the program
-is launched, and often produces a stack trace with valuable diagnosis clues.
-For example, in Figure~\ref{tab:results}, \ourtool ranks the root cause of
-error 14  8th.
-However, when JChord crashes, it dumps a \CodeIn{ClassNotFoundException}
-that reminds users to check the classpath setting. For the other three crashing errors (error 8, 10, and 11),
-JChord even outputs the wrong configuration option value in the
-error message, which
-directly guides users to the root cause. We speculated that $\blacksquare$
-
-%The nature of the root-cause configuration option is only one factor.
-%The ranking also depends on how the root-cause option relates to
-%other options in the suspect set. A highly configurable software system 
-%likely produces more noises, 
-
-%The detailed illustration
-%for those crashing errors can be found in~\cite{Rabkin:2011:PPC}.
-
-%The remaining errors are a direct result of $\blacksquare$ and seems
-%hard for \ourtool to diagnose correctly.
-
-
-%\ourtool also successfully diagnoses xx\% of the xxx errors. For the
-%remaining errors, \ourtool ranks the root cause 9th. The configuration
-%error is that the xxx. Thus, the root cause gets ranked lower
-%in the list.
-
+\input{diagnosisresults}
 
 
 
 \subsubsection{Comparison with Alternative Approaches}
 \label{sec:comparison}
-
-We next compare \ourtool with three variants and
-one existing technique~\cite{Rabkin:2011:PPC}.
-
-\vspace{1mm}
-\noindent \textbf{Variant 1. \ourtool with Full Slicing.} 
-\ourtool uses thin slicing~\cite{Sridharan:2007} to compute the affected predicates
-of each configuration option. Another way to do so is
-using the traditional full slicing algorithm~\cite{Horwitz:1988}.
-This variant replaces thin slicing with 
-full slicing~\cite{Horwitz:1988} in the configuration
-propagation analysis step (Section~\ref{sec:prop}).
-
-\todo{Are variants 2 and three really variants of \ourtool, or are they
-  completely different techniques that should be presented as such?  In
-  particular, can you characterize variant 2 (here and in the table) as
-  Tarantula, possibly with some small enhancements.  I have a similar
-  question about variant 3.  In any event, make clearer what part of the
-  architecture is replaced by each variant.}
-
-\vspace{1mm}
-\noindent \textbf{Variant 2. \ourtool with Coverage Analysis.}
-This variant uses statement-level coverage information
-to diagnose a configuration error. It treats statements covered
-by the undesired execution profile as potentially buggy, and statements
-covered the correct execution profiles (from the pre-built database) as correct.
-Then, this variant uses a well-known fault localization technique,
-Tarantula~\cite{Jones:2002}, to rank the likelihood of each
-statement being buggy, and queries the results of thin slice
-to identify its affecting configuration options as the root causes. 
-
-
-\vspace{1mm}
-\noindent \textbf{Variant 3. \ourtool with Invariant Analysis.}
-This variant uses method-level invariant
-to diagnose configuration errors. It stores invariants detected
-by Daikon~\cite{Ernst:1999} from correct execution profiles in the database. When a configuration
-error occurs, this variant detects invariants from the undesired execution profile;
-and compares the detected invariants
-with those stored in the database.
-It treats a method to have suspicious behaviors if its observed invariants
-from the undesired execution profile are different from the invariants stored in the database. Finally, this variant ranks
-a method's suspiciousness by the number of different variants, and
-queries the results of thin slice
-to identify its affecting configuration options as the root causes. 
-
-\vspace{1mm}
-\noindent \textbf{ConfAnalyzer: A Heavyweight Dynamic Information Flow-based Approach~\cite{Rabkin:2011:PPC}.}
-Rabkin and Katz proposed a family of techniques to precompute possible
-configuration diagnosis for Java software~\cite{Rabkin:2011:PPC}. In their work,
-the most accurate technique (also probably one of the most precise techniques in the literature)
-is based on dynamic information flow analysis.
-This technique works remarkably well for crashing errors, though as
-described above these are often easy to diagnose even without tool
-support.  ConfAnalyzer cannot diagnose non-crashing errors.
-
-%\todo{Is ConfAnalyzer heavyweight?  If so, say so.}
-
-\vspace{1mm}
-
-The experimental results of comparing \ourtool with the above
-four alternative approaches are shown in Figure~\ref{tab:results}.
-$\blacksquare$ discuss the results here
-
-
+\input{comparison}
 
 \subsubsection{Performance of \ourtool}
 \label{sec:performance}
-
-We measure \ourtool's performance in two ways: the time cost
-in diagnosing an error; and the overhead introduced
-in reproducing an error before diagnosis.  Figure~\ref{tab:performance}
-shows the results.
-
-\begin{figure}[t]
-\setlength{\tabcolsep}{.94\tabcolsep}
-\small{
-\begin{tabular}{|l|c|c|c|}
-\hline
- Error ID. & \multicolumn{2}{|c|}{Time Cost (seconds)} & Slowdown ($\times$)\\
-  %& \multicolumn{3}{|c|}{Different Comparison Profile Selection Strategy} \\
-\cline{2-3}
- Program & Thin Slicing & Error Diagnosis &  \\
- \hline
-\hline
-\multicolumn{4}{|l|}{Non-crashing errors}   \\
- \hline
- 1. Randoop & 50 & $<$ 1 & 1.1\\
- 2. Weka & 43 & $<$ 1 & 1.2 \\
- 3. JChord & 147 & 82 & 13.2\\
- 4. Synoptic & 24 & $<$ 1 & 3.6 \\
- 5. Soot & 95 & 21 & 3.1 \\
-\hline
-Average & 72 & 21 & 4.4\\
-\hline
-\hline
-\multicolumn{4}{|l|}{Crashing errors}   \\
-\hline
- 6. JChord & 147 & 79 & 2.4\\
- 7. JChord & 147 & 75 & 1.4\\
- 8. JChord & 147 & 17 &1.5\\
- 9. JChord & 147 & 30 & 28.5\\
- 10. JChord & 147 & 13 &13.7\\
- 11. JChord & 147 & 10 &65.1 \\
- 12. JChord & 147 & 83 &1.6\\
- 13. JChord & 147 & 8 &1.9\\
- 14. JChord & 147 & 80 &1.4\\
-\hline
-Average & 147 & 44 & 13\\
-\hline
-\end{tabular}
-}
-\Caption{{\label{tab:performance} \ourtool's
-performance in diagnosing configuration
-errors. The time cost has been divided into
-two parts: computing thin slices and diagnosing
-an error.}}
-\end{figure}
-
-The performance of \ourtool is reasonable.
-On average, it uses \avgtime minutes to
-diagnose one configuration error. The time cost for
-computing a thin slice from each configuration option
-is high. However, this step is one-time effort
-for each program and the computed results can be cached
-to share across diagnosis. %for future use.
-
-The performance overhead to reproduce the buggy behavior varies
-among applications. The current tool implementation
-imposes an average slowdown of 13 times when reproducing
-an error in a \ourtool-enabled environment.
-Such performance overhead, admittedly high, has nonetheless proved acceptable
-for offline error diagnoses.
-
-%The size of profile files in the database $\blacksquare$
-
-
-%The performance of \ourtool is reasonable. The time to diagnose
-%an error varies among applications.  XXX app takes less than xxx,
-%while xxx takes xxx to complete.
-
+\input{performance}
 
 
 \subsubsection{Effects of Varying Comparison Execution Profiles}
 \label{sec:ranking}
-
-
-\begin{figure}[t]
-\setlength{\tabcolsep}{.74\tabcolsep}
-\small{
-\begin{tabular}{|l|c|c||c|}
-\hline
- Error ID. & \multicolumn{3}{|c|}{Rank of the Actual Root Cause} \\
-  %& \multicolumn{3}{|c|}{Different Comparison Profile Selection Strategy} \\
-\cline{2-4}
- Program & All Profiles& Random Selection&  Similarity-Based\\
- \hline
-\hline
-\multicolumn{4}{|l|}{Non-crashing errors}   \\
- \hline
- 1. Randoop & 1 & 2 & 1\\
- 2. Weka & 7 & 6 & 1\\
- 3. JChord & 16 & 19 & 2\\
- 4. Synoptic & 1 & 1 & 1\\
- 5. Soot & 13 & 13 & 3\\
-\hline
-Average & 7.6 & 8.2 & 1.6 \\
-\hline
-\hline
-\multicolumn{4}{|l|}{Crashing errors}   \\
-\hline
- 6. JChord & 1 & 1 &1\\
- 7. JChord & 1 & 1 &1\\
- 8. JChord & 17 & 17 &17\\
- 9. JChord & 1 &  1&1\\
- 10. JChord & 15 & 15 &15\\
- 11. JChord & 16 & 16 &16\\
- 12. JChord & 1 & 1 &1\\
- 13. JChord & 25 & 25 &1\\
- 14. JChord & 8 & 8 &8\\
-\hline
-Average & 9.4 & 9.4 & 6.7\\
-\hline
-\end{tabular}
-}
-\Caption{{\label{tab:selection} Comparison with different execution profile selection
-strategies (Section~\ref{sec:ranking}).
-The last column ``Similarity-based'' is the selection strategy
-used in \ourtool, and the data in that column is taken from Figure~\ref{tab:results}.}}
-\end{figure}
-
-
-\ourtool compares the predicate behaviors in the undesired execution profile against
-similar execution profiles from the pre-built database.
-We next investigate the effect of using different profile selection strategies.
-In particular, we compare the similarity-based selection strategy used in \ourtool
- (Section~\ref{sec:similar}) with two alternatives: selecting
-all available execution profiles in the database, and
-randomly selecting a number\todo{Be specific about exactly how many.  Ideally it
-  would be exactly the same number, in each case, as \ourtool used.} of execution profiles from the database.
-Figure~\ref{tab:selection} shows the experimental results.
-
-We can see that varying the comparison strategy can result in
-substantially different effects on the diagnosis results,
-depending on the application being analyzed. Diagnosing
-a non-crashing error is more sensitive in selecting similar
-comparison execution profiles$\blacksquare$ than diagnosing
-a crashing error.
-For the \crash crashing errors, the only difference yielded
-from using different profile selection strategies is on
-the error 13. $\blacksquare$
-
-
+\input{designchoice}
 
 
 \subsection{Experimental Discussions}
@@ -574,18 +245,6 @@ depends on the availability of a similar but correct execution profile.
 Using an arbitrary execution profile (as we demonstrated in Section~\ref{sec:ranking}
 by random selection) may significantly affect the results.
 
-%similar inputs, if no input is available, test adequacy.
-
-
-
-%Our current \ourtool prototype assists in solving configuration errors that are confined
-%to a single computer system, such as a home computer, personal workstation, or stand-alone server. (no process communication...)
-
-%similar inputs, if no inputs is available.
-
-%how easy to construct such database in practice.
-
-%User study of usefulness of the results
 \vspace{1mm}
 
 \noindent \textbf{\textit{Threats to Validity.}} 
@@ -600,6 +259,8 @@ statement level, and method level) in our evaluation.
  Using other dependence analyses or abstraction levels
 might achieve different results.
 
+%how easy to construct such database in practice.
+%User study of usefulness of the results
 
 
 \vspace{1mm}
