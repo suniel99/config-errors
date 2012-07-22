@@ -34,11 +34,16 @@ public class TestDiagnoseWekaOptions extends TestCase {
 	}
 	
 	//diagnosing the weka profiles
-	public void testDiagnoseAll() {
+	public void testDiagnoseSimilar() {
 		long start = System.currentTimeMillis();
 		diagnoseWeka(null);
 		long end = System.currentTimeMillis();
 		System.out.println("eclapsed: " + ((float)end - (float)start)/1000);
+	}
+	
+	public void testDiagnoseSimilar_ErrorReport() {
+		this.confSlices = TestSliceWekaConfigOptions.getWekaConfOutputs();
+		this.testDiagnoseSimilar();
 	}
 	
 	public void testDiagnoseAllRandom() {
@@ -60,23 +65,29 @@ public class TestDiagnoseWekaOptions extends TestCase {
 	/***
 	 * Do random selection, see class: MainAnalyzer
 	 * */
+
+	String wekaSrc = "D:\\research\\configurations\\workspace\\weka-3.6\\main\\java";
+	
+	Collection<ConfPropOutput> confSlices = null;
+	//uncommet the following code will fetch the src text and line number
+		//TestSliceWekaConfigOptions.getWekaConfOutputs();
+	
 	public void diagnoseWeka(SelectionStrategy strategy) {
 		String badRunTrace = "./experiments/weka-database/bad-labor.txt";
 		Collection<String> goodRunTraces = Arrays.asList(TestComparingWekaTraces.db);
 		ConfEntityRepository repo = WekaExpUtils.getWekaRepository();
-		String wekaSrc = "D:\\research\\configurations\\workspace\\weka-3.6\\main\\java";
-		Collection<ConfPropOutput> confSlices = null;
-		//uncommet the following code will fetch the src text and line number
-			//TestSliceWekaConfigOptions.getWekaConfOutputs();
-		
 		
 		MainAnalyzer analyzer = new MainAnalyzer(badRunTrace, goodRunTraces, repo, wekaSrc, confSlices);
 		analyzer.setSelectionStrategy(strategy);
 		
 		List<ConfDiagnosisOutput> outputs = analyzer.computeResponsibleOptions();
+		int i = 1;
 		for(ConfDiagnosisOutput o : outputs) {
+			System.out.println(i++);
 			System.out.println(o.getConfEntity());
 			System.out.println(o.getBriefExplanation());
+			System.out.println();
+			System.out.println(o.getErrorReport());
 			System.out.println();
 		}
 	}
