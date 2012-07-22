@@ -1,6 +1,6 @@
 \ourtool starts error diagnosis after obtaining the execution profile from
 an undesired execution. It selects similar
-profiles from know correct executions (Section~\ref{sec:similar}), compares
+profiles from known correct executions (Section~\ref{sec:similar}), compares
 each selected profile with
 the undesired one to identify the most behavioral-deviated predicates
 (Section~\ref{sec:deviation}), and then determines
@@ -195,10 +195,10 @@ configuration options for each comparison pair, and then outputs
 a final list by using majority voting over all ranking lists.
 In the final ranking list, one configuration option ranks higher
 than another if it ranks higher in more than half of the ranking lists.
-However, according to Arrow's impossiblity theorem~\cite{Fishburn1970103},
+However, according to Arrow's impossibility theorem~\cite{Fishburn1970103},
 no rank order voting system can produce a non-cyclic ranking while also
 meeting a specific set of criteria (e.g., getting more than half the voters).
-Our implementation breaks possible cycles by anbitrarily ranking the
+Our implementation breaks possible cycles by arbitrarily ranking the
 involved options, but our experiments did not use this capability.
 
 %\todo{Such a ranking can have cycles.  Does the implementation suffer this
