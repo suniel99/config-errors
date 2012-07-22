@@ -1,0 +1,63 @@
+We next compare \ourtool with three variants and
+one existing technique~\cite{Rabkin:2011:PPC}.
+
+\vspace{1mm}
+\noindent \textbf{Variant 1. \ourtool with Full Slicing.} 
+\ourtool uses thin slicing~\cite{Sridharan:2007} to compute the affected predicates
+of each configuration option. Another way to do so is
+using the traditional full slicing algorithm~\cite{Horwitz:1988}.
+This variant replaces thin slicing with 
+full slicing~\cite{Horwitz:1988} in the configuration
+propagation analysis step (Section~\ref{sec:prop}).
+
+\todo{Are variants 2 and three really variants of \ourtool, or are they
+  completely different techniques that should be presented as such?  In
+  particular, can you characterize variant 2 (here and in the table) as
+  Tarantula, possibly with some small enhancements.  I have a similar
+  question about variant 3.  In any event, make clearer what part of the
+  architecture is replaced by each variant.}
+
+\vspace{1mm}
+\noindent \textbf{Variant 2. \ourtool with Coverage Analysis.}
+This variant uses statement-level coverage information
+to diagnose a configuration error. It treats statements covered
+by the undesired execution profile as potentially buggy, and statements
+covered the correct execution profiles (from the pre-built database) as correct.
+Then, this variant uses a well-known fault localization technique,
+Tarantula~\cite{Jones:2002}, to rank the likelihood of each
+statement being buggy, and queries the results of thin slice
+to identify its affecting configuration options as the root causes. 
+
+
+\vspace{1mm}
+\noindent \textbf{Variant 3. \ourtool with Invariant Analysis.}
+This variant uses method-level invariant
+to diagnose configuration errors. It stores invariants detected
+by Daikon~\cite{Ernst:1999} from correct execution profiles in the database. When a configuration
+error occurs, this variant detects invariants from the undesired execution profile;
+and compares the detected invariants
+with those stored in the database.
+It treats a method to have suspicious behaviors if its observed invariants
+from the undesired execution profile are different from the invariants stored in the database. Finally, this variant ranks
+a method's suspiciousness by the number of different variants, and
+queries the results of thin slice
+to identify its affecting configuration options as the root causes. 
+
+\vspace{1mm}
+\noindent \textbf{ConfAnalyzer: A Heavyweight Dynamic Information Flow-based Approach~\cite{Rabkin:2011:PPC}.}
+Rabkin and Katz proposed a family of techniques to precompute possible
+configuration diagnosis for Java software~\cite{Rabkin:2011:PPC}. In their work,
+the most accurate technique (also probably one of the most precise techniques in the literature)
+is based on dynamic information flow analysis.
+This technique works remarkably well for crashing errors, though as
+described above these are often easy to diagnose even without tool
+support.  ConfAnalyzer cannot diagnose non-crashing errors.
+
+%\todo{Is ConfAnalyzer heavyweight?  If so, say so.}
+
+\vspace{1mm}
+
+The experimental results of comparing \ourtool with the above
+four alternative approaches are shown in Figure~\ref{tab:results}.
+$\blacksquare$ discuss the results here
+

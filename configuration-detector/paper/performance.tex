@@ -1,0 +1,72 @@
+We measure \ourtool's performance in two ways: the time cost
+in diagnosing an error; and the overhead introduced
+in reproducing an error before diagnosis.  Figure~\ref{tab:performance}
+shows the results.
+
+\begin{figure}[t]
+\setlength{\tabcolsep}{.94\tabcolsep}
+\small{
+\begin{tabular}{|l|c|c|c|}
+\hline
+ Error ID. & \multicolumn{2}{|c|}{Time Cost (seconds)} & Slowdown ($\times$)\\
+  %& \multicolumn{3}{|c|}{Different Comparison Profile Selection Strategy} \\
+\cline{2-3}
+ Program & Thin Slicing & Error Diagnosis &  \\
+ \hline
+\hline
+\multicolumn{4}{|l|}{Non-crashing errors}   \\
+ \hline
+ 1. Randoop & 50 & $<$ 1 & 1.1\\
+ 2. Weka & 43 & $<$ 1 & 1.2 \\
+ 3. JChord & 147 & 82 & 13.2\\
+ 4. Synoptic & 24 & $<$ 1 & 3.6 \\
+ 5. Soot & 95 & 21 & 3.1 \\
+\hline
+Average & 72 & 21 & 4.4\\
+\hline
+\hline
+\multicolumn{4}{|l|}{Crashing errors}   \\
+\hline
+ 6. JChord & 147 & 79 & 2.4\\
+ 7. JChord & 147 & 75 & 1.4\\
+ 8. JChord & 147 & 17 &1.5\\
+ 9. JChord & 147 & 30 & 28.5\\
+ 10. JChord & 147 & 13 &13.7\\
+ 11. JChord & 147 & 10 &65.1 \\
+ 12. JChord & 147 & 83 &1.6\\
+ 13. JChord & 147 & 8 &1.9\\
+ 14. JChord & 147 & 80 &1.4\\
+\hline
+Average & 147 & 44 & 13\\
+\hline
+\end{tabular}
+}
+\Caption{{\label{tab:performance} \ourtool's
+performance in diagnosing configuration
+errors. The time cost has been divided into
+two parts: computing thin slices and diagnosing
+an error.}}
+\end{figure}
+
+The performance of \ourtool is reasonable.
+On average, it uses \avgtime minutes to
+diagnose one configuration error. The time cost for
+computing a thin slice from each configuration option
+is high. However, this step is one-time effort
+for each program and the computed results can be cached
+to share across diagnosis. %for future use.
+
+The performance overhead to reproduce the buggy behavior varies
+among applications. The current tool implementation
+imposes an average slowdown of 13 times when reproducing
+an error in a \ourtool-enabled environment.
+Such performance overhead, admittedly high, has nonetheless proved acceptable
+for offline error diagnoses.
+
+%The size of profile files in the database $\blacksquare$
+
+
+%The performance of \ourtool is reasonable. The time to diagnose
+%an error varies among applications.  XXX app takes less than xxx,
+%while xxx takes xxx to complete.
+
