@@ -136,6 +136,9 @@ as listed in Figure~\ref{tab:errors}. The \noncrash non-crashing errors
 are collected from actual bug reports, mailing list posts, and our own experience.
 The \crash crashing errors, taken from~\cite{Rabkin:2011:PPC},
 were used to evaluate the ConfAnalyzer tool.
+All \errors configuration errors have been minimized: if
+any part of the configuration or input is removed, the software
+either crashes or no longer exhibits the undesirable behavior.
 %\todo{Were any of them used in previous research?  Was that the reason we
 %  chose them?}
 
@@ -154,7 +157,7 @@ database) is 72MB.
 %Run examples from user manual to form the database. The effort
 %can be amortized in development time.
 
-We made a simple syntactic change to JChord, which affected 88
+We made a simple syntactic change to JChord, which affected 24 
 lines of code. This change
 does not modify JChord's semantics; rather, it just encapsulates
 scattered configuration option initialization statements 
@@ -333,13 +336,6 @@ directly guides users to the root cause. We speculated that $\blacksquare$
 
 
 
-\vspace{1mm}
-\noindent \textbf{\textit{Summary.}} \ourtool is effective
-in diagnosing both crashing and non-crashing configuration errors. $\blacksquare$
-As shown
-in Section~\ref{sec:results}, even a database containing
-a small number of profiles is sufficient to
-diagnose many configuration errors.
 
 \subsubsection{Comparison with Alternative Approaches}
 \label{sec:comparison}
@@ -407,14 +403,6 @@ The experimental results of comparing \ourtool with the above
 four alternative approaches are shown in Figure~\ref{tab:results}.
 $\blacksquare$ discuss the results here
 
-\vspace{1mm}
-\noindent \textbf{\textit{Summary.}} Using thin slicing to identify
-the affected predicates leads to more accurate diagnosis than using
-full slicing. Monitoring the runtime behaviors of the affected
-predicates is more effective in diagnosing a configuration error
-than using statement-level profiling and method-level invariant detection.
-Dynamic information flow-based approach is slightly better in diagnosing
-crashing errors than \ourtool, but fails to diagnose non-crashing errors.
 
 
 \subsubsection{Performance of \ourtool}
@@ -493,10 +481,6 @@ for offline error diagnoses.
 %while xxx takes xxx to complete.
 
 
-\vspace{1mm}
-\noindent \textbf{\textit{Summary.}} say about \ourtool's performance
-
-\vspace{1mm}
 
 \subsubsection{Effects of Varying Comparison Traces}
 \label{sec:ranking}
@@ -568,9 +552,6 @@ from using different trace selection strategies is on
 the error 13. $\blacksquare$
 
 
-\vspace{1mm}
-\noindent \textbf{\textit{Summary.}} Diagnosing a non-crashing
-error is more sensitive to the comparison traces than a crashing one.
 
 
 \subsection{Experimental Discussions}
@@ -621,11 +602,30 @@ might achieve different results.
 
 
 
-%\vspace{1mm}
+\vspace{1mm}
 
-%\noindent \textbf{\textit{Experimental Conclusions.}} 
+\noindent \textbf{\textit{Experimental Conclusions.}} 
+We have four chief findings: (1) \ourtool is effective
+in diagnosing both crashing and non-crashing configuration errors,
+and a small database is sufficient in our experiments.
+(2) \ourtool's error diagnosis speed is fast, and the performance
+overhead is acceptable.
+(3) \ourtool produces more accurate diagnosis results than other
+approaches based on statement-level profiling and method-level
+invariant detection, suggesting that focusing on the behaviors
+of the affected predicates can be a good choice.
+And (4) Using thin slicing to identify the affected predicates
+permits \ourtool to produce more accurate diagnosis than using
+full slicing; and varying the execution profile selection
+strategy can result in substantially different diagnosis.
+
 %\ourtool makes configuration error diagnosis easier by suggesting
-%the specific options that may lead to an unexpected behavior. Compared to
+%the specific options that may lead to an unexpected behavior. 
+
+
+
+
+%Compared to
 %alternative approaches, \ourtool distinguishes itself by being able to
 %diagnose both crashing and non-crashing errors without requiring
 %a user-provided testing oracle. $\blacksquare$
