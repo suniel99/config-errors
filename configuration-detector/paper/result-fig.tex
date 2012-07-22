@@ -1,7 +1,7 @@
 \begin{figure*}[t]
 \setlength{\tabcolsep}{.29\tabcolsep}
 \small{
-\begin{tabular}{|l||c|c||c|c||c|c|c||c|}
+\begin{tabular}{|l|c|c||c|c||c||c|c||c|}
 \hline
  Error ID.  & Root Cause & \#Options& \multicolumn{2}{|c||}{\ourtool} & Full Slicing & Coverage Analysis& Invariant Analysis & ConfAnalyzer~\cite{Rabkin:2011:PPC}\\
 \cline{4-9}
@@ -13,10 +13,10 @@
 \phz 1. Randoop& \CodeIn{maxsize} & 57& 10 / 12 & 1 & 46 & N & N &X \\
 \phz 2. Weka&\CodeIn{m\_numFolds}& 14 &2 / 12 &1& 9 & 4 & 5 &X\\
 \phz 3. JChord& \CodeIn{chord.kobj.k}& 79 & 3 / 6 & 2& 73 & N &2  &X\\
-\phz 4. Synoptic& \CodeIn{partitionRegExp}& 37 & 2 / 6 & 1& 6 & 1 & \todo{missing?} &X\\
+\phz 4. Synoptic& \CodeIn{partitionRegExp}& 37 & 2 / 6 & 1& 6 & 1 & N &X\\
 \phz 5. Soot& \CodeIn{keep\_line\_number} &49 & 1 / 16 & 3 & N & N& N &X\\
 \hline
- \multicolumn{2}{|l|}{Average} & 47.2 & 3.6 & 1.6 & 33.5 & 2.5 &  & X \\
+ \multicolumn{2}{|l|}{Average} & 47.2 & 3.6 & 1.6 & 33.5 & 2.5 & 3.5 & X \\
 \hline
 \hline
 \multicolumn{9}{|l|}{Crashing errors}   \\
@@ -42,17 +42,20 @@
 configuration errors. Column ``Root Cause'' shows the actual
 configuration option for the error. Column ``\#Options'' shows the
 number of available configuration options, taken from Figure~\ref{tab:subjects}.
-Column ``\ourtool'' shows the results of using
-our technique. Columns ``Full Slicing'', ``Coverage Analysis'',
-and ``Invariant Analysis'' show the results of three variants of \ourtool
-as described in Section~\ref{sec:comparison}.
-Column ``ConfAnalyzer'' shows the results of an existing
-technique~\cite{Rabkin:2011:PPC}.
+Column ``\ourtool'' shows the results of using our technique. 
 Column ``\#Profiles'' shows the number of similar execution profiles selected
 from the pre-built database for comparison, and the total size of the database.
-For each technique, Column ``Rank'' shows the rank of the actual root 
+Column ``ConfAnalyzer'' shows the results of an existing technique~\cite{Rabkin:2011:PPC} (Section~\ref{sec:confanalyzer}).
+Columns ``Coverage Analysis'',
+and ``Invariant Analysis'' show the results of two fault-localization-based
+technique as described in Section~\ref{sec:comparison}.
+Column ``Full Slicing'' shows the results of using full slicing to compute
+the affected predicates (Section~\ref{sec:choices}).
+For each technique, Column ``Rank'' shows the absolute rank of the actual root 
 cause in its output (lower is better). ``X''
 means the technique is not applicable (i.e., requiring a crashing point), and ``N'' means the technique
 does not identify the actual root cause. When computing the average
 rank, we only include the case when a technique can output the root cause.}}
 \end{figure*}
+
+%daikon can not work on synoptic, use N to denote this

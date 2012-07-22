@@ -24,17 +24,33 @@ Our evaluation answers the following research questions:
 %\todo{Give cross-references to sections that address these.}
 
 \begin{itemize}
-\item How effective is \ourtool in diagnosing the root cause of
-a configuration error (Section~\ref{sec:accuracy})?
-\item Can \ourtool provide more accurate diagnosis information than
-other approaches (Section~\ref{sec:comparison})? 
-\item How long does \ourtool take to diagnose a configuration error (Section~\ref{sec:performance})?
-\item What are the effects of varying the internal implementation of \ourtool,
-such as using a different configuration propagation analysis and
-different comparison execution profiles (Section~\ref{sec:choices})?
-%\item What are the effects of varying the comparison execution profiles (Section~\ref{sec:choices})?
+\item How effective is \ourtool in error diagnosis?% including:
+\begin{itemize}
+  \item the absolute ranking of the actual root cause in \ourtool's output (Section~\ref{sec:results}).
+  \item the time cost in error diagnosis (Section~\ref{sec:performance}).
+  \item comparison with existing configuration error diagnosis techniques (Section~\ref{sec:confanalyzer}).
+  \item comparison with fault-localization-based configuration error diagnosis techniques (Section~\ref{sec:comparison}).
+\end{itemize}
+\item What are the effects of using full slicing rather than thin slicing to identify
+the affected predicates, and the effects of varying comparison execution profiles (Section~\ref{sec:choices})?
+These are two design choices in \ourtool.
 \end{itemize}
 
+%\begin{itemize}
+%\item How effective is \ourtool in diagnosing the root cause of
+%a configuration error (Section~\ref{sec:accuracy})?
+%\item Can \ourtool provide more accurate diagnosis information than
+%other approaches (Section~\ref{sec:comparison})? 
+%\item How long does \ourtool take to diagnose a configuration error (Section~\ref{sec:performance})?
+%\item What are the effects of varying the internal implementation of \ourtool,
+%such as using a different configuration propagation analysis and
+%different comparison execution profiles (Section~\ref{sec:choices})?
+%\item What are the effects of varying the comparison execution profiles (Section~\ref{sec:choices})?
+%\end{itemize}
+
+%We use two metrics to evaluate \ourtool's effectiveness:
+%the absolute ranking of the actual root cause in \ourtool's output,
+%and the time cost used in diagnosis.
 
 \subsection{Subject Programs}
 
@@ -135,6 +151,7 @@ either crashes or no longer exhibits the undesired behavior.
 %\todo{Were any of them used in previous research?  Was that the reason we
 %  chose them?}
 
+\input{result-fig}
 
 \subsection{Evaluation Procedure}
 
@@ -142,8 +159,8 @@ For each subject program, we constructed a profile database
 by running existing (correct) examples from its user manual, discussion
 mailing list, and published papers~\cite{PachecoLET2007, Beschastnikh:2011, Rabkin:2011:PPC}.
 We spent 3 hours per program, on average, and obtained 6--16 execution profiles.
-The average size of the profile database is 35MB, and the largest one (Randoop's
-database) is 72MB.
+The average size of the profile database is 35MB, and the largest database (Randoop's)
+is 72MB.
 
 We made a simple syntactic change to JChord, which affected 24 
 lines of code. This change
@@ -181,7 +198,6 @@ public void run() \ttlcb
 \end{alltt}
 \end{CodeOut}
 
-\input{result-fig}
 
 When diagnosing a configuration error, we first reproduce the
 error on a \ourtool-instrumented program to obtain the
@@ -191,9 +207,6 @@ to identify its root causes.
 %since we know the misconfigured, root-cause entry for each case,
 %we use the ranking of the entry as our evaluation metric.
 
-We use two metrics to evaluate \ourtool's effectiveness:
-the absolute ranking of the actual root cause in \ourtool's output,
-and the time cost used in diagnosis.
 Our experiments were run on a
 2.67GHz Intel Core PC with 4GB physical memory (2GB was allocated
 for the JVM), running Windows 7.

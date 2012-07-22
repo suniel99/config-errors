@@ -1,12 +1,20 @@
-
-\noindent \textbf{ConfAnalyzer: A Heavyweight Dynamic Information Flow-based Approach~\cite{Rabkin:2011:PPC}.}
-Rabkin and Katz proposed a family of techniques to precompute possible
-configuration diagnosis for Java software~\cite{Rabkin:2011:PPC}. In their work,
-the most accurate technique (also probably one of the most precise techniques in the literature)
-is based on dynamic information flow analysis.
-This technique works remarkably well for crashing errors, though as
+We compared \ourtool with ConfAnalyzer, a heavyweight dynamic information
+flow-based technique~\cite{Rabkin:2011:PPC}.
+We chose ConfAnalyzer because it is one of the most precise configuration
+error diagnosis techniques in the literature and its 
+experimental data is publicly available.
+ConfAnalyzer computes possible configuration diagnosis for Java software,
+and works remarkably well for crashing errors, though as
 described above these are often easy to diagnose even without tool
-support.  ConfAnalyzer cannot diagnose non-crashing errors.
+support. However, ConfAnalyzer cannot diagnose non-crashing errors.
+
+The experimental results of ConfAnalyzer is shown in Figure~\ref{tab:results} (Column ``ConfAnalyzer'').
+$\blacksquare$
+
+%Rabkin and Katz proposed a family of techniques to precompute possible
+%configuration diagnosis for Java software~\cite{Rabkin:2011:PPC}. In their work,
+%the most accurate technique (also probably one of the most precise techniques in the literature)
+%is based on dynamic information flow analysis.
 
 %\todo{Is ConfAnalyzer heavyweight?  If so, say so.}
 
