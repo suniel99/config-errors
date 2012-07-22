@@ -99,11 +99,11 @@ a working state is often absent in practice since the error-revealing
 input and configuration may have already been minimized (such as the
 \errors configuration errors in our experiments).
 By contrast, \ourtool eliminates these two assumptions by comparing
-the profiles from the undesirable execution with correct executions, and
+the profiles from the undesired execution with correct executions, and
 then inferring the root cause configuration options.
 
 %diagnoses a configuration error from a different perspective.
-%It compares the profile from an undesirable execution with 
+%It compares the profile from an undesired execution with 
 %similar correct profiles to identify behaviorally-d
 
 
@@ -122,11 +122,11 @@ debugging domain. Clarify~\cite{Ha:2007:IER} uses program features
 such as function call counts, call site, and stack dumps to improve
 error reporting. The improved error reporting, although helpful,
 does not disagnose the root cause. The CBI project~\cite{Liblit:2005:SSBI}
-analyzes a large number of execution traces collected from deployed software
+analyzes a large number of executions collected from deployed software
 to isolate software failure causes. However, CBI
 identifies likely buggy statements as final output, while
 \ourtool identifies the behaviorally-deviated program predicates, and
-links the undesirable behavior to specific configuration options.
+links the undesired behavior to specific configuration options.
 %Furthermore, CBI 
 
 %a different abstraction 

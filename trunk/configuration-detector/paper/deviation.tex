@@ -1,36 +1,36 @@
-\ourtool starts error diagnosis after obtaining the trace from
-an erroneous execution. It selects similar
-traces from know correct executions (Section~\ref{sec:similar}), compares
-each selected trace with
-the erroneous one to identify the most behavioral-deviated predicates
+\ourtool starts error diagnosis after obtaining the execution profile from
+an undesired execution. It selects similar
+profiles from know correct executions (Section~\ref{sec:similar}), compares
+each selected profile with
+the undesired one to identify the most behavioral-deviated predicates
 (Section~\ref{sec:deviation}), and then determines
 the likely responsible configuration options (Section~\ref{sec:linking}).
 
 
-\subsubsection{Selecting Similar Traces for Comparison}
+\subsubsection{Selecting Similar Execution Profiles for Comparison}
 \label{sec:similar}
 
 \ourtool's database contains a number of
-traces from known correct executions.  These traces
+profiles from known correct executions.  These execution profiles 
 can be dramatically different from another.  To avoid reporting irrelevant
 differences when 
-determining how and why the observed trace behaves
+determining how and why the observed execution profile behaves
 differently from the correct ones, \ourtool first
-compares the erroneous trace with the existing
-correct traces, then selects a set of similar ones
+compares the undesired profile with the existing
+correct profiles, then selects a set of similar ones
 as the basis of diagnosis.
 
-Given a trace $t$, \ourtool first aggregates
+Given an execution profile $t$, \ourtool first aggregates
 the observed predicate profiles into a $n$-dimensional
 vector $v_{t}$ =$\langle r_{t1}, r_{t2}, ..., r_{tn}\rangle$, where $n$
 is the number of all possible predicate profiles in the program
 and each $r_{ti}$ is a ratio representing how often the $i$-th predicate
 profile evaluated
-to true at runtime in $t$. For each trace, if a predicate is not executed,
+to true at runtime in $t$. For each execution profile, if a predicate is not executed,
 \ourtool uses \CodeIn{N/A} as its ratio.
 
 
-\ourtool computes the distance between two traces $t_1$ and $t_2$ using
+\ourtool computes the distance between two execution profiles $t_1$ and $t_2$ using
 the following equations:
 
 {\small{
@@ -54,16 +54,16 @@ the following equations:
 $\blacksquare$ need to illustrate why use the distance metric.
 \todo{Also explain/justify.  Give intuition for the metric.}
 
-Given an erroneous trace, \ourtool selects all traces from the database
+Given an undesired execution profile, \ourtool selects all execution profiles from the database
 with a distance below a threshold (default value: 0.3 as used in our
 experiments).
 
 \todo{Mike does not understand this paragraph.}
-For the trace produced in a crashing error, \ourtool 
-chops a correct trace from the database by only remaining the predicate
-profiles covered by the erroneous trace. \ourtool performs
+For the execution profile produced in a crashing error, \ourtool 
+chops a correct execution profile from the database by only remaining the predicate
+profiles covered by the undesired profile. \ourtool performs
 this simple preprocessing because a crashing error $\blacksquare$
-often produces an incomplete trace, and it is unlikely
+often produces an incomplete execution profile, and it is unlikely
 to find a similar one from the database.
 
 
@@ -72,12 +72,12 @@ to find a similar one from the database.
 
 
 Our
-automated error diagnosis approach compares an erroneous trace with a set
-of \textit{similar} and \textit{correct} traces. 
+automated error diagnosis approach compares an undesired execution profile with a set
+of \textit{similar} and \textit{correct} execution profiles. 
 %\todo{I like the following sentence.  This intuition should appear in the
 %  introduction as well.  The introduction should say what we do (it does
 %  this) and also give a hint as to the approach.}
-The behavioral differences in the recorded predicate profiles provide evidence for what parts of a program might be
+The behavioral differences in the recorded predicates provide evidence for what parts of a program might be
 incorrect and why. %This helps to further reason about its root cause.
 
 Given a predicate, there are two primary variables to
@@ -87,19 +87,19 @@ observed executions, and the ratio of it being evaluated to true.
 
 Ideally, we would like to have a metric that
 is precise enough to capture the desirable predicates' behaviors
-from the known correct traces, but is robust enough and
+from the known correct execution profiles, but is robust enough and
 able to tolerate small noises so that it does
-not overfit a specific trace.
+not overfit a specific execution profile.
 Looking more closely, we found that although
 the general execution control flows may be similar for many 
-traces under similar inputs, the absolute execution number of the same predicate
-can vary greatly across traces, since it may
+execution profiles under similar inputs, the absolute execution number of the same predicate
+can vary greatly across executions, since it may
 largely depend on the given inputs. Moreover, for
 some predicates, it is entirely possible they are
 only executed very few times but the true ratios
-are dramatically different in difference traces.
+are dramatically different in difference execution profiles.
 
-%that in two traces , a predicate's is only executed
+%that in two execution profiles, a predicate's is only executed
 %in very few times but the true ratios are 
 %As another example, some program has preprocessing... $\blacksquare$
 
@@ -129,8 +129,8 @@ harmonic mean; this metric prefers high scores in both dimensions.
 \vspace{-3mm}
 
 In $\phi(t, p)$, $trueRatio(t, p)$ is a function that returns the ratio of the predicate $p$ being
-evaluated to true in trace $t$, and $totalExecNum(t, p)$ is a function
-that returns the total number of predicate $p$ being executed in trace $t$.
+evaluated to true in execution profile $t$, and $totalExecNum(t, p)$ is a function
+that returns the total number of predicate $p$ being executed in execution profile $t$.
 
 Metric $\phi$ has some good properties in characterizing the
 runtime behaviors of a predicate $p$.$\blacksquare$.
@@ -141,8 +141,8 @@ should have more confidence in its statistical significance. $\blacksquare$
 (the wording here is bad)
 
 To capture behavioral difference of a predicate profile $p$
-across trace, we devise the  $Deviation$ metric
-to characterize its deviation degree between two traces $t_1$ and $t_2$:
+across executions, we devise the  $Deviation$ metric
+to characterize its deviation degree between two execution profiles $t_1$ and $t_2$:
 
 \vspace{-2mm}
 
@@ -153,7 +153,7 @@ to characterize its deviation degree between two traces $t_1$ and $t_2$:
 }}
 \vspace{-4mm}
 
-After comparing the erroneous trace with one selected correct trace,
+After comparing the undesired execution profile with one selected correct execution profile,
 \ourtool ranks all observed predicate profiles in
 a decreasing order based on the computed $Deviation$ value.
 
@@ -189,7 +189,7 @@ option is initialized) are found; a breadth-first
 search of the dependence graph simulates this strategy.
 
 
-When multiple correct traces are selected for comparison,
+When multiple correct execution profiles are selected for comparison,
 \ourtool first produces a ranked list of suspicious
 configuration options for each comparison pair, and then outputs
 a final list by using majority voting over all ranking lists.

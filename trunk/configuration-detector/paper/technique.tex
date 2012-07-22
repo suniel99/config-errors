@@ -18,8 +18,8 @@ After that, our technique \textit{selectively} instruments
 the program on the affected predicates. 
 To diagnose an error, a user runs the instrumented program
 with the error-revealing input and configuration
-to obtain an execution trace (Section~\ref{sec:profiling}).
-Then, our technique analyzes the obtained trace
+to obtain an execution profile (Section~\ref{sec:profiling}).
+Then, our technique analyzes the obtained execution profile
 to identify the behaviorally-deviated predicates and their
 responsible options, and reports these to the user (Section~\ref{sec:analysis}).
 
@@ -62,22 +62,22 @@ is often independent of the concrete input values that a user might provide.
 
 
 \vspace{1mm}
-\noindent \textbf{Why not use traces from unit test executions?}
-\ourtool's database stores correct traces from complete 
+\noindent \textbf{Why not use profiles from unit test executions?}
+\ourtool's database stores correct profiles from complete 
 executions that start at the main method.
-\ourtool does not use traces from unit test executions, which check the
+\ourtool does not use profiles from unit test executions, which check the
 correctness
 of a single program component and produce
-an incomplete trace that is not representative of
+an incomplete execution profile that is not representative of
 the whole program workflow. 
 
 
 
 \vspace{1mm}
-\noindent \textbf{Why not store traces from failing executions in the database?}
-We envision the trace database is built by developers at release time.
+\noindent \textbf{Why not store profiles from failing executions in the database?}
+We envision the profile database is built by developers at release time.
 It is more natural for a developer to provide correct execution
-traces as debugging references, instead of
+profiles as debugging references, instead of
 anticipating the possible errors a user may encounter.
 %$\blacksquare$
 %A broader question is which kind of informatin should be recorded
@@ -93,10 +93,10 @@ anticipating the possible errors a user may encounter.
 %other abstraction levels remains as our future work.
 
 \vspace{1mm}
-\noindent \textbf{What if a similar trace is not available?}
+\noindent \textbf{What if a similar execution profile is not available?}
 \ourtool's effectiveness largely depends on the availability of
-similar traces from the database. For a given erroneous trace, lacking a similar
-trace in \ourtool's database may lead \ourtool to produce
+similar execution profiles from the database. For a given undesired execution profile, lacking a similar
+profile in \ourtool's database may lead \ourtool to produce
 less useful reasults.  It also indicates inadequancy of the tests from
 which the database was constructed.
 Future work should remedy this problem. One

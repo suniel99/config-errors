@@ -31,8 +31,8 @@ other approaches (Section~\ref{sec:comparison})?
 \item How long does \ourtool take to diagnose a configuration error (Section~\ref{sec:performance})?
 \item What are the effects of varying the internal implementation of \ourtool,
 such as using a different configuration propagation analysis and
-different comparison traces (Section~\ref{sec:ranking})?
-%\item What are the effects of varying the comparison traces (Section~\ref{sec:ranking})?
+different comparison execution profiles (Section~\ref{sec:ranking})?
+%\item What are the effects of varying the comparison execution profiles (Section~\ref{sec:ranking})?
 \end{itemize}
 
 %how well can \ourtool identify solutions to configuration problems?
@@ -67,7 +67,7 @@ Soot~\cite{Vallee-Rai-1999} is a Java optimization framework for analyzing and t
 \setlength{\tabcolsep}{.64\tabcolsep}
 \begin{tabular}{|l|c|c|c|}
 \hline
- Program (version) & LOC & \#Config Options & \#Traces\\
+ Program (version) & LOC & \#Config Options & \#Profiles\\
  \hline
  \hline
  Randoop (1.3.2) & 18587 & 57 & 12\\
@@ -83,8 +83,8 @@ Soot~\cite{Vallee-Rai-1999} is a Java optimization framework for analyzing and t
 \Caption{{\label{tab:subjects} Subject programs. 
 Column ``LOC'' is the number of lines of code,
 as counted by CLOC~\cite{cloc}. Column ``\#Config Options''
-is the number of available configuration options. Column ``\#Traces''
-is the number of traces in the pre-built database.}}
+is the number of available configuration options. Column ``\#Profiles''
+is the number of execution profiles in the pre-built database.}}
 \end{figure}
 
 
@@ -138,21 +138,21 @@ The \crash crashing errors, taken from~\cite{Rabkin:2011:PPC},
 were used to evaluate the ConfAnalyzer tool.
 All \errors configuration errors have been minimized: if
 any part of the configuration or input is removed, the software
-either crashes or no longer exhibits the undesirable behavior.
+either crashes or no longer exhibits the undesired behavior.
 %\todo{Were any of them used in previous research?  Was that the reason we
 %  chose them?}
 
 
 \subsection{Evaluation Procedure}
 
-For each subject program, we constructed a trace database
+For each subject program, we constructed a profile database
 by running existing (correct) examples from its user manual, discussion
 mailiing list, and published papers~\cite{PachecoLET2007, Beschastnikh:2011, Rabkin:2011:PPC}.
-We spent 3 hours per program, on average, and obtained 6--16 traces.
-The average size of the trace database is 35MB, and the largest one (Randoop's
+We spent 3 hours per program, on average, and obtained 6--16 execution profiles.
+The average size of the profile database is 35MB, and the largest one (Randoop's
 database) is 72MB.
 
-%The size of trace files in the database $\blacksquare$
+%The size of profile files in the database $\blacksquare$
 
 %Run examples from user manual to form the database. The effort
 %can be amortized in development time.
@@ -204,7 +204,7 @@ public void run() \ttlcb
 
 When diagnosing a configuration error, we first reproduce the
 error on a \ourtool-instrumented program to obtain the
-trace file. Then, using the obtained trace file, we use \ourtool
+execution profile. Then, using the obtained execution profile, we use \ourtool
 to identify suspicious configuration options.
 
 %since we know the misconfigured, root-cause entry for each case,
@@ -228,7 +228,7 @@ for the JVM), running Windows 7.
 \hline
  Error ID.  & Root cause & \#Options& \multicolumn{2}{|c||}{\ourtool} & Full Slicing & Coverage Analysis& Invariant Analysis & ConfAnalyzer~\cite{Rabkin:2011:PPC}\\
 \cline{4-9}
- Program & configuration option & & \#Traces& Rank  & Rank & Rank & Rank & Rank \\
+ Program & configuration option & & \#Profiles& Rank  & Rank & Rank & Rank & Rank \\
  \hline
 \hline
 \multicolumn{9}{|l|}{Non-crashing errors}   \\
@@ -271,7 +271,7 @@ and ``Invariant Analysis'' show the results of three variants of \ourtool
 as described in Section~\ref{sec:comparison}.
 Column ``ConfAnalyzer'' shows the results of an existing
 technique~\cite{Rabkin:2011:PPC}.
-Column ``\#Traces'' shows the number of similar traces selected
+Column ``\#Profiles'' shows the number of similar execution profiles selected
 from the pre-built database for comparison, and the total size of the database.
 For each technique, Column ``Rank'' shows the rank of the actual responsible
 option in its output (lower is better). ``X''
@@ -363,8 +363,8 @@ propagation analysis step (Section~\ref{sec:prop}).
 \noindent \textbf{Variant 2. \ourtool with Coverage Analysis.}
 This variant uses statement-level coverage information
 to diagnose a configuration error. It treats statements covered
-by the erroneous trace as potentially buggy, and statements
-covered the correct traces (from the pre-built database) as correct.
+by the undesired execution profile as potentially buggy, and statements
+covered the correct execution profiles (from the pre-built database) as correct.
 Then, this variant uses a well-known fault localization technique,
 Tarantula~\cite{Jones:2002}, to rank the likelihood of each
 statement being buggy, and queries the results of thin slice
@@ -375,12 +375,12 @@ to identify its affecting configuration options as the root causes.
 \noindent \textbf{Variant 3. \ourtool with Invariant Analysis.}
 This variant uses method-level invariant
 to diagnose configuration errors. It stores invariants detected
-by Daikon~\cite{Ernst:1999} from correct traces in the database. When a configuration
-error occurs, this variant detects invariants from the erroneous trace;
+by Daikon~\cite{Ernst:1999} from correct execution profiles in the database. When a configuration
+error occurs, this variant detects invariants from the undesired execution profile;
 and compares the detected invariants
 with those stored in the database.
 It treats a method to have suspicious behaviors if its observed invariants
-from the erroneous trace are different from the invariants stored in the database. Finally, this variant ranks
+from the undesired execution profile are different from the invariants stored in the database. Finally, this variant ranks
 a method's suspiciousness by the number of different variants, and
 queries the results of thin slice
 to identify its affecting configuration options as the root causes. 
@@ -473,7 +473,7 @@ an error in a \ourtool-enabled environment.
 Such performance overhead, admittedly high, has nonetheless proved acceptable
 for offline error diagnoses.
 
-%The size of trace files in the database $\blacksquare$
+%The size of profile files in the database $\blacksquare$
 
 
 %The performance of \ourtool is reasonable. The time to diagnose
@@ -482,7 +482,7 @@ for offline error diagnoses.
 
 
 
-\subsubsection{Effects of Varying Comparison Traces}
+\subsubsection{Effects of Varying Comparison Execution Profiles}
 \label{sec:ranking}
 
 
@@ -494,7 +494,7 @@ for offline error diagnoses.
  Error ID. & \multicolumn{3}{|c|}{Rank of the Actual Responsible Option } \\
   %& \multicolumn{3}{|c|}{Different Comparison Profile Selection Strategy} \\
 \cline{2-4}
- Program & All Traces & Random Selection&  Similarity-Based\\
+ Program & All Profiles& Random Selection&  Similarity-Based\\
  \hline
 \hline
 \multicolumn{4}{|l|}{Non-crashing errors}   \\
@@ -524,31 +524,31 @@ Average & 9.4 & 9.4 & 6.7\\
 \hline
 \end{tabular}
 }
-\Caption{{\label{tab:selection} Comparison with different trace selection
+\Caption{{\label{tab:selection} Comparison with different execution profile selection
 strategies (Section~\ref{sec:ranking}).
 The last column ``Similarity-based'' is the selection strategy
 used in \ourtool, and the data in that column is taken from Figure~\ref{tab:results}.}}
 \end{figure}
 
 
-\ourtool compares the predicate behaviors in the erroneous trace against
-similar traces from the pre-built database.
-We next investigate the effect of using different trace selection strategies.
+\ourtool compares the predicate behaviors in the undesired execution profile against
+similar execution profiles from the pre-built database.
+We next investigate the effect of using different profile selection strategies.
 In particular, we compare the similarity-based selection strategy used in \ourtool
  (Section~\ref{sec:similar}) with two alternatives: selecting
-all available traces in the database, and
+all available execution profiles in the database, and
 randomly selecting a number\todo{Be specific about exactly how many.  Ideally it
-  would be exactly the same number, in each case, as \ourtool used.} of traces from the database.
+  would be exactly the same number, in each case, as \ourtool used.} of execution profiles from the database.
 Figure~\ref{tab:selection} shows the experimental results.
 
 We can see that varying the comparison strategy can result in
 substantially different effects on the diagnosis results,
 depending on the application being analyzed. Diagnosing
 a non-crashing error is more sensitive in selecting similar
-comparison traces $\blacksquare$ than diagnosing
+comparison execution profiles$\blacksquare$ than diagnosing
 a crashing error.
 For the \crash crashing errors, the only difference yielded
-from using different trace selection strategies is on
+from using different profile selection strategies is on
 the error 13. $\blacksquare$
 
 
@@ -570,8 +570,8 @@ several deterministic replay systems~\cite{Huang:2010:LLD}
 that can capture a buggy non-deterministic
 execution and faithfully reproduce it for late analysis.
 Third, the effectiveness of \ourtool largely
-depends on the availability of a similar but correct trace.
-Using an abitrary trace (as we demonstrated in Section~\ref{sec:ranking}
+depends on the availability of a similar but correct execution profile.
+Using an abitrary execution profile (as we demonstrated in Section~\ref{sec:ranking}
 by random selection) may significantly affect the results.
 
 %similar inputs, if no input is available, test adequacy.

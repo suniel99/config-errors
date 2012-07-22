@@ -78,7 +78,7 @@ It affects the behavior of predicate:
 
 This predicate evaluates to true:
   14.4\% of the time in normal runs (1315 observations)
-  32.3\% of the time in the undesirable run (2727 observations)
+  32.3\% of the time in the undesired run (2727 observations)
 
 \end{alltt}
 \end{CodeOut}
@@ -94,7 +94,7 @@ report contains 31 options.
 As an alternative, we can use our technique (and its tool implementation \ourtool)
 to diagnose and correct this problem. We first reproduced the
 error in a \ourtool-enabled environment, then used \ourtool
-to diagnose its root cause by analyzing the recorded trace.
+to diagnose its root cause by analyzing the recorded execution profile.
 \ourtool produced
 an error report (Figure~\ref{fig:output}) in the form of an ordered list of
 suspicious configuration options that should be inspected.
@@ -104,7 +104,7 @@ a configuration option named
 The error report also provides relevant 
 information to explain why: % about the reason why \CodeIn{maxsize} should be account for:
 a program predicate affected by \CodeIn{maxsize} behaves dramatically
-different between the recorded erroneous execution
+different between the recorded undesired execution
 and the correct executions as kept in \ourtool's database.
 
 
@@ -213,7 +213,7 @@ the root cause of a configuration error.
 \textbf{Our technique} is designed to be used by system administrators
 and end-users when they encounter an error
 that they do not know how to fix. It uses three steps to 
-link the erroneous behavior to specific responsible configuration options:
+link the undesired behavior to specific responsible configuration options:
 
 \begin{itemize}
 \item \textbf{Configuration Propagation Analysis}. For
@@ -224,24 +224,24 @@ to statically identify its affected predicates in the source code.
 \item \textbf{Configuration Behavior Profiling}. \ourtool
 \textit{selectively} instruments the program-to-diagnose
 so that it records the runtime behaviors of affected predicates
-in a trace file.
-%diagnosed code when erroneous behavior
+in a profile file.
+%diagnosed code when undesired behavior
 %is observed.
 When the user encounters a suspected configuration error, the user
 reproduces the error using the instrumented version of the program.
 
 \item \textbf{Configuration Deviation Analysis}.
-\ourtool selects, from a pre-built database, correct traces that are as
-similar as possible to the incorrect one.
+\ourtool selects, from a pre-built database, correct execution profiles that are as
+similar as possible to the undesired one.
 Then, it identifies the predicates whose dynamic behaviors deviate the most
-between correct and incorrect executions.
-The behavioral differences in the recorded predicate profiles provide evidence for what parts of a program might be
-incorrect and why. %This helps to further reason about its root cause.
+between correct and undesired executions.
+The behavioral differences in the recorded predicates provide evidence for what parts of a program might be
+abnormal and why. %This helps to further reason about its root cause.
 For each deviated predicate, \ourtool further identifies
 its affecting configuration options as the likely root causes.
 Finally, it outputs a ranked list of suspicious options and explanations.
 % (between
-%the erroneous execution and the selected correct executions).
+%the undesired execution and the selected correct executions).
 
 \end{itemize}
 
@@ -255,7 +255,7 @@ Finally, it outputs a ranked list of suspicious options and explanations.
 %by users.
 
 An important component in \ourtool is the pre-built
-database, which contains traces
+database, which contains profiles
 from the known correct executions. We envision that 
 the software developers build this database at release time.
 The database can be
@@ -264,7 +264,7 @@ executions are accumulated.
 In our experiments (Section~\ref{sec:evaluation}), we
 built such a database by running examples from software
 user manuals, FAQs, and discussion mailing lists.  We
-found that even a small database of 6--16 traces worked remarkably
+found that even a small database of 6--16 execution profiles worked remarkably
 well for error diagnosis.
 
 Compared to existing approaches~\cite{Zeller:2002:ICC, Zhang:2003:PDS,
@@ -363,7 +363,7 @@ top 3 reports; and in over half of all
 cases, the root cause was \ourtool's first report.
 % This permits \ourtool user to focus on a few specific configuration
 % options when deciding how to fix the problem. 
-Assuming the database of correct executions already exists,
+Assuming the database of correct execution profiles already exists,
 \ourtool takes less than \avgtime minutes on average to diagnose
 one error.  \ourtool's accuracy and speed make it an attractive alternative
 to manual debugging.
@@ -391,10 +391,10 @@ for 6 out of the \crash crashing errors.
 
 
 
-Finally, we investigated the effects of varying the comparison traces
+Finally, we investigated the effects of varying the comparison execution profiles
 from \ourtool's database.
 Our experimental results show that varying the
-trace selection strategy can result in substantially different
+profile selection strategy can result in substantially different
 diagnosis results, depending on the application being analyzed;
 and the similarity-based selection strategy used in \ourtool outperforms
 the other two comparison strategies.
@@ -429,7 +429,7 @@ This paper makes the following contributions:
 \item \textbf{Technique.} We present a technique to diagnose
 software configuration errors. Our technique uses static analysis,
 dynamic profiling, and statistical analysis to link the
-erroneous behavior to specific configuration options (Section~\ref{sec:technique}).
+undesired behavior to specific configuration options (Section~\ref{sec:technique}).
 
 
 \item \textbf{Implementation.} We implemented our technique 
