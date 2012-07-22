@@ -31,8 +31,8 @@ other approaches (Section~\ref{sec:comparison})?
 \item How long does \ourtool take to diagnose a configuration error (Section~\ref{sec:performance})?
 \item What are the effects of varying the internal implementation of \ourtool,
 such as using a different configuration propagation analysis and
-different comparison execution profiles (Section~\ref{sec:ranking})?
-%\item What are the effects of varying the comparison execution profiles (Section~\ref{sec:ranking})?
+different comparison execution profiles (Section~\ref{sec:choices})?
+%\item What are the effects of varying the comparison execution profiles (Section~\ref{sec:choices})?
 \end{itemize}
 
 
@@ -53,8 +53,6 @@ Soot~\cite{Vallee-Rai-1999} is a Java optimization framework for analyzing and t
 
 
 \subsubsection{Configuration Errors}
-
-
 
 \begin{figure}[t]
 \centering
@@ -183,6 +181,7 @@ public void run() \ttlcb
 \end{alltt}
 \end{CodeOut}
 
+\input{result-fig}
 
 When diagnosing a configuration error, we first reproduce the
 error on a \ourtool-instrumented program to obtain the
@@ -199,7 +198,6 @@ Our experiments were run on a
 2.67GHz Intel Core PC with 4GB physical memory (2GB was allocated
 for the JVM), running Windows 7.
 
-\input{result-fig}
 
 \subsection{Results}
 \label{sec:results}
@@ -209,19 +207,24 @@ for the JVM), running Windows 7.
 \label{sec:accuracy}
 \input{diagnosisresults}
 
-
-
-\subsubsection{Comparison with Alternative Approaches}
-\label{sec:comparison}
-\input{comparison}
-
 \subsubsection{Performance of \ourtool}
 \label{sec:performance}
 \input{performance}
 
+\subsubsection{Comparison with an Existing Technique}
+\label{sec:confanalyzer}
+\input{confanalyzer}
 
-\subsubsection{Effects of Varying Comparison Execution Profiles}
-\label{sec:ranking}
+
+\subsubsection{Comparison with Two Fault-Localization-Based Approaches}
+\label{sec:comparison}
+\input{comparison}
+
+
+
+%\subsubsection{Effects of Varying Comparison Execution Profiles}
+\subsubsection{Evaluation of Two Design Choices in \ourtool}
+\label{sec:choices}
 \input{designchoice}
 
 
@@ -242,7 +245,7 @@ that can capture a buggy non-deterministic
 execution and faithfully reproduce it for late analysis.
 Third, the effectiveness of \ourtool largely
 depends on the availability of a similar but correct execution profile.
-Using an arbitrary execution profile (as we demonstrated in Section~\ref{sec:ranking}
+Using an arbitrary execution profile (as we demonstrated in Section~\ref{sec:choices}
 by random selection) may significantly affect the results.
 
 \vspace{1mm}
