@@ -42,16 +42,23 @@ The last column ``Similarity-based'' is the selection strategy
 used in \ourtool, and the data in that column is taken from Figure~\ref{tab:results}.}}
 \end{figure}
 
+We investigate the effects of:
 
-\ourtool compares the predicate behaviors in the undesired execution profile against
-similar execution profiles from the pre-built database.
-We next investigate the effect of using different profile selection strategies.
+\begin{itemize}
+\item using traditional full slicing~\cite{Horwitz:1988} rather
+than thin slicing~\cite{Sridharan:2007} in the Configuration
+Propagation Analysis step (Section~\ref{sec:prop}) to compute the affected predicates.
+Figure~\ref{tab:results}  (Column ``Full Slicing'') shows the results.
+\item varying the comparison execution profiles from the pre-built database.
 In particular, we compare the similarity-based selection strategy used in \ourtool
  (Section~\ref{sec:similar}) with two alternatives: selecting
-all available execution profiles in the database, and
-randomly selecting a number\todo{Be specific about exactly how many.  Ideally it
-  would be exactly the same number, in each case, as \ourtool used.} of execution profiles from the database.
-Figure~\ref{tab:selection} shows the experimental results.
+all available profiles in the database, and
+randomly selecting the same number of profiles as \ourtool used from the database.
+Figure~\ref{tab:selection} shows the results.
+\end{itemize}
+
+
+$\blacksquare$ talk about the full slicing
 
 We can see that varying the comparison strategy can result in
 substantially different effects on the diagnosis results,
