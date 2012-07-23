@@ -4,7 +4,7 @@ profiles from known correct executions (Section~\ref{sec:similar}), compares
 each selected profile with
 the undesired one to identify the most behavioral-deviated predicates
 (Section~\ref{sec:deviation}), and then determines
-the likely root cause configuration options (Section~\ref{sec:linking}).
+the likely root cause options (Section~\ref{sec:linking}).
 
 
 \subsubsection{Selecting Similar Execution Profiles for Comparison}
@@ -21,14 +21,17 @@ correct profiles, then selects a set of similar ones
 as the basis of diagnosis.
 
 Given an execution profile $t$, \ourtool first aggregates
-the observed predicate profiles into a $n$-dimensional
+the observed predicate behaviors into a $n$-dimensional
 vector $v_{t}$ =$\langle r_{t1}, r_{t2}, ..., r_{tn}\rangle$, where $n$
 is the number of all possible predicate profiles in the program
 and each $r_{ti}$ is a ratio representing how often the $i$-th predicate
-profile evaluated
-to true at runtime in $t$. For each execution profile, if a predicate is not executed,
-\ourtool uses \CodeIn{N/A} as its ratio.
+profile evaluated to true at runtime in $t$.
+In an execution profile, if a predicate has never been executed,
+\ourtool uses \CodeIn{N/A} as its ratio in its corresponding predicate
+profiles.
 
+$\blacksquare$ put the intuition here. dot production? why ignore
+numbers? similarity? control flow.
 
 \ourtool computes the distance between two execution profiles $t_1$ and $t_2$ using
 the following equations:
@@ -80,24 +83,23 @@ of \textit{similar} and \textit{correct} execution profiles.
 The behavioral differences in the recorded predicates provide evidence for what parts of a program might be
 incorrect and why. %This helps to further reason about its root cause.
 
-Given a predicate, there are two primary variables to
+For a predicate in an obtained execution profile,
+there are two primary factors to
 characterize its dynamic behavior: the number of the
 observed executions, and the ratio of it being evaluated to true.
-
-
 Ideally, we would like to have a metric that
-is precise enough to capture the desirable predicates' behaviors
+is capable to capture a predicat's desired behavior
 from the known correct execution profiles, but is robust enough and
 able to tolerate small noises so that it does
-not overfit a specific execution profile.
+not overfit a specific correct execution profile.
 Looking more closely, we found that although
 the general execution control flows may be similar for many 
-execution profiles under similar inputs, the absolute execution number of the same predicate
-can vary greatly across executions, since it may
-largely depend on the given inputs. Moreover, for
-some predicates, it is entirely possible they are
-only executed very few times but the true ratios
-are dramatically different in difference execution profiles.
+execution profiles under similar inputs, the absolute execution
+number of a predicate would largely depend on the given inputs, and
+can vary greatly across executions. Moreover, for
+some predicates, it is entirely possible that they have
+only been executed very few times but the true ratios
+are dramatically different in different executions.
 
 %that in two execution profiles, a predicate's is only executed
 %in very few times but the true ratios are 
@@ -108,11 +110,12 @@ are dramatically different in difference execution profiles.
 %captures the execution path of a predicate, we should be
 %able to more precisely identify a configuration error
 
-Thus, we are looking for metrics that can identify
-predicates with high sensitivity, meaning the predicate's true
-ratio accounts for error. But we also want
-high specificity, meaning predicates that do not mis-characterize
-a predicate's behavior only based on a small number of
+Thus, we are looking for metrics that can characterize
+a predicate's behavior with high sensitivity, meaning the predicate's true
+ratio accounts for the execution results (i.e., correct or undesired).
+But we also want
+high specificity, meaning a predicate's behavior should not be
+mis-characterized only based on a small number of
 observed executions. To do so, we define the following
 $\phi$ metric by using a standard way to
 combine sensitivity and specificity to compute their
@@ -130,7 +133,8 @@ harmonic mean; this metric prefers high scores in both dimensions.
 
 In $\phi(t, p)$, $trueRatio(t, p)$ is a function that returns the ratio of the predicate $p$ being
 evaluated to true in execution profile $t$, and $totalExecNum(t, p)$ is a function
-that returns the total number of predicate $p$ being executed in execution profile $t$.
+that returns the total number of predicate $p$ being executed in execution profile $t$. If a predicate $p$ does not appear in execution profile $t$,
+$\phi(t, p)$ returns 0.
 
 Metric $\phi$ has some good properties in characterizing the
 runtime behaviors of a predicate $p$.$\blacksquare$.
@@ -140,9 +144,10 @@ the true ratio but $p_1$ has been observed in more executions, we
 should have more confidence in its statistical significance. $\blacksquare$
 (the wording here is bad)
 
-To capture behavioral difference of a predicate profile $p$
-across executions, we devise the  $Deviation$ metric
-to characterize its deviation degree between two execution profiles $t_1$ and $t_2$:
+Using metric $\phi$, we devise the following $Deviation$ metric
+to characterize a predicate $p$'s deviation degree across two execution
+profiles $t_1$ and $t_2$. A larger $Deviation(p)$ value indicates that
+predicate $p$ has more deviated behaviors between $t_1$ and $t_2$.
 
 \vspace{-2mm}
 
@@ -153,9 +158,13 @@ to characterize its deviation degree between two execution profiles $t_1$ and $t
 }}
 \vspace{-4mm}
 
-After comparing the undesired execution profile with one selected correct execution profile,
-\ourtool ranks all observed predicate profiles in
-a decreasing order based on the computed $Deviation$ value.
+\ourtool computes the $Deviation$ value for each predicate $p$
+appearing in execution profiles $t_1$ or $t_2$, and
+ranks them in a decreasing order. 
+
+%After comparing the undesired execution profile with one selected correct execution profile,
+%\ourtool ranks all observed predicate profiles in
+%a decreasing order based on the computed $Deviation$ value.
 
 
 
@@ -167,18 +176,19 @@ a decreasing order based on the computed $Deviation$ value.
 \subsubsection{Linking Predicates to Root Causes}
 \label{sec:linking}
 
+% and outputs a ranked list of suspicious
+%configuration options.
 
-\ourtool finally links the behavioral-deviated
-predicate profiles to their root causes, and outputs a ranked list of suspicious
-configuration options.
-
-\ourtool consults the results of thin slicing (computed in the propagation
-analysis phase, Section~\ref{sec:prop}) to determine which
-configuration options affect each deviated predicate.
-It identifies the configuration option
-affecting the highest ranked predicate profile as the most likely
-root cause.  It uses a simple heuristic to break ties.
-The heuristic prefers configuration options whose initialization
+\ourtool links the behavioral-deviated
+predicate to their root cause configuration options
+by using the results of thin slicing (computed by the Configuration Propagation
+Analysis step in Section~\ref{sec:prop}).
+\ourtool determines
+the affecting configuration options for each deviated predicate,
+and identifies the configuration option
+affecting a higher ranked deviated predicate as the more likely
+root cause. If multiple configuration options affect the same
+predicate, \ourtool prefers options whose initialization
 statements are \textit{closer} to the
 crashing point. Intuitively, statements closer to the
 crashing point seem more likely to be relevant to its behavior.
@@ -190,7 +200,7 @@ search of the dependence graph simulates this strategy.
 
 
 When multiple correct execution profiles are selected for comparison,
-\ourtool first produces a ranked list of suspicious
+\ourtool first produces a ranked list of root cause
 configuration options for each comparison pair, and then outputs
 a final list by using majority voting over all ranking lists.
 In the final ranking list, one configuration option ranks higher

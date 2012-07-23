@@ -282,16 +282,15 @@ might achieve different results.
 \vspace{1mm}
 
 \noindent \textbf{\textit{Experimental Conclusions.}} 
-We have four chief findings: (1) \ourtool is effective
-in diagnosing both crashing and non-crashing configuration errors,
-and a small database is sufficient in our experiments.
-(2) \ourtool's error diagnosis speed is fast, and the performance
-overhead is acceptable.
-(3) \ourtool produces more accurate diagnosis results than other
-approaches based on statement-level profiling and method-level
-invariant detection, suggesting that focusing on the behaviors
-of the affected predicates can be a good choice.
-And (4) Using thin slicing to identify the affected predicates
+We have three chief findings: (1) \ourtool is effective
+in diagnosing both crashing and non-crashing configuration errors
+with a small profile database.
+(2) \ourtool produces more accurate diagnosis results than
+approaches leveraging existing fault localization
+techniques~\cite{Jones:2002, McCamant:2003}, 
+suggesting the necessity of designing new configuration error
+diagnosis techniques. And (3) Using thin slicing
+to identify the affected predicates
 permits \ourtool to produce more accurate diagnosis than using
 full slicing; and varying the execution profile selection
 strategy can result in substantially different diagnosis.

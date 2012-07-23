@@ -10,7 +10,7 @@ One possible way to diagnose a configuration error is to leverage
 the existing fault localization techniques, by treating the undesired
 execution as a failing run and all correct executions (in the database)
 as passing runs. We next compare \ourtool with two fault-localization-based
-technique in error diagnosis:
+techniques: % in error diagnosis:
 
 \begin{itemize}
 \item \textbf{Statement-level Coverage Analysis}. This technique treats statements covered
@@ -37,3 +37,8 @@ The experimental results are shown in Figure~\ref{tab:results} (Columns
 ``Coverage Analysis'' and ``Invariant Analysis'').
 $\blacksquare$ discuss the results here
 
+statement-level granularity is too fine
+
+method-level granularity is too coarse
+
+focusing on the behaviors of the affected predicates can be a good choice.
