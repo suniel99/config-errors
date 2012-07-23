@@ -20,54 +20,102 @@ compares the undesired profile with the existing
 correct profiles, then selects a set of similar ones
 as the basis of diagnosis.
 
-Given an execution profile $t$, \ourtool first aggregates
+Given an execution profile $e$, \ourtool first aggregates
 the observed predicate behaviors into a $n$-dimensional
-vector $v_{t}$ =$\langle r_{t1}, r_{t2}, ..., r_{tn}\rangle$, where $n$
+vector $v_e$ =$\langle r_{e1}, r_{e2}, ..., r_{en}\rangle$, where $n$
 is the number of all possible predicate profiles in the program
-and each $r_{ti}$ is a ratio representing how often the $i$-th predicate
-profile evaluated to true at runtime in $t$.
-In an execution profile, if a predicate has never been executed,
-\ourtool uses \CodeIn{N/A} as its ratio in its corresponding predicate
-profiles.
+and each $r_{ei}$ is a ratio representing how often the $i$-th predicate
+profile evaluated to true at runtime in $e$.
+If a predicate has never been executed in an execution,
+\ourtool uses 0 as its true ratio. %in its corresponding predicate profiles.
 
-$\blacksquare$ put the intuition here. dot production? why ignore
-numbers? similarity? control flow.
+\ourtool computes the similarity of two executions profiles $e$ and $f$
+by computing the standard cosine similarity from information retrieval~\cite{Witten96managinggigabytes}
+of $v_{e}$ and $v_{f}$.
 
-\ourtool computes the distance between two execution profiles $t_1$ and $t_2$ using
-the following equations:
+\vspace{-2mm}
 
 {\small{
 \[
-\|Distance|(t_1, t_2) = 1 - \frac{\sum_{i = 1}^{n}Delta(r_{1i}, r_{2i})^2}{n}
+\|Similarity|(e, f) = \|cos\_sim|(v_{e}, v_{f}) = \frac{\sum_{i = 1}^{n}r_{ei} \times r_{fi}}
+{\sqrt{\sum_{i = 1}^{n}r_{ei}^2} \times \sqrt{\sum_{i = 1}^{n}r_{fi}^2}}
 \]
+}}
 
-\[
-\|Delta|(r_1, r_2) = 
-\left\{
-\begin{array}{l l l l}
-  0 & \ \mbox{if $r_1$ = \CodeIn{N/A} and $r_2$ $\neq$ \CodeIn{N/A}}\\
-  0 & \ \mbox{if $r_1$ $\neq$ \CodeIn{N/A} and $r_2$ = \CodeIn{N/A}}\\
-  1 & \ \mbox{if $r_1$ = \CodeIn{N/A} and $r_2$ = \CodeIn{N/A}}\\
-  \CodeIn{min}\{r_2/r_1, r_1/r_2\} & \; \mbox{otherwise}\\ \end{array} \right.
-\]
-}
-}
+\vspace{-2mm}
+\todo{Weird enough that why two sqrt symbols above are not the same size?}
+
+This similarity metric basically compares two execution profiles based on
+ control flow taken (approximated by how often a predicate has been evaluated to
+true). Its resulting value ranges from 0 meaning completely different, to 1 meaning exactly the same, 
+and in-between values indicating intermediate similarity.
 
 
-$\blacksquare$ need to illustrate why use the distance metric.
-\todo{Also explain/justify.  Give intuition for the metric.}
+%$\blacksquare$ put the intuition here. dot production? why ignore
+%numbers? similarity? control flow.
 
-Given an undesired execution profile, \ourtool selects all execution profiles from the database
-with a distance below a threshold (default value: 0.3 as used in our
+%I am re-inventing wheels below, just use cosine similarity above
+
+%\ourtool computes the distance between two execution profiles $t_1$ and $t_2$ using
+%the following equations:
+
+%{\small{
+%\[
+%\|Distance|(t_1, t_2) = 1 - \frac{\sum_{i = 1}^{n}Delta(r_{1i}, r_{2i})^2}{n}
+%\]
+
+%\[
+%\|Delta|(r_1, r_2) = 
+%\left\{
+%\begin{array}{l l l l}
+%  0 & \ \mbox{if $r_1$ = \CodeIn{N/A} and $r_2$ $\neq$ \CodeIn{N/A}}\\
+%  0 & \ \mbox{if $r_1$ $\neq$ \CodeIn{N/A} and $r_2$ = \CodeIn{N/A}}\\
+%  1 & \ \mbox{if $r_1$ = \CodeIn{N/A} and $r_2$ = \CodeIn{N/A}}\\
+%  \CodeIn{min}\{r_2/r_1, r_1/r_2\} & \; \mbox{otherwise}\\ \end{array} \right.
+%\]
+%}
+%}
+
+
+%$\blacksquare$ need to illustrate why use the distance metric.
+%\todo{Also explain/justify.  Give intuition for the metric.}
+
+
+A crashing error may happen shorty after the program is launched.
+So that the resulting execution profile can be much smaller than correct execution profiles,
+since many predicates in the program are not executed.
+Using the $Similarity$ metric to compare a whole execution profile in the database
+with a crashing profile, it is unlikely for \ourtool to find similar ones.
+To avoid comparing those un-executed predicates,
+when diagnosing a crashing error, \ourtool
+chops each correct execution profile by only remaining
+the common predicates executed by the crashing profile, and then
+uses the chopped profile for comparison. 
+
+When given an undesired execution profile,
+\ourtool selects all execution profiles (or chopped profiles for
+a crashing error. We use the single term ``profile'' for brevity.) from the database
+with a $Similarity$ value above a threshold (default value: 0.9, as used in our
 experiments).
 
-\todo{Mike does not understand this paragraph.}
-For the execution profile produced in a crashing error, \ourtool 
-chops a correct execution profile from the database by only remaining the predicate
-profiles covered by the undesired profile. \ourtool performs
-this simple preprocessing because a crashing error $\blacksquare$
-often produces an incomplete execution profile, and it is unlikely
-to find a similar one from the database.
+%In addition,
+%when diagnosing a crashing error, such chopped execution profiles will replace the original profiles
+%(in the database) in the following steps.
+
+%(also used
+%the chopped profile for next steps). Doing so, \ourtool
+%avoids comparing irrelevant differences in a correct execution
+%profile which a crashing profile even has not reached yet.
+
+%An execution profile from a crashing error
+
+%\todo{Mike does not understand this paragraph.}
+%For the execution profile produced in a crashing error, \ourtool 
+%chops a correct execution profile from the database by only remaining the predicate
+%profiles covered by the undesired profile. \ourtool performs
+%this simple preprocessing because a crashing error $\blacksquare$
+%often produces an incomplete execution profile, and it is unlikely
+%to find a similar one from the database.
 
 
 \subsubsection{Identifying Deviated Predicates}
@@ -83,23 +131,25 @@ of \textit{similar} and \textit{correct} execution profiles.
 The behavioral differences in the recorded predicates provide evidence for what parts of a program might be
 incorrect and why. %This helps to further reason about its root cause.
 
-For a predicate in an obtained execution profile,
+For a predicate in an execution profile,
 there are two primary factors to
-characterize its dynamic behavior: the number of the
-observed executions, and the ratio of it being evaluated to true.
+characterize its dynamic behavior: how often it is
+evaluated (i.e., the number of the
+observed executions), and how often it is evaluated to true (i.e., the true ratio).
 Ideally, we would like to have a metric that
-is capable to capture a predicat's desired behavior
+to capture a predicat's desired behavior
 from the known correct execution profiles, but is robust enough and
 able to tolerate small noises so that it does
 not overfit a specific correct execution profile.
 Looking more closely, we found that although
-the general execution control flows may be similar for many 
-execution profiles under similar inputs, the absolute execution
-number of a predicate would largely depend on the given inputs, and
+the general execution control flows (approximated by
+a predicate's true ratio) may be similar for many 
+execution profiles, the absolute execution
+number of a predicate may largely depend on the given inputs, and
 can vary greatly across executions. Moreover, for
-some predicates, it is entirely possible that they have
+some predicates, it is entirely possible that each of them has
 only been executed very few times but the true ratios
-are dramatically different in different executions.
+are dramatically different across executions.
 
 %that in two execution profiles, a predicate's is only executed
 %in very few times but the true ratios are 
@@ -110,7 +160,7 @@ are dramatically different in different executions.
 %captures the execution path of a predicate, we should be
 %able to more precisely identify a configuration error
 
-Thus, we are looking for metrics that can characterize
+Thus, we need to a metric that can characterize
 a predicate's behavior with high sensitivity, meaning the predicate's true
 ratio accounts for the execution results (i.e., correct or undesired).
 But we also want
@@ -125,38 +175,64 @@ harmonic mean; this metric prefers high scores in both dimensions.
 
 {\small{
 \[
-\|\phi|(t, p) = \frac{2}{{1}/{\|trueRatio|(t, p)} + {1}/{totalExecNum(t, p)}}
+\|\phi|(e, p) = \frac{2}{{1}/{\|trueRatio|(e, p)} + {1}/{totalExecNum(e, p)}}
 \]
 }}
 
 \vspace{-3mm}
 
-In $\phi(t, p)$, $trueRatio(t, p)$ is a function that returns the ratio of the predicate $p$ being
-evaluated to true in execution profile $t$, and $totalExecNum(t, p)$ is a function
-that returns the total number of predicate $p$ being executed in execution profile $t$. If a predicate $p$ does not appear in execution profile $t$,
-$\phi(t, p)$ returns 0.
+In $\phi(e, p)$, $trueRatio(e, p)$ is a function that returns the ratio of the predicate $p$ being
+evaluated to true in execution profile $e$, and $totalExecNum(e, p)$ is a function
+that returns the total number of predicate $p$ being executed in execution profile $e$.
+If a predicate $p$ does not appear in execution profile $e$, 
+$\phi(e, p)$ returns 0. If a predicate $p$'s true ratio is 0, $\phi(e, p)$ returns
+$1/totalExecNum(e, p)$ instead.
 
-Metric $\phi$ has some good properties in characterizing the
-runtime behaviors of a predicate $p$.$\blacksquare$.
-It balances a predicate's evaluation result and the total number of executions.
-Intuitively, for two predicates $p_1$ and $p_2$, if they have the same
-the true ratio but $p_1$ has been observed in more executions, we
-should have more confidence in its statistical significance. $\blacksquare$
-(the wording here is bad)
 
-Using metric $\phi$, we devise the following $Deviation$ metric
+Using metric $\phi$, we define the following $Deviation$ metric
 to characterize a predicate $p$'s deviation degree across two execution
-profiles $t_1$ and $t_2$. A larger $Deviation(p)$ value indicates that
-predicate $p$ has more deviated behaviors between $t_1$ and $t_2$.
+profiles $e$ and $f$. A larger $Deviation(p)$ value indicates that
+predicate $p$ has a more deviated behavior. % between $e$ and $f$.
 
 \vspace{-2mm}
 
 {\small{
 \[
-\|Deviation|(p) = |\phi(t_1, p) - \phi(t_2, p)|
+\|Deviation|(p, e, f) = |\phi(e, p) - \phi(f, p)|
 \]
 }}
 \vspace{-4mm}
+
+%It balances a predicate's evaluation result and the total number of executions.
+\todo{the basic idea is here, but this paragraph needs re-write}
+The definitions of metrics $\phi$ and $Deviation$ have several desirable properties
+in characterizing a predicate $p$'s behavior. Clearly, $trueRatio(e,p)$
+is a value between 0 and 1 and $totalExecNum(e, p)$ is a value greater than 1; increasing
+either value while keeping the other one unchanged increases $\phi(e, p)$.
+The value of $trueRatio(e, p)$ is more important than $totalExecNum(e, p)$
+in deciding $\phi(e, p)$; since in theory $1/trueRatio(e, p) \geq 1/totalExecNum(e, p)$, and
+in many practice $1/trueRatio(e, p) \gg 1/totalExecNum(e, p)$.
+Also, the value of $Deviation(p, e, f)$ is much more sensitive to $p$'s
+true ratio change between execution profiles $e$ and $f$. This concurs with
+\ourtool's rationale on monitoring a program's control flow, but does not
+ignore the absolute execution number.
+\todo{A few more properties I do not known how (and whether need) to write down:
+(1) when totalExecNum(e, p) increases to some extent, the change Deviation(p)
+becomes ignorable, and the change of trueRatio dominates the Deviation value. (2)
+}
+
+%and $Deviation(p)$'s value is more sensitive to the change of $trueRatio(e, p)$.
+%When computing $Deviation(p)$ across two executions,
+%if $p$'s execution number is unchanged, a small change of $p$'s true ratio
+%would lead to a non-trivial $Deviation$ value. On the other hand,
+%if $p$'s true ratio is unchanged, the change in $p$'s execution number
+%leads to a less noticeable $Deviation$ value.
+
+%Intuitively, for two predicates $p_1$ and $p_2$, if they have the same
+%he true ratio but $p_1$ has been observed in more executions, we
+%should have more confidence in its statistical significance. $\blacksquare$
+%(the wording here is bad)
+
 
 \ourtool computes the $Deviation$ value for each predicate $p$
 appearing in execution profiles $t_1$ or $t_2$, and
