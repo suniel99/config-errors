@@ -25,7 +25,7 @@ public class PredicateProfileBasedDiagnoser {
 	public enum RankType {TFIDF_RATIO, TFIDF_IMPORT, SINGLE_RATIO, SINGLE_IMPORT, RATIO_SUM, IMPORT_SUM,
 		IMPORT_RANK_CHANGE, RATIO_RANK_CHANGE};
 	
-	public enum CrossRunRank {HIGHEST_RANK_AVG, SCORE_SUM_RANK};
+	public enum CrossRunRank {HIGHEST_RANK_AVG, SCORE_SUM_RANK, MAJORITY_VOTING};
 
 	public final Collection<PredicateProfileTuple> goodRuns;
 	

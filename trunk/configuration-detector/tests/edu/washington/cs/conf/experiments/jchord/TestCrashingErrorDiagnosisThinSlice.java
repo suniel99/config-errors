@@ -20,6 +20,7 @@ import edu.washington.cs.conf.util.Files;
 import edu.washington.cs.conf.util.Globals;
 import edu.washington.cs.conf.util.Utils;
 
+//this is the file where the experimental results are obtained
 public class TestCrashingErrorDiagnosisThinSlice extends TestCase {
 
 	boolean similarSelection = false;

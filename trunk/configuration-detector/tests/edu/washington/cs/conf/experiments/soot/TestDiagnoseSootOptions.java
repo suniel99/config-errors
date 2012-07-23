@@ -57,7 +57,7 @@ public class TestDiagnoseSootOptions extends TestCase {
 		MainAnalyzer.diagnoseConfigErrors(badRunTrace, 
 				TestComparingSootTraces.db,
 				//new String[]{"./experiments/soot-database/soot_helloworld_with_keepline.txt"},
-				repo, null, null, null, 0.11f);
+				repo, null, null, null, MainAnalyzer.default_threshold);
 		MainAnalyzer.doFiltering = false;
 	}
 	
