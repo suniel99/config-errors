@@ -40,12 +40,13 @@ public class MainAnalyzer {
 	public static boolean amortizeNoise = false;
 	public static int thresholdcount = 3;
 	
-	public static float default_threshold = 0.3f;
+	public static float default_threshold = 0.1f;
 	
 	private float distanceThreshold = default_threshold; //distance
-	private DistanceType distanceType = DistanceType.INTERPRODUCT;
+//	private DistanceType distanceType = DistanceType.INTERPRODUCT;
+	private DistanceType distanceType = DistanceType.COSINE;
 	private RankType rankType = RankType.SINGLE_IMPORT;
-	private CrossRunRank crossRank = CrossRunRank.HIGHEST_RANK_AVG;
+//	private CrossRunRank crossRank = CrossRunRank.HIGHEST_RANK_AVG;
 	private final ConfEntityRepository repository;
 	
 	private String sourceDir = null;
@@ -149,8 +150,8 @@ public class MainAnalyzer {
 		sb.append(Globals.lineSep);
 		sb.append("  rank type: " + this.rankType);
 		sb.append(Globals.lineSep);
-		sb.append("  cross run ranking: " + this.crossRank);
-		sb.append(Globals.lineSep);
+//		sb.append("  cross run ranking: " + this.crossRank);
+//		sb.append(Globals.lineSep);
 		System.err.println(sb.toString());
 	}
 	
@@ -226,13 +227,13 @@ public class MainAnalyzer {
 		this.rankType = rankType;
 	}
 
-	public CrossRunRank getCrossRank() {
-		return crossRank;
-	}
-
-	public void setCrossRank(CrossRunRank crossRank) {
-		this.crossRank = crossRank;
-	}
+//	public CrossRunRank getCrossRank() {
+//		return crossRank;
+//	}
+//
+//	public void setCrossRank(CrossRunRank crossRank) {
+//		this.crossRank = crossRank;
+//	}
 
 	public PredicateProfileTuple getBadRun() {
 		return badRun;
