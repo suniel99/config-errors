@@ -3,8 +3,7 @@
 Figure~\ref{tab:results} shows the experimental results.
 We can see that \ourtool is highly effective in pinpointing the root cause of
 misconfigurations. For all \noncrash non-crashing errors
-and 5 out of the \crash crashing errors, it lists the actual root cause as one of the
-top 3 options. 
+and 5 out of the \crash crashing errors, it lists the actual root cause as one of the top 3 options. 
 
 
 As shown in Figure~\ref{tab:results}, \ourtool is particularly effective
@@ -12,6 +11,24 @@ in diagnosing non-crashing configuration errors, which are not supported
 by most existing tools. $\blacksquare$ why effective? observation?
 statically significance? Give some examples here... Randoop \CodeIn{maxsize},
 Weka behaves overfitting..
+
+\noindent \textbf{Example.} \ourtool outputs the following error report
+for Weka:
+
+\begin{CodeOut}
+\begin{alltt} 
+Suspicious configuration option: m\_numFolds
+
+It affects the behavior of predicate:
+"numFold < numInstances() \% numFolds"
+(line 1354, class: weka.core.Instances) 
+
+This predicate evaluates to true:
+  0\% of the time in normal runs (10 observations)
+  70\% of the time in the undesired run (10 observations)
+
+\end{alltt}
+\end{CodeOut}
 
 
 Compared to non-crashing errors, \ourtool is less effective
@@ -27,7 +44,7 @@ This is because a crashing error usually happens shortly after the program
 is launched, and often produces a stack trace with valuable diagnosis clues.
 For example, in Figure~\ref{tab:results}, \ourtool ranks the root cause of
 error 14  8th.
-However, when JChord crashes, it dumps a \CodeIn{ClassNotFoundException}
+However, when JChord crashes, it throws a \CodeIn{ClassNotFoundException}
 that reminds users to check the classpath setting. For the other three crashing errors (error 8, 10, and 11),
 JChord even outputs the wrong configuration option value in the
 error message, which

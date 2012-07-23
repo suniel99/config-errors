@@ -19,6 +19,8 @@
 \usepackage{ulem}
 \usepackage{url}
 \usepackage{xspace}
+\usepackage{relsize}
+\usepackage{indentfirst}
 
 \newcommand{\ie}{i.e.}
 \newcommand{\eg}{e.g.}
@@ -41,10 +43,7 @@
 \newcommand{\soot}{Soot\xspace}
 
 \newcommand{\tool}[1]{#1}
-\newcommand{\FailureDoc}{\tool{Failure\-Doc}\xspace}
 \newcommand{\ourtool}{\tool{Conf\-Diagnoser}\xspace}
-\newcommand{\smallstep}{\relax}
-\newcommand{\tinystep}{\relax}
 
 % Add line between figure and text
 \makeatletter
@@ -79,29 +78,40 @@
 
 \newcommand{\phz}{\phantom{0}}
 
+\newcommand{\smallstep}{\relax}
+\newcommand{\tinystep}{\relax}
+
+\newcommand{\preitemizespace}{\vspace{-1mm}}
+
+\newenvironment{myindentpar}[1]%
+{\begin{list}{}%
+         {\setlength{\leftmargin}{#1}}%
+         \item[]%
+}
+{\end{list}}
+
+% Reduce indentation in lists.
+\setlength{\leftmargini}{.5\leftmargini}
+
+%% Bring items closer together in list environments
+%% This doesn't work with an optional argument to the list environment.
+% Prevent infinite loops
+\let\Itemize =\itemize    
+\let\Enumerate =\enumerate
+\let\Description =\description
+% Zero the vertical spacing parameters
+\def\Nospacing{\itemsep=0pt\topsep=0pt\partopsep=0pt\parskip=0pt\parsep=0pt}
+% Redefine the environments in terms of the original values
+\renewenvironment{itemize}{\Itemize\Nospacing}{\endlist}
+\renewenvironment{enumerate}{\Enumerate\Nospacing}{\endlist}
+\renewenvironment{description}{\Description\Nospacing}{\endlist}
+
+
 \begin{document}
 \normalem
 
-%\title{Explaining Software Configuration Problems}
-\title{Automated Software Configuration Error Diagnosis} % \\ for Java Software}
-%\subtitle{xx}
+\title{Automated Software Configuration Error Diagnosis} 
 
-%\author{\IEEEauthorblockN{Sai Zhang \quad Michael D. Ernst}
-%\author{\IEEEauthorblockN{Sai Zhang}
-%\IEEEauthorblockA{University of Washington\\
-%szhang@cs.washington.edu} \and \IEEEauthorblockN{Cheng
-%\IEEEauthorblockA{Shanghai Jiao Tong University\\
-%cheng.zhang.stap@sjtu.edu.cn} 
-%}
-
-
-%\numberofauthors{1}
-%\author{
-%\alignauthor Sai Zhang \quad Michael D. Ernst\\
-%       \affaddr{Department of Computer Science \& Engineering}\\
-%       \affaddr{University of Washington, USA}\\
-%       \email{\{szhang,  mernst\}@cs.washington.edu}
-%}
 \author{\IEEEauthorblockN{Sai Zhang \quad Michael D. Ernst}
 \IEEEauthorblockA{Department of Computer Science \& Engineering\\
 University of Washington, USA\\
