@@ -11,12 +11,14 @@ import edu.washington.cs.conf.util.Utils;
  * */
 public class ProfileDistanceCalculator {
 	
-	public enum DistanceType {MANHATTAN, LEVENSHTEIN, EUCLIDEAN, JACCARD, INTERPRODUCT, SUBTRACTION}
+	public enum DistanceType {COSINE, MANHATTAN, LEVENSHTEIN, EUCLIDEAN, JACCARD, INTERPRODUCT, SUBTRACTION}
 	
 	public static float computeDistance(PredicateProfileTuple t1,
 			PredicateProfileTuple t2, DistanceType type) {
 		if(type.equals(DistanceType.MANHATTAN)) {
 			return computeManhattanDistance(t1, t2);
+		} else if (type.equals(DistanceType.COSINE)) {
+			return computeCosineDistance(t1, t2);
 		} else if (type.equals(DistanceType.INTERPRODUCT)) {
 			return computeInterproductDistance(t1, t2);
 		} else if (type.equals(DistanceType.SUBTRACTION)) {
@@ -30,6 +32,58 @@ public class ProfileDistanceCalculator {
 		} else {
 			throw new Error("Unsupported type: " + type);
 		}
+	}
+	
+	/**
+	 * It is: 1 - cosine similarity
+	 * http://en.wikipedia.org/wiki/Cosine_similarity
+	 * */
+	public static float computeCosineDistance(PredicateProfileTuple t1,
+			PredicateProfileTuple t2) {
+		Utils.checkNotNull(t2);
+		if(t1.equals(t2)) {
+			return 0.0f;
+		}
+		Set<String> allKeys = getAllUniqueKeys(t1, t2);
+		
+		float dotproduct = 0.0f;
+		for(String key : allKeys) {
+			PredicateProfile p1 = t1.lookUpByUniqueKey(key);
+			PredicateProfile p2 = t2.lookUpByUniqueKey(key);
+			if(p1 != null && p2 != null) {
+				dotproduct += p1.getRatio() * p2.getRatio();
+			}
+		}
+		
+		//the length of p1 and p2
+		float sum1 = 0.0f;
+		float sum2 = 0.0f;
+		for(String key : allKeys) {
+			PredicateProfile p1 = t1.lookUpByUniqueKey(key);
+			PredicateProfile p2 = t2.lookUpByUniqueKey(key);
+			if(p1 != null) {
+				sum1 += p1.getRatio()*p1.getRatio();
+			}
+			if(p2 != null) {
+				sum2 += p2.getRatio()*p2.getRatio();
+			}
+		}
+		float length1 = (float) Math.sqrt(sum1);
+		float length2 = (float) Math.sqrt(sum2);
+		
+		Float cosine_similarity;
+		//check the length
+		if(length1 == 0.0f && length2 == 0.0f) {
+			cosine_similarity = 1.0f;
+		} else if( (length1 == 0.0f || length2 == 0.0f)) {
+			cosine_similarity = 0.0f;
+		} else {
+		    cosine_similarity = dotproduct / (length1 * length2);
+		}
+		
+		Utils.checkTrue(cosine_similarity >= 0.0f && cosine_similarity <= 1.0f, "Similarity is: " + cosine_similarity);
+		
+		return 1 - cosine_similarity;
 	}
 	
 	public static float computeInterproductDistance(PredicateProfileTuple t1,
@@ -75,6 +129,7 @@ public class ProfileDistanceCalculator {
 		return distance;
 	}
 	
+	@Deprecated
 	public static float computeSubstractionDistance(PredicateProfileTuple t1,
 			PredicateProfileTuple t2) {
 		Utils.checkNotNull(t1);
@@ -107,6 +162,7 @@ public class ProfileDistanceCalculator {
 	/**
 	 * see: http://en.wikipedia.org/wiki/Manhattan_distance
 	 * */
+	@Deprecated
 	public static float computeManhattanDistance(PredicateProfileTuple t1,
 			PredicateProfileTuple t2) {
 		Utils.checkNotNull(t1);
@@ -138,6 +194,7 @@ public class ProfileDistanceCalculator {
 	 * see: http://en.wikipedia.org/wiki/Damerau%E2%80%93Levenshtein_distance
 	 * does not make sense here!
 	 * */
+	@Deprecated
 	public static float computeLevenshteinDistance(PredicateProfileTuple t1,
 			PredicateProfileTuple t2) {
 		Utils.checkNotNull(t1);
@@ -152,6 +209,7 @@ public class ProfileDistanceCalculator {
 	/**
 	 * see: http://en.wikipedia.org/wiki/Euclidean_distance
 	 * */
+	@Deprecated
 	public static float computeEuclideanDistance(PredicateProfileTuple t1,
 			PredicateProfileTuple t2) {
 		Utils.checkNotNull(t1);
@@ -182,6 +240,7 @@ public class ProfileDistanceCalculator {
 	/**
 	 * see: http://en.wikipedia.org/wiki/Jaccard_index
 	 * */
+	@Deprecated
 	public static float computeJaccardDistance(PredicateProfileTuple t1,
 			PredicateProfileTuple t2) {
 		Utils.checkNotNull(t1);
