@@ -62,6 +62,23 @@ $\blacksquare$ talk about the full slicing, why it is not
 effective. it involves too much details, noises
 
 the imprecision the major reason, //same reason as the thin slicing paper..
+First, traditional slicing does not distinguish flows along
+pointers from flows along values; thus, a resulting slice includes all statements that
+\textit{may} affect a point of interest and often grows too large. Second,
+many statements included in the resulting slice are indirectly
+affected by a configuration option value but may not be pertinent
+to the task of diagnosing a configuration error.
+Monitoring the control flow of such indirectly-affected statements 
+and then linking their behaviors to specific configuration option values
+may lead to less accurate diagnosis.
+
+Furthermore,
+modern programs typically rely heavily on well-tested data structures
+provided by standard libraries, whose internal details rarely
+concern the end-user programmer. For these common cases, the
+backwards slice presents far too much information for the task at
+hand.
+
 
 We can see that varying the comparison strategy can result in
 substantially different effects on the diagnosis results,
