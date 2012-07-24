@@ -1,22 +1,26 @@
 
 
-Figure~\ref{tab:results} shows the experimental results.
+As shown in Figure~\ref{tab:results},
 \ourtool is highly effective in pinpointing the root cause of
 misconfigurations. For all \noncrash non-crashing errors
 and 5 out of the \crash crashing errors, it lists the actual root cause as one of the top 3 options. 
 
 
-\ourtool is particularly effective
-in diagnosing non-crashing configuration errors, which are not supported
-by most existing tools. $\blacksquare$ why effective? observation?
-statically significance? Give some examples here... Randoop \CodeIn{maxsize},
-Weka behaves overfitting..
+\ourtool is particularly effective in diagnosing non-crashing configuration errors,
+which are not supported by most existing tools. The primary reason is due to
+\ourtool's ability to identify the behaviorally-deviated predicates through
+execution profile comparison, and the top-ranked deviated predicates often provide
+useful clues of what parts of a program might be abnormal and why.
 
-Weka implements a highly-tuned decision tree, which achieves 70 --- 90\%
-accuracy in own dataset. However, when using a different dataset (also
-from Weka), the performance of decision tree drops to 62\%. This is an
-undesired behavior. \ourtool outputs the following error report (only
-the first suspicious option) is shown.
+Besides the Randoop example in Section~\ref{sec:mot}, we further illustrate
+this point by using the non-crashing error in Weka.
+Weka's decision tree implementation is highly-tuned, achieving 70--90\% accuracy on
+its attached examples. However, we found its accuracy drops to 62\%
+on a different dataset we experimented on. We used \ourtool to diagnose this
+problem by first building a database by running Weka on its attached examples, and
+then
+obtaining the undesired execution profile by running it on our dataset. As a result,
+\ourtool outputs the following report (only the top option is shown):
 
 
 \begin{CodeOut}
@@ -34,54 +38,60 @@ This predicate evaluates to true:
 \end{alltt}
 \end{CodeOut}
 
-This report directly points to the reason of low performance.
-This predicate controls whether to grow the decision tree or not.
-The tree grows too deep, and suffer from overfit of the given dataset.
-The default value works well for the set.
+\vspace{-3mm}
 
-Changing the default value of m\_numFolds from 3 to 2 leads to
-an immediate increase of 5\% improvement
+The above report reveals an important fact for the low accuracy.
+The predicate \CodeIn{numFold $<$ numInstances() \% numFolds} controls
+the depth of a decision tree; and its
+true ratio is substantially higher in the undesired execution
+than normal executions. Such behavior leads
+to a deeper tree that is more likely to overfit the training
+data. We changed \CodeIn{m\_numFolds}
+value from 2 to 3 to reduce the tree depth, and
+gained an 5\% performance increase immediately.
+
+%achieved
+%Changing the default value of m\_numFolds from 3 to 2 leads to
+%an immediate increase of 5\% improvement
 
 Compared to non-crashing errors, \ourtool is less effective
 in diagnosing non-crashing errors. For 4 crashing errors,
-the actual causes are ranked lower.
-This is because $\blacksquare$ the configuration option has
-a long propagation chain, and seems hard for \ourtool
-to diagnose correctly. no statistical significance...
+the actual causes are ranked below the top 3 options.
+This is a direct result of lacking enough predicate behavior observations,
+since most crashing errors become apparent shortly
+after the program is launched. Therefore, many predicates' $Deviation$ scores
+ (Section~\ref{sec:deviation}) are the same; and the heuristic to resolve ties (Section~\ref{sec:linking})
+works half the time.
+
+
+%considers configs closer to the erroneous behavior to be more
+%likely to lead to the root cause than those farther away
+
+%$\blacksquare$ the configuration option has
+%a long propagation chain, and seems hard for \ourtool
+%to diagnose correctly. no statistical significance...
 
 Although \ourtool ranked the actual root course of several
 crashing errors lower, crashing errors are generally much easier to diagnose than non-crashing errors.
-This is because a crashing error usually happens shortly after the program
-is launched, and often produces a stack trace with valuable diagnosis clues.
+This is because a crashing error often produces a stack trace with valuable diagnosis clues.
 For example, in Figure~\ref{tab:results}, \ourtool ranks the root cause of
 error 14  9th.
 However, when JChord crashes, it throws a \CodeIn{ClassNotFoundException}
 that reminds users to check the classpath setting. For the other three crashing errors (error 8, 10, and 11),
 JChord even outputs the wrong configuration option value in the
 error message, which
-directly guides users to the root cause. We speculated that $\blacksquare$
-
-Many configuration predicate are only executed very few time, and the computed deviation score are the same.
-//the heuristic does not
+directly guides users to the root cause. 
 
 
-$\blacksquare$
-Thus, the root cause gets
-ranked lower in the list. This ordering is a direct result
-of the heuristic discussed in Section XXX that considers
-branches closer to the erroneous behavior to be more
-likely to lead to the root cause than those farther away
 
-seems hard for ConfAid to diagnose correctly
-== imprecise of thin slicing, particularly when dealing with containers,
+%$\blacksquare$
+%Thus, the root cause gets
+%ranked lower in the list. This ordering is a direct result
+%of the heuristic discussed in Section XXX that 
 
-The combination of xxx these two factors cause ....
+%== imprecise of thin slicing, particularly when dealing with containers,
 
 
-Experimentally, we see that this heuristic works half the time for JChord.
-JChord reads most of its options at program startup,
-so there is no close connection between reads and uses. We
-conclude that this heuristic relies entirely on particular styles
-of programming for its effectiveness.
+
 
 

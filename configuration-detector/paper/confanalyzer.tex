@@ -1,32 +1,44 @@
 We compared \ourtool with ConfAnalyzer, a heavyweight dynamic information
 flow-based technique~\cite{Rabkin:2011:PPC}.
-We chose ConfAnalyzer because it is one of the most precise configuration
-error diagnosis techniques in the literature and its 
+We chose ConfAnalyzer because it is one of the most recent and precise configuration
+error diagnosis techniques. Also, its 
 experimental data is publicly available.
-ConfAnalyzer computes possible configuration diagnosis for Java software,
-and works remarkably well for crashing errors, though as
+ConfAnalyzer tracks the flow of labelled objects through the
+program dynamically,
+and treats a configuration option as a root cause if its
+value may flow to a crashing point.
+ConfAnalyzer works remarkably well for crashing errors, though as
 described above these are often easy to diagnose even without tool
 support. However, ConfAnalyzer cannot diagnose non-crashing errors.
 
 The experimental results of ConfAnalyzer is shown in Figure~\ref{tab:results} (Column ``ConfAnalyzer'').
-$\blacksquare$
+For the 9 crashing errors, \ourtool produced better results for 3 of them,
+the same results for another 3, and worse results for the remaining 3.
 
-$\blacksquare$
-In addition to dynamically monitoring
-option reads, \ourtool tracks the flow of labelled objects through the
-program dynamically. When a configuration value is returned
-by a method, that value and the associated option name are
-recorded in a lookup table. at bit-level.
+ConfAnalyzer performs better on crashing errors
+having shorter execution paths: an error exhibits
+almost immediately after the software is launched.
+In such cases, a small number of configuration options are initialized and
+only few can flow to the crashing point. 
+\ourtool fails to produce good diagnosis for these errors, because it can not identify
+ the statistically-behavioral-deviated predicates based on the limited
+program behaviors observed.
 
-Many cases only one configuration value flows into.
+ConfAnalyzer outputs less accurate or no results
+for errors (e.g., error 14 in Figure~\ref{tab:results}) where the root cause option value
+flows into containers, or system calls. However, for those errors,
+\ourtool can still reason about (to some extent) the \textit{consequence} of a misconfiguration
+by the observed predicate behaviors, and even produce better diagnosis.
 
-For the classpath case, it misses. pollution?
 
 
-%Rabkin and Katz proposed a family of techniques to precompute possible
-%configuration diagnosis for Java software~\cite{Rabkin:2011:PPC}. In their work,
-%the most accurate technique (also probably one of the most precise techniques in the literature)
-%is based on dynamic information flow analysis.
+%Many cases only one configuration value flows into.
+%For the classpath case, it misses. pollution?
+
+%tracks them as
+%they propagate during execution, and (3) identifies, for an
+%observed failure, the subset of inputs that are potentially
+%relevant for debugging that failure.
 
 %\todo{Is ConfAnalyzer heavyweight?  If so, say so.}
 

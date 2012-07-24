@@ -6,10 +6,10 @@
 %  question about variant 3.  In any event, make clearer what part of the
 %  architecture is replaced by each variant.}
 
-One possible way to diagnose a configuration error is to leverage
+Another possible way to diagnose a configuration error is to leverage
 the existing fault localization techniques, by treating the undesired
 execution as a failing run and all correct executions (in the database)
-as passing runs. We next compare \ourtool with two fault-localization-based
+as passing runs. We next compare \ourtool with two state-of-the-art
 techniques: % in error diagnosis:
 
 \begin{itemize}
@@ -24,7 +24,7 @@ to identify its affecting configuration options as the root causes.
 \item \textbf{Method-level Invariant Analysis}. This technique stores invariants detected
 by Daikon~\cite{Ernst:1999} from correct execution profiles in the database.
 When a configuration error occurs, this technique detects invariants from the undesired execution profile;
-and compares the detected invariants with those stored in the database.
+and compares them with those stored in the database.
 It treats a method to have suspicious behaviors if its observed invariants
 from the undesired execution profile are different from the invariants stored
 in the database~\cite{McCamant:2003}. Finally, this technique ranks a method's suspiciousness by
@@ -35,15 +35,35 @@ to identify its affecting configuration options as the root causes.
 
 The experimental results are shown in Figure~\ref{tab:results} (Columns
 ``Coverage Analysis'' and ``Invariant Analysis'').
-$\blacksquare$ discuss the results here
+Both techniques produce less
+accurate results; and for some errors, even fail to identify
+the actual root causes.
 
-statement-level granularity is too fine
-many statement has the same coverage
-Tarantuala does not distinguishes the evaluation results of a predicate, it only count whether it has been executed or not.
+In Coverage Analysis, the statement-level abstraction is \textit{too fine-grained}.
+Many statements have the exactly same coverage by the failing/passing executions,
+and thus have the same suspiciousness score as computed by Tarantula~\cite{Jones:2002}.
+Furthermore, the underlying Tarantula technique only records whether a
+statement has been executed or not but does not record how a statement is 
+executed (e.g, how often a predicate is evaluated to true). The combination
+of these two factors causes the low accuracy.
 
 
-method-level granularity is too coarse
-is not sensitive enough on small control flow changes. for example, the invariant is the same
+In Invariant Analysis, the method-level abstraction is \textit{too coarse-grained}.
+A typical invariant detection technique like Daikon~\cite{Ernst:1999}
+only checks program states at method entries and exits, resulting in likely invariants that
+correspond to pre- and post-conditions. Thus, invariant detection is less
+senstivie to the local control flow changes within a method (e.g., a predicate's
+true ratio). In our study, Invariant Analysis failed to diagnose several errors because it
+reported the same invariants for the method containing behavioral-deviated predicates.
 
 
-focusing on the behaviors of the affected predicates can be a good choice.
+
+%method-level granularity is too coarse
+%is not sensitive enough on small control flow changes. for example, the invariant is the same
+
+
+This experiment suggests that applying existing fault localization
+techniques to diagnose configuration errors may be insufficient, due
+to different abstractions and algorithms. It also indicates that
+focusing on the relevant predicates' behaviors as \ourtool does
+ can be a good choice.

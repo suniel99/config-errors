@@ -33,7 +33,7 @@ Our evaluation answers the following research questions:
 \end{itemize}
 \item What are the effects of using full slicing rather than thin slicing to identify
 the affected predicates, and the effects of varying comparison execution profiles (Section~\ref{sec:choices})?
-These are two design choices in \ourtool.
+These are two internal design choices. % in \ourtool.
 \end{itemize}
 
 %\begin{itemize}
@@ -254,7 +254,7 @@ Second,  our tool implementation currently does not
 support debugging non-deterministic errors. 
 For non-deterministic errors, \ourtool could potentially leverage one of
 several deterministic replay systems~\cite{Huang:2010:LLD}
-that can capture a buggy non-deterministic
+that can capture an undesired non-deterministic
 execution and faithfully reproduce it for late analysis.
 Third, the effectiveness of \ourtool largely
 depends on the availability of a similar but correct execution profile.
@@ -285,12 +285,12 @@ might achieve different results.
 We have three chief findings: (1) \ourtool is effective
 in diagnosing both crashing and non-crashing configuration errors
 with a small profile database.
-(2) \ourtool produces more accurate diagnosis results than
+(2) \ourtool produces more accurate diagnosis than
 approaches leveraging existing fault localization
 techniques~\cite{Jones:2002, McCamant:2003}, 
 suggesting the necessity of designing new configuration error
 diagnosis techniques. And (3) Using thin slicing
-to identify the affected predicates
+%to identify the affected predicates
 permits \ourtool to produce more accurate diagnosis than using
 full slicing; and varying the execution profile selection
 strategy can result in substantially different diagnosis.
