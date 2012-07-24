@@ -289,6 +289,9 @@ public class MainAnalyzer {
 		List<ConfDiagnosisOutput> outputs = analyzer.computeResponsibleOptions();
 		int i = 1;
 		for(ConfDiagnosisOutput o : outputs) {
+			if(filterOutput(o)) {
+				continue;
+			}
 			System.out.println(i++ + ".");
 			System.out.println(o.getConfEntity());
 			System.out.println(o.getBriefExplanation());
@@ -298,5 +301,31 @@ public class MainAnalyzer {
 			System.out.println(o.getTotalEnter() + " / " + o.getTotalEval());
 			System.out.println();
 		}
+	}
+	
+	private static boolean filterOutput(ConfDiagnosisOutput o) {
+		String report = o.getErrorReport();
+		String[] array = report.split(Globals.lineSep);
+		List<String> list = new LinkedList<String>();
+		for(String s : array) {
+			if(s.indexOf("classpath") != -1) {
+				return true;
+			}
+			if(s.indexOf(ExplanationGenerator.TOKEN) != -1) {
+				String number = s.substring(0, s.indexOf("%"));
+				list.add(number);
+			}
+		}
+		Utils.checkTrue(list.size() == 2);
+		
+		if(list.get(0).equals(list.get(1))) {
+			return true;
+		}
+		
+//		if(list.get(0).trim().startsWith("NaN") || list.get(1).trim().startsWith("NaN")) {
+//			return true;
+//		}
+		
+		return false;
 	}
 }
