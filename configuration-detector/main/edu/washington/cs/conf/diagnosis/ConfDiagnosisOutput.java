@@ -14,7 +14,7 @@ public class ConfDiagnosisOutput {
 	private final ConfEntity conf;
 	
 	//need to keep some (meta) histrocal analysis information to
-	//show users why it output the rank
+	//show users why it output the rank, this field is not used for comparison
 	private List<String> explanations = new LinkedList<String>();
 	
 	private Float finalScore = Float.NaN; //A place holder
@@ -50,15 +50,47 @@ public class ConfDiagnosisOutput {
 		    + (explanations.isEmpty() ? "N/A" : explanations.get(explanations.size() - 1) );
 	}
 	
+	//not used for comparison in equals
+	//the fields used to generate error report, should be encapsulated
+	//in some other places?
+	//FIXME some dirty hack
 	private String errorReport = "NOT-GENERATED-YET";
-	
+	private int total_enter = -1;
+	private int total_eval = -1;
+	public int getTotalEnter() {
+		return total_enter;
+	}
+	public int getTotalEval() {
+		return total_eval;
+	}
+	public void setTotalEnter(int count) {
+		Utils.checkTrue(count >= 0);
+		if(count != 0) {
+		    this.total_enter = count;
+		}
+	}
+	public void setTotalEval(int count) {
+		Utils.checkTrue(count >= 0);
+		if(count != 0) {
+		    this.total_eval = count;
+		}
+	}
+	public void incrTotalEnter(int count) {
+		if(count > 0) {
+			this.total_enter += count;
+		}
+	}
+	public void incrTotalEval(int count) {
+		if(count > 0) {
+			this.total_eval += count;
+		}
+	}
 	public void setErrorReport(String errorReport) {
 		Utils.checkNotNull(errorReport);
 		this.errorReport = errorReport;
 	}
-	
 	public String getErrorReport() {
-		return errorReport;
+		return ExplanationGenerator.replaceWithGoodRunNum(errorReport, this.total_enter, this.total_eval);
 	}
 	
 	/**

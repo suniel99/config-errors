@@ -295,6 +295,8 @@ public class MainAnalyzer {
 			System.out.println();
 			System.out.println(o.getErrorReport());
 			System.out.println();
+			System.out.println(o.getTotalEnter() + " / " + o.getTotalEval());
+			System.out.println();
 		}
 	}
 }
