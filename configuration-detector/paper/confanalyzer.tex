@@ -11,6 +11,18 @@ support. However, ConfAnalyzer cannot diagnose non-crashing errors.
 The experimental results of ConfAnalyzer is shown in Figure~\ref{tab:results} (Column ``ConfAnalyzer'').
 $\blacksquare$
 
+$\blacksquare$
+In addition to dynamically monitoring
+option reads, \ourtool tracks the flow of labelled objects through the
+program dynamically. When a configuration value is returned
+by a method, that value and the associated option name are
+recorded in a lookup table. at bit-level.
+
+Many cases only one configuration value flows into.
+
+For the classpath case, it misses. pollution?
+
+
 %Rabkin and Katz proposed a family of techniques to precompute possible
 %configuration diagnosis for Java software~\cite{Rabkin:2011:PPC}. In their work,
 %the most accurate technique (also probably one of the most precise techniques in the literature)
