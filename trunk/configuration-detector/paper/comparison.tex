@@ -38,7 +38,12 @@ The experimental results are shown in Figure~\ref{tab:results} (Columns
 $\blacksquare$ discuss the results here
 
 statement-level granularity is too fine
+many statement has the same coverage
+Tarantuala does not distinguishes the evaluation results of a predicate, it only count whether it has been executed or not.
+
 
 method-level granularity is too coarse
+is not sensitive enough on small control flow changes. for example, the invariant is the same
+
 
 focusing on the behaviors of the affected predicates can be a good choice.
