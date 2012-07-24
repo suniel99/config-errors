@@ -13,9 +13,9 @@
  \hline
  1. Randoop & 1 & 2 & 1\\
  2. Weka & 7 & 6 & 1\\
- 3. JChord & 16 & 19 & 2\\
+ 3. JChord & 16 & 19 & 3\\
  4. Synoptic & 1 & 1 & 1\\
- 5. Soot & 13 & 13 & 3\\
+ 5. Soot & 13 & 13 & 2\\
 \hline
 Average & 7.6 & 8.2 & 1.6 \\
 \hline
@@ -30,7 +30,7 @@ Average & 7.6 & 8.2 & 1.6 \\
  11. JChord & 16 & 16 &16\\
  12. JChord & 1 & 1 &1\\
  13. JChord & 25 & 25 &1\\
- 14. JChord & 8 & 8 &8\\
+ 14. JChord & 9 & 9 &9\\
 \hline
 Average & 9.4 & 9.4 & 6.7\\
 \hline
@@ -53,47 +53,51 @@ Figure~\ref{tab:results}  (Column ``Full Slicing'') shows the results.
 In particular, we compare the similarity-based selection strategy used in \ourtool
  (Section~\ref{sec:similar}) with two alternatives: selecting
 all available profiles in the database, and
-randomly selecting the same number of profiles as \ourtool used from the database.
+randomly selecting the same number of profiles as \ourtool uses from the database.
 Figure~\ref{tab:selection} shows the results.
 \end{itemize}
 
 
-$\blacksquare$ talk about the full slicing, why it is not
-effective. it involves too much details, noises
+As shown in Figure~\ref{tab:results}  (Column ``Full Slicing''),
+\ourtool achieves significantly less accurate diagnosis when using
+full slicing. The primary reason is that full slicing includes
+too many irrelevant statements that are only \textit{indirectly} affected by
+a configuration option value but not pertinent to the task of
+error diagnosis. In many cases, monitoring the control flow
+of such indirectly-affected predicates and then linking their
+behaviors to configuration options lead to low accuracy.
 
-the imprecision the major reason, //same reason as the thin slicing paper..
-First, traditional slicing does not distinguish flows along
-pointers from flows along values; thus, a resulting slice includes all statements that
-\textit{may} affect a point of interest and often grows too large. Second,
-many statements included in the resulting slice are indirectly
-affected by a configuration option value but may not be pertinent
-to the task of diagnosing a configuration error.
-Monitoring the control flow of such indirectly-affected statements 
-and then linking their behaviors to specific configuration option values
-may lead to less accurate diagnosis.
-
-Furthermore,
-modern programs typically rely heavily on well-tested data structures
-provided by standard libraries, whose internal details rarely
-concern the end-user programmer. For these common cases, the
-backwards slice presents far too much information for the task at
-hand.
+%Furthermore, modern programs typically rely heavily on well-tested data structures
+%provided by standard libraries, whose internal details rarely
+%the full slice presents far too much information for the task at hand.
 
 
-We can see that varying the comparison strategy can result in
-substantially different effects on the diagnosis results,
-depending on the application being analyzed. Diagnosing
-a non-crashing error is more sensitive in selecting similar
-comparison execution profiles$\blacksquare$ than diagnosing
-a crashing error.
-For the \crash crashing errors, the only difference yielded
-from using different profile selection strategies is on
-the error 13. $\blacksquare$
+As shown in Figure~\ref{tab:selection}, varying the comparison
+strategy yields substantially different results,
+depending on the application being analyzed.
+%\todo{following sentence needs a rewrite}
+Using all available execution profiles or randomly
+selecting execution profiles is ineffective. This is because
+such strategies cause \ourtool to report many irrelevant
+differences between an undesired
+execution and a dramatically different execution, which 
+will not be selected by \ourtool's similary-based selection strategy (Section~\ref{sec:similar}).
+We also find diagnosing a crashing error is less sensitive 
+to the comparison execution profiles than diagnosing a non-crashing error.
+This is because crashing profiles are often much smaller, executing
+fewer predicates before reaching the crashing points; and \ourtool
+chops each correct execution profile before diagnosis (Section~\ref{sec:similar}).
+Thus, many irrelevant differences have already been removed.
 
-Why random selection does not work?
-comparison irrelevant parts, executing the totally different parts.
-$\blacksquare$, example irrelvant comparison
+ %Comparing
+%a crashing profile with a chopped correct execution profile (even
+%by random selection) 
 
-Why crashing errors are better? chopping to the predicates results
-in more similar, a few times.
 
+
+%in selecting similar
+%comparison execution profiles$\blacksquare$ than diagnosing
+%a crashing error.
+%For the \crash crashing errors, the only difference yielded
+%from using different profile selection strategies is on
+%the error 13. $\blacksquare$

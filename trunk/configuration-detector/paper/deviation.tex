@@ -21,7 +21,7 @@ correct profiles, then selects a set of similar ones
 as the basis of diagnosis.
 
 Given an execution profile $e$, \ourtool first aggregates
-the observed predicate behaviors into a $n$-dimensional
+the collected predicate profiles into a $n$-dimensional
 vector $v_e$ =$\langle r_{e1}, r_{e2}, ..., r_{en}\rangle$, where $n$
 is the number of all possible predicate profiles in the program
 and each $r_{ei}$ is a ratio representing how often the $i$-th predicate
@@ -47,7 +47,7 @@ of $v_{e}$ and $v_{f}$.
 
 This similarity metric basically compares two execution profiles based on
  control flow taken (approximated by how often a predicate has been evaluated to
-true). Its resulting value ranges from 0 meaning completely different, to 1 meaning exactly the same, 
+true). Its resulting value ranges from 0 meaning completely different, to 1 meaning almost the same, 
 and in-between values indicating intermediate similarity.
 
 
@@ -82,9 +82,10 @@ and in-between values indicating intermediate similarity.
 
 
 A crashing error may happen shorty after the program is launched.
-So that the resulting execution profile can be much smaller than correct execution profiles,
+So that the resulting execution profile can be much smaller than most
+correct execution profiles,
 since many predicates in the program are not executed.
-Using the $Similarity$ metric to compare a whole execution profile in the database
+Using the $Similarity$ metric to compare a correct execution profile from the database
 with a crashing profile, it is unlikely for \ourtool to find similar ones.
 To avoid comparing those un-executed predicates,
 when diagnosing a crashing error, \ourtool
@@ -92,7 +93,7 @@ chops each correct execution profile by only remaining
 the common predicates executed by the crashing profile, and then
 uses the chopped profile for comparison. 
 
-When given an undesired execution profile,
+Given an undesired execution profile,
 \ourtool selects all execution profiles (or chopped profiles for
 a crashing error. We use the single term ``profile'' for brevity.) from the database
 with a $Similarity$ value above a threshold (default value: 0.9, as used in our
@@ -147,7 +148,7 @@ a predicate's true ratio) may be similar for many
 execution profiles, the absolute execution
 number of a predicate may largely depend on the given inputs, and
 can vary greatly across executions. Moreover, for
-some predicates, it is entirely possible that each of them has
+some predicates, they may have
 only been executed very few times but the true ratios
 are dramatically different across executions.
 
@@ -184,8 +185,8 @@ harmonic mean; this metric prefers high scores in both dimensions.
 In $\phi(e, p)$, $trueRatio(e, p)$ is a function that returns the ratio of the predicate $p$ being
 evaluated to true in execution profile $e$, and $totalExecNum(e, p)$ is a function
 that returns the total number of predicate $p$ being executed in execution profile $e$.
-If a predicate $p$ does not appear in execution profile $e$, 
-$\phi(e, p)$ returns 0. If a predicate $p$'s true ratio is 0, $\phi(e, p)$ returns
+To smooth corner cases, if a predicate $p$ does not appear in execution profile $e$, 
+$\phi(e, p)$ returns 0; and if a predicate $p$'s true ratio is 0, $\phi(e, p)$ returns
 $1/totalExecNum(e, p)$ instead.
 
 
@@ -210,10 +211,10 @@ in characterizing a predicate $p$'s behavior. Clearly, $trueRatio(e,p)$
 is a value between 0 and 1 and $totalExecNum(e, p)$ is a value greater than 1; increasing
 either value while keeping the other one unchanged increases $\phi(e, p)$.
 The value of $trueRatio(e, p)$ is more important than $totalExecNum(e, p)$
-in deciding $\phi(e, p)$; since in theory $1/trueRatio(e, p) \geq 1/totalExecNum(e, p)$, and
+in deciding $\phi(e, p)$; since in theory $1/trueRatio(e, p) \geq 1/totalExecNum(e, p)$, but
 in many practice $1/trueRatio(e, p) \gg 1/totalExecNum(e, p)$.
-Also, the value of $Deviation(p, e, f)$ is much more sensitive to $p$'s
-true ratio change between execution profiles $e$ and $f$. This concurs with
+Thus, the value of $Deviation(p, e, f)$ is much more sensitive to $p$'s
+true ratio change between execution profiles $e$ and $f$. This reflects 
 \ourtool's rationale on monitoring a program's control flow, but does not
 ignore the absolute execution number.
 \todo{A few more properties I do not known how (and whether need) to write down:
@@ -235,7 +236,7 @@ becomes ignorable, and the change of trueRatio dominates the Deviation value. (2
 
 
 \ourtool computes the $Deviation$ value for each predicate $p$
-appearing in execution profiles $t_1$ or $t_2$, and
+appearing in two execution profiles $e$ or $f$, and
 ranks them in a decreasing order. 
 
 %After comparing the undesired execution profile with one selected correct execution profile,
@@ -259,18 +260,19 @@ ranks them in a decreasing order.
 predicate to their root cause configuration options
 by using the results of thin slicing (computed by the Configuration Propagation
 Analysis step in Section~\ref{sec:prop}).
-\ourtool determines
+\ourtool identifies 
 the affecting configuration options for each deviated predicate,
-and identifies the configuration option
+and treats the configuration option
 affecting a higher ranked deviated predicate as the more likely
-root cause. If multiple configuration options affect the same
-predicate, \ourtool prefers options whose initialization
+root cause. If a predicate is affected by multiple
+configuration options, \ourtool prefers options whose initialization
 statements are \textit{closer} to the
-crashing point. Intuitively, statements closer to the
-crashing point seem more likely to be relevant to its behavior.
+deviated predicate (in the dependence graph of thin slicing).
+Intuitively, statements closer to the
+predicate seem more likely to be relevant to its behavior.
 Hence, we assume the user gradually explores statements of
-increasing distance (defined by the dependence graph of thin slicing)
-from the crashing point until the desired statements (where a configuration
+increasing distance 
+from the suspicious predicate until the desired statements (where a configuration
 option is initialized) are found; a breadth-first
 search of the dependence graph simulates this strategy.
 
