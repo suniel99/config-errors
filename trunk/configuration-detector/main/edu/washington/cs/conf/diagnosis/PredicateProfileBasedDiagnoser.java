@@ -403,6 +403,11 @@ public class PredicateProfileBasedDiagnoser {
 					output.setFinalScore(rankedEntity.getScore(t));
 					//get the error report
 					String errorReport = rankedEntity.createErrorReport();
+					int totalEnter = getGoodTotalEnter(rankedLists, rankedEntity);
+					int totalEval = getGoodTotalEval(rankedLists, rankedEntity);
+					Utils.checkTrue(totalEval >= totalEnter);
+					output.setTotalEnter(totalEnter);
+					output.setTotalEval(totalEval);
 					output.setErrorReport(errorReport);
 					
 					visitedConfigs.put(configName, output);
@@ -419,6 +424,38 @@ public class PredicateProfileBasedDiagnoser {
 			rankedOutputs.add(rankedOutput);
 		}
 		return rankedOutputs;
+	}
+	
+	public static int getGoodTotalEnter(Collection<List<ConfDiagnosisEntity>> rankedLists, ConfDiagnosisEntity entity) {
+		int count = 0;
+		String conf = entity.getConfigFullName();
+		String context = entity.getContext();
+		for(List<ConfDiagnosisEntity> list : rankedLists) {
+			for(ConfDiagnosisEntity e : list) {
+				if(e.getConfigFullName().equals(conf) && e.getContext().equals(context)) {
+					count += e.getGoodEnterCount();
+					Utils.checkTrue(e.getGoodEvalCount() >= e.getGoodEnterCount());
+					//break;
+				}
+			}
+		}
+		return count;
+	}
+	
+	public static int getGoodTotalEval(Collection<List<ConfDiagnosisEntity>> rankedLists, ConfDiagnosisEntity entity) {
+		int count = 0;
+		String conf = entity.getConfigFullName();
+		String context = entity.getContext();
+		for(List<ConfDiagnosisEntity> list : rankedLists) {
+			for(ConfDiagnosisEntity e : list) {
+				if(e.getConfigFullName().equals(conf) && e.getContext().equals(context)) {
+					count += e.getGoodEvalCount();
+					//break;
+					Utils.checkTrue(e.getGoodEvalCount() >= e.getGoodEnterCount());
+				}
+			}
+		}
+		return count;
 	}
 	
 	//FIXME do not call this method, it is only experiment purpose in the exploratory phase

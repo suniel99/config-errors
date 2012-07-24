@@ -115,12 +115,22 @@ public class ConfDiagnosisEntity {
     	//based on the current observation
     	String report = ExplanationGenerator.createWellFormattedExpanation(this.configFullName,
     			this.context, this.predicateText, this.srcLineNumber,
-    			this.rawData.containsKey(RawDataType.GOOD_EVAL_COUNT) ? (Integer)this.rawData.get(RawDataType.GOOD_EVAL_COUNT) : 0,
-    			this.rawData.containsKey(RawDataType.GOOD_ENTER_COUNT) ? (Integer)this.rawData.get(RawDataType.GOOD_ENTER_COUNT) : 0,
+    			getGoodEvalCount(),
+    			//this.rawData.containsKey(RawDataType.GOOD_EVAL_COUNT) ? (Integer)this.rawData.get(RawDataType.GOOD_EVAL_COUNT) : 0,
+    			getGoodEnterCount(),
+    			//this.rawData.containsKey(RawDataType.GOOD_ENTER_COUNT) ? (Integer)this.rawData.get(RawDataType.GOOD_ENTER_COUNT) : 0,
     			this.rawData.containsKey(RawDataType.BAD_EVAL_COUNT) ? (Integer)this.rawData.get(RawDataType.BAD_EVAL_COUNT) : 0,
     			this.rawData.containsKey(RawDataType.BAD_ENTER_COUNT) ? (Integer)this.rawData.get(RawDataType.BAD_ENTER_COUNT) : 0);
     	
     	return report;
+    }
+    
+    public int getGoodEvalCount() {
+    	return this.rawData.containsKey(RawDataType.GOOD_EVAL_COUNT) ? (Integer)this.rawData.get(RawDataType.GOOD_EVAL_COUNT) : 0;
+    }
+    
+    public int getGoodEnterCount() {
+    	return this.rawData.containsKey(RawDataType.GOOD_ENTER_COUNT) ? (Integer)this.rawData.get(RawDataType.GOOD_ENTER_COUNT) : 0;
     }
     
     public void computeAllScores() {

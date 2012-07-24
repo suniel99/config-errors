@@ -1,6 +1,7 @@
 package edu.washington.cs.conf.diagnosis;
 
 import edu.washington.cs.conf.util.Globals;
+import edu.washington.cs.conf.util.Utils;
 
 /**
  * A class for generating well-formatted, human-readable explanation
@@ -33,12 +34,55 @@ public class ExplanationGenerator {
 		sb.append(Globals.lineSep);
 		sb.append("This predicate evaluates to true: ");
 		sb.append(Globals.lineSep);
-		sb.append("   " + goodEnterRatio + "% of the time in normal runs (" + goodRunNum + " observations)");
+		sb.append("   $" + goodEnterRatio + "$$% of the time in normal runs (#" + goodRunNum + "## observations)");
 		sb.append(Globals.lineSep);
 		sb.append("   " + badEnterRatio + "% of the time in an undesirable run (" + badRunNum + " observations)");
 		sb.append(Globals.lineSep);
 		return sb.toString();
 	}
 	
+	public static String replaceWithGoodRunNum(String report, int goodEnterNum, int goodEvalNum) {
+		Utils.checkTrue(goodEvalNum != 0);
+		Utils.checkTrue(goodEvalNum >= goodEnterNum);
+		String NA = "N/A";
+		String goodRatioStr = goodEvalNum != -1 ? "" + ((float)goodEnterNum/goodEvalNum)*100 : NA;
+		String goodEnterStr = goodEnterNum != -1 ? goodEnterNum + "" : NA;
+//		
+//		if(goodEvalNum != -1 && goodEnterNum != -1) {
+			Utils.checkTrue(goodEvalNum != 0);
+			String[] strs = report.split(Globals.lineSep);
+			
+			StringBuilder sb = new StringBuilder();
+			
+			for(String str : strs) {
+				if(str.indexOf("$") != -1) {
+					if(goodRatioStr.equals(NA)) {
+						str = str.replaceAll("\\$", "");
+					} else {
+					    int startIndex = str.indexOf("$");
+					    int endIndex = str.indexOf("$$");
+					    Utils.checkTrue(endIndex > startIndex);
+					    str = str.substring(0, startIndex) + goodRatioStr + str.substring(endIndex + "$$".length());
+					}
+				}
+				if(str.indexOf("#") != -1) {
+					if(goodEnterStr.equals(NA)) {
+						str = str.replaceAll("#", "");
+					} else {
+						int startIndex = str.indexOf("#");
+					    int endIndex = str.indexOf("##");
+					    Utils.checkTrue(endIndex > startIndex);
+					    str = str.substring(0, startIndex) + goodEnterStr + str.substring(endIndex + "##".length());
+					}
+				}
+				
+				sb.append(str);
+				sb.append(Globals.lineSep);
+			}
+			
+			return sb.toString();
+//		}
+//		return report;
+	}
 	
 }
