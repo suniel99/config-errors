@@ -7,6 +7,8 @@ import edu.washington.cs.conf.util.Utils;
  * A class for generating well-formatted, human-readable explanation
  * */
 public class ExplanationGenerator {
+	
+	public static String TOKEN = "of the time";
 
 	public static String createWellFormattedExpanation
 	    (String confName, String context, String predicate, int lineNum,
@@ -34,9 +36,9 @@ public class ExplanationGenerator {
 		sb.append(Globals.lineSep);
 		sb.append("This predicate evaluates to true: ");
 		sb.append(Globals.lineSep);
-		sb.append("   $" + goodEnterRatio + "$$% of the time in normal runs (#" + goodRunNum + "## observations)");
+		sb.append("   $" + goodEnterRatio + "$$% " + TOKEN + " in normal runs (#" + goodRunNum + "## observations)");
 		sb.append(Globals.lineSep);
-		sb.append("   " + badEnterRatio + "% of the time in an undesirable run (" + badRunNum + " observations)");
+		sb.append("   " + badEnterRatio + "% " + TOKEN + " in an undesirable run (" + badRunNum + " observations)");
 		sb.append(Globals.lineSep);
 		return sb.toString();
 	}
@@ -45,8 +47,14 @@ public class ExplanationGenerator {
 		Utils.checkTrue(goodEvalNum != 0);
 		Utils.checkTrue(goodEvalNum >= goodEnterNum);
 		String NA = "N/A";
+		
 		String goodRatioStr = goodEvalNum != -1 ? "" + ((float)goodEnterNum/goodEvalNum)*100 : NA;
 		String goodEnterStr = goodEnterNum != -1 ? goodEnterNum + "" : NA;
+		if(goodEnterNum < 0) {
+			goodRatioStr = NA;
+			goodEnterStr = NA;
+		}
+		
 //		
 //		if(goodEvalNum != -1 && goodEnterNum != -1) {
 			Utils.checkTrue(goodEvalNum != 0);

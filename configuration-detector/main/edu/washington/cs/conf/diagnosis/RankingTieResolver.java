@@ -27,6 +27,18 @@ public class RankingTieResolver {
     	System.out.println("----------- end of affected methods in the stack trace ----------");
     	
     	//create the initial ranking bucket
+    	//remove the impossible ones
+    	Collection<ConfDiagnosisOutput> filteredOutput = new LinkedList<ConfDiagnosisOutput>();
+    	for(ConfDiagnosisOutput o : outputs) {
+    		if(stackCovMap.get(o) == 0) {
+    			continue;
+    		}
+    		filteredOutput.add(o);
+    	}
+    	outputs.clear();
+    	outputs.addAll(filteredOutput);
+    	//end
+    	
     	Map<Float, List<ConfDiagnosisOutput>> initRankBuckets = createInitRankingBuckets(outputs);
     	
     	//sort by the initial ranking
@@ -36,18 +48,22 @@ public class RankingTieResolver {
     	for(Float initScore : sortedInitBuckets.keySet()) {
     		List<ConfDiagnosisOutput> list = sortedInitBuckets.get(initScore);
     		if(list.size() == 1) {
+    			System.out.println("Add: " + list);
     			rankedOutputs.addAll(list);
     		} else {
     			//resolve ties by stack trace coverage
     			 Map<Float, List<ConfDiagnosisOutput>> rankedMapByStackTrace = resolveTiesByStackCoverage(list, stackCovMap);
     			 for(Float f : rankedMapByStackTrace.keySet()) {
     				 List<ConfDiagnosisOutput> l = rankedMapByStackTrace.get(f);
+    				 System.out.println("resolve by stack: " + l);
     				 //resolve again
     				 Map<Float, List<ConfDiagnosisOutput>> rankedMapByDistance = resolveTiesBySliceDistance(l, slices, stackTraceFile);
     				 for(List<ConfDiagnosisOutput> listByDistance : rankedMapByDistance.values()) {
+    					 System.out.println("resolve by distance: " + listByDistance);
     					 //resolve by name similarity
     					 Map<Float, List<ConfDiagnosisOutput>> rankedByNameSimilarity = resolveTiesByNameSimilarity(listByDistance, stackTraceFile);
     					 for(List<ConfDiagnosisOutput> listByName : rankedByNameSimilarity.values()) {
+    						 System.out.println("Add: " + listByName);
     						 rankedOutputs.addAll(listByName);
     					 }
     				 }
