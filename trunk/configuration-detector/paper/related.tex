@@ -9,7 +9,7 @@ analysis techniques.
 
 Several prior research efforts have applied different techniques to the
 problem of software configuration error diagnosis~\cite{Attariyan:2008:UCD, 
-Yuan:2011:COC, Su:2009:AGP, Whitaker:2004:CDS, Wang:2004:AMT,
+Whitaker:2004:CDS, Wang:2004:AMT,
 Attariyan:2010:ACT, Rabkin:2011:PPC}. For example,
 Chronus~\cite{Whitaker:2004:CDS} relies on a user-provided
 testing oracle to check the behavior of the system, and uses
@@ -35,7 +35,7 @@ Our technique is significantly different
 from the existing approaches.
 First, most existing approaches focus exclusively on configuration errors
 that lead to software crash or assertion failures~\cite{Attariyan:2008:UCD, 
-Yuan:2011:COC, Su:2009:AGP, Whitaker:2004:CDS, 
+Whitaker:2004:CDS, 
 Attariyan:2010:ACT, Rabkin:2011:PPC}.
 %, by leveraging valuable crashing information such as stack traces.
 By contrast, our technique can diagnose both
@@ -157,7 +157,7 @@ software analysis techniques to improve configuration
 management~\cite{Sarma:2007:TSA, Giese:2004:MDV, Jezequel:1999:RVC,
 Kloukinas:2000:ACM, hubaux:towards, Holl:2012:MEC}, understand
 and test the behavior of a configurable software system~\cite{Grundy:1998:ECU,
-Ma:2011:VDR, Georg:2001:UAU, Qu:2008:CRT, hoek02testbed, Reisner:2010:USE, itrees}.
+Ma:2011:VDR, Georg:2001:UAU, Qu:2008:CRT, hoek02testbed, Reisner:2010:USE}.
 For example, Rao et al.~\cite{Rao:2009:VRL} developed a technique
 to automatically learn a good configuration from historical data.
 However, their approach aims to reduce the burden of
@@ -165,10 +165,12 @@ configuration management and prevent certain errors from happening,
 while our technique is designed to diagnose an exhibited error.
 Qu et al.~\cite{Qu:2008:CRT} proposed a combinatorial interaction
 testing technique to model and generate configuration samples for
-use in regression testing. Recently, Song et al.~\cite{itrees}
-presented iTree to improve combinatorial interaction testing
-by discovering sets of configurations to test that are smaller
-but can achieve higher testing coverage. Compared to \ourtool,
+use in regression testing.
+%Recently, Song et al.~\cite{itrees}
+%presented iTree to improve combinatorial interaction testing
+%by discovering sets of configurations to test that are smaller
+%but can achieve higher testing coverage. 
+Compared to \ourtool,
 those testing techniques can be used to find new errors in
 a configurable software system earlier, but can not
 identify the root cause of a revealed configuration error.
