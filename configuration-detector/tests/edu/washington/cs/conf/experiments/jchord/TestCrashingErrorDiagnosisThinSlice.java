@@ -172,6 +172,8 @@ public class TestCrashingErrorDiagnosisThinSlice extends TestCase {
 		
 		/** the old implementation */
 		//results = TestCrashingErrorDiagnosisExperimental.rankByStackTraceCoverage(stackTraceFile, results, slices); //make it number 1
+		
+		//the new
 		results = RankingTieResolver.resolveTiesInRanking(stackTraceFile, results, slices);
 		
 		//dump out the results
