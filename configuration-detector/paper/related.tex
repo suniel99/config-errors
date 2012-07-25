@@ -1,12 +1,13 @@
 \section{Related Work}
 
-Work related to this paper falls into three major categories;
-(1) software configuration error diagnosis; (2) automated
-debugging techniques; and (3) configuration-aware software
+We next discuss closely-related work on
+software configuration error diagnosis, automated
+debugging techniques; and configuration-aware software
 analysis techniques.
  
-\subsection{Software Configuration Error Diagnosis}
-
+%\subsection{Software Configuration Error Diagnosis}
+\vspace{1mm}
+\noindent \textbf{\textit{Software Configuration Error Diagnosis.}}
 Several prior research efforts have applied different techniques to the
 problem of software configuration error diagnosis~\cite{Attariyan:2008:UCD, 
 Whitaker:2004:CDS, Wang:2004:AMT,
@@ -70,11 +71,11 @@ affected predicate behavior is more general for configurable software.
 %Most prior work has taken a \textit{black box} approach that uses
 %only state external to the application being debugged to infer the problem.
 
-\subsection{Automated Debugging Techniques}
-
+%\subsection{Automated Debugging Techniques}
+\vspace{1mm}
+\noindent \textbf{\textit{Automated Debugging Techniques.}}
 %Many automated debugging techniques~\cite{Jones:2002, Zeller:2002:ICC,
 % Horwitz:1988, clause07july} have been developed to localize software errors.
-
 Program slicing~\cite{Horwitz:1988} and taint analysis~\cite{clause07july}
 are two well-known techniques to determine which statements and inputs
 could affect a particular variable. Despite their effectiveness
@@ -148,16 +149,18 @@ links the undesired behavior to specific configuration options.
 %causality-based technique~\cite{Attariyan:2008:UCD}.
 %problem shooting~\cite{ }. 
 
-\subsection{Configuration-Aware Software Analysis and Testing}
+%\subsection{Configuration-Aware Software Analysis and Testing}
 
+\vspace{1mm}
+\noindent \textbf{\textit{Configuration-Aware Software Analysis and Testing.}}
 Empirical studies show that configuration errors are pervasive, costly,
 and time-consuming to diagnose~\cite{Yin:2011:ESC, Hubaux:2012}.
 To alleviate this problem, researchers have designed various
 software analysis techniques to improve configuration
 management~\cite{Sarma:2007:TSA, Giese:2004:MDV, Jezequel:1999:RVC,
-Kloukinas:2000:ACM, hubaux:towards, Holl:2012:MEC}, understand
+Kloukinas:2000:ACM, Holl:2012:MEC}, understand
 and test the behavior of a configurable software system~\cite{Grundy:1998:ECU,
-Ma:2011:VDR, Georg:2001:UAU, Qu:2008:CRT, hoek02testbed, Reisner:2010:USE}.
+Georg:2001:UAU, Qu:2008:CRT}.
 For example, Rao et al.~\cite{Rao:2009:VRL} developed a technique
 to automatically learn a good configuration from historical data.
 However, their approach aims to reduce the burden of
