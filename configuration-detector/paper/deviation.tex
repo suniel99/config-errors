@@ -138,7 +138,7 @@ characterize its dynamic behavior: how often it is
 evaluated (i.e., the number of the
 observed executions), and how often it is evaluated to true (i.e., the true ratio).
 Ideally, we would like to have a metric that
-to capture a predicat's desired behavior
+to capture a predicate's desired behavior
 from the known correct execution profiles, but is robust enough and
 able to tolerate small noises so that it does
 not overfit a specific correct execution profile.
@@ -185,14 +185,14 @@ harmonic mean; this metric prefers high scores in both dimensions.
 In $\phi(e, p)$, $trueRatio(e, p)$ is a function that returns the ratio of the predicate $p$ being
 evaluated to true in execution profile $e$, and $totalExecNum(e, p)$ is a function
 that returns the total number of predicate $p$ being executed in execution profile $e$.
-To smooth corner cases, if a predicate $p$ does not appear in execution profile $e$, 
-$\phi(e, p)$ returns 0; and if a predicate $p$'s true ratio is 0, $\phi(e, p)$ returns
+To smooth corner cases, if a predicate $p$ does not appear in $e$, i.e., 
+$totalExecNum(e, p) = 0$, then $\phi(e, p)$ returns 0; and if a predicate $p$'s true ratio is 0, i.e., $trueRatio(e, p) = 0$, then $\phi(e, p)$ returns
 $1/totalExecNum(e, p)$ instead.
 
 
 Using metric $\phi$, we define the following $Deviation$ metric
 to characterize a predicate $p$'s deviation degree across two execution
-profiles $e$ and $f$. A larger $Deviation(p)$ value indicates that
+profiles $e$ and $f$. A larger $Deviation$ value indicates that
 predicate $p$ has a more deviated behavior. % between $e$ and $f$.
 
 \vspace{-2mm}
@@ -210,13 +210,14 @@ The definitions of metrics $\phi$ and $Deviation$ have several desirable propert
 in characterizing a predicate $p$'s behavior. Clearly, $trueRatio(e,p)$
 is a value between 0 and 1 and $totalExecNum(e, p)$ is a value greater than 1; increasing
 either value while keeping the other one unchanged increases $\phi(e, p)$.
-The value of $trueRatio(e, p)$ is more important than $totalExecNum(e, p)$
+\ourtool focuses on monitoring a program's control flow, which is reflected
+in the definition of $\phi$. In $\phi(e, p)$,
+the value of $trueRatio(e, p)$ is more important than the value
+of $totalExecNum(e, p)$
 in deciding $\phi(e, p)$; since in theory $1/trueRatio(e, p) \geq 1/totalExecNum(e, p)$, but
-in many practice $1/trueRatio(e, p) \gg 1/totalExecNum(e, p)$.
+in practice, often $1/trueRatio(e, p) \gg 1/totalExecNum(e, p)$.
 Thus, the value of $Deviation(p, e, f)$ is much more sensitive to $p$'s
-true ratio change between execution profiles $e$ and $f$. This reflects 
-\ourtool's rationale on monitoring a program's control flow, but does not
-ignore the absolute execution number.
+true ratio change between execution profiles $e$ and $f$. 
 \todo{A few more properties I do not known how (and whether need) to write down:
 (1) when totalExecNum(e, p) increases to some extent, the change Deviation(p)
 becomes ignorable, and the change of trueRatio dominates the Deviation value. (2)
@@ -267,12 +268,13 @@ affecting a higher ranked deviated predicate as the more likely
 root cause. If a predicate is affected by multiple
 configuration options, \ourtool prefers options whose initialization
 statements are \textit{closer} to the
-deviated predicate (in the dependence graph of thin slicing).
-Intuitively, statements closer to the
+deviated predicate (in terms of the breath-first search
+distance in the dependence graph of thin slicing).
+This heuristic is based on the intuition that statements closer to the
 predicate seem more likely to be relevant to its behavior.
 Hence, we assume the user gradually explores statements of
-increasing distance 
-from the suspicious predicate until the desired statements (where a configuration
+increasing distance from the suspicious predicate until
+the desired statements (where a configuration
 option is initialized) are found; a breadth-first
 search of the dependence graph simulates this strategy.
 
