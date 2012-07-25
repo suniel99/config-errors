@@ -42,19 +42,21 @@ the actual root causes.
 In Coverage Analysis, the statement-level granularity is \textit{too fine-grained}.
 Many statements have exactly the same coverage by the failing/passing executions,
 and thus have the same suspiciousness score as computed by Tarantula~\cite{Jones:2002}.
-Furthermore, the Tarantula technique only records whether a
+Furthermore, Tarantula only records whether a
 statement has been executed or not but does not record how a statement is 
 executed (e.g., how often a predicate is evaluated to true). The combination
 of these two factors causes the low accuracy.
 
 
 In Invariant Analysis, the method-level granularity is \textit{too coarse-grained}.
-A typical invariant detection technique like Daikon~\cite{Ernst:1999}
-only checks program states at method entries and exits, resulting in likely invariants that
-correspond to pre- and post-conditions. Thus, invariant detection is less
-senstivie to the local control flow changes within a method (e.g., a predicate's
-true ratio). In our study, Invariant Analysis failed to diagnose several errors
-because it reported the same invariants for the method containing behavioral-deviated predicates between an undesired execution and correct executions.
+Invariant detection techniques like Daikon~\cite{Ernst:1999}
+only check program states at method entries and exits to infer
+likely pre- and post-conditions, and thus are less
+senstivie to many control flow details within a method (e.g., a predicate's
+true ratio). In our study, Invariant Analysis failed to diagnose 3
+errors because it failed to infer invariants for 1 program (Synoptic),
+and reported the same invariants for the other two programs (Soot and Randoop)
+on the method containing behavioral-deviated predicates between an undesired execution and correct executions.
 
 
 
@@ -63,7 +65,7 @@ because it reported the same invariants for the method containing behavioral-dev
 
 
 This experiment suggests that applying existing fault localization
-techniques to diagnose configuration errors may be insufficient, due
+techniques~\cite{Jones:2002, McCamant:2003} to configuration error diagnosis may be insufficient, due
 to different abstractions and algorithms. It also indicates that
-focusing on the behaviros of relevant predicates as \ourtool does
+focusing on the behaviros of relevant predicates as our tool does
  can be a good choice.

@@ -58,14 +58,14 @@ These are two internal design choices. % in \ourtool.
 We evaluated \ourtool on \subjectnum Java programs shown
 in Figure~\ref{tab:subjects}.
 Randoop~\cite{PachecoLET2007} is an automated test generator
-for Java programs. Weka~\cite{wekaarticle} is a toolkit that implements
+for Java programs. Weka~\cite{weka} is a toolkit that implements
 machine learning algorithms. Our evaluation
-only uses its decision tree module. JChord~\cite{chordtutorial}
+only uses its decision tree module. JChord~\cite{jchord}
 is a program analysis platform that enables users to design, implement,
 and evaluate static and dynamic program analyses for Java.
 Synoptic~\cite{Beschastnikh:2011} mines a finite state machine
 model representations of a system from logs.
-Soot~\cite{Vallee-Rai-1999} is a Java optimization framework for analyzing and transforming Java bytecode.
+Soot~\cite{soot} is a Java optimization framework for analyzing and transforming Java bytecode.
 
 
 \subsubsection{Configuration Errors}
@@ -245,18 +245,17 @@ for the JVM), running Windows 7.
 
 
 \noindent \textbf{\textit{Limitations.}} 
-Our technique is limited in three aspects.
+We conclude three limitations of our technique from the experiments. %is limited in three aspects.
 First, we only focus on named configuration options
-with a common key-value semantic, and our tool implementation
-and experiments are
-restricted to Java. 
-Second,  our tool implementation currently does not
+with a common key-value semantic, and our implementation
+and experiments are restricted to Java. 
+Second,  our implementation currently does not
 support debugging non-deterministic errors. 
 For non-deterministic errors, \ourtool could potentially leverage 
 a deterministic replay system
 that can capture an undesired non-deterministic
 execution and faithfully reproduce it for late analysis.
-Third, the effectiveness of \ourtool largely
+Third, \ourtool's effectiveness  largely
 depends on the availability of a similar but correct execution profile.
 Using an arbitrary execution profile (as we demonstrated in Section~\ref{sec:choices}
 by random selection) may significantly affect the results.
