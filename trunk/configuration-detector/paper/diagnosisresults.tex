@@ -9,11 +9,11 @@ and 5 out of the \crash crashing errors, it lists the actual root cause as one o
 \ourtool is particularly effective in diagnosing non-crashing configuration errors,
 which are not supported by most existing tools. The primary reason is due to
 \ourtool's ability to identify the behaviorally-deviated predicates through
-execution profile comparison, and the top-ranked deviated predicates often provide
+execution profile comparison. The top-ranked deviated predicates often provide
 useful clues of what parts of a program might be abnormal and why.
 
-Besides the Randoop example in Section~\ref{sec:mot}, we further illustrate
-this point by using the non-crashing error in Weka.
+We use the non-crashing error in Weka as an example to illustrate
+this point. 
 Weka's decision tree implementation is highly-tuned, achieving 70--90\% accuracy on
 its attached examples. However, we found its accuracy drops to 62\%
 on a different dataset we experimented on. We used \ourtool to diagnose this
@@ -43,8 +43,8 @@ This predicate evaluates to true:
 The above report reveals an important fact for the low accuracy.
 The predicate \CodeIn{numFold $<$ numInstances() \% numFolds} controls
 the depth of a decision tree; and its
-true ratio is substantially higher in the undesired execution
-than normal executions. Such behavior leads
+true ratio is observed substantially higher in the undesired execution
+than normal executions. A higher true ratio leads
 to a deeper tree that is more likely to overfit the training
 data. We changed \CodeIn{m\_numFolds}
 value from 2 to 3 to reduce the tree depth, and

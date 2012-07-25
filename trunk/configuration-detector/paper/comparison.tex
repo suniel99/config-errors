@@ -39,22 +39,22 @@ Both techniques produce less
 accurate results; and for some errors, even fail to identify
 the actual root causes.
 
-In Coverage Analysis, the statement-level abstraction is \textit{too fine-grained}.
-Many statements have the exactly same coverage by the failing/passing executions,
+In Coverage Analysis, the statement-level granularity is \textit{too fine-grained}.
+Many statements have exactly the same coverage by the failing/passing executions,
 and thus have the same suspiciousness score as computed by Tarantula~\cite{Jones:2002}.
-Furthermore, the underlying Tarantula technique only records whether a
+Furthermore, the Tarantula technique only records whether a
 statement has been executed or not but does not record how a statement is 
-executed (e.g, how often a predicate is evaluated to true). The combination
+executed (e.g., how often a predicate is evaluated to true). The combination
 of these two factors causes the low accuracy.
 
 
-In Invariant Analysis, the method-level abstraction is \textit{too coarse-grained}.
+In Invariant Analysis, the method-level granularity is \textit{too coarse-grained}.
 A typical invariant detection technique like Daikon~\cite{Ernst:1999}
 only checks program states at method entries and exits, resulting in likely invariants that
 correspond to pre- and post-conditions. Thus, invariant detection is less
 senstivie to the local control flow changes within a method (e.g., a predicate's
-true ratio). In our study, Invariant Analysis failed to diagnose several errors because it
-reported the same invariants for the method containing behavioral-deviated predicates.
+true ratio). In our study, Invariant Analysis failed to diagnose several errors
+because it reported the same invariants for the method containing behavioral-deviated predicates between an undesired execution and correct executions.
 
 
 
@@ -65,5 +65,5 @@ reported the same invariants for the method containing behavioral-deviated predi
 This experiment suggests that applying existing fault localization
 techniques to diagnose configuration errors may be insufficient, due
 to different abstractions and algorithms. It also indicates that
-focusing on the relevant predicates' behaviors as \ourtool does
+focusing on the behaviros of relevant predicates as \ourtool does
  can be a good choice.
