@@ -39,8 +39,21 @@ public class TestWekaBaseline extends TestCase {
 		Collection<ConfPropOutput> outputs = TestSliceWekaConfigOptions.getWekaConfOutputs();
 		
 		String[] badStmtFiles = new String[]{"./experiments/weka-baseline/bad_stmt_labor.txt"};
-		String[] goodStmtFiles = new String[]{"./experiments/weka-baseline/good_stmt_iris.txt",
-				"./experiments/weka-baseline/good_stmt_weather.txt"};
+		
+		String[] goodStmtFiles = new String[]{
+				"./experiments/weka-baseline/good_stmt_iris.txt",
+				"./experiments/weka-baseline/good_stmt_weather.txt",
+				"./experiments/weka-baseline/good-discretize-iris.txt",
+				"./experiments/weka-baseline/good-soybean-instance.txt",
+				"./experiments/weka-baseline/iris-simplified-last.txt",
+				"./experiments/weka-baseline/iris-simplified.txt",
+				"./experiments/weka-baseline/nomToBinary-contact-lenses.txt",
+				"./experiments/weka-baseline/resample-soybean-uniform.txt",
+				"./experiments/weka-baseline/resample-soybean.txt",
+				"./experiments/weka-baseline/stra-remove-folds-soybean-nov.txt",
+				"./experiments/weka-baseline/stra-remove-folds-soybean.txt",
+				"./experiments/weka-baseline/weather-j48.txt"
+				};
 		
 		StmtCoverageBasedDiagnoserMain.findResponsibleOptions(outputs, badStmtFiles, goodStmtFiles);
 	}

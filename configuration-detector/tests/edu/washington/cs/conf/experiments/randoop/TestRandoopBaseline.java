@@ -38,6 +38,16 @@ public class TestRandoopBaseline extends TestCase {
 		List<StmtExecuted> good1 = StmtFileReader.readStmts("./experiments/randoop-baseline-stmt/good-arraylist-60s.txt");
 		List<StmtExecuted> good2 = StmtFileReader.readStmts("./experiments/randoop-baseline-stmt/good-treeset-60s.txt");
 		List<StmtExecuted> good3 = StmtFileReader.readStmts("./experiments/randoop-baseline-stmt/good-show-help.txt");
+		List<StmtExecuted> good4 = StmtFileReader.readStmts("./experiments/randoop-baseline-stmt/good-all-javautils-60s.txt");
+		List<StmtExecuted> good5 = StmtFileReader.readStmts("./experiments/randoop-baseline-stmt/good-binarysearchtree-60s.txt");
+		List<StmtExecuted> good6 = StmtFileReader.readStmts("./experiments/randoop-baseline-stmt/good-binomial-60s.txt");
+		List<StmtExecuted> good7 = StmtFileReader.readStmts("./experiments/randoop-baseline-stmt/good-graph-60s.txt");
+		List<StmtExecuted> good8 = StmtFileReader.readStmts("./experiments/randoop-baseline-stmt/good-primitives-60s.txt");
+		List<StmtExecuted> good9 = StmtFileReader.readStmts("./experiments/randoop-baseline-stmt/good-show-unpub.txt");
+		List<StmtExecuted> good10 = StmtFileReader.readStmts("./experiments/randoop-baseline-stmt/good-simple-ds-60s.txt");
+		List<StmtExecuted> good11 = StmtFileReader.readStmts("./experiments/randoop-baseline-stmt/good-treeset-collections-60s.txt");
+		List<StmtExecuted> good12 = StmtFileReader.readStmts("./experiments/randoop-baseline-stmt/good-javaxml-60s.txt");
+		
 		List<StmtExecuted> bad1 = StmtFileReader.readStmts("./experiments/randoop-baseline-stmt/bad-nano-xml-100s.txt");
 		
 		Collection<Collection<StmtExecuted>> goodRuns
@@ -45,6 +55,15 @@ public class TestRandoopBaseline extends TestCase {
 		goodRuns.add(good1);
 		goodRuns.add(good2);
 		goodRuns.add(good3);
+		goodRuns.add(good4);
+		goodRuns.add(good5);
+		goodRuns.add(good6);
+		goodRuns.add(good7);
+		goodRuns.add(good8);
+		goodRuns.add(good9);
+		goodRuns.add(good10);
+		goodRuns.add(good11);
+		goodRuns.add(good12);
 		
 		Collection<Collection<StmtExecuted>> badRuns
             = new LinkedList<Collection<StmtExecuted>>();

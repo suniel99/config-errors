@@ -35,10 +35,12 @@ public class TestDiagnoseSynopticOptions extends TestCase {
 	}
 	
 	public void testDiagnoseSimilarity() {
+		MainAnalyzer.doFiltering = true;
 		String badRun = TestComparingSynopticTraces.badRunTrace;
 		ConfEntityRepository repo = SynopticExpUtils.getConfEntityRepository();
 		MainAnalyzer.diagnoseConfigErrors(badRun, TestComparingSynopticTraces.db,
 				repo, null, null, null);
+		MainAnalyzer.doFiltering = false;
 	}
 	
 	public void test1() {

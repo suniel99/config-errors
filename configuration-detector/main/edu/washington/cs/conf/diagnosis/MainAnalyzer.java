@@ -17,6 +17,7 @@ import edu.washington.cs.conf.diagnosis.PredicateProfileBasedDiagnoser.RankType;
 import edu.washington.cs.conf.diagnosis.ProfileDistanceCalculator.DistanceType;
 import edu.washington.cs.conf.experiments.WekaExpUtils;
 import edu.washington.cs.conf.experiments.weka.TestComparingWekaTraces;
+import edu.washington.cs.conf.util.Files;
 import edu.washington.cs.conf.util.Globals;
 import edu.washington.cs.conf.util.Utils;
 
@@ -41,6 +42,8 @@ public class MainAnalyzer {
 	public static int thresholdcount = 3;
 	
 	public static float default_threshold = 0.1f;
+	
+	public static String result_output_file = "./diagnosis_results.txt";
 	
 	private float distanceThreshold = default_threshold; //distance
 //	private DistanceType distanceType = DistanceType.INTERPRODUCT;
@@ -287,20 +290,55 @@ public class MainAnalyzer {
 		analyzer.setThreshold(threshold);
 		
 		List<ConfDiagnosisOutput> outputs = analyzer.computeResponsibleOptions();
-		int i = 1;
-		for(ConfDiagnosisOutput o : outputs) {
+		StringBuilder sb = new StringBuilder();
+		for(int i = 0; i < outputs.size(); i++) {
+			ConfDiagnosisOutput o = outputs.get(i);
 			if(filterOutput(o)) {
 				continue;
 			}
-			System.out.println(i++ + ".");
+			System.out.println((i + 1) + ".");
 			System.out.println(o.getConfEntity());
 			System.out.println(o.getBriefExplanation());
 			System.out.println();
 			System.out.println(o.getErrorReport());
 			System.out.println();
+			System.out.println("Report size: " + o.getReports().size());
+			System.out.println();
 			System.out.println(o.getTotalEnter() + " / " + o.getTotalEval());
 			System.out.println();
+			
+			sb.append((i + 1) + ".");
+			sb.append(Globals.lineSep);
+			sb.append(o.getConfEntity());
+			sb.append(Globals.lineSep);
+			sb.append(o.getBriefExplanation());
+			sb.append(Globals.lineSep);
+			sb.append(Globals.lineSep);
+			sb.append(o.getErrorReport());
+			sb.append(Globals.lineSep);
+			sb.append(Globals.lineSep);
+			sb.append("Report size: " + o.getReports().size());
+			sb.append(Globals.lineSep);
+			
+			int j = 0;
+			for(String  r : o.getReports()) {
+				j++;
+				sb.append(j + ". " + Globals.lineSep);
+				sb.append(r);
+				sb.append(Globals.lineSep);
+			}
+			
+			sb.append(Globals.lineSep);
+			sb.append(o.getTotalEnter() + " / " + o.getTotalEval());
+			sb.append(Globals.lineSep);
+			sb.append(Globals.lineSep);
+			sb.append("=================");
+			sb.append(Globals.lineSep);
+			
+			System.out.println("Current report num: " + i);
 		}
+		
+		Files.writeToFileNoExp(sb.toString(), MainAnalyzer.result_output_file);
 	}
 	
 	private static boolean filterOutput(ConfDiagnosisOutput o) {

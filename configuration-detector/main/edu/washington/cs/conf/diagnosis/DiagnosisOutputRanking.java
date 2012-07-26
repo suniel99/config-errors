@@ -59,6 +59,7 @@ public class DiagnosisOutputRanking {
 					//set the error report
 					if(output.getErrorReport() != null) {
 					    copy.setErrorReport(output.getErrorReport());
+					    copy.addReport(output.getErrorReport()); //keep copy
 					}
 					
 					outputAndRanks.put(copy, new LinkedList<Integer>());
@@ -78,6 +79,10 @@ public class DiagnosisOutputRanking {
 					if(output.getErrorReport() != null) {
 						selfMapping.get(output).setErrorReport(output.getErrorReport());
 					}
+				}
+				//FIXME keep a copy
+				if(output.getErrorReport() != null) {
+					selfMapping.get(output).addReport(output.getErrorReport());
 				}
 			}
 			

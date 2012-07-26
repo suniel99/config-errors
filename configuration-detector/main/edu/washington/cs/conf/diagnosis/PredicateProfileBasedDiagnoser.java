@@ -403,8 +403,10 @@ public class PredicateProfileBasedDiagnoser {
 					output.setFinalScore(rankedEntity.getScore(t));
 					//get the error report
 					String errorReport = rankedEntity.createErrorReport();
-					int totalEnter = getGoodTotalEnter(rankedLists, rankedEntity);
-					int totalEval = getGoodTotalEval(rankedLists, rankedEntity);
+					int totalEnter = rankedEntity.getGoodEnterCount(); 
+						//getGoodTotalEnter(rankedLists, rankedEntity);
+					int totalEval = rankedEntity.getGoodEvalCount();
+						//getGoodTotalEval(rankedLists, rankedEntity);
 					Utils.checkTrue(totalEval >= totalEnter);
 					output.setTotalEnter(totalEnter);
 					output.setTotalEval(totalEval);
@@ -430,12 +432,13 @@ public class PredicateProfileBasedDiagnoser {
 		int count = 0;
 		String conf = entity.getConfigFullName();
 		String context = entity.getContext();
-		for(List<ConfDiagnosisEntity> list : rankedLists) {
-			for(ConfDiagnosisEntity e : list) {
+		for(List<ConfDiagnosisEntity> rankedList : rankedLists) {
+			for(ConfDiagnosisEntity e : rankedList) {
 				if(e.getConfigFullName().equals(conf) && e.getContext().equals(context)) {
 					count += e.getGoodEnterCount();
 					Utils.checkTrue(e.getGoodEvalCount() >= e.getGoodEnterCount());
 					//break;
+					//System.out.println(">>> + " + count);
 				}
 			}
 		}
@@ -446,8 +449,8 @@ public class PredicateProfileBasedDiagnoser {
 		int count = 0;
 		String conf = entity.getConfigFullName();
 		String context = entity.getContext();
-		for(List<ConfDiagnosisEntity> list : rankedLists) {
-			for(ConfDiagnosisEntity e : list) {
+		for(List<ConfDiagnosisEntity> rankedList : rankedLists) {
+			for(ConfDiagnosisEntity e : rankedList) {
 				if(e.getConfigFullName().equals(conf) && e.getContext().equals(context)) {
 					count += e.getGoodEvalCount();
 					//break;

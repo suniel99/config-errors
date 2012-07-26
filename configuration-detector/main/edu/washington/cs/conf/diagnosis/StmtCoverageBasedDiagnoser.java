@@ -40,7 +40,7 @@ public class StmtCoverageBasedDiagnoser extends AbstractBaselineDiagnoser {
 			entityList.addAll(options);
 			
 			System.out.println("size: " + entityList.size());
-			if(entityList.size() > 100) {
+			if(entityList.size() > 10000) {
 				return entityList;
 			}
 		}
