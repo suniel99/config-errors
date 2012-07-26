@@ -32,7 +32,24 @@ public class TestSootBaseline extends TestCase {
 		Collection<ConfPropOutput> outputs = TestSliceSootConfigOptions.getSootConfOutputs();
 		
 		String[] badStmtFiles = new String[]{"./experiments/soot-baseline/stmt_coverage_helloworld_no_line.txt"};
-		String[] goodStmtFiles = new String[]{"./experiments/soot-baseline/stmt_coverage_helloworld_keeplinenumber.txt"};
+		String[] goodStmtFiles = new String[]{
+				"./experiments/soot-baseline/stmt_coverage_helloworld_keeplinenumber.txt",
+				"./experiments/soot-baseline/allow-phantom-helloworld.txt",
+				"./experiments/soot-baseline/ann-array-bounds.txt",
+				"./experiments/soot-baseline/ann-null-ptr.txt",
+				"./experiments/soot-baseline/ann-side-effect-spark.txt",
+				"./experiments/soot-baseline/ann-side-effect.txt",
+				"./experiments/soot-baseline/no-args.txt",
+				"./experiments/soot-baseline/parse-jimple.txt",
+				"./experiments/soot-baseline/pp_helloworld.txt",
+				"./experiments/soot-baseline/pp-process-dir.txt",
+				"./experiments/soot-baseline/ppdir-redict.txt",
+				"./experiments/soot-baseline/produce-jimple.txt",
+				"./experiments/soot-baseline/produce-shimp.txt",
+				"./experiments/soot-baseline/soot-help.txt",
+				"./experiments/soot-baseline/static-inline.txt",
+				"./experiments/soot-baseline/whole-program-opt.txt"
+		        };
 		
 		StmtCoverageBasedDiagnoserMain.findResponsibleOptions(outputs, badStmtFiles, goodStmtFiles);
 	}
