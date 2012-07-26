@@ -57,7 +57,16 @@ public class TestMain extends TestCase {
 	}
 	
 	public void testJChordNonCrashing() throws FileNotFoundException {
-		
+		String[] args = new String[]{
+				"--config_options=./tests/edu/washington/cs/conf/experiments/main/jchord.options.txt",
+				"--source_dir=D:\\research\\configurations\\workspace\\main\\src",
+				"--classpath_for_slicing=./subjects/jchord/chord-no-trace.jar",
+				"--main_for_slicing=Lchord/project/Main",
+				"--db_dir=./experiments/jchord-database/main",
+				"--bad_run_trace=./experiments/jchord-database/simpletest-no-race.txt",
+				"--ingorable_class_file=ChordExclusions.txt"
+		};
+		Main.main(args);
 	}
 	
 	public void testSynopticNonCrashing() throws FileNotFoundException {
