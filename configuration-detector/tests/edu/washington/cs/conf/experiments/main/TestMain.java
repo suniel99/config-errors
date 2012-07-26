@@ -70,6 +70,20 @@ public class TestMain extends TestCase {
 	}
 	
 	public void testSynopticNonCrashing() throws FileNotFoundException {
+		String path = "./subjects/synoptic/synoptic.jar;"
+			+ "./subjects/synoptic/libs/plume.jar;"
+			+ "./subjects/synoptic/libs/commons-io-2.0.1.jar;"
+			+ "./subjects/synoptic/libs/commons-fileupload-1.2.2.jar;"
+			+ "./subjects/synoptic/libs/junit-4.9b2.jar";
 		
+		String[] args = new String[]{
+				"--config_options=./tests/edu/washington/cs/conf/experiments/main/synoptic.options.txt",
+				"--source_dir=D:\\research\\configurations\\workspace\\synoptic\\src",
+				"--classpath_for_slicing=" + path,
+				"--main_for_slicing=Lsynoptic/main/Main",
+				"--db_dir=./experiments/synoptic-database/main",
+				"--bad_run_trace=./experiments/synoptic-database/2pc_3nodes_100tx_bad-injected.txt"
+		};
+		Main.main(args);
 	}
 }
