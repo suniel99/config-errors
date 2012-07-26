@@ -24,8 +24,14 @@ public class TestSynopticBaseline extends TestCase {
 		Collection<ConfPropOutput> outputs = TestSliceSynopticConfigOptions.getSynopticConfOutputs();
 		
 		String[] badStmtFiles = new String[]{"./experiments/synoptic-baseline/bad_100tx_stmt.txt"};
-		String[] goodStmtFiles = new String[]{"./experiments/synoptic-baseline/good_100tx_stmt.txt",
-				"./experiments/synoptic-baseline/good_5tx_stmt.txt"};
+		String[] goodStmtFiles = new String[]{
+				"./experiments/synoptic-baseline/good_100tx_stmt.txt",
+				"./experiments/synoptic-baseline/good_5tx_stmt.txt",
+				"./experiments/synoptic-baseline/synoptic-all-help.txt",
+				"./experiments/synoptic-baseline/synoptic-apache.txt",
+				"./experiments/synoptic-baseline/synoptic-help.txt",
+				"./experiments/synoptic-baseline/synoptic-version.txt",
+		       };
 		
 		StmtCoverageBasedDiagnoserMain.findResponsibleOptions(outputs, badStmtFiles, goodStmtFiles);
 	}

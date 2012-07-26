@@ -51,8 +51,10 @@ public class TestDiagnoseJChordOptions extends TestCase {
 		String[] goodRunTraceArray = TestComparingJChordTraces.db;
 		ConfEntityRepository repo = ChordExpUtils.getChordRepository();
 		
+		MainAnalyzer.doFiltering = true;
 		MainAnalyzer.diagnoseConfigErrors(badRunTrace, goodRunTraceArray, repo,
 				null, null, null);
+		MainAnalyzer.doFiltering = false;
 	}
 	
 }

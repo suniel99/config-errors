@@ -93,6 +93,22 @@ public class ConfDiagnosisOutput {
 		return ExplanationGenerator.replaceWithGoodRunNum(errorReport, this.total_enter, this.total_eval);
 	}
 	
+	//START: this section is for experimental purpose
+	private List<String> reports = new LinkedList<String>();
+	public void deleteReports() {
+		this.reports.clear();
+	}
+	public void addReport(String report) {
+		this.reports.add(report);
+	}
+	public void addReports(Collection<String> reports) {
+		this.reports.addAll(reports);
+	}
+	public List<String> getReports() {
+		return reports;
+	}
+	//END:
+	
 	/**
 	 * a rough outline of recovery:
 	 * 

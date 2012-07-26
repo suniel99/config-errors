@@ -6,7 +6,6 @@ import java.util.List;
 
 import edu.washington.cs.conf.analysis.ConfEntityRepository;
 import edu.washington.cs.conf.analysis.ConfPropOutput;
-import edu.washington.cs.conf.analysis.ConfUtils;
 import edu.washington.cs.conf.diagnosis.ConfDiagnosisOutput;
 import edu.washington.cs.conf.diagnosis.MainAnalyzer;
 import edu.washington.cs.conf.diagnosis.MainAnalyzer.SelectionStrategy;

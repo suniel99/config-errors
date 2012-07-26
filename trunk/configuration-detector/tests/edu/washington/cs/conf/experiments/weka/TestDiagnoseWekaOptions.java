@@ -35,9 +35,11 @@ public class TestDiagnoseWekaOptions extends TestCase {
 	
 	//diagnosing the weka profiles
 	public void testDiagnoseSimilar() {
+		MainAnalyzer.doFiltering = true;
 		long start = System.currentTimeMillis();
 		diagnoseWeka(null);
 		long end = System.currentTimeMillis();
+		MainAnalyzer.doFiltering = false;
 		System.out.println("eclapsed: " + ((float)end - (float)start)/1000);
 	}
 	
