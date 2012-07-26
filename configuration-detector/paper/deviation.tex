@@ -165,9 +165,13 @@ Thus, we need to a metric that can characterize
 a predicate's behavior with high sensitivity, meaning the predicate's true
 ratio accounts for the execution results (i.e., correct or undesired).
 But we also want
-high specificity, meaning a predicate's behavior should not be
-mis-characterized only based on a small number of
-observed executions. To do so, we define the following
+high specificity, meaning a predicate's true
+ratio is more representative if it is observed
+in more executions.
+%behavior should not be
+%mis-characterized only based on a small number of
+%observed executions.
+To do so, we define the following
 $\phi$ metric by using a standard way to
 combine sensitivity and specificity to compute their
 harmonic mean; this metric prefers high scores in both dimensions. 
