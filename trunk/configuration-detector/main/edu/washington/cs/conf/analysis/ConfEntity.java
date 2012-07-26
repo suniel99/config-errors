@@ -5,7 +5,9 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.Collection;
 import java.util.LinkedHashSet;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 import edu.washington.cs.conf.util.Files;
 import edu.washington.cs.conf.util.Utils;
@@ -92,5 +94,37 @@ public class ConfEntity implements Serializable {
 	public String toString() {
 		return className + " : " + confName + " @ " + assignMethod
 		    + ", " + type + ", static: " + isStatic;
+	}
+	
+	/**
+	 * A utility method to read config options from file, each line is in the form of:
+	 * 
+	 *    class_name # conf_name #  static_or_not #  assigning_method
+	 *    
+	 * The last one is optional, if not specified, will use <clinit> for static field, and <init>
+	 * for non-static field
+	 * */
+	public static Collection<ConfEntity> readConfigOptionsFromFile(String fileName) {
+		List<String> options = Files.readWholeNoExp(fileName);
+		Set<String> no_dup_options = new LinkedHashSet<String>();
+		no_dup_options.addAll(options);
+		if(options.size() != no_dup_options.size()) {
+			System.err.println("Duplicate options specified in: " + fileName);
+		}
+		List<ConfEntity> returnOptions = new LinkedList<ConfEntity>();
+		for(String str : no_dup_options) {
+			String[] splits = str.trim().split("#");
+			Utils.checkTrue(splits.length == 3 || splits.length == 4, "Illegal format: " + str);
+			ConfEntity conf = null;
+			if(splits.length == 3) {
+				conf = new ConfEntity(splits[0].trim(), splits[1].trim(), Boolean.parseBoolean(splits[2].trim()));
+			}
+			if(splits.length == 4) {
+				conf = new ConfEntity(splits[0].trim(), splits[1].trim(), splits[3].trim(), Boolean.parseBoolean(splits[2].trim()));
+			}
+			Utils.checkNotNull(conf);
+			returnOptions.add(conf);
+		}
+		return returnOptions;
 	}
 }
