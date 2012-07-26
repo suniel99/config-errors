@@ -20,4 +20,27 @@ public class TestMain extends TestCase {
 		Main.main(args);
 	}
 	
+	public void testWekaNonCrashing() throws FileNotFoundException {
+		String[] args = new String[]{
+				"--config_options=./tests/edu/washington/cs/conf/experiments/main/weka.options.txt",
+				"--source_dir=D:\\research\\configurations\\workspace\\weka-3.6\\main\\java",
+				"--classpath_for_slicing=./subjects/weka/weka-no-trace.jar;./subjects/weka/JFlex.jar;./subjects/weka/java-cup.jar",
+				"--main_for_slicing=Lweka/classifiers/trees/J48",
+				"--db_dir=./experiments/weka-database/main",
+				"--bad_run_trace=./experiments/weka-database/bad-labor.txt"
+		};
+		Main.main(args);
+	}
+	
+	public void testSootNonCrashing() throws FileNotFoundException {
+		
+	}
+	
+	public void testJChordNonCrashing() throws FileNotFoundException {
+		
+	}
+	
+	public void testSynopticNonCrashing() throws FileNotFoundException {
+		
+	}
 }
