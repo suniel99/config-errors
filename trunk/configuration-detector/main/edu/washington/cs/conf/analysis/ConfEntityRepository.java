@@ -4,6 +4,8 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.Collection;
 import java.util.LinkedHashSet;
+import java.util.LinkedList;
+import java.util.List;
 
 import edu.washington.cs.conf.util.Utils;
 
@@ -22,6 +24,12 @@ public class ConfEntityRepository {
 	
 	public int size() {
 		return entities.size();
+	}
+	
+	public List<ConfEntity> getConfEntityList() {
+		List<ConfEntity> list = new LinkedList<ConfEntity>();
+		list.addAll(entities);
+		return list;
 	}
 	
 	public ConfEntity lookupConfEntity(String fullName) {

@@ -40,9 +40,7 @@ public class MainAnalyzer {
 	public static boolean doFiltering = false;
 	public static boolean amortizeNoise = false;
 	public static int thresholdcount = 3;
-	
 	public static float default_threshold = 0.1f;
-	
 	public static String result_output_file = "./diagnosis_results.txt";
 	
 	private float distanceThreshold = default_threshold; //distance
