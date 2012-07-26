@@ -33,7 +33,27 @@ public class TestMain extends TestCase {
 	}
 	
 	public void testSootNonCrashing() throws FileNotFoundException {
+		String dir = "./subjects/soot-2.5/";
+		String path = dir + "soot.jar;" +
+		        dir + "libs/coffer.jar;" +
+		        dir + "libs/jasminclasses-2.5.0.jar;" +
+		        dir + "libs/java_cup.jar;" +
+		        dir + "libs/JFlex.jar;" +
+		        dir + "libs/pao.jar;" +
+		        dir + "libs/polyglot.jar;" +
+		        dir + "libs/pth.jar";
 		
+		String[] args = new String[]{
+				"--config_options=./tests/edu/washington/cs/conf/experiments/main/soot.options.txt",
+				"--source_dir=D:\\research\\configurations\\workspace\\soot-2.5\\src",
+				"--classpath_for_slicing=" + path,
+				"--main_for_slicing=Lsoot/Main",
+				"--db_dir=./experiments/soot-database/main",
+				"--bad_run_trace=./experiments/soot-database/soot_helloworld_no_keepline.txt",
+				"--cg_type=ZeroCFA",
+				"--ingorable_class_file=SootExclusions.txt"
+		};
+		Main.main(args);
 	}
 	
 	public void testJChordNonCrashing() throws FileNotFoundException {
