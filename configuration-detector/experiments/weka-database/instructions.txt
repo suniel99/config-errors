@@ -59,7 +59,7 @@ resample-soybean.txt
  java -cp ./weka-instrumented-no-trace.jar;../subjects/weka/JFlex.jar;../subjects/weka/java-cup.jar;../bin
 weka.filters.supervised.instance.Resample
 -i ../subjects/weka/soybean.arff
--o soybean-5%.arff -c last -Z 5
+-o soybean-uniform-5%.arff -c last -Z 5 -B 1
 
 resample-soybean-uniform.txt
 
