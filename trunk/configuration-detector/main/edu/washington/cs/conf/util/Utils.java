@@ -374,6 +374,12 @@ public class Utils {
 		return sb.toString();
 	}
 	
+	public static void flushToStd(String[] msgs) {
+        for(String msg : msgs) {
+          System.out.println(msg);
+        }
+    }
+	
 	static Random random = new Random();
 	
 	public static int nextRandomInt(int range) {
