@@ -403,10 +403,12 @@ public class PredicateProfileBasedDiagnoser {
 					output.setFinalScore(rankedEntity.getScore(t));
 					//get the error report
 					String errorReport = rankedEntity.createErrorReport();
-					int totalEnter = rankedEntity.getGoodEnterCount(); 
-						//getGoodTotalEnter(rankedLists, rankedEntity);
+					int totalEnter = rankedEntity.getGoodEnterCount();
 					int totalEval = rankedEntity.getGoodEvalCount();
-						//getGoodTotalEval(rankedLists, rankedEntity);
+					if(MainAnalyzer.globalcount) {
+						totalEnter = getGoodTotalEnter(rankedLists, rankedEntity);
+						totalEval = getGoodTotalEval(rankedLists, rankedEntity);
+					}
 					Utils.checkTrue(totalEval >= totalEnter);
 					output.setTotalEnter(totalEnter);
 					output.setTotalEval(totalEval);

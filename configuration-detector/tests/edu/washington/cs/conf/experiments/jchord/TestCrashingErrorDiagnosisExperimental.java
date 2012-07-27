@@ -21,7 +21,7 @@ import edu.washington.cs.conf.util.Utils;
 import junit.framework.TestCase;
 
 public class TestCrashingErrorDiagnosisExperimental extends TestCase {
-
+	
 	public static String invalidReflectKind
 	    = "./experiments/jchord-crashing-error/chord-crash-invalid-reflect-kind.txt";
 	public static String invalidReflectKindStackTrace
@@ -67,6 +67,13 @@ public class TestCrashingErrorDiagnosisExperimental extends TestCase {
 	public static String printNoClassStackTrace
 	   = "./experiments/jchord-crashing-error/chord-crash-print-no-class-stacktrace.txt";
 	
+	public static String[] allCrashingTraces = new String[]{invalidReflectKind,
+		invalidScopeKind, noMainClass, noSuchAnalysis, printInvalidRels,
+		wrongClassPath, noMainMethodInClass, noCtxtKind, printNoClass};
+	
+	public static String[] allStackTraces = new String[]{invalidReflectKindStackTrace,
+		invalidScopeKindStackTrace, noMainClassStackTrace, noSuchAnalysisStackTrace, printInvalidRelsStackTrace,
+		wrongClassPathStackTrace, noMainMethodInClassStackTrace, noCtxtKindStackTrace, printNoClassStackTrace};
 	
 	//the good run
 	public static String goodRunTrace
@@ -157,7 +164,7 @@ public class TestCrashingErrorDiagnosisExperimental extends TestCase {
     	dumpOutputs(results);
 	}
     
-    enum DiagnosisType {NONCRASHING, CRASHING, STACKTRACE}
+    public enum DiagnosisType {NONCRASHING, CRASHING, STACKTRACE}
     
     public static List<ConfDiagnosisOutput>  doDiagnosis(DiagnosisType t, String badTraceFile, String badStackTraceFiles,
     		String[] goodTraceFiles) {

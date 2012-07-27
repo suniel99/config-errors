@@ -42,6 +42,7 @@ public class MainAnalyzer {
 	public static int thresholdcount = 3;
 	public static float default_threshold = 0.1f;
 	public static String result_output_file = "./diagnosis_results.txt";
+	public static boolean globalcount = true;
 	
 	private float distanceThreshold = default_threshold; //distance
 //	private DistanceType distanceType = DistanceType.INTERPRODUCT;
@@ -288,6 +289,7 @@ public class MainAnalyzer {
 		analyzer.setThreshold(threshold);
 		
 		List<ConfDiagnosisOutput> outputs = analyzer.computeResponsibleOptions();
+		int rank = 1;
 		StringBuilder sb = new StringBuilder();
 		for(int i = 0; i < outputs.size(); i++) {
 			ConfDiagnosisOutput o = outputs.get(i);
@@ -305,33 +307,33 @@ public class MainAnalyzer {
 			System.out.println(o.getTotalEnter() + " / " + o.getTotalEval());
 			System.out.println();
 			
-			sb.append((i + 1) + ".");
+			sb.append((rank ++) + ".");
 			sb.append(Globals.lineSep);
 			sb.append(o.getConfEntity());
-			sb.append(Globals.lineSep);
-			sb.append(o.getBriefExplanation());
+//			sb.append(Globals.lineSep);
+//			sb.append(o.getBriefExplanation());
 			sb.append(Globals.lineSep);
 			sb.append(Globals.lineSep);
 			sb.append(o.getErrorReport());
 			sb.append(Globals.lineSep);
 			sb.append(Globals.lineSep);
-			sb.append("Report size: " + o.getReports().size());
-			sb.append(Globals.lineSep);
+//			sb.append("Report size: " + o.getReports().size());
+//			sb.append(Globals.lineSep);
 			
-			int j = 0;
-			for(String  r : o.getReports()) {
-				j++;
-				sb.append(j + ". " + Globals.lineSep);
-				sb.append(r);
-				sb.append(Globals.lineSep);
-			}
+//			int j = 0;
+//			for(String  r : o.getReports()) {
+//				j++;
+//				sb.append(j + ". " + Globals.lineSep);
+//				sb.append(r);
+//				sb.append(Globals.lineSep);
+//			}
 			
-			sb.append(Globals.lineSep);
-			sb.append(o.getTotalEnter() + " / " + o.getTotalEval());
-			sb.append(Globals.lineSep);
-			sb.append(Globals.lineSep);
-			sb.append("=================");
-			sb.append(Globals.lineSep);
+//			sb.append(Globals.lineSep);
+//			sb.append(o.getTotalEnter() + " / " + o.getTotalEval());
+//			sb.append(Globals.lineSep);
+//			sb.append(Globals.lineSep);
+//			sb.append("=================");
+//			sb.append(Globals.lineSep);
 			
 			System.out.println("Current report num: " + i);
 		}
