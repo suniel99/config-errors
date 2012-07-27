@@ -1,10 +1,13 @@
 package edu.washington.cs.conf.experiments.main;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 
 import junit.framework.TestCase;
 
 import edu.washington.cs.conf.diagnosis.Main;
+import edu.washington.cs.conf.experiments.jchord.TestCrashingErrorDiagnosisExperimental;
+import edu.washington.cs.conf.util.Utils;
 
 public class TestMain extends TestCase {
 
@@ -85,5 +88,33 @@ public class TestMain extends TestCase {
 				"--bad_run_trace=./experiments/synoptic-database/2pc_3nodes_100tx_bad-injected.txt"
 		};
 		Main.main(args);
+	}
+	
+	public void testNineCrashingErrors() throws FileNotFoundException {
+		String[] crashingFiles = TestCrashingErrorDiagnosisExperimental.allCrashingTraces;
+		String[] crashingStackTraces = TestCrashingErrorDiagnosisExperimental.allStackTraces;
+		Utils.checkTrue(crashingFiles.length == crashingStackTraces.length && crashingFiles.length == 9);
+		
+		//diagnose one by one
+		for(int i = 0; i < crashingFiles.length; i++) {
+			String crashingFile = crashingFiles[i];
+			String crashingStackTrace = crashingStackTraces[i];
+			String outputFile = "./" + (new File(crashingFile).getName() + "_diagnose_results.txt");
+			
+			String[] args = new String[]{
+					"--config_options=./tests/edu/washington/cs/conf/experiments/main/jchord.options.txt",
+					"--source_dir=D:\\research\\configurations\\workspace\\main\\src",
+					"--classpath_for_slicing=./subjects/jchord/chord-no-trace.jar",
+					"--main_for_slicing=Lchord/project/Main",
+					"--db_dir=./experiments/jchord-database/main",
+					"--bad_run_trace=" + crashingFile,
+					"--ingorable_class_file=ChordExclusions.txt",
+					"--stacktrace_file=" + crashingStackTrace,
+					"--cache_slice=true",
+					"--diagnose_result_file=" + outputFile,
+					"--noncrashing=false"
+			};
+			Main.main(args);
+		}
 	}
 }
