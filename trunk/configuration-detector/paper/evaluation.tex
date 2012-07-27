@@ -247,6 +247,14 @@ for the JVM), running Windows 7.
 performance errors, such as why the program runs so slow
 due to forget to increase memory via -Xmx2G}
 
+\todo{Need to mention the following sentence somewhere: many
+non-crashing errors often exhibit substantially behaviorally
+differences (hot spot) in some parts of the program, and our technique captures
+such differences and link them to specific options. However, in
+rare cases (at least we have not discovered in practice), if no
+such hot spot exist for a non-crashing error, our technique may not
+be that effective.}
+
 \noindent \textbf{\textit{Limitations.}} 
 We conclude three limitations of our technique from the experiments. %is limited in three aspects.
 First, we only focus on named configuration options
