@@ -25,9 +25,9 @@ import plume.Options;
 /**
  * The entry method for ConfDiagnoser
  * */
-public class Main {
+public class DiagnoserMain {
 
-	private static String VERSION = "ConfDiagnoser, version: 0.1, July 26, 2012";
+	public static final String VERSION = "ConfDiagnoser, version: 0.1, July 26, 2012";
 	
 	@Option("Show all help options")
 	public static boolean help = false;
@@ -76,14 +76,14 @@ public class Main {
 		parse_and_check_args(args);
 		//launch the diagnoser
 		if(noncrashing) {
-		    new Main().diagnoseNonCrashingErrors();
+		    new DiagnoserMain().diagnoseNonCrashingErrors();
 		} else {
-			new Main().diagnoseCrashingErrors();
+			new DiagnoserMain().diagnoseCrashingErrors();
 		}
 	}
 	
 	private static void parse_and_check_args(String[] args) {
-		 Options options = new Options("ConfDiagnoser usage: ", Main.class);
+		 Options options = new Options("ConfDiagnoser usage: ", DiagnoserMain.class);
          String[] file_args = options.parse_or_usage(args);
          if(file_args.length != 0) {
              Utils.flushToStd(file_args);
