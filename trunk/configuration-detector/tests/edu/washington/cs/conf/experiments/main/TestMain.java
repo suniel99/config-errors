@@ -5,7 +5,7 @@ import java.io.FileNotFoundException;
 
 import junit.framework.TestCase;
 
-import edu.washington.cs.conf.diagnosis.Main;
+import edu.washington.cs.conf.diagnosis.DiagnoserMain;
 import edu.washington.cs.conf.experiments.jchord.TestCrashingErrorDiagnosisExperimental;
 import edu.washington.cs.conf.util.Utils;
 
@@ -20,7 +20,7 @@ public class TestMain extends TestCase {
 				"--db_dir=./experiments/randoop-database/main",
 				"--bad_run_trace=./experiments/randoop-database/bad-nano-xml-100s-pruned.txt"
 		};
-		Main.main(args);
+		DiagnoserMain.main(args);
 	}
 	
 	public void testWekaNonCrashing() throws FileNotFoundException {
@@ -32,7 +32,7 @@ public class TestMain extends TestCase {
 				"--db_dir=./experiments/weka-database/main",
 				"--bad_run_trace=./experiments/weka-database/bad-labor.txt"
 		};
-		Main.main(args);
+		DiagnoserMain.main(args);
 	}
 	
 	public void testSootNonCrashing() throws FileNotFoundException {
@@ -56,7 +56,7 @@ public class TestMain extends TestCase {
 				"--cg_type=ZeroCFA",
 				"--ingorable_class_file=SootExclusions.txt"
 		};
-		Main.main(args);
+		DiagnoserMain.main(args);
 	}
 	
 	public void testJChordNonCrashing() throws FileNotFoundException {
@@ -69,7 +69,7 @@ public class TestMain extends TestCase {
 				"--bad_run_trace=./experiments/jchord-database/simpletest-no-race.txt",
 				"--ingorable_class_file=ChordExclusions.txt"
 		};
-		Main.main(args);
+		DiagnoserMain.main(args);
 	}
 	
 	public void testSynopticNonCrashing() throws FileNotFoundException {
@@ -87,7 +87,7 @@ public class TestMain extends TestCase {
 				"--db_dir=./experiments/synoptic-database/main",
 				"--bad_run_trace=./experiments/synoptic-database/2pc_3nodes_100tx_bad-injected.txt"
 		};
-		Main.main(args);
+		DiagnoserMain.main(args);
 	}
 	
 	public void testNineCrashingErrors() throws FileNotFoundException {
@@ -114,7 +114,7 @@ public class TestMain extends TestCase {
 					"--diagnose_result_file=" + outputFile,
 					"--noncrashing=false"
 			};
-			Main.main(args);
+			DiagnoserMain.main(args);
 		}
 	}
 }

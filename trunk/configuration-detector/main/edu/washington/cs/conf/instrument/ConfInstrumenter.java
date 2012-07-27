@@ -64,12 +64,12 @@ public class ConfInstrumenter extends AbstractInstrumenter {
 		  this.exception = true;
 	  }
 	  
-	  public ConfInstrumenter(InstrumentSchema schema, String sourceDir) {
-		  this(schema);
-		  if(sourceDir != null) {
-			  schema.setSourceTextForAllInstrumentationPoints(sourceDir);
-		  }
-	  }
+//	  public ConfInstrumenter(InstrumentSchema schema, String sourceDir) {
+//		  this(schema);
+//		  if(sourceDir != null) {
+//			  schema.setSourceTextForAllInstrumentationPoints(sourceDir);
+//		  }
+//	  }
 	  
 	  @Override
 	  protected void doClass(final ClassInstrumenter ci, Writer w) throws Exception {
