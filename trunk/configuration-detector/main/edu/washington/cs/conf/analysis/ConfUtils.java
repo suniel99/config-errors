@@ -58,8 +58,14 @@ public class ConfUtils {
 			Utils.checkNotNull(output, "configName: " + configName);
 			
 			IRStatement irs = output.getStatement(profile.getMethodSig(), profile.getInstructionIndex());
-			Utils.checkNotNull(irs, "profile: " + profile.getMethodSig());
 			
+			if(irs == null) {
+				profile.setSourceLineNumber(-1);
+				profile.setPredicateInSource("Unavailable from source: " + profile.getMethodSig() + ", " + profile.getInstructionIndex());
+				continue;
+			}
+			
+			Utils.checkNotNull(irs, "profile: " + profile.getMethodSig());
 			String fullClassName = irs.getDeclaringFullClassName();
 			
 			int srcLineNum = irs.getLineNumber();
