@@ -102,13 +102,43 @@ public class TestRandoopBaseline extends TestCase {
 	 * @throws Exception 
 	 * */
 	public void testDiagnoseOptionsByInvariantAnalysis() throws Exception {
-		String goodInvFile = "D:\\research\\configurations\\daikon\\bin\\randoop-examples\\randoop-arraylist-60s.inv.gz";
+		
+		String goodInvFile1 = "D:\\research\\configurations\\daikon\\bin\\randoop-examples\\randoop-arraylist-60s.inv.gz";
+		String goodInvFile2 = "D:\\research\\configurations\\daikon\\bin\\randoop-examples\\treeset.inv.gz";
+		String goodInvFile3 = "D:\\research\\configurations\\daikon\\bin\\randoop-examples\\treeset-collections.inv.gz";
+		String goodInvFile4 = "D:\\research\\configurations\\daikon\\bin\\randoop-examples\\simpleds.inv.gz";
+		String goodInvFile5 = "D:\\research\\configurations\\daikon\\bin\\randoop-examples\\showhelp.inv.gz";
+		String goodInvFile6 = "D:\\research\\configurations\\daikon\\bin\\randoop-examples\\randoop-arraylist-60s.inv.gz";
+		String goodInvFile7 = "D:\\research\\configurations\\daikon\\bin\\randoop-examples\\primitives.inv.gz";
+		String goodInvFile8 = "D:\\research\\configurations\\daikon\\bin\\randoop-examples\\javaxml.inv.gz";
+		String goodInvFile9 = "D:\\research\\configurations\\daikon\\bin\\randoop-examples\\javautilsclasses.inv.gz";
+		String goodInvFile10 = "D:\\research\\configurations\\daikon\\bin\\randoop-examples\\graph.inv.gz";
+		String goodInvFile11 = "D:\\research\\configurations\\daikon\\bin\\randoop-examples\\gentests-help.inv.gz";
+		String goodInvFile12 = "D:\\research\\configurations\\daikon\\bin\\randoop-examples\\binarysearchtree.inv.gz";
+		String goodInvFile13 = "D:\\research\\configurations\\daikon\\bin\\randoop-examples\\binomialheap.inv.gz";
+		
+		Collection<String> goodInvs = new LinkedList<String>();
+		goodInvs.add(goodInvFile1);
+		goodInvs.add(goodInvFile2);
+		goodInvs.add(goodInvFile3);
+		goodInvs.add(goodInvFile4);
+		goodInvs.add(goodInvFile5);
+		goodInvs.add(goodInvFile6);
+		goodInvs.add(goodInvFile7);
+		goodInvs.add(goodInvFile8);
+		goodInvs.add(goodInvFile9);
+		goodInvs.add(goodInvFile10);
+		goodInvs.add(goodInvFile11);
+		goodInvs.add(goodInvFile12);
+		goodInvs.add(goodInvFile13);
+		
+		
 		String badInvFile = "D:\\research\\configurations\\daikon\\bin\\randoop-examples\\nanoxml-60s.inv.gz";
 		//Set<String> affectedMethods = getAffectedMethods(goodInvFile, badInvFile);
 		String path = "./subjects/randoop-jamie-no-trace.jar;./subjects/plume.jar";
 		Collection<ConfPropOutput> confs = TestSliceRandoopConfigOptions.getConfPropOutputs(path, RandoopExpUtils.getRandoopConfList());
 		
-		List<ConfEntity> entities = MethodBasedDiagnoser.computeResponsibleOptions(Collections.singletonList(goodInvFile), badInvFile, confs);
+		List<ConfEntity> entities = MethodBasedDiagnoser.computeResponsibleOptions(goodInvs, badInvFile, confs);
 		
 		System.out.println(entities.size());
 		int i = 0;
