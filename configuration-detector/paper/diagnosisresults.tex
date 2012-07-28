@@ -46,7 +46,8 @@ the depth of a decision tree; and its
 true ratio is observed substantially higher in the undesired execution
 than normal executions. A higher true ratio leads
 to a deeper tree that is more likely to overfit the training
-data. We changed \CodeIn{m\_numFolds}
+data, while yieling low accuracy on the testing data.
+To resolve this problem, we changed \CodeIn{m\_numFolds}
 value from 2 to 3 to reduce the tree depth, and
 gained an 5\% performance increase immediately.
 
