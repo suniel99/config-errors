@@ -14,6 +14,7 @@ public class TestComparingSootTraces extends TestCase {
 	public static String parse_jimple = "./experiments/soot-database/parse_jimple.txt"; //?
 	public static String produce_shimpe = "./experiments/soot-database/produce_shimpe.txt";
 	public static String soot_helloworld_with_keepline = "./experiments/soot-database/soot_helloworld_with_keepline.txt"; //?
+	public static String soot_number_with_keepline = "./experiments/soot-database/soot_example_line_number.txt";
 	public static String soot_main_allowphan = "./experiments/soot-database/soot_main_allowphantom.txt";
 	public static String soot_main_help = "./experiments/soot-database/soot_main_help.txt";
 	public static String soot_main_no_args = "./experiments/soot-database/soot_main_no_args.txt";
@@ -30,12 +31,18 @@ public class TestComparingSootTraces extends TestCase {
 	public static String soot_helloworld_no_keepline = "./experiments/soot-database/soot_helloworld_no_keepline.txt";
 	
 	public static String[] db = new String[]{
-		baf_string, jimple_use_cg_spark, jimple_use_original_name, optimize_helloworld,
+		baf_string, 
+		jimple_use_cg_spark, 
+		jimple_use_original_name, 
+		optimize_helloworld,
 		optimize_jimple_helloworld, 
 //		parse_jimple, 
 		produce_shimpe,
-		soot_helloworld_with_keepline, soot_main_allowphan,
-		soot_main_help, soot_main_no_args, 
+//		soot_helloworld_with_keepline,
+		soot_number_with_keepline,
+		soot_main_allowphan,
+		soot_main_help,
+		soot_main_no_args, 
 //		soot_main_pp_helloworld,
 //		soot_main_process_dir, 
 //		soot_main_redict_dir, 

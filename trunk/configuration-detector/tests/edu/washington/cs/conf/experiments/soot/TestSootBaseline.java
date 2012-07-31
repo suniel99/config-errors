@@ -3,6 +3,7 @@ package edu.washington.cs.conf.experiments.soot;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -57,15 +58,44 @@ public class TestSootBaseline extends TestCase {
 	public void testDiagnoseByInvariants() {
 		
 		String badSootFile = "D:\\research\\configurations\\daikon\\bin\\soot\\soot_helloworld-no-linenum.inv.gz";
-		String goodSootFile = "D:\\research\\configurations\\daikon\\bin\\soot\\soot_helloworld-has-linenum.inv.gz";
 		
+		String goodSootFile1 = "D:\\research\\configurations\\daikon\\bin\\soot\\soot_helloworld-has-linenum.inv.gz";
+		String goodSootFile2 = "D:\\research\\configurations\\daikon\\bin\\soot\\helloworld-allow-phantom.inv.gz";
+		String goodSootFile3 = "D:\\research\\configurations\\daikon\\bin\\soot\\helloworld-pp.inv.gz";
+		String goodSootFile4 = "D:\\research\\configurations\\daikon\\bin\\soot\\helloworld-process-dir-redict.inv.gz";
+		String goodSootFile5 = "D:\\research\\configurations\\daikon\\bin\\soot\\helloworld-process-dir.inv.gz";
+		String goodSootFile6 = "D:\\research\\configurations\\daikon\\bin\\soot\\parse-jimple-parse.inv.gz";
+		String goodSootFile7 = "D:\\research\\configurations\\daikon\\bin\\soot\\produce-shimple.inv.gz";
+		String goodSootFile8 = "D:\\research\\configurations\\daikon\\bin\\soot\\soot-ann-array-bounds.inv.gz";
+		String goodSootFile9 = "D:\\research\\configurations\\daikon\\bin\\soot\\soot-ann-null-ptr.inv.gz";
+		String goodSootFile10 = "D:\\research\\configurations\\daikon\\bin\\soot\\soot-ann-sideeffect.inv.gz";
+		String goodSootFile11 = "D:\\research\\configurations\\daikon\\bin\\soot\\soot-help.inv.gz";
+		String goodSootFile12 = "D:\\research\\configurations\\daikon\\bin\\soot\\soot-no-args.inv.gz";
+		String goodSootFile13 = "D:\\research\\configurations\\daikon\\bin\\soot\\spark-enabled.inv.gz";
+		String goodSootFile14 = "D:\\research\\configurations\\daikon\\bin\\soot\\whole-program-opt.inv.gz";
+		
+		List<String> goodFiles = new LinkedList<String>();
+		goodFiles.add(goodSootFile1);
+		goodFiles.add(goodSootFile2);
+//		goodFiles.add(goodSootFile3);
+//		goodFiles.add(goodSootFile4);
+//		goodFiles.add(goodSootFile5);
+//		goodFiles.add(goodSootFile6);
+//		goodFiles.add(goodSootFile7);
+//		goodFiles.add(goodSootFile8);
+//		goodFiles.add(goodSootFile9);
+//		goodFiles.add(goodSootFile10);
+//		goodFiles.add(goodSootFile11);
+//		goodFiles.add(goodSootFile12);
+//		goodFiles.add(goodSootFile13);
+//		goodFiles.add(goodSootFile14);
 		
 		Collection<ConfPropOutput> confs = TestSliceSootConfigOptions.getSootConfOutputs();
 		
 		System.out.println("start diagnosing... ");
 		
         List<ConfEntity> entities
-            = MethodBasedDiagnoser.computeResponsibleOptions(Arrays.asList(goodSootFile),
+            = MethodBasedDiagnoser.computeResponsibleOptions(goodFiles,
             		badSootFile, confs);
 		
 		System.out.println(entities.size());
@@ -78,6 +108,7 @@ public class TestSootBaseline extends TestCase {
 	
 	public void testAnalyzeInvariants() {
 		String badSootFile = "D:\\research\\configurations\\daikon\\bin\\soot\\soot_helloworld-no-linenum.inv.gz";
+		
 		String goodSootFile = "D:\\research\\configurations\\daikon\\bin\\soot\\soot_helloworld-has-linenum.inv.gz";
 		InvariantDiffAnalyzer analyzer = new InvariantDiffAnalyzer(Collections.singleton(goodSootFile), badSootFile);
 		Map<String, Float> scores = analyzer.getMethodsWithDiffInvariants();
