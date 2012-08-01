@@ -40,6 +40,7 @@ public class InvariantDiffAnalyzer {
 	public Map<String, Float> getMethodsWithDiffInvariants() {
 		Map<String, Float> methodsAndScores = new LinkedHashMap<String, Float>();
 		for(String goodInvFile : goodInvFiles) {
+			System.out.println("Analyzing good inv file: " + goodInvFile);
 			Set<String> diffMethods = this.getMethodsWithDiffInvariants(goodInvFile, badInvFile);
 			for(String m : diffMethods) {
 				if(!methodsAndScores.containsKey(m)) {
