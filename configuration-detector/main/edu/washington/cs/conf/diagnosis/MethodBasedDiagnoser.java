@@ -60,9 +60,9 @@ public class MethodBasedDiagnoser extends AbstractBaselineDiagnoser {
 		InvariantDiffAnalyzer analyzer = new InvariantDiffAnalyzer(goodInvFiles, badInvFile);
 		Map<String, Float> scores = analyzer.getMethodsWithDiffInvariants();
 		
-//		for(String s : scores.keySet()) {
-//			System.out.println(" = " + s + ", " + scores.get(s));
-//		}
+		for(String s : scores.keySet()) {
+			System.out.println(" = " + s + ", " + scores.get(s));
+		}
 		
 		//find responsbile options
 		MethodBasedDiagnoser diagnoser = new MethodBasedDiagnoser(confs, scores);
