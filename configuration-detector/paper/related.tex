@@ -11,7 +11,7 @@ analysis techniques.
 Several prior research efforts have applied different techniques to the
 problem of software configuration error diagnosis~\cite{Attariyan:2008:UCD, 
 Whitaker:2004:CDS, Wang:2004:AMT,
-Attariyan:2010:ACT, Rabkin:2011:PPC}. For example,
+Attariyan:2010:ACT, Rabkin:2011:PPC, keller:conferr}. For example,
 Chronus~\cite{Whitaker:2004:CDS} relies on a user-provided
 testing oracle to check the behavior of the system, and uses
 virtual machine checkpoint and binary search to find the
@@ -133,7 +133,7 @@ identifies likely buggy statements as final output, while
 \ourtool identifies the behaviorally-deviated program predicates, and
 links the undesired behavior to specific configuration options.
 
-\todo{Not sure should meanture another significant difference
+\todo{Not sure should meantion another significant difference
 between CBI and \ourtool: CBI computes the probability of program failure
 \textit{once} a predicate is observed to be true. \ourtool correlates
 a predicate's true ratio (more precisely, the deviation degree of
@@ -165,12 +165,13 @@ and time-consuming to diagnose~\cite{Yin:2011:ESC, Hubaux:2012}.
 To alleviate this problem, researchers have designed various
 software analysis techniques to improve configuration
 management~\cite{Giese:2004:MDV, Jezequel:1999:RVC,
-Kloukinas:2000:ACM}, understand
+Kloukinas:2000:ACM, Garvin:2011}, understand
 and test the behavior of a configurable software system~\cite{Grundy:1998:ECU,
-Georg:2001:UAU, Qu:2008:CRT}.
-For example, Rao et al.~\cite{Rao:2009:VRL} developed a technique
-to automatically learn a good configuration from historical data.
-However, their approach aims to reduce the burden of
+Qu:2008:CRT, Nanda:2011}.
+For example, Garvin et al.~\cite{Garvin:2011} show how to
+use historical data to avoid system failures during reconfiguration.
+%a technique to automatically learn a good configuration from historical data.
+However, their work aims to reduce the burden of
 configuration management and prevent certain errors from happening,
 while our technique is designed to diagnose an exhibited error.
 Qu et al.~\cite{Qu:2008:CRT} proposed a combinatorial interaction
