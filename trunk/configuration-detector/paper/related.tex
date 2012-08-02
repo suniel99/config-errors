@@ -2,7 +2,7 @@
 
 We next discuss closely-related work on
 software configuration error diagnosis, automated
-debugging techniques; and configuration-aware software
+debugging, and configuration-aware software
 analysis techniques.
  
 %\subsection{Software Configuration Error Diagnosis}
@@ -127,17 +127,21 @@ such as function call counts, call site, and stack dumps to improve
 error reporting. The improved error reporting, although helpful,
 does not diagnose the root cause. The CBI project~\cite{Liblit:2005:SSBI}
 analyzes a large number of executions collected from deployed software
-to isolate software failure causes. Compared to \ourtool, besides
-the significant difference in the error diagnosis algorithm, CBI
-identifies likely buggy statements as final output, while
+to isolate software failure causes. Significantly different than
+\ourtool, CBI correlates a predicate's evaluation result (either true or
+false) rather than its true ratio and execution frequency
+with the observed behaviors. In addition,
+%Compared to \ourtool, besides
+%the significant difference in the error diagnosis algorithm,
+CBI identifies likely buggy statements as final output, while
 \ourtool identifies the behaviorally-deviated program predicates, and
 links the undesired behavior to specific configuration options.
 
-\todo{Not sure should meantion another significant difference
-between CBI and \ourtool: CBI computes the probability of program failure
-\textit{once} a predicate is observed to be true. \ourtool correlates
-a predicate's true ratio (more precisely, the deviation degree of
-a predicate) with the failure.}
+%\todo{Not sure should meantion another significant difference
+%between CBI and \ourtool: CBI computes the probability of program failure
+%\textit{once} a predicate is observed to be true. \ourtool correlates
+%a predicate's true ratio (more precisely, the deviation degree of
+%a predicate) with the failure.}
 
 %Furthermore, CBI 
 

@@ -25,15 +25,15 @@ obtaining the undesired execution profile by running it on our dataset. As a res
 
 \begin{CodeOut}
 \begin{alltt} 
-Suspicious configuration option: m\_numFolds
+  Suspicious configuration option: m\_numFolds
 
-It affects the behavior of predicate:
-"numFold < numInstances() \% numFolds"
-(line 1354, class: weka.core.Instances) 
+  It affects the behavior of predicate:
+  "numFold < numInstances() \% numFolds"
+  (line 1354, class: weka.core.Instances) 
 
-This predicate evaluates to true:
-  20\% of the time in normal runs (4 observations)
-  70\% of the time in the undesired run (10 observations)
+  This predicate evaluates to true:
+    20\% of the time in normal runs (4 observations)
+    70\% of the time in the undesired run (10 observations)
 
 \end{alltt}
 \end{CodeOut}
@@ -42,11 +42,11 @@ This predicate evaluates to true:
 
 The above report reveals an important fact for the low accuracy.
 The predicate \CodeIn{numFold $<$ numInstances() \% numFolds} controls
-the depth of a decision tree; and its
+the depth of a decision tree. Its
 true ratio is observed substantially higher in the undesired execution
 than normal executions. A higher true ratio leads
 to a deeper tree that is more likely to overfit the training
-data, while yieling low accuracy on the testing data.
+data, and yields low accuracy on the testing data.
 To resolve this problem, we changed \CodeIn{m\_numFolds}
 value from 2 to 3 to reduce the tree depth, and
 gained an 5\% performance increase immediately.
@@ -59,9 +59,11 @@ Compared to non-crashing errors, \ourtool is less effective
 in diagnosing non-crashing errors. For 4 crashing errors,
 the actual causes are ranked below the top 3 options.
 This is a direct result of lacking enough predicate behavior observations,
+\todo{ the word here is confusing?},
 since most crashing errors become apparent shortly
-after the program is launched. Therefore, many predicates' $Deviation$ scores
- (Section~\ref{sec:deviation}) are the same; and the heuristic to resolve ties (Section~\ref{sec:linking})
+after the program is launched. Therefore, many predicates are
+only executed once and their $Deviation$ scores
+ (Section~\ref{sec:deviation}) turn out to be the same; and the heuristic to resolve ties (Section~\ref{sec:linking})
 works half the time.
 
 

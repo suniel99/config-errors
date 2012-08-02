@@ -59,7 +59,7 @@ Figure~\ref{tab:selection} shows the results.
 
 
 As shown in Figure~\ref{tab:results}  (Column ``Full Slicing''),
-\ourtool achieves significantly less accurate diagnosis when using
+\ourtool achieves significantly less accurate results when using
 full slicing. The primary reason is that full slicing includes
 too many irrelevant statements that are only \textit{indirectly} affected by
 a configuration option value but not pertinent to the task of
@@ -67,7 +67,7 @@ error diagnosis. In many cases, monitoring the control flow
 of such indirectly-affected predicates and then linking their
 behaviors to configuration options lead to low accuracy. Furthermore,
 performing full slicing is much more expensive than thin slicing; in
-our experiments, the standard full slicing algorithm ran out of
+our experiments, the full slicing algorithm~\cite{Horwitz:1988} ran out of
 memory on Soot.
 
 %Furthermore, modern programs typically rely heavily on well-tested data structures

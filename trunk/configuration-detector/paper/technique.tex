@@ -94,18 +94,19 @@ the whole program workflow.
 \vspace{1mm}
 \noindent \textbf{Why not store profiles from failing executions in the database?}
 We envision the profile database is built by developers at release time.
-It is more natural and easier for a developer to provide correct execution
+Normally, production software is usually
+tested on a number of desirable inputs during the standard
+integration testing process. Thus, it is more natural
+and easier for a developer to provide correct execution
 profiles as debugging references, instead of
-anticipating the possible errors a user may encounter.
+anticipating and enumerating the possible errors a user may encounter.
 
-\todo{Add the following sentence somewhere ? : production software is usually
-tested on a large number of desirable inputs during the standard
-integration testing process}.
+%\todo{Add the following sentence somewhere ? : }.
 
-\todo{
-However, it is unlikely that programmers would anticipate and
-enumerate all possible misuses and protect their code against them.
-}
+%\todo{
+%However, it is unlikely that programmers would anticipate and
+%enumerate all possible misuses and protect their code against them.
+%}
 
 %$\blacksquare$
 %A broader question is which kind of information should be recorded
