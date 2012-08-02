@@ -1,8 +1,8 @@
 We compared \ourtool with ConfAnalyzer, a heavyweight dynamic information
 flow-based technique~\cite{Rabkin:2011:PPC}.
-We chose ConfAnalyzer because it is the most recent and one of precise configuration
-error diagnosis techniques. Also, its 
-experimental data is publicly available.
+We chose ConfAnalyzer because it is the most recent technique and
+also one of precise configuration error diagnosis techniques
+in the literature.
 ConfAnalyzer tracks the flow of labelled objects through the
 program dynamically,
 and treats a configuration option as a root cause if its
@@ -18,8 +18,8 @@ the same results for another 3, and worse results for the remaining 3.
 ConfAnalyzer performs better on crashing errors
 having shorter execution paths: an error exhibits
 almost immediately after the software is launched.
-In such cases, a small number of configuration options are initialized and
-only few can flow to the crashing point. 
+In such cases, only a small number of configuration options are initialized and
+few of them can flow to the crashing point. 
 \ourtool fails to produce good diagnosis for these errors, because it can not identify
  the statistically-behavioral-deviated predicates based on the limited
 observation of program behaviors.

@@ -28,10 +28,11 @@ Our evaluation answers the following research questions:
 \begin{itemize}
   \item the absolute ranking of the actual root cause in \ourtool's output (Section~\ref{sec:accuracy}).
   \item the time cost in error diagnosis (Section~\ref{sec:performance}).
-  \item comparison with existing configuration error diagnosis techniques (Section~\ref{sec:confanalyzer}).
-  \item comparison with fault-localization-based configuration error diagnosis techniques (Section~\ref{sec:comparison}).
+  \item the comparison with existing configuration error diagnosis techniques (Section~\ref{sec:confanalyzer}).
+  \item the comparison with existing fault localization techniques (Section~\ref{sec:comparison}).
 \end{itemize}
-\item What are the effects of using full slicing rather than thin slicing to identify
+\item What are the effects of using full slicing~\cite{Horwitz:1988}
+ rather than thin slicing~\cite{Sridharan:2007} to identify
 the affected predicates, and the effects of varying comparison execution profiles (Section~\ref{sec:choices})?
 These are two internal design choices. % in \ourtool.
 \end{itemize}
@@ -159,8 +160,8 @@ For each subject program, we constructed a profile database
 by running existing (correct) examples from its user manual, discussion
 mailing list, and published papers~\cite{PachecoLET2007, Beschastnikh:2011, Rabkin:2011:PPC}.
 We spent 3 hours per program, on average, and obtained 6--16 execution profiles.
-The average size of the profile database is 35MB, and the largest database (Randoop's)
-is 72MB.
+The average size of the profile database is 35MB, and the largest one
+(Randoop's database) is 72MB.
 
 We made a simple syntactic change to JChord, which affected 24 
 lines of code. This change
@@ -229,7 +230,7 @@ for the JVM), running Windows 7.
 \input{confanalyzer}
 
 
-\subsubsection{Comparison with Two Fault-Localization-Based Approaches}
+\subsubsection{Comparison with Two Fault Localization Techniques}
 \label{sec:comparison}
 \input{comparison}
 
@@ -277,8 +278,8 @@ by random selection) may significantly affect the results.
 There are two major threats to validity in our evaluation. 
 First, the \subjectnum programs and the configuration errors may not be
 representative. Thus, we can not claim the results can be
-extended to an arbitrary program.
-Another threat is that we only employed two dependence
+generalized an arbitrary program.
+Another threat is that we only compared two dependence
 analyses (thin slicing and full slicing) and three
 abstraction granularities (at the predicate level,
 statement level~\cite{Jones:2002}, and method level~\cite{Ernst:1999}) in our evaluation.

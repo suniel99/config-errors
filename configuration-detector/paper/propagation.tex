@@ -20,7 +20,8 @@ or method-level invariants, yields less accurate results.
 To identify the predicates affected by a configuration option, a straightforward
 way is to use program slicing~\cite{Horwitz:1988} to compute
 a forward slice from the initialization statement of a
-configuration option. Unfortunately, traditional slicing is impractical
+configuration option. Unfortunately, traditional full slicing~\cite{Horwitz:1988}
+is impractical
 because it includes too much of the program.  This is due to conservatism
 (for example, in handling pointers) and to following both data and control
 dependences.
@@ -54,7 +55,7 @@ a sequence has been executed before (line 315).
 To address this limitation, our technique uses thin
 slicing~\cite{Sridharan:2007}, which includes
 \textit{only} statements that are \textit{directly} affected by a configuration option.
-Different from traditional slicing, thin slicing
+Different from traditional slicing~\cite{Horwitz:1988}, thin slicing
 focuses on statements that flow values to the seed (here, a
 seed is the initialization statement of a configuration option), ignoring the 
 control flow dependencies as well as the uses of
@@ -66,13 +67,14 @@ pointer computations from the flow of configuration option value,
 naturally connects a configuration option with its
 directly affected statements, and makes thin slicing
 especially attractive.
-For example, in the code excerpt of Figure~\ref{fig:example},
+For example, in the code excerpt of
+Figure~\ref{fig:example},
 a forward thin slice computed for \CodeIn{maxsize}
 only includes the predicate in line 312.
 Section~\ref{sec:evaluation}, 
 also empirically compares traditional slicing with
-thin slicing and demonstrates that thin slicing is a better choice
-than traditional full slicing.
+thin slicing and demonstrates that thin slicing is a better choice.
+%than traditional full slicing.
 
 %When Randoop is used to generate tests for different inputs (here,
 %input mean programs under test), the created tests (method-call

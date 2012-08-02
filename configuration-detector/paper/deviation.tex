@@ -25,7 +25,7 @@ the collected predicate profiles into a $n$-dimensional
 vector $v_e$ =$\langle r_{e1}, r_{e2}, ..., r_{en}\rangle$, where $n$
 is the number of all possible predicate profiles in the program
 and each $r_{ei}$ is a ratio representing how often the $i$-th predicate
-profile evaluated to true at runtime in $e$.
+profile evaluated to true at runtime.
 If a predicate has never been executed in an execution,
 \ourtool uses 0 as its true ratio. %in its corresponding predicate profiles.
 
@@ -46,7 +46,7 @@ of $v_{e}$ and $v_{f}$.
 \todo{Weird enough that why two sqrt symbols above are not the same size?}
 
 This similarity metric basically compares two execution profiles based on
- control flow taken (approximated by how often a predicate has been evaluated to
+ control flow taken (approximated by how often a predicate is evaluated to
 true). Its resulting value ranges from 0 meaning completely different, to 1 meaning almost the same, 
 and in-between values indicating intermediate similarity.
 
@@ -82,20 +82,21 @@ and in-between values indicating intermediate similarity.
 
 
 A crashing error may happen shorty after the program is launched.
-So that the resulting execution profile can be much smaller than most
-correct execution profiles,
+Therefore, the resulting execution profile can be much smaller than
+%a correct execution profile, 
+most correct execution profiles,
 since many predicates in the program are not executed.
 Using the $Similarity$ metric to compare a correct execution profile from the database
 with a crashing profile, it is unlikely for \ourtool to find similar ones.
-To avoid comparing those un-executed predicates,
-when diagnosing a crashing error, \ourtool
+To facilitate comparison, %avoid comparing those un-executed predicates,
+when diagnosing a crashing error, \ourtool first
 chops each correct execution profile by only remaining
 the common predicates executed by the crashing profile, and then
 uses the chopped profile for comparison. 
 
 Given an undesired execution profile,
-\ourtool selects all execution profiles (or chopped profiles for
-a crashing error. We use the single term ``profile'' for brevity.) from the database
+\ourtool selects all execution profiles (or the chopped profiles for
+a crashing error) from the database
 with a $Similarity$ value above a threshold (default value: 0.9, as used in our
 experiments).
 
@@ -137,17 +138,17 @@ there are two primary factors to
 characterize its dynamic behavior: how often it is
 evaluated (i.e., the number of the
 observed executions), and how often it is evaluated to true (i.e., the true ratio).
-Ideally, we would like to have a metric that
+Ideally, we would like to have a metric
 to capture a predicate's desired behavior
-from the known correct execution profiles, but is robust enough and
-able to tolerate small noises so that it does
+from the known correct execution profiles, but is robust enough
+to tolerate small noises so that it does
 not overfit a specific correct execution profile.
 Looking more closely, we found that although
 the general execution control flows (approximated by
 a predicate's true ratio) may be similar for many 
 execution profiles, the absolute execution
-number of a predicate may largely depend on the given inputs, and
-can vary greatly across executions. Moreover, for
+number of a predicate may largely depend on the given input, % and
+varying greatly across executions. On ther other hand, for
 some predicates, they may have
 only been executed very few times but the true ratios
 are dramatically different across executions.
@@ -162,11 +163,13 @@ are dramatically different across executions.
 %able to more precisely identify a configuration error
 
 Thus, we need to a metric that can characterize
-a predicate's behavior with high sensitivity, meaning the predicate's true
-ratio accounts for the execution results (i.e., correct or undesired).
+a predicate's behavior with high sensitivity, meaning the predicate's
+behavior (i.e., true ratio) is correlated with
+%ratio accounts for
+the execution results (i.e., correct or undesired).
 But we also want
-high specificity, meaning a predicate's true
-ratio is more representative if it is observed
+high specificity, meaning a predicate's behavior
+is more representative if it is observed
 in more executions.
 %behavior should not be
 %mis-characterized only based on a small number of
@@ -187,11 +190,11 @@ harmonic mean; this metric prefers high scores in both dimensions.
 \vspace{-3mm}
 
 In $\phi(e, p)$, $trueRatio(e, p)$ is a function that returns the ratio of the predicate $p$ being
-evaluated to true in execution profile $e$, and $totalExecNum(e, p)$ is a function
-that returns the total number of predicate $p$ being executed in execution profile $e$.
-To smooth corner cases, if a predicate $p$ does not appear in $e$, i.e., 
+evaluated to true in $e$, and $totalExecNum(e, p)$ is a function
+that returns the total number of predicate $p$ being executed in $e$.
+To smooth corner cases, if a predicate $p$ is not executed in $e$, i.e., 
 $totalExecNum(e, p) = 0$, then $\phi(e, p)$ returns 0; and if a predicate $p$'s true ratio is 0, i.e., $trueRatio(e, p) = 0$, then $\phi(e, p)$ returns
-$1/totalExecNum(e, p)$ instead.
+$1/totalExecNum(e, p)$.
 
 
 Using metric $\phi$, we define the following $Deviation$ metric
@@ -214,12 +217,12 @@ The definitions of metrics $\phi$ and $Deviation$ have several desirable propert
 in characterizing a predicate $p$'s behavior. Clearly, $trueRatio(e,p)$
 is a value between 0 and 1 and $totalExecNum(e, p)$ is a value greater than 1; increasing
 either value while keeping the other one unchanged increases $\phi(e, p)$.
-\ourtool focuses on monitoring a program's control flow, which is reflected
-in the definition of $\phi$. In $\phi(e, p)$,
+\ourtool focuses on monitoring a program's control flow, which is also
+reflected in the definition of $\phi$. In $\phi(e, p)$,
 the value of $trueRatio(e, p)$ is more important than the value
 of $totalExecNum(e, p)$
-in deciding $\phi(e, p)$; since in theory $1/trueRatio(e, p) \geq 1/totalExecNum(e, p)$, but
-in practice, often $1/trueRatio(e, p) \gg 1/totalExecNum(e, p)$.
+in deciding $\phi(e, p)$; since in theory: $1/trueRatio(e, p) \geq 1/totalExecNum(e, p)$, but
+in practice: often $1/trueRatio(e, p) \gg 1/totalExecNum(e, p)$.
 Thus, the value of $Deviation(p, e, f)$ is much more sensitive to $p$'s
 true ratio change between execution profiles $e$ and $f$. 
 \todo{A few more properties I do not known how (and whether need) to write down:
@@ -278,8 +281,8 @@ This heuristic is based on the intuition that statements closer to the
 predicate seem more likely to be relevant to its behavior.
 Hence, we assume the user gradually explores statements of
 increasing distance from the suspicious predicate until
-the desired statements (where a configuration
-option is initialized) are found; a breadth-first
+the desired statements %(where a configuration option is initialized)
+are found; a breadth-first
 search of the dependence graph simulates this strategy.
 
 

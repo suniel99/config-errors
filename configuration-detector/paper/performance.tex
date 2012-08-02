@@ -51,7 +51,7 @@ an error.}}
 The performance of \ourtool is reasonable.
 On average, it uses \avgtime minutes to
 diagnose one configuration error. Computing
-a thin slice from each configuration option
+thin slices for all configuration options
 is expensive. However, this step is one-time effort
 per program and the computed slices can be cached
 to share across diagnosis. %for future use.
@@ -60,13 +60,15 @@ The performance overhead to reproduce the buggy behavior varies
 among applications. The current tool implementation
 imposes an average slowdown of 13 times when reproducing
 an error in a \ourtool-instrumented version.
-Such performance overhead, admittedly high, has nonetheless proved acceptable
-for offline error diagnoses.
+Such performance overhead, admittedly high, are still acceptable
+for offline error diagnosis.
+For errors 9, 10, and 11, the slowdown is signficiant, but the
+absolute time cost for error reproduction is still low ( $<$ 5 minutes per error).  
 
-\todo{Maybe add one more sentence here: for error 9, 10, 11, the slowdown for
-reproducing a crashing error is very large. However, the absolute
-time cost is very low, on the original JChord version, all these three errors exhibit in less than 5 seconds. Thus, even with a 65X slowdown, the absolute time cost
-is still acceptable (around 5 mins).}
+%\todo{Maybe add one more sentence here: for error 9, 10, 11, the slowdown for
+%reproducing a crashing error is very large. However, the absolute
+%time cost is very low, on the original JChord version, all these three errors exhibit in less than 5 seconds. Thus, even with a 65X slowdown, the absolute time cost
+%is still acceptable (around 5 mins).}
 
 %The size of profile files in the database $\blacksquare$
 

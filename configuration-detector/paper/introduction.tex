@@ -93,7 +93,7 @@ report contains 31 options.
 
 As an alternative, we can use our technique (and its tool implementation \ourtool)
 to diagnose and correct this problem. We first reproduced the
-error in a \ourtool-enabled environment, then used \ourtool
+error in a \ourtool-instrumented Randoop version, then used \ourtool
 to diagnose its root cause by analyzing the recorded execution profile.
 \ourtool produced
 an error report (Figure~\ref{fig:output}) in the form of an ordered list of
@@ -263,7 +263,7 @@ further enriched by software users as more correct
 executions are accumulated. 
 In our experiments (Section~\ref{sec:evaluation}), we
 built such a database by running examples from software
-user manuals, FAQs, and discussion mailing lists.  We
+user manuals, FAQs, and forum posts.  We
 found that even a small database of 6--16 execution profiles worked remarkably
 well for error diagnosis.
 
@@ -379,10 +379,15 @@ non-crashing errors that ConfAnalyzer failed to diagnose,
 and produced better or the same results
 for 6 out of the \crash crashing errors. 
 
-We also compared \ourtool to two techniques that leverage existing fault localization
-approaches~\cite{Jones:2002, McCamant:2003} to diagnose configuration errors. Our experimental results show
-that \ourtool significantly outperformed these two techniques, suggesting
-the necessity of designing new configuration error diagnosis techniques.% such as \ourtool.
+We also compared \ourtool to two techniques leveraging
+existing fault localization techniques~\cite{Jones:2002, McCamant:2003}
+to diagnose configuration errors. Our experimental results show
+that \ourtool significantly outperformed both of them.
+\todo{Should I add this sentence: suggesting the necessity of
+designing new configuration error diagnosis techniques. Seems a bit
+verbose}
+%, suggesting
+%the necessity of designing new configuration error diagnosis techniques.% such as \ourtool.
 
 %three variants and one existing
 %technique, .
@@ -405,7 +410,7 @@ show that varying the execution
 profile selection strategy can result in substantially different
 results. %, depending on the application being analyzed;
 The similarity-based selection strategy used in \ourtool outperformed
-the other two comparison strategies.
+the other two strategies.
 
 
 %\ourtool outputs an ordered list of probable root causes.
