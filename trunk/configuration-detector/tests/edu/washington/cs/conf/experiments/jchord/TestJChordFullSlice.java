@@ -14,7 +14,11 @@ public class TestJChordFullSlice extends TestCase {
 	String hasrace = "./experiments/jchord-database/simpletest-has-race-full-slice.txt";
 	String deadlock = "./experiments/jchord-database/simpletest-deadlock-full-slice.txt";
 	
-	String[] db = new String[]{dlog, hasrace, deadlock};
+	String donothing = "./experiments/jchord-database/simpletest-do-nothing-full-slice.txt";
+	String print = "./experiments/jchord-database/simpletest-print-project-full-slice.txt";
+	String ctxtanalysis = "./experiments/jchord-database/simpletest-ctxt-analysis-full-slice.txt";
+	
+	String[] db = new String[]{dlog, hasrace, deadlock, donothing, print, ctxtanalysis};
 	
 	public void testDiagnoseSimilar() {
         PredicateProfileTuple.USE_CACHE = true;

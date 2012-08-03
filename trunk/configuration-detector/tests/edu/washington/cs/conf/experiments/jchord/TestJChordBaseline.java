@@ -53,11 +53,16 @@ public class TestJChordBaseline extends TestCase {
 		String goodInvFile2 = "D:\\research\\configurations\\workspace\\configuration-detector\\subjects\\jchord\\deadlock.inv.gz";
 		String goodInvFile3 = "D:\\research\\configurations\\workspace\\configuration-detector\\subjects\\jchord\\dlog.inv.gz";
 		
+		String goodInvFile4 = "D:\\research\\configurations\\workspace\\configuration-detector\\subjects\\jchord\\donothing.inv.gz";
+		String goodInvFile5 = "D:\\research\\configurations\\workspace\\configuration-detector\\subjects\\jchord\\print-project.inv.gz";
+		String goodInvFile6 = "D:\\research\\configurations\\workspace\\configuration-detector\\subjects\\jchord\\ctxts-analysis.inv.gz";
+		
 		String badInvFile = "D:\\research\\configurations\\workspace\\configuration-detector\\subjects\\jchord\\datarace-norace.inv.gz";
 		//Set<String> affectedMethods = getAffectedMethods(goodInvFile, badInvFile);
 		Collection<ConfPropOutput> confs = TestSliceJChordConfigOptions.getJChordConfOutputs();
 		
-		List<ConfEntity> entities = MethodBasedDiagnoser.computeResponsibleOptions(Arrays.asList(goodInvFile1, goodInvFile2, goodInvFile3), 
+		List<ConfEntity> entities = MethodBasedDiagnoser.computeResponsibleOptions(
+				Arrays.asList(goodInvFile1, goodInvFile2, goodInvFile3, goodInvFile4, goodInvFile5, goodInvFile6), 
 				badInvFile, confs);
 		
 		System.out.println(entities.size());

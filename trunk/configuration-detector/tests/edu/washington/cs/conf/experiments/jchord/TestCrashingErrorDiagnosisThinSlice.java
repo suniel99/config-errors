@@ -2,9 +2,11 @@ package edu.washington.cs.conf.experiments.jchord;
 
 import java.util.Collection;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import junit.framework.TestCase;
 import edu.washington.cs.conf.analysis.ConfPropOutput;
@@ -26,6 +28,8 @@ public class TestCrashingErrorDiagnosisThinSlice extends TestCase {
 	boolean similarSelection = false;
 	
 	boolean randomSelection = false;
+	
+	boolean randomSameNum = false;
 	
 	public void testAll() {
 		long start = System.currentTimeMillis();
@@ -138,8 +142,23 @@ public class TestCrashingErrorDiagnosisThinSlice extends TestCase {
 		testAll();
 	}
 	
+	public void testRunRandomNumber() {
+		randomSameNum = true;
+		testAll();
+	}
+	
 	public String[] getDb() {
-		String[] db = TestCrashingErrorDiagnosisExperimental.goodRunDb;;
+		String[] db = TestCrashingErrorDiagnosisExperimental.goodRunDb;
+		if(randomSameNum) {
+			int size = db.length;
+			
+			Set<String> list = new LinkedHashSet<String>();
+			while(list.size() < size) {
+				list.add(db[Utils.nextRandomInt(size)]);
+			}
+			
+			return list.toArray(new String[0]);
+		}
 		if(randomSelection) {
 			Object[] randomArray = Utils.randomSubArray(db);
 			String[] array = new String[randomArray.length];
@@ -190,6 +209,9 @@ public class TestCrashingErrorDiagnosisThinSlice extends TestCase {
 	    }
 	    if(similarSelection) {
 	    	outputFile = badTraceFile + "_similar";
+	    }
+	    if(randomSameNum) {
+	    	outputFile = badTraceFile + "_random_num";
 	    }
 	    outputFile = outputFile + "_result.txt";
 		try  {
