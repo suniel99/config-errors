@@ -63,15 +63,34 @@ public class TestWekaBaseline extends TestCase {
 	 * */
 	public void testDiagnoseByInvariant() {
 		String badInv = "D:\\research\\configurations\\daikon\\bin\\weka\\labor.inv.gz";
+		
 		String goodIrisInv = "D:\\research\\configurations\\daikon\\bin\\weka\\iris.inv.gz";
 		String goodWeatherInv = "D:\\research\\configurations\\daikon\\bin\\weka\\weather.inv.gz";
+		String goodInv1 = "D:\\research\\configurations\\daikon\\bin\\weka\\iris-simplified-last.inv.gz";
+		String goodInv2 = "D:\\research\\configurations\\daikon\\bin\\weka\\discretize-iris.inv.gz";
+		String goodInv3 = "D:\\research\\configurations\\daikon\\bin\\weka\\iris-simplified.inv.gz";
+		String goodInv4 = "D:\\research\\configurations\\daikon\\bin\\weka\\nomToBinary-contact-lenses.inv.gz";
+		String goodInv5 = "D:\\research\\configurations\\daikon\\bin\\weka\\soybean-instance.gz";
+		String goodInv6 = "D:\\research\\configurations\\daikon\\bin\\weka\\stra-remove-folds-soybean-nov.inv.gz";
+		String goodInv7 = "D:\\research\\configurations\\daikon\\bin\\weka\\stra-remove-folds-soybean.inv.gz";
 		
 		Collection<ConfPropOutput> confs = TestSliceWekaConfigOptions.getWekaConfOutputs();
 		
 		System.out.println("start diagnosing... ");
 		
+		List<String> goodInvs = new LinkedList<String>();
+//		goodInvs.add(goodIrisInv);
+//		goodInvs.add(goodWeatherInv);
+		goodInvs.add(goodInv1);
+//		goodInvs.add(goodInv2);
+//		goodInvs.add(goodInv3);
+//		goodInvs.add(goodInv4);
+//		goodInvs.add(goodInv5);
+//		goodInvs.add(goodInv6);
+//		goodInvs.add(goodInv7);
+		
         List<ConfEntity> entities
-            = MethodBasedDiagnoser.computeResponsibleOptions(Arrays.asList(goodIrisInv, goodWeatherInv),
+            = MethodBasedDiagnoser.computeResponsibleOptions(goodInvs,
             		badInv, confs);
 		
 		System.out.println(entities.size());

@@ -14,9 +14,13 @@ public class TestComparingSynopticTraces extends TestCase {
 	public static String synoptic_show_all_help = "./experiments/synoptic-database/synoptic_show_all_help.txt";
 	public static String synoptic_show_help = "./experiments/synoptic-database/synoptic_show_help.txt";
 	public static String synoptic_version = "./experiments/synoptic-database/synoptic_version.txt";
+	public static String stackar_trace = "./experiments/synoptic-database/stackar_trace.txt";
 	
 	public static String[] db = new String[]{
-		good2pc_100tx, good2pc_5tx, goodapache_log,
+//		good2pc_100tx,
+		stackar_trace,
+		good2pc_5tx, 
+		goodapache_log,
 		synoptic_show_all_help, synoptic_show_help, synoptic_version
 	};
 	
