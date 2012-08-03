@@ -15,15 +15,15 @@ java -cp ./synoptic-instrumented.jar;../subjects/synoptic/libs/*;../bin synoptic
 
    -r "^(?<sender>),(?<receiver>),(?<TYPE>),(?<txId>)"
    -m "\\k<txId>"
-   -o ./graph-output/2pc_3nodes
+   -o ./2pc_3nodes
    -d D:\\tools\\graphviz2.8\\dot\\bin\\dot
-   ./traces/TwoPhaseCommit/2pc_3nodes_100tx.log
+   ../subjects/synoptic/2pc_3nodes_100tx.log
    
    Full command, can copy-paste and run:
    
    java -cp ./synoptic-instrumented.jar;../subjects/synoptic/libs/*;../bin synoptic.main.Main -r "^(?<sender>),(?<receiver>),(?<TYPE>),(?<txId>)" -m "\\k<txId>" -o ./2pc_3nodes_good -d D:\tools\graphviz2.8\dot\bin\dot ../subjects/synoptic/data/2pc_3nodes_100tx.log
    
-2. injected-error for bad run
+2. error for bad run
 
    change -m to:
      -m '\\k<Id>'
@@ -39,3 +39,6 @@ java -cp ./synoptic-instrumented.jar;../subjects/synoptic/libs/*;../bin synoptic
    -V
 
 5. the apache log
+
+   -m ""
+   -r ""
