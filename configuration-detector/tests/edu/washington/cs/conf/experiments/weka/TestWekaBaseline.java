@@ -33,6 +33,33 @@ public class TestWekaBaseline extends TestCase {
 	}
 	
 	/**
+	 * Diagnose by statements, 
+	 * still 7
+	 * */
+	public void testDiagnoseByRelatedStmt() {
+		Collection<ConfPropOutput> outputs = TestSliceWekaConfigOptions.getWekaConfOutputs();
+		
+		String[] badStmtFiles = new String[]{"./experiments/weka-baseline/bad_stmt_labor-related.txt"};
+		
+		String[] goodStmtFiles = new String[]{
+				"./experiments/weka-baseline/good_stmt_iris-related.txt",
+				"./experiments/weka-baseline/good_stmt_weather-related.txt",
+				"./experiments/weka-baseline/good-discretize-iris-related.txt",
+				"./experiments/weka-baseline/good-soybean-instance-related.txt",
+				"./experiments/weka-baseline/iris-simplified-last-related.txt",
+				"./experiments/weka-baseline/iris-simplified-related.txt",
+				"./experiments/weka-baseline/nomToBinary-contact-lenses-related.txt",
+				"./experiments/weka-baseline/resample-soybean-uniform-related.txt",
+				"./experiments/weka-baseline/resample-soybean-related.txt",
+				"./experiments/weka-baseline/stra-remove-folds-soybean-nov-related.txt",
+				"./experiments/weka-baseline/stra-remove-folds-soybean-related.txt",
+				"./experiments/weka-baseline/weather-j48-related.txt"
+				};
+		
+		StmtCoverageBasedDiagnoserMain.findResponsibleOptions(outputs, badStmtFiles, goodStmtFiles);
+	}
+	
+	/**
 	 * Diagnose by statements
 	 * */
 	public void testDiagnoseByStmt() {
