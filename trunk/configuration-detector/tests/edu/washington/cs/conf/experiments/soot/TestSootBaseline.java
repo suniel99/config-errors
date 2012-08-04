@@ -29,6 +29,33 @@ public class TestSootBaseline extends TestCase {
 		InstrumentStats.showInstrumentationStats();
 	}
 	
+	//11
+	public void testDiagnoseByRelatedStmt() {
+		Collection<ConfPropOutput> outputs = TestSliceSootConfigOptions.getSootConfOutputs();
+		
+		String[] badStmtFiles = new String[]{"./experiments/soot-baseline/stmt_coverage_helloworld_no_line-related.txt"};
+		String[] goodStmtFiles = new String[]{
+				"./experiments/soot-baseline/stmt_coverage_helloworld_keeplinenumber-related.txt",
+				"./experiments/soot-baseline/allow-phantom-helloworld-related.txt",
+				"./experiments/soot-baseline/ann-array-bounds-related.txt",
+				"./experiments/soot-baseline/ann-null-ptr-related.txt",
+				"./experiments/soot-baseline/ann-side-effect-spark-related.txt",
+				"./experiments/soot-baseline/ann-side-effect-related.txt",
+				"./experiments/soot-baseline/no-args-related.txt",
+				"./experiments/soot-baseline/parse-jimple-related.txt",
+				"./experiments/soot-baseline/pp_helloworld-related.txt",
+				"./experiments/soot-baseline/pp-process-dir-related.txt",
+				"./experiments/soot-baseline/ppdir-redict-related.txt",
+				"./experiments/soot-baseline/produce-jimple-related.txt",
+				"./experiments/soot-baseline/produce-shimp-related.txt",
+				"./experiments/soot-baseline/soot-help-related.txt",
+				"./experiments/soot-baseline/static-inline-related.txt",
+				"./experiments/soot-baseline/whole-program-opt-related.txt"
+		        };
+		
+		StmtCoverageBasedDiagnoserMain.findResponsibleOptions(outputs, badStmtFiles, goodStmtFiles);
+	}
+	
 	public void testDiagnoseByStmt() {
 		Collection<ConfPropOutput> outputs = TestSliceSootConfigOptions.getSootConfOutputs();
 		
