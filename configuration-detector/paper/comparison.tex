@@ -20,6 +20,12 @@ Then, it leverages a well-known fault localization technique,
 Tarantula~\cite{Jones:2002}, to rank the likelihood of each
 statement being buggy, and queries the results of thin slice
 to identify its affecting configuration options as the root causes.
+\todo{Actually, I performed another variant of coverage analysis (but
+did not show the results in the paper): use thin
+slicing to compute affected statement, and only monitor coverage of such
+affected statements. The results are almost the same. Should I
+also mention this? since a reader may question monitoring all
+statements introduced the noise.}
 
 \item \textbf{Method-level Invariant Analysis}. This technique stores invariants detected
 by Daikon~\cite{Ernst:1999} from correct execution profiles in the database.
