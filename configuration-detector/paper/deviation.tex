@@ -123,10 +123,6 @@ experiments).
 
 \subsubsection{Identifying Deviated Predicates}
 \label{sec:deviation}
-
-\todo{This section needs to be rewritten. Leave this todo for Mike}
-
-
 Our
 automated error diagnosis approach compares an undesired execution profile with a set
 of \textit{similar} and \textit{correct} execution profiles. 
@@ -136,74 +132,79 @@ of \textit{similar} and \textit{correct} execution profiles.
 The behavioral differences in the recorded predicates provide evidence for what parts of a program might be
 incorrect and why. %This helps to further reason about its root cause.
 
-For a predicate in an execution profile,
-there are two primary factors to
-characterize its dynamic behavior: how often it is
-evaluated (i.e., the number of the
+\ourtool 
+characterizes the dynamic behavior of a predicate by 
+how often it is
+evaluated (i.e., the number of 
 observed executions), and how often it evaluated to true (i.e., the true ratio).
-Ideally, we would like to have a metric
-that captures a predicate's desired behavior
-from the known correct execution profiles, but is robust enough
-to tolerate noise so that it does
-not overfit a specific correct execution profile.
-Looking more closely, we found that although
-the general execution control flows (approximated by
-a predicate's true ratio) may be similar for many 
-execution profiles, the absolute execution
-number of a predicate may largely depend on the given input, % and
-varying greatly across executions. On ther other hand, for
-some predicates, they may have
-only been executed very few times but the true ratios
-are dramatically different across executions.
+The true ratio is more important, but it is less dependable the fewer times
+the predicate has been evaluated.
 
-%that in two execution profiles, a predicate's is only executed
-%in very few times but the true ratios are 
-%As another example, some program has preprocessing... $\blacksquare$
+% Ideally, we would like to have a metric
+% that captures a predicate's desired behavior
+% from the known correct execution profiles, but is robust enough
+% to tolerate noise so that it does
+% not overfit a specific correct execution profile.
+% Looking more closely, we found that although
+% the general execution control flows (approximated by
+% a predicate's true ratio) may be similar for many 
+% execution profiles, the absolute execution
+% number of a predicate may largely depend on the given input, % and
+% varying greatly across executions. On ther other hand, for
+% some predicates, they may have
+% only been executed very few times but the true ratios
+% are dramatically different across executions.
+% 
+% %that in two execution profiles, a predicate's is only executed
+% %in very few times but the true ratios are 
+% %As another example, some program has preprocessing... $\blacksquare$
+% 
+% 
+% %Thus, if we can generate a signature that
+% %captures the execution path of a predicate, we should be
+% %able to more precisely identify a configuration error
+% 
+% Thus, we need a metric that can characterize
+% a predicate's behavior with high sensitivity, meaning the predicate's
+% behavior (i.e., true ratio) is correlated with
+% %ratio accounts for
+% the execution results (i.e., correct or undesired).
+% But we also want
+% high specificity, meaning a predicate's behavior
+% is more representative if it is observed
+% in more executions.
+% %behavior should not be
+% %mis-characterized only based on a small number of
+% %observed executions.
 
-
-%Thus, if we can generate a signature that
-%captures the execution path of a predicate, we should be
-%able to more precisely identify a configuration error
-
-Thus, we need a metric that can characterize
-a predicate's behavior with high sensitivity, meaning the predicate's
-behavior (i.e., true ratio) is correlated with
-%ratio accounts for
-the execution results (i.e., correct or undesired).
-But we also want
-high specificity, meaning a predicate's behavior
-is more representative if it is observed
-in more executions.
-%behavior should not be
-%mis-characterized only based on a small number of
-%observed executions.
-To do so, we define the following
-$\phi$ metric by using a standard way to
-combine sensitivity and specificity to compute their
-harmonic mean; this metric prefers high scores in both dimensions. 
+We define the following
+$\phi$ metric, which
+combines sensitivity (informally, the need for multiple observations) and
+specificity (informally, the true ratio) in a standard way by computing their
+harmonic mean.
 
 \vspace{-3mm}
 
 {\small{
 \[
-\|\phi|(e, p) = \frac{2}{{1}/{\|trueRatio|(e, p)} + {1}/{totalExecNum(e, p)}}
+\|\phi|(e, p) = \frac{2}{{1}/{\|trueRatio|(e, p)} + {1}/{\|totalExecNum|(e, p)}}
 \]
 }}
 
 \vspace{-3mm}
 
-In $\phi(e, p)$, $trueRatio(e, p)$ is a function that returns the ratio of the predicate $p$ being
-evaluated to true in $e$, and $totalExecNum(e, p)$ is a function
-that returns the total number of predicate $p$ being executed in $e$.
+In $\phi(e, p)$, $\|trueRatio|(e, p)$ is the ratio of executions of the predicate $p$ that
+evaluated to true in $e$, and $\|totalExecNum|(e, p)$ is the the total
+number of executions of predicate $p$ in $e$.
 To smooth corner cases, if a predicate $p$ is not executed in $e$, i.e., 
-$totalExecNum(e, p) = 0$, then $\phi(e, p)$ returns 0; and if a predicate $p$'s true ratio is 0, i.e., $trueRatio(e, p) = 0$, then $\phi(e, p)$ returns
-$1/totalExecNum(e, p)$.
+$\|totalExecNum|(e, p) = 0$, then $\phi(e, p)$ returns 0; and if a predicate $p$'s true ratio is 0, i.e., $\|trueRatio|(e, p) = 0$, then $\phi(e, p)$ returns
+$1/\|totalExecNum|(e, p)$.
 
 
-Using metric $\phi$, we define the following $Deviation$ metric
-to characterize a predicate $p$'s deviation degree across two execution
-profiles $e$ and $f$. A larger $Deviation$ value indicates that
-predicate $p$ has a more deviated behavior. % between $e$ and $f$.
+The following $Deviation$ metric
+characterizes a predicate $p$'s deviation across two execution
+profiles $e$ and $f$. A larger $\|Deviation|$ value indicates that the
+behavior is more different. % between $e$ and $f$.
 
 \vspace{-2mm}
 
@@ -214,27 +215,29 @@ predicate $p$ has a more deviated behavior. % between $e$ and $f$.
 }}
 \vspace{-4mm}
 
-%It balances a predicate's evaluation result and the total number of executions.
-\todo{the basic idea is here, but this paragraph needs re-write}
-The definitions of metrics $\phi$ and $Deviation$ have several desirable properties
-in characterizing a predicate $p$'s behavior. Clearly, $trueRatio(e,p)$
-is a value between 0 and 1 and $totalExecNum(e, p)$ is a value greater than 1; increasing
-either value while keeping the other one unchanged increases $\phi(e, p)$.
-\ourtool focuses on monitoring a program's control flow, which is also
-reflected in the definition of $\phi$. In $\phi(e, p)$,
-the value of $trueRatio(e, p)$ is more important than the value
-of $totalExecNum(e, p)$
-in deciding $\phi(e, p)$; since in theory: $1/trueRatio(e, p) \geq 1/totalExecNum(e, p)$, but
-in practice: often $1/trueRatio(e, p) \gg 1/totalExecNum(e, p)$.
-Thus, the value of $Deviation(p, e, f)$ is much more sensitive to $p$'s
+% %It balances a predicate's evaluation result and the total number of executions.
+% \todo{the basic idea is here, but this paragraph needs re-write}
+% The definitions of metrics $\phi$ and $Deviation$ have several desirable properties
+% in characterizing a predicate $p$'s behavior. Clearly, $\|trueRatio|(e,p)$
+% is a value between 0 and 1 and $\|totalExecNum|(e, p)$ is a value greater than 1; increasing
+% either value while keeping the other one unchanged increases $\phi(e, p)$.
+% \ourtool focuses on monitoring a program's control flow, which is also
+% reflected in the definition of $\phi$. In $\phi(e, p)$,
+% the value of $\|trueRatio|(e, p)$ is more important than the value
+% of $\|totalExecNum|(e, p)$
+% in deciding $\phi(e, p)$; since in theory: $1/\|trueRatio|(e, p) \geq 1/\|totalExecNum|(e, p)$, but
+% In practice, 
+Often $1/\|trueRatio|(e, p) \gg 1/\|totalExecNum|(e, p)$, and
+then the value of $\|Deviation|(p, e, f)$ depends primarily on $p$'s
 true ratio change between execution profiles $e$ and $f$. 
-\todo{A few more properties I do not known how (and whether need) to write down:
-(1) when totalExecNum(e, p) increases to some extent, the change Deviation(p)
-becomes ignorable, and the change of trueRatio dominates the Deviation value. (2)
-}
 
-%and $Deviation(p)$'s value is more sensitive to the change of $trueRatio(e, p)$.
-%When computing $Deviation(p)$ across two executions,
+% \todo{A few more properties I do not known how (and whether need) to write down:
+% (1) when \|totalExecNum|(e, p) increases to some extent, the change Deviation(p)
+% becomes ignorable, and the change of trueRatio dominates the Deviation value. (2)
+% }
+
+%and $\|Deviation|(p)$'s value is more sensitive to the change of $\|trueRatio|(e, p)$.
+%When computing $\|Deviation|(p)$ across two executions,
 %if $p$'s execution number is unchanged, a small change of $p$'s true ratio
 %would lead to a non-trivial $Deviation$ value. On the other hand,
 %if $p$'s true ratio is unchanged, the change in $p$'s execution number
