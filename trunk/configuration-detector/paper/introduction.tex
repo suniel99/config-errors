@@ -84,7 +84,7 @@ This predicate evaluates to true:
 \end{CodeOut}
 \vspace*{-15pt}
 \Caption{{\label{fig:output}
-The top ranked configuraion option in \ourtool's error report
+The top-ranked configuration option in \ourtool's error report
 for the motivating example in Section~\ref{sec:mot}. The whole error
 report contains 31 options. 
 }} %\vspace{-5mm}
@@ -94,30 +94,30 @@ report contains 31 options.
 As an alternative, we can use our technique (and its tool implementation \ourtool)
 to diagnose and correct this problem. We first reproduced the
 error in a \ourtool-instrumented Randoop version, then used \ourtool
-to diagnose its root cause by analyzing the recorded execution profile.
+to diagnose the error's root cause by analyzing the recorded execution profile.
 \ourtool produced
-an error report (Figure~\ref{fig:output}) in the form of an ordered list of
+a report (Figure~\ref{fig:output}) in the form of an ordered list of
 suspicious configuration options that should be inspected.
 The error report in Figure~\ref{fig:output} suggests that
 a configuration option named
 \CodeIn{maxsize} is the most likely one.
-The error report also provides relevant 
+The report also provides relevant 
 information to explain why: % about the reason why \CodeIn{maxsize} should be account for:
 a program predicate affected by \CodeIn{maxsize} behaves dramatically
-different between the recorded undesired execution
-and the correct executions as kept in \ourtool's database.
+differently between the recorded undesired execution
+and the correct executions found in \ourtool's database.
 
 
 Figure~\ref{fig:example} shows the relevant code snippet
-in Randoop.  When a new test (line 100, in the form of
-a method-call sequence) is generated,
+in Randoop.  When Randoop generates a new test (line 100, in the form of
+a method-call sequence),
 Randoop first compares its length with \CodeIn{maxsize}
 (default value: 100). If the
 generated sequence's length exceeds this pre-defined limit,
 Randoop discards it to avoid length explosion in further
 test generation.
-Although \CodeIn{maxsize}'s default value is carefully chosen
-by Randoop developers
+Although \CodeIn{maxsize}'s default value was carefully chosen
+by the Randoop developers
 and works well for many programs (including those used to test
 Randoop during its development), the generated sequences for NanoXML
 are much longer than usual and using \CodeIn{maxsize}'s default value
@@ -125,8 +125,8 @@ results in 32.5\% of the generated sequences being discarded
 (including sequences that the user wishes to remain).
 \ourtool captures such abnormal behavior from Randoop's
 silent failure, pinpoints the
-\CodeIn{maxsize} option, and suggests users to reset its value.
-Finally, this problem is resolved if
+\CodeIn{maxsize} option, and suggests the users to change its value.
+The problem is resolved if
 the user changes \CodeIn{maxsize} to a larger value, for example 1000.
 
 
@@ -219,7 +219,7 @@ link the undesired behavior to specific root cause configuration options:
 \item \textbf{Configuration Propagation Analysis}. For
 each configuration option, \ourtool
 uses a lightweight dependence analysis, called thin slicing~\cite{Sridharan:2007},
-to statically identify its affected predicates in the source code.
+to statically identify the predicates it affects in the source code.
 
 \item \textbf{Configuration Behavior Profiling}. \ourtool
 \textit{selectively} instruments the program-to-diagnose
@@ -256,7 +256,7 @@ Finally, it outputs a ranked list of suspicious options and explanations.
 
 An important component in \ourtool is the pre-built
 database, which contains profiles
-from the known correct executions. We envision that 
+from known correct executions. We envision that 
 the software developers build this database at release time.
 The database can be
 further enriched by software users as more correct
@@ -284,9 +284,9 @@ why a configuration option is suspicious.
 \item \textbf{It can diagnose both non-crashing and crashing errors}.
 Most existing techniques~\cite{Rabkin:2011:PPC,
 Whitaker:2004:CDS, Attariyan:2010:ACT, Su:2007:AIC} focus exclusively on configuration errors
-that cause a crash point, an error message, or a stack trace
-, while by contract, \ourtool diagnoses
-ignoring configuration problems that manifest themselves as
+that cause a crash point, an error message, or a stack trace.
+By contrast, \ourtool diagnoses
+configuration problems that manifest themselves as
 either visible or silent failures.
 
 \item \textbf{It requires no OS-level support.} Our technique requires no alterations to
@@ -374,18 +374,22 @@ to manual debugging.
 
 We compared \ourtool to an existing technique, called ConfAnalyzer~\cite{Rabkin:2011:PPC},
 which uses dynamic information flow analysis to reason about the root cause of a
-configuration error. As a result, \ourtool produced accurate diagnosis information for the \noncrash
-non-crashing errors that ConfAnalyzer failed to diagnose,
-and produced better or the same results
-for 6 out of the \crash crashing errors. 
+configuration error. \ourtool produced better results for 8 errors,
+equivalent results for 3 errors, and worse results for 3 errors.
+
+%As a result, \ourtool produced accurate diagnosis information for the \noncrash
+%non-crashing errors that ConfAnalyzer failed to diagnose,
+%and produced better or the same results
+%for 6 out of the \crash crashing errors. 
 
 We also compared \ourtool to two techniques leveraging
 existing fault localization techniques~\cite{Jones:2002, McCamant:2003}
-to diagnose configuration errors. Our experimental results show
-that \ourtool significantly outperformed both of them.
-\todo{Should I add this sentence: suggesting the necessity of
-designing new configuration error diagnosis techniques. Seems a bit
-verbose}
+to diagnose configuration errors. 
+\ourtool significantly outperformed both of them.
+
+%\todo{Should I add this sentence: suggesting the necessity of
+%designing new configuration error diagnosis techniques. Seems a bit
+%verbose}
 %, suggesting
 %the necessity of designing new configuration error diagnosis techniques.% such as \ourtool.
 
@@ -452,7 +456,7 @@ in a tool, called \ourtool, for Java software (Section~\ref{sec:implementation})
 
 \item \textbf{Evaluation.} We applied \ourtool to diagnose
 \errors configuration errors in \subjectnum
-configurable Java software. The results
+configurable Java software projects. The results
 show the usefulness of the proposed technique (Section~\ref{sec:evaluation}).
 
 \end{itemize}
