@@ -256,18 +256,26 @@ rare cases (at least we have not discovered in practice), if no
 such hot spot exist for a non-crashing error, our technique may not
 be that effective.}
 
+%\todo{Also perphas need to point out this technique does not
+%support diagnosing error involving multi options, at least
+%in experiments. Maybe mentioned in the end of experiments.}
+
 \noindent \textbf{\textit{Limitations.}} 
-We conclude three limitations of our technique from the experiments. %is limited in three aspects.
+We conclude several limitations of our technique from the experiments. 
 First, we only focus on named configuration options
 with a common key-value semantic, and our implementation
 and experiments are restricted to Java. 
-Second,  our implementation currently does not
+Second, we only evaluated \ourtool on configuration errors
+involving only one mis-configured option.
+%Aid initially performs an analysis assuming only a single
+%mistake
+Third,  our implementation currently does not
 support debugging non-deterministic errors. 
 For non-deterministic errors, \ourtool could potentially leverage 
 a deterministic replay system
 that can capture an undesired non-deterministic
 execution and faithfully reproduce it for late analysis.
-Third, \ourtool's effectiveness  largely
+Fourth, \ourtool's effectiveness  largely
 depends on the availability of a similar but correct execution profile.
 Using an arbitrary execution profile (as we demonstrated in Section~\ref{sec:choices}
 by random selection) may significantly affect the results.

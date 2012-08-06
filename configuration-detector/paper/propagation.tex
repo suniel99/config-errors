@@ -10,8 +10,9 @@ often propagates the majority of configuration-related effects
 and determines a program's execution path, while
 the value of a specific expression may be largely input-dependent.
 Second, it simplifies reporting because the outcome of a program predicate can only be
-either true or false.  Nevertheless, program predicate is not the only
-abstraction a technique can use. Our experiments (Section~\ref{sec:evaluation}),
+either true or false.  Nevertheless, a program predicate is not the only
+abstraction our technique can use. 
+Our experiments (Section~\ref{sec:evaluation})
 empirically demonstrate that choosing other abstractions,
 such as monitoring statement-level coverage
 or method-level invariants, yields less accurate results.
@@ -39,7 +40,7 @@ Figure~\ref{fig:example} illustrates
 this problem.  Traditional slicing concludes that the predicates
 in lines 104, 312, and 315 are affected by the configuration option \CodeIn{maxsize}.
 However, the predicates in lines 104 and 315, though possibly
-affected by the \CodeIn{maxsize}, are actually irrelevant
+affected by \CodeIn{maxsize}, are actually irrelevant
 to \CodeIn{maxsize}'s value. That is, the value of \CodeIn{maxsize}
 controls the length of a generated a sequence rather
 than deciding whether a sequence has an active flag (line 104) or
@@ -59,11 +60,11 @@ Different from traditional slicing~\cite{Horwitz:1988}, thin slicing
 focuses on statements that flow values to the seed (here, a
 seed is the initialization statement of a configuration option), ignoring the 
 control flow dependencies as well as the uses of
-base pointers. By doing this, thin slicing improves the relevance
+base pointers. Thin slicing improves the relevance
 of the slice by only including the statements that compute
 and copy a value to a configuration option.
 This property separates
-pointer computations from the flow of configuration option value,
+pointer computations from the flow of configuration option values,
 naturally connects a configuration option with its
 directly affected statements, and makes thin slicing
 especially attractive.
@@ -71,9 +72,9 @@ For example, in the code excerpt of
 Figure~\ref{fig:example},
 a forward thin slice computed for \CodeIn{maxsize}
 only includes the predicate in line 312.
-Section~\ref{sec:evaluation}, 
-also empirically compares traditional slicing with
-thin slicing and demonstrates that thin slicing is a better choice.
+Section~\ref{sec:evaluation} 
+empirically demonstrates that thin slicing
+is a better choice than traditional full slicing.
 %than traditional full slicing.
 
 %When Randoop is used to generate tests for different inputs (here,

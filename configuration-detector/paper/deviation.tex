@@ -27,7 +27,7 @@ is the number of all possible predicate profiles in the program
 and each $r_{ei}$ is a ratio representing how often the $i$-th predicate
 profile evaluated to true at runtime.
 If a predicate has never been executed in an execution,
-\ourtool uses 0 as its true ratio. %in its corresponding predicate profiles.
+\ourtool uses 0 as its ratio. 
 
 \ourtool computes the similarity of two executions profiles $e$ and $f$
 by computing the standard cosine similarity from information retrieval~\cite{Witten96managinggigabytes}
@@ -38,16 +38,16 @@ of $v_{e}$ and $v_{f}$.
 {\small{
 \[
 \|Similarity|(e, f) = \|cos\_sim|(v_{e}, v_{f}) = \frac{\sum_{i = 1}^{n}r_{ei} \times r_{fi}}
-{\sqrt{\sum_{i = 1}^{n}r_{ei}^2} \times \sqrt{\sum_{i = 1}^{n}r_{fi}^2}}
+{\sqrt{\strut \sum_{i = 1}^{n}r_{ei}^2} \times \sqrt{\sum_{i = 1}^{n}r_{fi}^2}}
 \]
 }}
 
 \vspace{-2mm}
-\todo{Weird enough that why two sqrt symbols above are not the same size?}
+%\todo{Weird enough that why two sqrt symbols above are not the same size?}
 
 This similarity metric basically compares two execution profiles based on
  control flow taken (approximated by how often a predicate is evaluated to
-true). Its resulting value ranges from 0 meaning completely different, to 1 meaning almost the same, 
+true). Its value ranges from 0 meaning completely different, to 1 meaning almost the same, 
 and in-between values indicating intermediate similarity.
 
 
@@ -81,21 +81,22 @@ and in-between values indicating intermediate similarity.
 %\todo{Also explain/justify.  Give intuition for the metric.}
 
 
-A crashing error may happen shorty after the program is launched.
-Therefore, the resulting execution profile can be much smaller than
-%a correct execution profile, 
-most correct execution profiles,
-since many predicates in the program are not executed.
-Using the $Similarity$ metric to compare a correct execution profile from the database
-with a crashing profile, it is unlikely for \ourtool to find similar ones.
-To facilitate comparison, %avoid comparing those un-executed predicates,
-when diagnosing a crashing error, \ourtool first
-chops each correct execution profile by only remaining
-the common predicates executed by the crashing profile, and then
-uses the chopped profile for comparison. 
+A crashing error sometimes happens soon after the program is launched,
+the resulting execution profile is much smaller than
+most correct execution profiles.
+To avoid comparing un-executed predicates,
+when diagnosing a crashing error, \ourtool
+reduces each correct execution profile by only retaining
+the predicates executed by the crashing profile, and then
+uses the reduced profile for comparison. 
+
+%since many predicates in the program are not executed.
+%Using the $Similarity$ metric to compare a correct execution profile from the database
+%with a crashing profile, it is unlikely for \ourtool to find similar ones.
+%To facilitate comparison, %avoid comparing those un-executed predicates,
 
 Given an undesired execution profile,
-\ourtool selects all execution profiles (or the chopped profiles for
+\ourtool selects all execution profiles (or the reduced profiles for
 a crashing error) from the database
 with a $Similarity$ value above a threshold (default value: 0.9, as used in our
 experiments).
@@ -123,6 +124,8 @@ experiments).
 \subsubsection{Identifying Deviated Predicates}
 \label{sec:deviation}
 
+\todo{This section needs to be rewritten. Leave this todo for Mike}
+
 
 Our
 automated error diagnosis approach compares an undesired execution profile with a set
@@ -137,11 +140,11 @@ For a predicate in an execution profile,
 there are two primary factors to
 characterize its dynamic behavior: how often it is
 evaluated (i.e., the number of the
-observed executions), and how often it is evaluated to true (i.e., the true ratio).
+observed executions), and how often it evaluated to true (i.e., the true ratio).
 Ideally, we would like to have a metric
-to capture a predicate's desired behavior
+that captures a predicate's desired behavior
 from the known correct execution profiles, but is robust enough
-to tolerate small noises so that it does
+to tolerate noise so that it does
 not overfit a specific correct execution profile.
 Looking more closely, we found that although
 the general execution control flows (approximated by
@@ -162,7 +165,7 @@ are dramatically different across executions.
 %captures the execution path of a predicate, we should be
 %able to more precisely identify a configuration error
 
-Thus, we need to a metric that can characterize
+Thus, we need a metric that can characterize
 a predicate's behavior with high sensitivity, meaning the predicate's
 behavior (i.e., true ratio) is correlated with
 %ratio accounts for
@@ -245,7 +248,7 @@ becomes ignorable, and the change of trueRatio dominates the Deviation value. (2
 
 \ourtool computes the $Deviation$ value for each predicate $p$
 appearing in two execution profiles $e$ or $f$, and
-ranks them in a decreasing order. 
+ranks them in decreasing order. 
 
 %After comparing the undesired execution profile with one selected correct execution profile,
 %\ourtool ranks all observed predicate profiles in
@@ -264,26 +267,27 @@ ranks them in a decreasing order.
 % and outputs a ranked list of suspicious
 %configuration options.
 
-\ourtool links the behavioral-deviated
-predicate to their root cause configuration options
+\ourtool links the behaviorally-deviated
+predicates to their root cause configuration options
 by using the results of thin slicing (computed by the Configuration Propagation
 Analysis step in Section~\ref{sec:prop}).
 \ourtool identifies 
 the affecting configuration options for each deviated predicate,
 and treats the configuration option
-affecting a higher ranked deviated predicate as the more likely
+affecting a higher-ranked deviated predicate as the more likely
 root cause. If a predicate is affected by multiple
 configuration options, \ourtool prefers options whose initialization
 statements are \textit{closer} to the
-deviated predicate (in terms of the breath-first search
+deviated predicate (in terms of breath-first search
 distance in the dependence graph of thin slicing).
 This heuristic is based on the intuition that statements closer to the
 predicate seem more likely to be relevant to its behavior.
-Hence, we assume the user gradually explores statements of
-increasing distance from the suspicious predicate until
-the desired statements %(where a configuration option is initialized)
-are found; a breadth-first
-search of the dependence graph simulates this strategy.
+
+%Hence, we assume the user gradually explores statements of
+%increasing distance from the suspicious predicate until
+%the desired statements 
+%are found; a breadth-first
+%search of the dependence graph simulates this strategy.
 
 
 When multiple correct execution profiles are selected for comparison,
@@ -292,15 +296,23 @@ configuration options for each comparison pair, and then outputs
 a final list by using majority voting over all ranking lists.
 In the final ranking list, one configuration option ranks higher
 than another if it ranks higher in more than half of the ranking lists.
-However, according to Arrow's impossibility theorem~\cite{Fishburn1970103},
-no rank order voting system can produce a non-cyclic ranking while also
-meeting a specific set of criteria (e.g., getting more than half the voters).
+%However, according to Arrow's impossibility theorem~\cite{Fishburn1970103},
+%no rank order voting system can produce a non-cyclic ranking while also
+%meeting a specific set of criteria (e.g., getting more than half the voters).
 Our implementation breaks possible cycles by arbitrarily ranking the
-involved options, but our experiments did not use this capability.
+involved options, but this did not occur in our experiments. 
 
-\todo{Should add 1 more sentence to say how to generate the explanation?
-In particular, the true ratio in the normal runs are averaged from all
-good runs. need to mention that?}
+In the final output report (e.g., Figure~\ref{fig:output}), \ourtool 
+generates a brief explanation for each behaviorally-deviated predicate
+by showing the difference of the predicate's true ratio between
+all correct executions from the database and the undesired execution.
+
+%The predicate's true ratio in normal runs is calculated by summing up
+%all observations from the database, and its true ratio in the undesir
+
+%\todo{Should add 1 more sentence to say how to generate the explanation?
+%In particular, the true ratio in the normal runs are averaged from all
+%good runs. need to mention that?}
 
 %\todo{Such a ranking can have cycles.  Does the implementation suffer this
 %  problem?}
