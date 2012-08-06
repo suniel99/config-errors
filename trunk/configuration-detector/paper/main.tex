@@ -71,7 +71,9 @@
 \newcommand{\codeid}[1]{\ifmmode{\mbox{\ttfamily{#1}}}\else{\ttfamily #1}\fi}
 
 \newcommand{\cut}[1]{}
-\newcommand{\todo}[1]{{\bfseries [[{#1}]]}}
+%% Comment out one of these two definitions.
+\newcommand{\todo}[1]{\relax}
+% \newcommand{\todo}[1]{{\bfseries [[{#1}]]}}
 
 \newcommand{\ttlcb}{\texttt{\char "7B}}
 \newcommand{\ttrcb}{\texttt{\char "7D}}
@@ -113,7 +115,7 @@
 \title{\huge Automated Diagnosis of Software Configuration Errors} 
 
 \author{\IEEEauthorblockN{Sai Zhang \quad Michael D. Ernst}
-\IEEEauthorblockA{Department of Computer Science \& Engineering\\
+\IEEEauthorblockA{Computer Science \& Engineering\\
 University of Washington, USA\\
 \{szhang,  mernst\}@cs.washington.edu}}
 
