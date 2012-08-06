@@ -15,7 +15,7 @@ Our technique takes as input a Java program and its configuration options.
 It first performs a propagation analysis to identify
 the affected predicates for each configuration option (Section~\ref{sec:prop}).
 After that, our technique \textit{selectively} instruments
-the program on the affected predicates. 
+the program at the affected predicates. 
 To diagnose an error, a user runs the instrumented program
 with the error-revealing input and configuration
 to obtain an execution profile (Section~\ref{sec:profiling}).
@@ -46,37 +46,28 @@ root causes, and reports these to the user (Section~\ref{sec:analysis}).
 
 \subsection{Discussion}
 
-\todo{may need to put the following sentences somewhere:
-we focus specifically on software configuration errors,		
+In this paper, we focus specifically on configuration errors,
 assuming the application code is correct, but the software		
 is inappropriately configured so that it does not		
-behave as desired.
-}
-
-\todo{Reviewers may ask how to distinguish a configuration error
-from a real software bug? Should dicuss this somewhere in the paper?}
-
-\todo{Also perphas need to point out this technique does not
-support diagnosing error involving multi options, at least
-in experiments. Maybe mentioned in the end of experiments.}
-
-\todo{I also feel the following discussion is a bit verbose, but seems
-hard to cut}
-
-We next discuss some design issues in \ourtool.
-
+behave as desired. We next discuss some design issues in \ourtool.
 
 \vspace{1mm}
 \noindent \textbf{Differences between program inputs and configuration options.}
-A configurable software system exposes a range of configuration
-options that permit users to
-customize its behaviors. %Broadly speaking,
-A configuration option can be seen as a special program input
-(or \textit{meta-}input), which needs to be set before the
-software is used. Unlike program inputs, a configuration option is often
-used to control a program's execution rather than
-produce results for a certain task, and thus
-is often independent of the concrete input values that a user might provide.
+We used our judgment to distinguish configuration options 
+from other program inputs. A configuration option is
+often used to control a program's control flow rather
+than produce results, and is often supplied via a command-line
+\todo{a hard-to-recognized word here} or configuration file.
+
+%A configurable software system exposes a range of configuration
+%options that permit users to
+%customize its behaviors. %Broadly speaking,
+%A configuration option can be seen as a special program input
+%(or \textit{meta-}input), which needs to be set before the
+%software is used. Unlike program inputs, a configuration option is often
+%used to control a program's execution rather than
+%produce results for a certain task, and thus
+%is often independent of the concrete input values that a user might provide.
 
 
 \vspace{1mm}
@@ -94,32 +85,9 @@ the whole program workflow.
 \vspace{1mm}
 \noindent \textbf{Why not store profiles from failing executions in the database?}
 We envision the profile database is built by developers at release time.
-Normally, production software is usually
-tested on a number of desirable inputs during the standard
-integration testing process. Thus, it is more natural
-and easier for a developer to provide correct execution
-profiles as debugging references, instead of
-anticipating and enumerating the possible errors a user may encounter.
-
-%\todo{Add the following sentence somewhere ? : }.
-
-%\todo{
-%However, it is unlikely that programmers would anticipate and
-%enumerate all possible misuses and protect their code against them.
-%}
-
-%$\blacksquare$
-%A broader question is which kind of information should be recorded
-%from program execution. 
-%In the design of \ourtool, we store the behavioral information
-%of each affected predicate from correct executions in the database,
-
-%and empirically compared with two other abstractions (a coarser abstraction
-%at the method level, and a finer abstract at the statement level).
-%Investigating the trade-
-%\ourtool uses predicate as the abstraction level,
-%and emprically compares with two other abstractions . Investigating
-%other abstraction levels remains as our future work.
+It is more natural and easier for a developer to provide correct execution
+profiles, instead of anticipating and enumerating the possible
+errors a user may encounter.
 
 \vspace{1mm}
 \noindent \textbf{What if a similar execution profile is not available?}

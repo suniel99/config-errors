@@ -8,7 +8,7 @@ the code in Figure~\ref{fig:example} as an example.
 The predicate at line 312 is affected by
 the configuration option \CodeIn{maxsize}. \ourtool inserts
 one instrumentation statement before line 312 to
-keep track of how often the predicate is evaluated, and
+count how often the predicate is evaluated, and
 inserts another statement after line 312 to count how often
 the predicate evaluated to true.
 
@@ -49,8 +49,7 @@ such predicate profiles, although by no means complete in
 recording the whole execution, do capture
 sufficient information to reason about the causal effects of configurations
 and how a configuration option relates to software's behavior, while
-also imposing only moderate performance impact
-on foreground applications.
+also imposing only moderate performance impact.
 
 
 %health as the results of executing a set of predicates.

@@ -13,6 +13,9 @@ in a file.
 %\ourtool works in a fully automatic and
 %push-button way, and scales to realistic programs.
 
+\todo{the following 3 paragraphs (up to "For a Java program") should be cut first, if we
+are running out of space.}
+
 After being compiled into bytecode,
 a predicate in Java source code may be translated into multiple bytecode
 instructions. Thus, a computed thin slice may
@@ -57,8 +60,7 @@ from the same predicate should also be included.
 
 
 For a Java program, \ourtool does not analyze the standard JDK
-library and all the dependent libraries. We believe such approximation
-is reasonable, since it is
-unlikely for a configuration option set on client software
-to affect the behaviors of its dependent libraries.
+library and all the dependent libraries. We believe this approximation
+is reasonable, since a configuration option set on client software
+usually does not affect the behaviors of its dependent libraries.
 
