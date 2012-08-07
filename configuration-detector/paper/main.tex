@@ -83,6 +83,9 @@
 \newcommand{\smallstep}{\relax}
 \newcommand{\tinystep}{\relax}
 
+\newcommand{\tinysqueeze}{\vspace{-1mm}}
+\newcommand{\smallsqueeze}{\vspace{-1mm}}
+
 \newcommand{\preitemizespace}{\vspace{-1mm}}
 
 \newenvironment{myindentpar}[1]%
@@ -128,16 +131,27 @@ University of Washington, USA\\
 
 \input{technique}
 
+\smallsqueeze
+
 \input{implementation}
+
+\smallsqueeze
 
 \input{evaluation}
 
+\smallsqueeze
+
 \input{related}
+
+\tinysqueeze
 
 \input{conclusion}
 
+\tinysqueeze
+\tinysqueeze
 
 \bibliographystyle{abbrv}
+
 %\scriptsize
 \bibliography{confbib}
 \end{document}
