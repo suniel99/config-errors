@@ -25,7 +25,7 @@ the collected predicate profiles into a $n$-dimensional
 vector $v_e$ =$\langle r_{e1}, r_{e2}, ..., r_{en}\rangle$, where $n$
 is the number of all possible predicate profiles in the program
 and each $r_{ei}$ is a ratio representing how often the $i$-th predicate
-profile evaluated to true at runtime.
+profile evaluated to true at run time.
 If a predicate has never been executed in an execution,
 \ourtool uses 0 as its ratio. 
 
@@ -285,6 +285,7 @@ deviated predicate (in terms of breath-first search
 distance in the dependence graph of thin slicing).
 This heuristic is based on the intuition that statements closer to the
 predicate seem more likely to be relevant to its behavior.
+\looseness=-1
 
 %Hence, we assume the user gradually explores statements of
 %increasing distance from the suspicious predicate until
@@ -304,6 +305,7 @@ than another if it ranks higher in more than half of the ranking lists.
 %meeting a specific set of criteria (e.g., getting more than half the voters).
 Our implementation breaks possible cycles by arbitrarily ranking the
 involved options, but this did not occur in our experiments. 
+\looseness=-1
 
 In the final output report (e.g., Figure~\ref{fig:output}), \ourtool 
 generates a brief explanation for each behaviorally-deviated predicate
@@ -320,3 +322,5 @@ all correct executions from the database and the undesired execution.
 %\todo{Such a ranking can have cycles.  Does the implementation suffer this
 %  problem?}
 
+
+% LocalWords:  un

@@ -1,6 +1,6 @@
 This step instruments the tested program offline
 by inserting code to monitor each affected predicate's outcome
-at runtime.
+at run time.
 
 The instrumentation step inserts 2 statements, one
 before and one after each affected predicate. Take
@@ -34,7 +34,7 @@ the predicate evaluated to true.
 Executing the instrumented program produces an \textit{execution profile}, which
 consists of a set of \textit{predicate profiles}.
 Each predicate profile is a 4-tuple consisting of a configuration option,
-one of its affected predicates, the predicate's execution count, and its evaluation results as recorded at runtime. For example,
+one of its affected predicates, the predicate's execution count, and its evaluation results as recorded at run time. For example,
 suppose the predicate on line 312 has been executed 100 times, of which
 30 times it is evaluated to true. \ourtool creates the following predicate
 profile:
@@ -69,3 +69,6 @@ also imposing only moderate performance impact.
 %get as much from it as a programmer open to other,
 %possibly valuable information.
 
+
+% LocalWords:  maxsize ExecutableSequence createNewUniqueSequence newSequence
+% LocalWords:  incrExecCount GenInputsAbstract incrTrueCount tuple
