@@ -57,13 +57,13 @@ gained a 5\% performance increase.
 %an immediate increase of 5\% improvement
 
 Compared to non-crashing errors, \ourtool is less effective
-in diagnosing non-crashing errors.
+in diagnosing crashing errors.
 %For 4 crashing errors, the actual causes are ranked below the top 3 options.
 This is a direct result of lacking enough predicate behavior observations,
 since most crashing errors occur soon
 after the program is launched. Therefore, many predicates are
 only executed once and their $Deviation$ scores
- (Section~\ref{sec:deviation}) turn out to be the same; and the BFS-distance-heuristic to resolve ties (Section~\ref{sec:linking})
+ (Section~\ref{sec:deviation}) turn out to be the same; and the BFS-distance-based heuristic to resolve ties (Section~\ref{sec:linking})
 works half the time.
 
 
