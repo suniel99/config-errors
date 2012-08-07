@@ -13,51 +13,6 @@ in a file.
 %\ourtool works in a fully automatic and
 %push-button way, and scales to realistic programs.
 
-\todo{the following 3 paragraphs (up to "For a Java program") should be cut first, if we
-are running out of space.}
-
-After being compiled into bytecode,
-a predicate in Java source code may be translated into multiple bytecode
-instructions. Thus, a computed thin slice may
-miss predicates that should be included.
-Consider the following simplified code snippet from JChord~\cite{jchord}
-and its translated WALA bytecode:
-
-
-\begin{CodeOut}
-\begin{alltt}
-   // eqth is a configuration option 
-1. if (eqth.equals("run")) \ttlcb
-2.   add();
-3. \ttrcb
-\end{alltt}
-\end{CodeOut}
-\vspace{-2mm}
-\hspace{20mm}$\Downarrow$ 
-%\vspace{-2mm}
-\begin{CodeOut}
-\begin{alltt}
-1. r0 = getstatic eqth
-2. r1 = ldc "run"
-3. r2 = r0.equals(r1)
-4. r4 = true
-5. conditional branch(eq) r2, r4
-6. invokevirtual add() 
-\end{alltt}
-\end{CodeOut}
-
-In the translated bytecode, lines 1 -- 5 correspond to line 1 in the
-source code. However, a thin slice computed
-for the configuration option \CodeIn{eqth} only includes lines 1 and 3
-in the translated bytecode, missing the actual branching
-instruction (line 5 in the bytecode).
-To overcome this limitation, our implementation performs an extra check
-for each bytecode instruction in the resulting slice:
-if an instruction 
-is translated from a predicate in the source code, then the
-branching instruction (e.g., line 5 above) translated
-from the same predicate should also be included.
-
 
 For a Java program, \ourtool does not analyze the standard JDK
 library and all the dependent libraries. We believe this approximation

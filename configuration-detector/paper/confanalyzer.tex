@@ -1,13 +1,14 @@
 We compared \ourtool with ConfAnalyzer, a heavyweight dynamic information
 flow-based technique~\cite{Rabkin:2011:PPC}.
 We chose ConfAnalyzer because it is the most recent technique and
-also one of precise configuration error diagnosis techniques
+also one of the most precise configuration error diagnosis techniques
 in the literature.
 ConfAnalyzer tracks the flow of labelled objects through the
 program dynamically,
 and treats a configuration option as a root cause if its
 value may flow to a crashing point.
-ConfAnalyzer works remarkably well for crashing errors, though as
+ConfAnalyzer works remarkably well for most of the crashing errors (all of
+which are selected from the ConfAnalyzer paper~\cite{Rabkin:2011:PPC}), though as
 described above these are often easy to diagnose even without tool
 support. However, ConfAnalyzer cannot diagnose non-crashing errors.
 
@@ -16,7 +17,7 @@ For the 9 crashing errors, \ourtool produced better results for 3 of them,
 the same results for another 3, and worse results for the remaining 3.
 
 ConfAnalyzer performs better on crashing errors
-having shorter execution paths: an error exhibits
+having shorter execution paths, when an error exhibits
 almost immediately after the software is launched.
 In such cases, only a small number of configuration options are initialized and
 few of them can flow to the crashing point. 
@@ -25,10 +26,10 @@ few of them can flow to the crashing point.
 observation of program behaviors.
 
 ConfAnalyzer outputs less accurate or no results
-for errors (e.g., error 14 in Figure~\ref{tab:results}) where the root cause option value
-flows into containers, or system calls. However, for those errors,
-\ourtool can still reason about (to some extent) the \textit{consequence} of a misconfiguration
-by the observed predicate behaviors, and produce even better diagnosis.
+for errors where the root cause option value
+flows into containers or system calls (e.g., error 14 in Figure~\ref{tab:results}).
+\ourtool can reason (to some extent) about the \textit{consequence} of
+such a misconfiguration based on the observed predicate behaviors.
 
 
 
