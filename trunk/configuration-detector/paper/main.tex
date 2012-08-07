@@ -96,7 +96,10 @@
 {\end{list}}
 
 % Reduce indentation in lists.
-\setlength{\leftmargini}{.5\leftmargini}
+\setlength{\leftmargini}{.25\leftmargini}
+\setlength{\leftmarginii}{.25\leftmarginii}
+\def\IEEElabelindentfactori{.25}   % almost always one
+\def\IEEElabelindentfactorii{0.15} % 0.0 or 1.0 may be used in some cases
 
 %% Bring items closer together in list environments
 %% This doesn't work with an optional argument to the list environment.
@@ -124,6 +127,8 @@ University of Washington, USA\\
 
 
 \maketitle \sloppy
+
+\setlength{\leftmargini}{.25\leftmargini}
 
 \input{abstract}
 
@@ -155,3 +160,5 @@ University of Washington, USA\\
 %\scriptsize
 \bibliography{confbib}
 \end{document}
+
+% LocalWords:  szhang mernst

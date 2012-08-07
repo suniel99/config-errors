@@ -17,6 +17,7 @@ message, it is often cryptic or misleading~\cite{Yin:2011:ESC, Attariyan:2010:AC
 Users may not even think of configuration as a cause of their problem.
 % Thus, users must search manuals, FAQs, and online forums to find potential
 % solutions.% to the problem. %$\blacksquare$ this process is frustrating..
+\looseness=-1
 
 \subsection{Motivating Example}
 \label{sec:mot}
@@ -38,7 +39,7 @@ challenging to diagnose. Differing from
 a crashing error, Randoop did not exhibit a crashing point, dump
  a stack trace, output an error message, or indicate suspicious program
 variables that may have incorrect values. Lacking such information
-makes many well-known
+makes many
 techniques such as dynamic slicing~\cite{Zhang:2003:PDS},
 dynamic information flow tracking~\cite{Attariyan:2010:ACT}, and
 failure trace analysis~\cite{Rabkin:2011:PPC} inapplicable.
@@ -49,6 +50,7 @@ no longer exhibits this error.
 This further makes 
 search-based fault isolation techniques such as Delta debugging~\cite{Zeller:2002:ICC}
 ineffective.
+\looseness=-1
 
 %there is no obvious testing oracle\todo{Why
 %  not?  Wouldn't ``some output vs.\ no output'' be a testing oracle?} to check whether
@@ -105,7 +107,7 @@ information to explain why: % about the reason why \CodeIn{maxsize} should be ac
 a program predicate affected by \CodeIn{maxsize} behaves dramatically
 differently between the recorded undesired execution
 and the correct executions found in \ourtool's database.
-
+\looseness=-1
 
 Figure~\ref{fig:example} shows the relevant code snippet
 in Randoop.  When Randoop generates a new test (line 100, in the form of
@@ -127,6 +129,7 @@ silent failure, pinpoints the
 \CodeIn{maxsize} option, and suggests the users to change its value.
 The problem is resolved if
 the user changes \CodeIn{maxsize} to a larger value, for example 1000.
+\looseness=-1
 
 
 %Guided by the report, we can further find out
@@ -222,7 +225,7 @@ to statically identify the predicates it affects in the source code.
 
 \item \textbf{Configuration Behavior Profiling}. \ourtool
 \textit{selectively} instruments the program-to-diagnose
-so that it records the runtime behaviors of affected predicates
+so that it records the run-time behaviors of affected predicates
 in an execution profile.
 %diagnosed code when undesired behavior
 %is observed.
@@ -449,7 +452,7 @@ undesired behavior to specific configuration options (Section~\ref{sec:technique
 
 
 \item \textbf{Implementation.} We implemented our technique 
-in a tool, called \ourtool, for Java software (Section~\ref{sec:implementation}). Our tool implementation is publicly available at
+in a tool, called \ourtool, for Java software (Section~\ref{sec:implementation}). It is available at
 \url{http://config-errors.googlecode.com}. 
 
 
@@ -462,3 +465,9 @@ show the usefulness of the proposed technique (Section~\ref{sec:evaluation}).
 
 
 
+
+% LocalWords:  misconfigurations NanoXML maxsize newSequence GenInputsAbstract
+% LocalWords:  randoop ForwardGenerator pre readFromCommandLine eSeq currSeq
+% LocalWords:  ExecutableSequence createNewUniqueSequence AbstractGenerator
+% LocalWords:  executionVisitor processSequence componentManager ConfAnalyzer
+% LocalWords:  addGeneratedSequence
