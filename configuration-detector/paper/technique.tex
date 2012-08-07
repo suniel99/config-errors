@@ -29,18 +29,25 @@ root causes, and reports these to the user (Section~\ref{sec:analysis}).
 %, linking each configuration
 %to its affected predicates
 
+\tinysqueeze
 
 \subsection{Configuration Propagation Analysis}
 \label{sec:prop}
+\tinysqueeze
 \input{propagation}
 
+\tinysqueeze
 \subsection{Configuration Behavior Profiling}
 \label{sec:profiling}
+\tinysqueeze
 \input{profiling}
 
 
+\tinysqueeze
+
 \subsection{Configuration Deviation Analysis}
 \label{sec:analysis}
+\tinysqueeze
 \input{deviation}
 
 
@@ -51,7 +58,8 @@ assuming the application code is correct, but the software
 is inappropriately configured so that it does not		
 behave as desired. We next discuss some design issues in \ourtool.
 
-\vspace{1mm}
+%\vspace{1mm}
+\vspace{0.5mm}
 \noindent \textbf{Differences between program inputs and configuration options.}
 We used our judgment to distinguish configuration options 
 from other program inputs. A configuration option is
@@ -70,7 +78,8 @@ flag or configuration file.
 %is often independent of the concrete input values that a user might provide.
 
 
-\vspace{1mm}
+%\vspace{1mm}
+\vspace{0.5mm}
 \noindent \textbf{Why not use profiles from unit test executions?}
 \ourtool's database stores correct profiles from complete 
 executions that start at the main method.
@@ -82,14 +91,15 @@ the whole program workflow.
 
 
 
-\vspace{1mm}
+%\vspace{1mm}
+\vspace{0.5mm}
 \noindent \textbf{Why not store profiles from failing executions in the database?}
 We envision the profile database is built by developers at release time.
 It is more natural and easier for a developer to provide correct execution
 profiles, instead of anticipating and enumerating the possible
 errors a user may encounter.
 
-\vspace{1mm}
+\vspace{0.5mm}
 \noindent \textbf{What if a similar execution profile is not available?}
 \ourtool's effectiveness largely depends on the availability of
 similar execution profiles from the database. For a given undesired execution profile, lacking a similar
