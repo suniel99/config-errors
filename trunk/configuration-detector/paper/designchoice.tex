@@ -36,6 +36,7 @@ Average & 9.4 & 9.4 & 6.7\\
 \hline
 \end{tabular}
 }
+\vspace{-2mm}
 \Caption{{\label{tab:selection} Comparison with different execution profile selection
 strategies (Section~\ref{sec:choices}).
 The last column ``Similarity-based'' is the selection strategy
@@ -54,7 +55,8 @@ In particular, we compare the similarity-based selection strategy used in \ourto
  (Section~\ref{sec:similar}) with two alternatives: selecting
 all available profiles in the database, and
 randomly selecting the same number of profiles as \ourtool uses from the database.
-Figure~\ref{tab:selection} shows the results.
+Figure~\ref{tab:selection} shows the results. For random selection, we
+performed the experiment 10 times and report the average.
 \end{itemize}
 
 
@@ -65,9 +67,9 @@ too many irrelevant statements that are only \textit{indirectly} affected by
 a configuration option value but not pertinent to the task of
 error diagnosis. In many cases, monitoring the control flow
 of such indirectly-affected predicates and then linking their
-behaviors to configuration options lead to low accuracy. Furthermore,
+behaviors to configuration options leads to low accuracy. Furthermore,
 performing full slicing is much more expensive than thin slicing; in
-our experiments, the full slicing algorithm~\cite{Horwitz:1988} ran out of
+our experiments, the full slicing algorithm ran out of
 memory on Soot.
 
 %Furthermore, modern programs typically rely heavily on well-tested data structures
@@ -85,7 +87,7 @@ they make \ourtool report many irrelevant
 differences between an undesired
 execution and a dramatically different execution.
 %, which will not be selected by \ourtool's similary-based selection strategy (Section~\ref{sec:similar}).
-We also find diagnosing a crashing error is less sensitive 
+Diagnosing a crashing error is less sensitive 
 to the comparison execution profiles than diagnosing a non-crashing error.
 This is because crashing profiles are often much smaller, executing
 fewer predicates before reaching the crashing points; and \ourtool

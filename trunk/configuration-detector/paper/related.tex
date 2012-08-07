@@ -8,10 +8,10 @@ analysis techniques.
 %\subsection{Software Configuration Error Diagnosis}
 \vspace{1mm}
 \noindent \textbf{\textit{Software Configuration Error Diagnosis.}}
-Several prior research efforts have applied different techniques to the
-problem of software configuration error diagnosis~\cite{Attariyan:2008:UCD, 
+Software configuration error diagnosis is recognized
+as an important research problem~\cite{Attariyan:2008:UCD, 
 Whitaker:2004:CDS, Wang:2004:AMT,
-Attariyan:2010:ACT, Rabkin:2011:PPC, keller:conferr}. For example,
+Attariyan:2010:ACT, Rabkin:2011:PPC, keller:conferr}.
 Chronus~\cite{Whitaker:2004:CDS} relies on a user-provided
 testing oracle to check the behavior of the system, and uses
 virtual machine checkpoint and binary search to find the
@@ -42,7 +42,7 @@ Attariyan:2010:ACT, Rabkin:2011:PPC}.
 By contrast, our technique can diagnose both
 \textit{crashing} and \textit{non-crashing} errors.
 Second, several existing approaches~\cite{Attariyan:2010:ACT, Whitaker:2004:CDS}
-assume the existence of a testing oracle that can safely
+assume the existence of a testing oracle that can 
 check whether the software functions correctly. However, such oracles are often
 absent in practice. Writing them may
 require a substantial amount of time and effort that a
@@ -133,8 +133,8 @@ false) rather than its true ratio and execution frequency
 with the observed behaviors. In addition,
 %Compared to \ourtool, besides
 %the significant difference in the error diagnosis algorithm,
-CBI identifies likely buggy statements as final output, while
-\ourtool identifies the behaviorally-deviated program predicates, and
+CBI identifies likely buggy statements as its final output, while
+\ourtool identifies the behaviorally-deviated program predicates and
 links the undesired behavior to specific configuration options.
 
 %\todo{Not sure should meantion another significant difference
@@ -169,7 +169,7 @@ and time-consuming to diagnose~\cite{Yin:2011:ESC, Hubaux:2012}.
 To alleviate this problem, researchers have designed various
 software analysis techniques to improve configuration
 management~\cite{Giese:2004:MDV, Jezequel:1999:RVC,
-Kloukinas:2000:ACM, Garvin:2011}, understand
+Kloukinas:2000:ACM, Garvin:2011} and understand
 and test the behavior of a configurable software system~\cite{Grundy:1998:ECU,
 Qu:2008:CRT, Nanda:2011}.
 For example, Garvin et al.~\cite{Garvin:2011} show how to

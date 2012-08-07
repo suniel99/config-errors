@@ -7,7 +7,7 @@
 %  architecture is replaced by each variant.}
 
 Another possible way to diagnose a configuration error is to leverage
-the existing fault localization techniques, by treating the undesired
+existing fault localization techniques, by treating the undesired
 execution as a failing run and all correct executions (in the database)
 as passing runs. We next compare \ourtool with two state-of-the-art
 techniques: % in error diagnosis:
@@ -20,37 +20,30 @@ Then, it leverages a well-known fault localization technique,
 Tarantula~\cite{Jones:2002}, to rank the likelihood of each
 statement being buggy, and queries the results of thin slice
 to identify its affecting configuration options as the root causes.
-\todo{Actually, I performed another variant of coverage analysis (but
-did not show the results in the paper): use thin
-slicing to compute affected statement, and only monitor coverage of such
-affected statements. The results are almost the same. Should I
-also mention this? since a reader may question monitoring all
-statements introduced the noise.}
+The results are essentially the same for a variant of
+coverage analysis: using thin slicing to compute all affected statements,
+and only monitoring the coverage of such affected statements.
 
 \item \textbf{Method-level Invariant Analysis}. This technique stores invariants detected
-by Daikon~\cite{Ernst:1999} from correct execution profiles in the database.
-When a configuration error occurs, this technique detects invariants from the undesired execution profile;
-and compares them with those stored in the database.
-It treats a method to have suspicious behaviors if its observed invariants
-from the undesired execution profile are different from the invariants stored
-in the database~\cite{McCamant:2003}. Finally, this technique ranks a method's suspiciousness by
-the number of different invariants, and queries the results of thin slice
+by Daikon~\cite{Ernst:1999} from correct executions in the database.
+It treats a method as having suspicious behavior if its observed invariants
+from the undesired execution are different from the invariants stored
+in the database~\cite{McCamant:2003}. This technique ranks a method's suspiciousness by
+the number of different invariants, and queries the results of thin slicing
 to identify its affecting configuration options as the root causes. 
 \end{itemize}
 
 
-The experimental results are shown in Figure~\ref{tab:results} (Columns
-``Coverage Analysis'' and ``Invariant Analysis'').
-Both techniques produce less
-accurate results; and for some errors, even fail to identify
-the actual root causes.
+Both techniques produce less accurate results (see Columns
+``Coverage Analysis'' and ``Invariant Analysis'' in Figure~\ref{tab:results}).
+%; and for some errors, even fail to identify the actual root causes.
 
 In Coverage Analysis, the statement-level granularity is \textit{too fine-grained}.
 Many statements have exactly the same coverage by the failing/passing executions,
 and thus have the same suspiciousness score as computed by Tarantula~\cite{Jones:2002}.
 Furthermore, Tarantula only records whether a
 statement has been executed or not but does not record how a statement is 
-executed (e.g., how often a predicate is evaluated to true). The combination
+executed (e.g., how often a predicate evaluates to true). The combination
 of these two factors causes the low accuracy.
 
 
@@ -58,11 +51,11 @@ In Invariant Analysis, the method-level granularity is \textit{too coarse-graine
 Invariant detection techniques like Daikon~\cite{Ernst:1999}
 only check program states at method entries and exits to infer
 likely pre- and post-conditions, and thus are less
-senstivie to many control flow details within a method (e.g., a predicate's
+sensitive to many control flow details within a method (e.g., a predicate's
 true ratio). In our study, Invariant Analysis failed to diagnose 3
 errors because it failed to infer invariants for 1 program (Synoptic),
 and reported the same invariants for the other two programs (Soot and Randoop)
-on the method containing behavioral-deviated predicates between an undesired execution and correct executions.
+on the method containing behaviorally-deviated predicates between an undesired execution and correct executions.
 
 
 
@@ -73,6 +66,6 @@ on the method containing behavioral-deviated predicates between an undesired exe
 This experiment suggests that directly applying existing fault localization
 techniques~\cite{Jones:2002, McCamant:2003} to the domain of
 configuration error diagnosis may be insufficient, due
-to different abstractions and algorithms. It also indicates that
-focusing on the behaviros of relevant predicates as our tool does
- can be a good choice.
+to different abstractions and algorithms
+Focusing on the behaviors of relevant predicates as our tool does
+ may be a good choice.

@@ -1,5 +1,5 @@
-We measure \ourtool's performance in two ways: the time cost
-in diagnosing an error; and the overhead introduced
+We measured \ourtool's performance in two ways: the time cost
+in diagnosing an error and the overhead introduced
 in reproducing an error in a \ourtool-instrumented program.  Figure~\ref{tab:performance}
 shows the results.
 
@@ -8,7 +8,7 @@ shows the results.
 \small{
 \begin{tabular}{|l|c|c|c|}
 \hline
- Error ID. & \multicolumn{2}{|c|}{Time Cost (seconds)} & Slowdown ($\times$)\\
+ Error ID. & \multicolumn{2}{|c|}{Time (seconds)} & Slowdown ($\times$)\\
   %& \multicolumn{3}{|c|}{Different Comparison Profile Selection Strategy} \\
 \cline{2-3}
  Program & Thin Slicing & Error Diagnosis &  \\
@@ -54,16 +54,17 @@ diagnose one configuration error. Computing
 thin slices for all configuration options
 is expensive. However, this step is one-time effort
 per program and the computed slices can be cached
-to share across diagnosis. %for future use.
+to share across diagnoses. %for future use.
 
 The performance overhead to reproduce the buggy behavior varies
 among applications. The current tool implementation
 imposes an average slowdown of 13 times when reproducing
 an error in a \ourtool-instrumented version.
-Such performance overhead, admittedly high, are still acceptable
+This performance overhead, admittedly high, is still acceptable
 for offline error diagnosis.
-For errors 9, 10, and 11, the slowdown is signficiant, but the
-absolute time cost for error reproduction is still low ( $<$ 12 minutes per error).  
+For errors 3, 9, 10, and 11, the slowdown is signficiant, but the
+absolute time cost for error reproduction is still low ( $<$ 13 minutes per error).  
+For the other 10 errors, the average slowdown is only 1.9.
 
 %\todo{Maybe add one more sentence here: for error 9, 10, 11, the slowdown for
 %reproducing a crashing error is very large. However, the absolute
