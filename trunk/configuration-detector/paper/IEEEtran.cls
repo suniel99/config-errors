@@ -737,12 +737,12 @@
 % but the appearance will be much better "right out
 % of the box" than that under V1.5 and prior.
 % TeX default is 50
-\hyphenpenalty=750
+% \hyphenpenalty=750
 % If we didn't adjust the interword spacing, 2200 might be better.
 % The TeX default is 1000
-\hbadness=1350
+% \hbadness=1350
 % IEEE does not use extra spacing after punctuation
-\frenchspacing
+% \frenchspacing
 
 % V1.7 increase this a tad to discourage equation breaks
 \binoppenalty=1000 % default 700
