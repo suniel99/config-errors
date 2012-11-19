@@ -13,7 +13,7 @@ import edu.washington.cs.conf.util.Utils;
 
 public abstract class AbstractInstrumenter {
 
-	  protected final boolean disasm = false;
+	  protected boolean disasm = false;
 	  protected final boolean verify = true;
 	  protected OfflineInstrumenter instrumenter;
 	  
