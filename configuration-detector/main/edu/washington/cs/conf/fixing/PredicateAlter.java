@@ -6,7 +6,21 @@ import edu.washington.cs.conf.util.Utils;
 
 public class PredicateAlter {
 	
+	public static PredicateAlter alter = new PredicateAlter();
+	
 	private static Random rand = new Random();
+	
+	public int returnIntThres() {
+		//remove the hardcode here
+		return 10;
+//		System.out.println(20);
+	}
+	
+	public int returnRandom() {
+		//remove the hardcode here
+		return rand.nextInt(100);
+//		System.out.println(rand.nextInt(100));
+	}
 	
 	private static boolean returnTrueWithProb(float r) {
 		Utils.checkTrue(r >= 0.0f && r < 1.0f);

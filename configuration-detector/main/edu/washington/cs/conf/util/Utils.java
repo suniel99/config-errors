@@ -348,6 +348,13 @@ public class Utils {
 		return count;
 	}
 	
+	public static boolean debug = true;
+	public static void debugPrintln(String str) {
+		if(debug) {
+			System.out.println(str);
+		}
+	}
+	
 	public static <T> void logCollection(Iterable<T> c) {
 		Log.logln(dumpCollection(c));
 	}
