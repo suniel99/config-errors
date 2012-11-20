@@ -1,0 +1,268 @@
+Subject: ICSE 2013 Paper Notification [22]
+From: "Betty HC Cheng and Klaus Pohl" <icse2013-papers-chairs@borbala.com>
+To: szhang@cs.washington.edu, mernst@cs.washington.edu
+Cc: icse2013-papers-chairs@borbala.com, icse2013-papers-webadmin@borbala.com
+Date: Tue, 20 Nov 2012 10:29:57 +0100
+Reply-To: icse2013-papers-chairs@borbala.com
+
+Dear Sai and Michael,
+
+Thank you for your submission to ICSE 2013. The Technical Research Paper
+program committee met on November 16-17, 2012 in Raleigh, North Carolina. 
+
+We are pleased to inform you that your paper,
+
+"Automated Diagnosis of Software Configuration Errors"
+
+has been accepted for presentation in the technical research program and for
+publication in the conference proceedings. The competition was strong: only 85
+of the 461 submissions were accepted, giving an acceptance rate of 18.5%.
+
+We enclose the reviews of your paper. In your preparation of the final paper,
+please be sure to incorporate the comments from the reviewers.
+
+VERY IMPORTANT INFORMATION:
+
+1. You will receive an author kit from the ICSE 2013 Publications Chair.
+
+2. The final camera-ready paper is due on Friday, March 1, 2013. 
+This deadline is firm --- if you miss the deadline, your paper will not appear
+in the proceedings.
+
+3. Information about the format of the camera-ready version of your paper is
+on the ICSE 2013 conference website. Your final paper must conform to the
+ICSE 2013 Format and Submission Guidelines. Your paper must not exceed 10
+pages, including references.
+
+4. As mentioned in the Call for Papers, your paper submission and acceptance
+implies that one of the paper's authors must attend and present the paper at
+the conference, which will be held May 18-26, 2013 in San Francisco,
+California.
+
+5. Please note that you are not allowed to change the author list, except to
+correct typos in the names. 
+
+6. Changes to the title of the paper are also not allowed unless you have been
+advised to do so in the Reviewers' comments. In those cases, please be sure to
+contact the PC Co-Chairs for approval of the title changes. 
+
+Failure to attend the meeting to present the paper will result in the removal
+of your paper from the proceedings; more specifically it will not appear in
+the IEEE or ACM Digital Libraries.
+
+Again, we congratulate you on the acceptance of your paper that is part of a
+strong and exciting ICSE 2013 conference program. We look forward to seeing
+you at the conference.
+
+Best Regards,
+
+Betty H.C. Cheng and Klaus Pohl
+Program Committee Co-Chairs
+ICSE 2013
+
+P.S.  A few months before the conference, we will post instructions on the web
+site to help you prepare for the conference presentation.
+
+*=--=*=--=*=--=*=--=*=--=*=--=*=--=*=--=*=--=*=--=*=--=*=--=*=--=*=--=*=--=*=
+
+First reviewer's review:
+
+          >>> Summary of the submission <<<
+
+The paper describe an automatic technique and a tool, ConfigDiagnoser, to
+diagnose configuration errors. The technique compares the execution profile of
+a failing program run to those of correct runes. The profiles consist of
+control flow condition evaluations that were directly affected by configuration
+parameters. The conditions are identified using thin slicing. The comparison
+uses cosine vector similarity to select similar profiles of correct runs. If
+the statistics of evaluation results of specific conditions for the failing run
+differ significantly from those for the correct runs, the configuration options
+directly affecting these conditions form diagnoses. The authors evaluate the
+approach on both crashing and non-crashing failing runs of several programs. In
+nearly 60% of cases the corect diagnosis was reported in the first rank. The
+authors also compare the technique to three other techniques, showing that the
+proposed technique outperforms significantly the other techniques for
+non-crashing runs. The comparison also shows that a previous technique,
+ConfAnalyzer, is better than the proposed one for crashing runs.
+
+          >>> Evaluation <<<
+
+The paper presents a new technique addressing an important practical problem.
+The technique combines elements of existing techniques, but the result is a
+significant improvement, especially for non-crashing runs. The paper provides a
+careful evaluation, including comparison to previous techniques. The comparison
+includes valuable discussion of the reasons why the results of the compared
+approaches differ. The need to instrument the program under diagnosis will
+probably limit the applicability of the technique, but the technique may turn
+out to be valuable in some contexts.
+
+
+The text in the evaluation at the end of page 7 seems to imply that
+ConfigDiagnoser and ConfigAnalyzer would give similar results for crashing
+runs. However, since the user does not know which recommendation is correct, he
+or she will have to try the options one by one from the top of the list.
+Further, since the user might not know whether the observed failure is due to a
+configuration option or, say, buggy input, he or she might consider only the
+very few top recommendations, say 3. Thus, I consider that ConfigDiagnoser
+failed on bugs 8, 10, 11, 14, whereas ConfigAnalyzer failed only on bug 14.
+Thus, the overall results for ConfigAnalyzer are much better than for
+ConfigDiagnoser for crashing runs.
+
+
+
+It seems that ConfigDiagnoser and ConfigAnalyzer are complementary and a
+combination of both would likely to give best results.
+
+
+
+Compared to using code coverage, the work shows that reporting the frequency of
+a condition being satisfied improves the results. It seems that this is mainly
+due to cases where a configuration option is used to control the execution of
+code in iterations, like maxIterations.
+
+
+
+The paper is very well written. It is well-structured and easy to read.
+
+
+
+I only got confused by the description of thin slicing on p. 3. It says "thin
+slicing focuses on statements that flow values to the seed (here, a seed is the
+initialization statement of a con-figuration option)." Isn't the case that
+values flow away from the seed rather than to it as the program executes? 
+
+
+
+Please label all tables as tables, not as figures.
+
+
+*Detailed comments*
+
+
+
+The selection of tests to generate the profiles has impact on the results. It
+is not clear what criteria were used to select the tests. Similarly how
+representative are the non-crashing failures compared to all such that are
+likely to occur in practice? Some discussion of the properties of the selected
+tests and errors that might be relevant with respect to the technique would be
+useful.
+
+
+
+The evaluation uses minimized test inputs for the failing runs. Real cases
+might not be minimized and minimization would require extra work. Minimized
+cases seem easier to disgnose by this technique since fewer config options
+would be modified and thus fewer deviations are likely to be reported. Can you
+say how the technique wold work in non-minimal cases? And how much work is to
+minimize the cases in the case study?
+
+How is the time of diagnosis measured (Fig 7). A user will likely need to try
+each recommendation of the tool from the top until one that works. For those
+cases in which the result is not the top one, each additional test run will
+incur an overhead, but this does not seem to be reflected in the table. For
+example, the rank for program 8 is 17, and the diagnosis time is 17 second.
+This seems too short.
+
+
+
+A failing run might not be due to wrong configuration but due to some other
+reasons, like incorrect input data. What is the recommended process for using
+this tool in such cases? Some discussion on this topic in the paper would be
+useful.
+
+
+The description of why CodeAnalyzer fails on bug 14 is not clear. Is this a
+fundamental limitation of the technique underlying CodeAnalyzer, or just an
+implementation limitation of the tool?
+
+
+"faithfully reproduce it for late analysis"
+->
+
+"faithfully reproduce it for later analysis"
+
+*=--=*=--=*=--=*=--=*=--=*=--=*=--=*=--=*=--=*=--=*=--=*=--=*=--=*=--=*=--=*
+
+Second reviewer's review:
+
+          >>> Summary of the submission <<<
+
+This paper presents an approach to identify configuration errors. The paper
+uses thin slicing to identify the relation between predicates on configuration
+variables and statements, dynamic monitoring to collect information about
+executions, and some analysis to compute the likelihood of the responsibility
+of a configuration parameter for a specific failure.
+
+          >>> Evaluation <<<
+
+The proposed approach combines existing techniques in an interesting way to
+diagnose configuration failures. The results indicate theta the approach works
+better than existing approaches. Some of the limitations correctly summarized
+in the paper seems quite heavy and may limit the applicability of the approach. 
+Additional data about the scope of applicability of the approach and its
+limitations would further strengthen a good paper.
+
+*=--=*=--=*=--=*=--=*=--=*=--=*=--=*=--=*=--=*=--=*=--=*=--=*=--=*=--=*=--=*
+
+Third reviewer's review:
+
+          >>> Summary of the submission <<<
+
+This paper describes an approach for detecting and helping developers
+find configuration errors. The approach collects lightweight
+dependence info on affected predicates using thin slicing, collects
+runtime behavior relative to those predicates from failing system
+runs, and comares these to correct profile information stored in
+a program database, using the result to flag suspicious options.
+Empirical data (on a relatively small set of failures) shows that
+the approach can be effective, and more so in many cases than
+competing alternatives.
+
+          >>> Evaluation <<<
+
+I find both the paper and the approach quite interesting,
+and there are no problems that I'd classify as "major".
+A few things that do occur to me follow.
+
+page 3 right last para lines 4-5 "statements that flow values to the
+seed", don't you mean "statements to which values flow from the seed"?
+
+Section E sentence 1, assuming the app code is correct. That's okay
+with me for this paper, but can you say something about what happens
+when that assumption doesn't hold, which is rather likely?
+
+Evaluation. Using statement ranking is one way to judge the
+effectivenes of the approach, and since this is one of few papers
+to have tackled this problem in this way, for this paper I think
+it's acceptable. But in the very near future you need to examine
+the true measure of effectiveness -- whether engineers can actually
+use the data that you provide.  This is certainly required for
+the future work topic described in the paper's final paragraph.
+Also, for this paper, you should mention the need to study this,
+and the fact that your metric is a potentially incorrect surrogate,
+in the discussion of threats to validity (it's a construct threat).
+
+Page 5 right last para. You chose 14 errors. How? Randomly? And why?
+A cynic might suggest that you chose the 14 that made your approach
+look best. Can you dispel that suggestion?
+
+Page 6 left part B para 2, if you need space, this could go, and
+be replaced by a simple statement that some non-semantic changes
+to JChord were needed, and that the changed source is available
+from you (which it should be anyway).
+
+Page 7 left part 2 para 1. I must be missing something. Fig 7
+seems to suggest that error diagnosis takes 44 secs on avg,
+where does 4 minutes come from? And slicing takes 147 seconds,
+which doesn't seem all that bad either.
+
+Page 7 left part 2 para 3 middle, "This performance...is still
+acceptable for offline analysis". Best qualify this. E.g. I suspect
+that a 65 time slowdown on a program whose executions require
+an hour may be problematic even for offline processing.
+
+Page 8 right last para line 2, "significantly", better to use
+"substantially" or some word that doesn't carry implications
+of statistical testing with it.
+
+*=--=*=--=*=--=*=--=*=--=*=--=*=--=*=--=*=--=*=--=*=--=*=--=*=--=*=--=*=--=*
