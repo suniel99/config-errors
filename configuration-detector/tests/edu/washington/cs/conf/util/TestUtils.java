@@ -1,11 +1,15 @@
 package edu.washington.cs.conf.util;
 
 import java.lang.reflect.Field;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
 
 import junit.framework.TestCase;
 
@@ -23,6 +27,7 @@ public class TestUtils extends TestCase {
 	}
 	
 	public void testSortMapByKey() {
+
 		Map<String, Integer> map = new LinkedHashMap<String, Integer>();
 		map.put("c", 3);
 		map.put("d", 2);
@@ -61,4 +66,18 @@ public class TestUtils extends TestCase {
 		assertEquals(1, splits.length);
 		System.out.println(splits[0]);
 	}
+	
+	public void testTreeSet() {
+	   Object obj = new Object();
+	   Integer int1 = 0;
+	   Integer int2 = 1;
+	   Object[] objs = new Object [] {obj, int1, int2};
+	   List list1 = Arrays.asList(objs);
+	   List list2 = list1.subList(int1, int2);
+	   TreeSet treeSet = new TreeSet();
+	   boolean add = treeSet.add(list2);
+	   Set set = Collections.synchronizedSet(treeSet);
+	   //This assertion fails
+	   assertTrue(set.equals(set));
+    }
 }
