@@ -37,21 +37,6 @@ the affected predicates, and the effects of varying comparison execution profile
 These are two internal design choices. % in \ourtool.
 \end{itemize}
 
-%\begin{itemize}
-%\item How effective is \ourtool in diagnosing the root cause of
-%a configuration error (Section~\ref{sec:accuracy})?
-%\item Can \ourtool provide more accurate diagnosis information than
-%other approaches (Section~\ref{sec:comparison})? 
-%\item How long does \ourtool take to diagnose a configuration error (Section~\ref{sec:performance})?
-%\item What are the effects of varying the internal implementation of \ourtool,
-%such as using a different configuration propagation analysis and
-%different comparison execution profiles (Section~\ref{sec:choices})?
-%\item What are the effects of varying the comparison execution profiles (Section~\ref{sec:choices})?
-%\end{itemize}
-
-%We use two metrics to evaluate \ourtool's effectiveness:
-%the absolute ranking of the actual root cause in \ourtool's output,
-%and the time cost used in diagnosis.
 
 \vspace{-1mm}
 
@@ -146,13 +131,19 @@ We searched forums, FAQ pages, and the literature of
 configuration error diagnosis research to find actual
 configuration problems that users have experienced with our
 target applications. 
-We chose \errors configuration errors, in which
+\todo{I modified the following sentence. say we use ALL errors
+we have collected, rather than just picking up errors that this
+technique works well}
+We collected a total number of \errors configuration errors, in which
 the misconfigured values cover various data types, such as enumerated types,
 numerical ranges, regular expressions, and text entries.
-They are listed in Figure~\ref{tab:errors}. The \noncrash non-crashing errors
+\todo{I modified the following sentence}
+All collected errors 
+are listed in Figure~\ref{tab:errors} and used in the evaluation.
+The \noncrash non-crashing errors
 are collected from actual bug reports, mailing list posts, and our own experience.
 The \crash crashing errors, taken from~\cite{Rabkin:2011:PPC},
-were used to evaluate the ConfAnalyzer tool.
+were used to evaluate the ConfAnalyzer tool~\cite{confanalyzer}.
 All \errors configuration errors have been minimized: if
 any part of the configuration or input is removed, the software
 either crashes or no longer exhibits the undesired behavior.
@@ -228,6 +219,8 @@ for the JVM), running Windows 7.
 \label{sec:accuracy}
 \input{diagnosisresults}
 
+\enlargethispage{5pt}
+
 \subsubsection{Performance of \ourtool}
 \label{sec:performance}
 \input{performance}
@@ -279,7 +272,7 @@ support debugging non-deterministic errors.
 For non-deterministic errors, \ourtool could potentially leverage 
 a deterministic replay system
 that can capture an undesired non-deterministic
-execution and faithfully reproduce it for late analysis.
+execution and faithfully reproduce it for later analysis.
 Fifth, \ourtool's effectiveness  largely
 depends on the availability of a similar but correct execution profile.
 Using an arbitrary execution profile (as we demonstrated in Section~\ref{sec:choices}
@@ -288,11 +281,19 @@ by random selection) may significantly affect the results.
 \vspace{1mm}
 
 \noindent \textbf{\textit{Threats to Validity.}} 
-There are two major threats to validity in our evaluation. 
+There are three major threats to validity in our evaluation. 
 First, the \subjectnum programs and the configuration errors may not be
 representative. Thus, we can not claim the results can be
 generalized to an arbitrary program.
-Second, we only compared two dependence
+\todo{the second point is newly added}
+Second, in this paper, we focus specifically on
+configuration errors, assuming the application code is correct.
+In our experiments, all \errors errors
+have been minimized (as end-users often do
+when reporting an error). \ourtool might produce
+different error diagnosis results on buggy application 
+code with non-minimized inputs.
+Third, we only compared two dependence
 analyses (thin slicing and full slicing), three
 abstraction granularities (at the predicate level,
 statement level~\cite{Jones:2002}, and method level~\cite{Ernst:1999}),
