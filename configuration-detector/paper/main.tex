@@ -1,14 +1,11 @@
 %\documentclass{acm_proc_article-sp}
 %\documentclass{sig-alternate}
-\documentclass[conference,nofonttune]{IEEEtran}
+\documentclass[conference]{IEEEtran}
 
 %\usepackage{fancyheadings}
 %\documentclass[times, 10pt,twocolumn]{article}
 %\documentclass[conference]{IEEEtran-website}
 %\usepackage{latex8}
-
-% "\usepackage{microtype}" saves space only if "nofonttune" option is supplied
-\usepackage{microtype}
 
 \usepackage{algorithmic}
 \usepackage{multirow}
@@ -76,7 +73,7 @@
 \newcommand{\cut}[1]{}
 %% Comment out one of these two definitions.
 % \newcommand{\todo}[1]{\relax}
-\newcommand{\todo}[1]{{\bfseries [[{#1}]]}}
+\newcommand{\todo}[1]{{\color{red}\bfseries [[{#1}]]}}
 
 \newcommand{\ttlcb}{\texttt{\char "7B}}
 \newcommand{\ttrcb}{\texttt{\char "7D}}
