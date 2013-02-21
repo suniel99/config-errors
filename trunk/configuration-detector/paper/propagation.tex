@@ -56,8 +56,9 @@ a sequence has been executed before (line 315).
 To address this limitation, our technique uses thin
 slicing \cite{Sridharan:2007}, which includes
 \textit{only} statements that are \textit{directly} affected by a configuration option.
+\todo{I modified the next sentence}
 Different from traditional slicing~\cite{Horwitz:1988}, thin slicing
-focuses on statements that flow values to the seed (here, a
+focuses on statements to which values flow from the seed (here, a
 seed is the initialization statement of a configuration option), ignoring the 
 control flow dependencies as well as the uses of
 base pointers. Thin slicing improves the relevance

@@ -12,7 +12,7 @@
  \hline
 \phz 1. Randoop& \CodeIn{maxsize} & 57& 10 / 12 & 1 & X & 16 & N &46\\
 \phz 2. Weka&\CodeIn{m\_numFolds}& 14 &2 / 12 &1&  X& 7 & 5 &9\\
-\phz 3. JChord& \CodeIn{chord.kobj.k}& 79 & 2 / 6 & 3& X & 31 &2  &73\\
+\phz 3. JChord& \CodeIn{eqth}& 79 & 2 / 6 & 3& X & 31 &2  &73\\
 \phz 4. Synoptic& \CodeIn{partitionRegExp}& 37 & 2 / 6 & 1&  X& 1 & N &6\\
 \phz 5. Soot& \CodeIn{keep\_line\_number} &49 & 6 / 16 & 2 & X & 18 & N &N\\
 \hline
@@ -46,7 +46,9 @@ number of available configuration options, taken from Figure~\ref{tab:subjects}.
 Column ``\ourtool'' shows the results of using our technique. 
 Column ``\#Profiles'' shows the number of similar execution profiles selected
 from the pre-built database for comparison, and the total size of the database.
-Column ``ConfAnalyzer'' shows the results of using an existing technique~\cite{Rabkin:2011:PPC} (Section~\ref{sec:confanalyzer}).
+Column ``ConfAnalyzer'' shows the results of using an existing technique~\cite{Rabkin:2011:PPC} (Section~\ref{sec:confanalyzer});
+and the data in this column is taken from~\cite{Rabkin:2011:PPC}.
+\todo{I added the above sentence to explain where the data comes from}
 Columns ``Coverage Analysis'' and ``Invariant Analysis'' show the results of using two fault localization techniques as described in Section~\ref{sec:comparison}.
 Column ``Full Slicing'' shows the results of using full slicing~\cite{Horwitz:1988} to compute
 the affected predicates (Section~\ref{sec:choices}).
