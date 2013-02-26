@@ -63,9 +63,14 @@ on the method containing behaviorally-deviated predicates between an undesired e
 %is not sensitive enough on small control flow changes. for example, the invariant is the same
 
 
+\todo{I edited the following paragraph}
 This experiment suggests that directly applying existing fault localization
 techniques~\cite{Jones:2002, McCamant:2003} to the domain of
-configuration error diagnosis may be insufficient, due
-to different abstractions and algorithms
+configuration error diagnosis may be insufficient. 
+Different from a program input, a configuration option is
+often used to control a program's control rather than
+produce results. Thus, we cannot treat the configuration options
+as just another regular program input, and then use existing
+fault localization techniques.
 Focusing on the behaviors of relevant predicates as our tool does
  may be a good choice.

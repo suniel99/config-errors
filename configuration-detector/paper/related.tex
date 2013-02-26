@@ -101,7 +101,11 @@ However, besides the difficulty in writing a good testing oracle,
 a working state is often absent in practice since the error-revealing
 input and configuration may have already been minimized (such as the
 \errors configuration errors in our experiments).
-By contrast, \ourtool eliminates these two assumptions by comparing
+\todo{I added the following sentence for explanation}
+Furthermore, as a minimization technique, Delta debugging
+is not applicable to data (i.e., configuration option values)
+that are missing nor ones that are incorrect.
+By contrast, \ourtool eliminates these assumptions by comparing
 the undesired execution profile with correct execution profiles, and
 then identifying the root cause configuration options to account for
 the behavioral difference.
