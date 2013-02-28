@@ -52,7 +52,7 @@ machine learning algorithms. Our evaluation
 only uses its decision tree module. JChord~\cite{jchord}
 is a program analysis platform that enables users to design, implement,
 and evaluate static and dynamic program analyses for Java.
-Synoptic~\cite{Beschastnikh:2011} mines a finite state machine
+Synoptic~\cite{synoptic} mines a finite state machine
 model representation of a system from logs.
 Soot~\cite{soot} is a Java optimization framework for analyzing and transforming Java bytecode.
 
@@ -143,7 +143,7 @@ are listed in Figure~\ref{tab:errors} and used in the evaluation.
 The \noncrash non-crashing errors
 are collected from actual bug reports, mailing list posts, and our own experience.
 The \crash crashing errors, taken from~\cite{Rabkin:2011:PPC},
-were used to evaluate the ConfAnalyzer tool~\cite{confanalyzer}.
+were used to evaluate the ConfAnalyzer tool. %~\cite{confanalyzer}.
 All \errors configuration errors have been minimized: if
 any part of the configuration or input is removed, the software
 either crashes or no longer exhibits the undesired behavior.
@@ -157,7 +157,7 @@ either crashes or no longer exhibits the undesired behavior.
 
 For each subject program, we constructed a profile database
 by running existing (correct) examples from its user manual, discussion
-mailing list, and published papers~\cite{PachecoLET2007, Beschastnikh:2011, Rabkin:2011:PPC}.
+mailing list, and published papers~\cite{PachecoLET2007, Rabkin:2011:PPC}.
 We spent 3 hours per program, on average, and obtained 6--16 execution profiles.
 The average size of the profile database is 35MB, and the largest one
 (Randoop's database) is 72MB.
@@ -167,35 +167,37 @@ lines of code. This change
 does not modify JChord's semantics; rather, it just encapsulates
 scattered configuration option initialization statements 
 as static class fields, which simplifies specifying the seed statement
-in performing slicing. Here is a sample modification, where 
-\<chord.kobj.k> 
-is a configuration option
-passed as a system property:
+in performing slicing. 
 
-\vspace{-1mm}
+%Here is a sample modification, where 
+%\<chord.kobj.k> 
+%is a configuration option
+%passed as a system property:
 
-\begin{CodeOut}
-\begin{alltt}
-public void run() \ttlcb
-  ...
-  int kobjK = Integer.getInteger("chord.kobj.k");
-  ...
-\ttrcb
-\end{alltt}
-\end{CodeOut}
-\vspace{-4mm}
-\hspace{20mm}$\Downarrow$ 
+%\vspace{-1mm}
+
+%\begin{CodeOut}
+%\begin{alltt}
+%public void run() \ttlcb
+%  ...
+%  int kobjK = Integer.getInteger("chord.kobj.k");
+%  ...
+%\ttrcb
+%\end{alltt}
+%\end{CodeOut}
+%\vspace{-4mm}
+%\hspace{20mm}$\Downarrow$ 
 %\vspace{-2mm}
-\begin{CodeOut}
-\begin{alltt}
-static int chord\_kobj\_k = Integer.getInteger("chord.kobj.k");
-public void run() \ttlcb
-  ...
-  int kobjK = chord\_kobj\_k; 
-  ...
-\ttrcb
-\end{alltt}
-\end{CodeOut}
+%\begin{CodeOut}
+%\begin{alltt}
+%static int chord\_kobj\_k = Integer.getInteger("chord.kobj.k");
+%public void run() \ttlcb
+%  ...
+%  int kobjK = chord\_kobj\_k; 
+%  ...
+%\ttrcb
+%\end{alltt}
+%\end{CodeOut}
 
 
 When diagnosing a configuration error, we first reproduced the

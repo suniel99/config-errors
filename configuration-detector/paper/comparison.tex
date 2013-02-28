@@ -34,8 +34,11 @@ to identify its affecting configuration options as the root causes.
 \end{itemize}
 
 
-Both techniques produce less accurate results (see Columns
-``Coverage Analysis'' and ``Invariant Analysis'' in Figure~\ref{tab:results}).
+\todo{I edited the following paragraph}
+For both techniques, we measured the results of using the selected
+similar execution profiles and all execution profiles from the pre-built
+database. As show in the columns ``Coverage Analysis'' and ``Invariant Analysis''
+of Figure~\ref{tab:results}, both techniques produce less accurate results.
 %; and for some errors, even fail to identify the actual root causes.
 
 In Coverage Analysis, the statement-level granularity is \textit{too fine-grained}.
@@ -57,6 +60,14 @@ errors because it failed to infer invariants for 1 program (Synoptic),
 and reported the same invariants for the other two programs (Soot and Randoop)
 on the method containing behaviorally-deviated predicates between an undesired execution and correct executions.
 
+\todo{I added the following pragraph}
+Both techniques tend to produce less accurate results when only
+using the selected similar execution profiles. This is because
+for both techniques, the suspiciousness of a statement or method
+is inversely proportional to the number of correct execution profiles that cover
+it. When using fewer correct execution profiles,
+more statements or methods would have the same suspiciousness scores.
+
 
 
 %method-level granularity is too coarse
@@ -64,13 +75,13 @@ on the method containing behaviorally-deviated predicates between an undesired e
 
 
 \todo{I edited the following paragraph}
-This experiment suggests that directly applying existing fault localization
-techniques~\cite{Jones:2002, McCamant:2003} to the domain of
-configuration error diagnosis may be insufficient. 
-Different from a program input, a configuration option is
-often used to control a program's control rather than
-produce results. Thus, we cannot treat the configuration options
-as just another regular program input, and then use existing
-fault localization techniques.
-Focusing on the behaviors of relevant predicates as our tool does
+This experiment suggests that we cannot
+treat the configuration options as just another regular program input,
+and then directly applying existing 
+fault localization techniques~\cite{Jones:2002, McCamant:2003} to the domain of
+configuration error diagnosis.
+The primary reason is that, unlike a program input,
+a configuration option is often used to control a
+program's control rather than produce results. 
+Thus, focusing on the behaviors of relevant predicates as our tool does
  may be a good choice.
