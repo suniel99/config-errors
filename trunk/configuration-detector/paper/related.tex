@@ -1,4 +1,5 @@
 \section{Related Work}
+\vspace{-1mm}
 
 We next discuss closely-related work on
 software configuration error diagnosis, automated
@@ -6,7 +7,7 @@ debugging, and configuration-aware software
 analysis techniques.
  
 %\subsection{Software Configuration Error Diagnosis}
-\vspace{1mm}
+%\vspace{1mm}
 \noindent \textbf{\textit{Software Configuration Error Diagnosis.}}
 Software configuration error diagnosis is recognized
 as an important research problem~\cite{Attariyan:2008:UCD, 
@@ -72,7 +73,7 @@ affected predicate behavior is more general for configurable software.
 %only state external to the application being debugged to infer the problem.
 
 %\subsection{Automated Debugging Techniques}
-\vspace{1mm}
+%\vspace{1mm}
 \noindent \textbf{\textit{Automated Debugging Techniques.}}
 %Many automated debugging techniques~\cite{Jones:2002, Zeller:2002:ICC,
 % Horwitz:1988, clause07july} have been developed to localize software errors.
@@ -132,7 +133,7 @@ debugging domain.
 %error reporting. The improved error reporting, although helpful,
 %does not diagnose the root cause.
 The CBI project~\cite{Liblit:2005:SSBI}
-analyzes a large number of executions collected from deployed software
+analyzes executions collected from deployed software
 to isolate software failure causes. Significantly different than
 \ourtool, CBI correlates a predicate's evaluation result (either true or
 false) rather than its true ratio and execution frequency
@@ -168,31 +169,29 @@ links the undesired behavior to specific configuration options.
 
 %\subsection{Configuration-Aware Software Analysis and Testing}
 
-\vspace{1mm}
+%\vspace{1mm}
 \noindent \textbf{\textit{Configuration-Aware Software Analysis and Testing.}}
 Empirical studies show that configuration errors are pervasive, costly,
 and time-consuming to diagnose~\cite{Yin:2011:ESC, Hubaux:2012}.
 To alleviate this problem, researchers have designed various
-software analysis techniques to improve configuration
-management~\cite{Garvin:2011} and understand
-and test the behavior of a configurable software system~\cite{Qu:2008:CRT}.
-For example, Garvin et al.~\cite{Garvin:2011} show how to
-use historical data to avoid system failures during reconfiguration.
-%a technique to automatically learn a good configuration from historical data.
-However, their work aims to reduce the burden of
-configuration management and prevent certain errors from happening,
-while our technique is designed to diagnose an exhibited error.
-Qu et al.~\cite{Qu:2008:CRT} proposed a combinatorial interaction
-testing technique to model and generate configuration samples for
-use in regression testing.
-%Recently, Song et al.~\cite{itrees}
-%presented iTree to improve combinatorial interaction testing
-%by discovering sets of configurations to test that are smaller
-%but can achieve higher testing coverage. 
-Compared to \ourtool,
-those testing techniques can be used to find new errors in
+software analysis techniques to
+%improve configuration
+%management~\cite{Garvin:2011} and
+understand and test the behavior of a
+configurable software system~\cite{Garvin:2011, Qu:2008:CRT}.
+%For example, Garvin et al.~\cite{Garvin:2011} show how to
+%use historical data to avoid system failures during reconfiguration.
+%However, their work aims to reduce the burden of
+%configuration management and prevent certain errors from happening,
+%while our technique is designed to diagnose an exhibited error.
+%Qu et al.~\cite{Qu:2008:CRT} proposed a combinatorial interaction
+%testing technique to model and generate configuration samples for
+%use in regression testing.
+Compared to \ourtool, those techniques
+can be used to find new errors in
 a configurable software system earlier, but can not
 identify the root cause of a revealed configuration error.
+By contrast, our technique is designed to diagnose an exhibited error.
 
 
 

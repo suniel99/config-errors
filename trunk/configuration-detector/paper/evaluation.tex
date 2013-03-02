@@ -28,8 +28,8 @@ Our evaluation answers the following research questions:
 \begin{itemize}
   \item the absolute ranking of the actual root cause in \ourtool's output (Section~\ref{sec:accuracy}).
   \item the time cost in error diagnosis (Section~\ref{sec:performance}).
-  \item comparison with existing configuration error diagnosis techniques (Section~\ref{sec:confanalyzer}).
-  \item comparison with existing fault localization techniques (Section~\ref{sec:comparison}).
+  \item comparison with an existing configuration error diagnosis technique (Section~\ref{sec:confanalyzer}).
+  \item comparison with two existing fault localization techniques (Section~\ref{sec:comparison}).
 \end{itemize}
 \item What are the effects of using full slicing~\cite{Horwitz:1988}
  rather than thin slicing~\cite{Sridharan:2007} to identify
@@ -38,6 +38,7 @@ These are two internal design choices. % in \ourtool.
 \end{itemize}
 
 
+\vspace{-1mm}
 \vspace{-1mm}
 
 \subsection{Subject Programs}
@@ -59,11 +60,13 @@ Soot~\cite{soot} is a Java optimization framework for analyzing and transforming
 
 %\vspace{-1mm}
 
+\smallsqueeze
 \subsubsection{Configuration Errors}
 
-%\vspace{-1mm}
+\vspace{-1mm}
 
 \begin{figure}[t]
+\vspace{1mm}
 \centering
 \small{
 \setlength{\tabcolsep}{.50\tabcolsep}
@@ -85,12 +88,13 @@ Soot~\cite{soot} is a Java optimization framework for analyzing and transforming
 \Caption{{\label{tab:subjects} Subject programs. 
 Column ``LOC'' is the number of lines of code,
 as counted by CLOC~\cite{cloc}. Column ``\#Config Options''
-is the number of available configuration options. Column ``\#Profiles''
+is the number of configuration options. Column ``\#Profiles''
 is the number of execution profiles in the pre-built database.}}
 \end{figure}
 
 
 \begin{figure}[t]
+\vspace{2mm}
 \setlength{\tabcolsep}{.94\tabcolsep}
 \small{
 \begin{tabular}{|l|l|l|}
@@ -121,11 +125,13 @@ is the number of execution profiles in the pre-built database.}}
 \hline
 \end{tabular}
 }
+\vspace{-3mm}
 \Caption{{\label{tab:errors} The \errors
 configuration errors used in the evaluation.
 %The 9 crashing errors in the bottom table are taken from~\cite{Rabkin:2011:PPC}.
 }}
-\end{figure}%\vspace{-2mm}
+\vspace{-0mm}
+\end{figure}
 
 We searched forums, FAQ pages, and the literature of
 configuration error diagnosis research to find actual
@@ -139,7 +145,7 @@ the misconfigured values cover various data types, such as enumerated types,
 numerical ranges, regular expressions, and text entries.
 \todo{I modified the following sentence}
 All collected errors 
-are listed in Figure~\ref{tab:errors} and used in the evaluation.
+are listed in Figure~\ref{tab:errors}. 
 The \noncrash non-crashing errors
 are collected from actual bug reports, mailing list posts, and our own experience.
 The \crash crashing errors, taken from~\cite{Rabkin:2011:PPC},
@@ -152,8 +158,9 @@ either crashes or no longer exhibits the undesired behavior.
 
 \input{result-fig}
 
-\vspace{-1mm}
+\vspace{-2mm}
 \subsection{Evaluation Procedure}
+\vspace{-1mm}
 
 For each subject program, we constructed a profile database
 by running existing (correct) examples from its user manual, discussion
@@ -213,6 +220,7 @@ Our experiments were run on a
 for the JVM), running Windows 7.
 
 
+\vspace{-1mm}
 \subsection{Results}
 \label{sec:results}
 
@@ -244,7 +252,9 @@ for the JVM), running Windows 7.
 \input{designchoice}
 
 
+\vspace{-1mm}
 \subsection{Experimental Discussion}
+\vspace{-1mm}
 
 
 %\todo{Need to mention the following sentence somewhere: many
