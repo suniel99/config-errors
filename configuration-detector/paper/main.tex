@@ -47,9 +47,9 @@
 
 % Add line between figure and text
 \makeatletter
-%\def\topfigrule{\kern3\p@ \hrule \kern -3.4\p@} % the \hrule is .4pt high
-%\def\botfigrule{\kern-3\p@ \hrule \kern 2.6\p@} % the \hrule is .4pt high
-%\def\dblfigrule{\kern3\p@ \hrule \kern -3.4\p@} % the \hrule is .4pt high
+\def\topfigrule{\kern3\p@ \hrule \kern -3.4\p@} % the \hrule is .4pt high
+\def\botfigrule{\kern-3\p@ \hrule \kern 2.6\p@} % the \hrule is .4pt high
+\def\dblfigrule{\kern3\p@ \hrule \kern -3.4\p@} % the \hrule is .4pt high
 \makeatother \addtolength{\textfloatsep}{-.5\textfloatsep}
 \addtolength{\dbltextfloatsep}{-.5\dbltextfloatsep}
 \addtolength{\floatsep}{-.5\floatsep}
@@ -72,8 +72,8 @@
 
 \newcommand{\cut}[1]{}
 %% Comment out one of these two definitions.
-% \newcommand{\todo}[1]{\relax}
-\newcommand{\todo}[1]{{\color{red}\bfseries [[{#1}]]}}
+\newcommand{\todo}[1]{\relax}
+%\newcommand{\todo}[1]{{\color{red}\bfseries [[{#1}]]}}
 
 \newcommand{\ttlcb}{\texttt{\char "7B}}
 \newcommand{\ttrcb}{\texttt{\char "7D}}
@@ -132,23 +132,32 @@ University of Washington, USA\\
 
 \input{abstract}
 
+\smallsqueeze
+
 \input{introduction}
+
+\smallsqueeze
+\smallsqueeze
 
 \input{technique}
 
+\smallsqueeze
 \smallsqueeze
 
 \input{implementation}
 
 \smallsqueeze
+\smallsqueeze
 
 \input{evaluation}
 
 \smallsqueeze
+\smallsqueeze
 
 \input{related}
 
-\tinysqueeze
+\smallsqueeze
+
 
 \input{conclusion}
 
@@ -161,9 +170,10 @@ in part by ABB Corporation and NSF grant CCF-1016701. \todo{please check the abo
 \tinysqueeze
 
 \bibliographystyle{abbrv}
-
+%\tinysqueeze
 %\scriptsize
 \bibliography{confbib}
+\vspace{-1mm}
 \end{document}
 
 % LocalWords:  szhang mernst
