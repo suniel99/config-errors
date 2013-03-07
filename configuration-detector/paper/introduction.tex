@@ -33,7 +33,7 @@ failed to generate tests for the NanoXML~\cite{nanoxml} program.
 %Randoop terminates normally but does not generate any tests.
 %on NanoXML, it 
 
-Although the reported problem is deterministic and fully-reproducible,
+Although the reported problem is deterministic and fully reproducible,
 it is a silent, non-crashing failure and is
 challenging to diagnose. Differing from
 a crashing error, Randoop did not exhibit a crashing point, dump
@@ -48,7 +48,7 @@ minimized the bug report:  if any part of the
 configuration or input is removed, Randoop either crashes or
 no longer exhibits this error.
 This further makes 
-search-based fault isolation techniques such as Delta debugging~\cite{Zeller:2002:ICC}
+search-based fault isolation techniques such as delta debugging~\cite{Zeller:2002:ICC}
 ineffective.
 \looseness=-1
 
@@ -57,10 +57,10 @@ ineffective.
 %Randoop behaves as desired, which  Moreover, 
 
 In fact, this bug report does not reveal a real bug
-in the Randoop code. Its root cause is simply because
-the user forgot to set one configuration option.
+in the Randoop code. Its root cause is that
+the user failed to set one configuration option.
 Despite the simplicity of the solution, to the best of our knowledge, no
-existing configuration error diagnosis technique~\cite{Attariyan:2008:UCD, 
+previous configuration error diagnosis technique~\cite{Attariyan:2008:UCD, 
 Whitaker:2004:CDS, Wang:2004:AMT,
 Attariyan:2010:ACT, Rabkin:2011:PPC, autoflow, failuredoc} can be directly applied.
 
@@ -93,8 +93,8 @@ for the motivating example in Section~\ref{sec:mot}.
 
 As an alternative, we can use our technique (and its tool implementation \ourtool)
 to diagnose and correct this problem. We first reproduced the
-error in a \ourtool-instrumented Randoop version, then used \ourtool
-to diagnose the error's root cause by analyzing the recorded execution profile.
+error in a \ourtool-instrumented Randoop version, then \ourtool
+diagnosed the error's root cause by analyzing the recorded execution profile.
 \ourtool produced
 a report (Figure~\ref{fig:output}) in the form of an ordered list of
 suspicious configuration options that should be inspected.
@@ -122,10 +122,10 @@ and works well for many programs (including those used to test
 Randoop during its development), the generated sequences for NanoXML
 are much longer than usual and using \CodeIn{maxsize}'s default value
 results in 32.5\% of the generated sequences being discarded
-(including sequences that the user wishes to remain).
+(including sequences that the user wishes to retain).
 \ourtool captures such abnormal behavior from Randoop's
 silent failure, pinpoints the
-\CodeIn{maxsize} option, and suggests the users to change its value.
+\CodeIn{maxsize} option, and suggests the user to change its value.
 The problem is resolved if
 the user changes \CodeIn{maxsize} to a larger value, for example 1000.
 \looseness=-1
@@ -201,7 +201,7 @@ corresponding to the configuration problem reported in Figure~\ref{fig:output}.
 
 \subsection{Diagnosing Configuration Errors}
 
-Diagnosing a configuration error can be divided into two
+Correcting a configuration error can be divided into two
 separate tasks: identifying which specific configuration option is
 responsible for the unexpected behavior, and determining a better value for
 the configuration option. This paper addresses the former task: finding
@@ -212,7 +212,7 @@ the root cause of a configuration error.
 
 %The goal of \textbf{our technique} is to help users find solutions to the configuration
 %problems they are facing.  
-\textbf{Our technique} is designed to be used by system administrators
+Our technique is designed to be used by system administrators
 and end-users when they encounter an error
 that they do not know how to fix. It uses three steps to 
 link the undesired behavior to specific root cause configuration options:
@@ -224,7 +224,7 @@ uses a lightweight dependence analysis, called thin slicing~\cite{Sridharan:2007
 to statically identify the predicates it affects in the source code.
 
 \item \textbf{Configuration Behavior Profiling}. \ourtool
-\textit{selectively} instruments the program-to-diagnose
+selectively instruments the program-to-diagnose
 so that it records the run-time behaviors of affected predicates
 in an execution profile.
 %diagnosed code when undesired behavior
@@ -237,11 +237,12 @@ reproduces the error using the instrumented version of the program.
 similar as possible to the undesired one.
 Then, it identifies the predicates whose dynamic behaviors deviate the most
 between correct and undesired executions.
-The behavioral differences in the recorded predicates provide evidence for what parts of a program might be
-abnormal and why. %This helps to further reason about its root cause.
+The behavioral differences in the recorded predicates provide evidence for
+what predicates in a program might be behaving
+abnormally and why. %This helps to further reason about its root cause.
 For each deviated predicate, \ourtool further identifies
 its affecting configuration options as the likely root causes.
-Finally, it outputs a ranked list of suspicious options and explanations.
+Finally, it outputs a ranked list of suspicious configuration options and explanations.
 % (between
 %the undesired execution and the selected correct executions).
 
@@ -264,29 +265,29 @@ The database can be
 further enriched by software users as more correct
 executions are accumulated. 
 In our experiments (Section~\ref{sec:evaluation}), we
-built such a database by running examples from software
-user manuals, FAQs, and forum posts.  We
-found that even a small database of 6--16 execution profiles worked remarkably
+built a database of 6--16 execution profiles by running examples from software
+user manuals, FAQs, and forum posts\todo{Check}.  We
+found that even such a small database worked remarkably
 well for error diagnosis.
 
-Compared to existing approaches~\cite{Zeller:2002:ICC, Zhang:2003:PDS,
+Compared to previous approaches~\cite{Zeller:2002:ICC, Zhang:2003:PDS,
 Rabkin:2011:PPC, Whitaker:2004:CDS, Attariyan:2010:ACT, Wang:2004:AMT}, \ourtool has
 several notable features:
 
 \begin{itemize}
-\item \textbf{It is fully-automated}.
+\item \textbf{It is fully automated}.
 \ourtool does not require a user to specify
 \textit{when}, \textit{why}, or \textit{how} the program fails. This is
 different than many well-known automated debugging techniques such
-as Delta debugging~\cite{Zeller:2002:ICC}, information flow analysis~\cite{Attariyan:2010:ACT},
+as delta debugging~\cite{Zeller:2002:ICC}, information flow analysis~\cite{Attariyan:2010:ACT},
  and dynamic slicing~\cite{Zhang:2003:PDS}.
 Our technique also provides an \emph{explanation} of
 why a configuration option is suspicious. 
 
 \item \textbf{It can diagnose both non-crashing and crashing errors}.
-Most existing techniques~\cite{Rabkin:2011:PPC,
+Most previous techniques~\cite{Rabkin:2011:PPC,
 Whitaker:2004:CDS, Attariyan:2010:ACT, Su:2007:AIC} focus exclusively on configuration errors
-that cause a crash point, an error message, or a stack trace.
+that cause a crash, an error message, or a stack trace.
 By contrast, \ourtool diagnoses
 configuration problems that manifest themselves as
 either visible or silent failures.
@@ -374,7 +375,7 @@ to manual debugging.
 %  internal implementation choices.  This is too many low-level details at
 %  this point in the paper.}
 
-We compared \ourtool to an existing technique, called ConfAnalyzer~\cite{Rabkin:2011:PPC},
+We compared \ourtool to a previous technique, called ConfAnalyzer~\cite{Rabkin:2011:PPC},
 which uses dynamic information flow analysis to reason about the root cause of a
 configuration error. \ourtool produced better results for 8 errors,
 equivalent results for 3 errors, and worse results for 3 errors.
@@ -452,7 +453,7 @@ undesired behavior to specific configuration options (Section~\ref{sec:technique
 
 
 \item \textbf{Implementation.} We implemented our technique 
-in a tool, called \ourtool, for Java software (Section~\ref{sec:implementation}). It is available at:
+in a tool, called \ourtool, for Java software (Section~\ref{sec:implementation}). It is available at
 \url{http://config-errors.googlecode.com}. 
 
 

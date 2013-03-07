@@ -27,14 +27,14 @@ Our evaluation answers the following research questions:
 \item How effective is \ourtool in error diagnosis? \ourtool's effectiveness can be reflected by:
 \begin{itemize}
   \item the absolute ranking of the actual root cause in \ourtool's output (Section~\ref{sec:accuracy}).
-  \item the time cost in error diagnosis (Section~\ref{sec:performance}).
-  \item comparison with an existing configuration error diagnosis technique (Section~\ref{sec:confanalyzer}).
-  \item comparison with two existing fault localization techniques (Section~\ref{sec:comparison}).
+  \item the time cost of error diagnosis (Section~\ref{sec:performance}).
+  \item comparison with a previous configuration error diagnosis technique (Section~\ref{sec:confanalyzer}).
+  \item comparison with two fault localization techniques (Section~\ref{sec:comparison}).
 \end{itemize}
 \item What are the effects of using full slicing~\cite{Horwitz:1988}
  rather than thin slicing~\cite{Sridharan:2007} to identify
-the affected predicates, and the effects of varying comparison execution profiles (Section~\ref{sec:choices})?
-These are two internal design choices. % in \ourtool.
+the affected predicates?  What are the effects of varying comparison execution profiles?
+These are two internal design choices (Section~\ref{sec:choices}). % in \ourtool.
 \end{itemize}
 
 
@@ -50,7 +50,7 @@ in Figure~\ref{tab:subjects}.
 Randoop~\cite{PachecoLET2007} is an automated test generator
 for Java programs. Weka~\cite{weka} is a toolkit that implements
 machine learning algorithms. Our evaluation
-only uses its decision tree module. JChord~\cite{jchord}
+uses only its decision tree module. JChord~\cite{jchord}
 is a program analysis platform that enables users to design, implement,
 and evaluate static and dynamic program analyses for Java.
 Synoptic~\cite{synoptic} mines a finite state machine
@@ -84,7 +84,6 @@ Soot~\cite{soot} is a Java optimization framework for analyzing and transforming
 \end{tabular}
 }
 \vspace{-2mm}
-%\todo{Give a date for Synoptic}
 \Caption{{\label{tab:subjects} Subject programs. 
 Column ``LOC'' is the number of lines of code,
 as counted by CLOC~\cite{cloc}. Column ``\#Config Options''
@@ -133,23 +132,15 @@ configuration errors used in the evaluation.
 \vspace{-0mm}
 \end{figure}
 
-We searched forums, FAQ pages, and the literature of
-configuration error diagnosis research to find actual
-configuration problems that users have experienced with our
-target applications. 
-\todo{I modified the following sentence. say we use ALL errors
-we have collected, rather than just picking up errors that this
-technique works well}
-We collected a total number of \errors configuration errors, in which
-the misconfigured values cover various data types, such as enumerated types,
-numerical ranges, regular expressions, and text entries.
-\todo{I modified the following sentence}
-All collected errors 
-are listed in Figure~\ref{tab:errors}. 
+We collected \errors configuration errors, listed in Figure~\ref{tab:errors}. 
+This paper evaluates all the configuration errors we found; we did not
+select only errors on which \ourtool works well.
+The misconfigured values include enumerated types,
+numerical ranges, regular expressions, and strings.
 The \noncrash non-crashing errors
 are collected from actual bug reports, mailing list posts, and our own experience.
 The \crash crashing errors, taken from~\cite{Rabkin:2011:PPC},
-were used to evaluate the ConfAnalyzer tool. %~\cite{confanalyzer}.
+were previously used to evaluate the ConfAnalyzer tool. %~\cite{confanalyzer}.
 All \errors configuration errors have been minimized: if
 any part of the configuration or input is removed, the software
 either crashes or no longer exhibits the undesired behavior.
@@ -165,6 +156,9 @@ either crashes or no longer exhibits the undesired behavior.
 For each subject program, we constructed a profile database
 by running existing (correct) examples from its user manual, discussion
 mailing list, and published papers~\cite{PachecoLET2007, Rabkin:2011:PPC}.
+\todo{Earlier, the paper says the 6--16 come from ``from software
+user manuals, FAQs, and forum posts''.  Those two pieces of text must be
+made consistent (and correct).}
 We spent 3 hours per program, on average, and obtained 6--16 execution profiles.
 The average size of the profile database is 35MB, and the largest one
 (Randoop's database) is 72MB.
@@ -235,7 +229,7 @@ for the JVM), running Windows 7.
 \label{sec:performance}
 \input{performance}
 
-\subsubsection{Comparison with an Existing Technique}
+\subsubsection{Comparison with an Previous Technique}
 \label{sec:confanalyzer}
 \input{confanalyzer}
 
@@ -270,21 +264,28 @@ for the JVM), running Windows 7.
 %in experiments. Maybe mentioned in the end of experiments.}
 
 \noindent \textbf{\textit{Limitations.}} 
-We identified several limitations of our technique from the experiments. 
+The experiments indicate several limitations of our technique. 
+%
 First, we only focus on named configuration options
 with a common key-value semantic, and our implementation
 and experiments are restricted to Java. 
-Second, we only evaluated \ourtool on configuration errors
-involving only one mis-configured option.
-Third, \ourtool does not yet help diagnose misconfigurations
+%
+Second, we evaluated \ourtool on configuration errors
+involving just one mis-configured option.
+%
+\todo{I don't see why this wouldn't work.  It's just that we haven't
+  evaluated this yet, so it would go in threats to validity rather than
+  tool limitations.}Third, \ourtool does not yet help diagnose misconfigurations
 that cause poor performance (e.g., making a program run faster
 by increasing JVM's heap size via the option \CodeIn{-Xmx}).
+%
 Fourth,  our implementation currently does not
 support debugging non-deterministic errors. 
 For non-deterministic errors, \ourtool could potentially leverage 
 a deterministic replay system
 that can capture an undesired non-deterministic
 execution and faithfully reproduce it for later analysis.
+%
 Fifth, \ourtool's effectiveness  largely
 depends on the availability of a similar but correct execution profile.
 Using an arbitrary execution profile (as we demonstrated in Section~\ref{sec:choices}
@@ -297,7 +298,6 @@ There are three major threats to validity in our evaluation.
 First, the \subjectnum programs and the configuration errors may not be
 representative. Thus, we can not claim the results can be
 generalized to an arbitrary program.
-\todo{the second point is newly added}
 Second, in this paper, we focus specifically on
 configuration errors, assuming the application code is correct.
 In our experiments, all \errors errors
@@ -326,11 +326,9 @@ in diagnosing both crashing and non-crashing configuration errors
 with a small profile database.
 \textbf{(2)} \ourtool produces more accurate diagnosis than
 approaches leveraging existing fault localization
-techniques~\cite{Jones:2002, McCamant:2003}. \textbf{(3)} thin slicing
-%to identify the affected predicates
-permits \ourtool to produce more accurate diagnosis than using
-full slicing and varying the execution profile selection
-strategy can result in substantially different diagnosis.
+techniques~\cite{Jones:2002, McCamant:2003}. \textbf{(3)} Thin slicing
+and selection of similar comparison traces
+permit \ourtool to produce more accurate diagnosis than other approaches.
 
 %\ourtool makes configuration error diagnosis easier by suggesting
 %the specific options that may lead to an unexpected behavior. 

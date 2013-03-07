@@ -1,8 +1,10 @@
 This step instruments the tested program offline
-by inserting code to monitor each affected predicate's outcome
+by inserting code to record how often each predicate evaluates to true
 at run time.
 
-The instrumentation step inserts 2 statements, one
+\todo{The implementation details can be cut for space if necessary.}
+
+The instrumentation step inserts two statements, one
 before and one after each affected predicate. Take
 the code in Figure~\ref{fig:example} as an example.
 The predicate at line 312 is affected by
@@ -34,12 +36,13 @@ the predicate evaluated to true.
 Executing the instrumented program produces an \textit{execution profile}, which
 consists of a set of \textit{predicate profiles}.
 Each predicate profile is a 4-tuple consisting of a configuration option,
-one of its affected predicates, the predicate's execution count, and its evaluation results as recorded at run time. For example,
+one of its affected predicates, the predicate's execution count, and how
+many times it evaluated to true. For example,
 suppose the predicate on line 312 has been executed 100 times, of which
-30 times it is evaluated to true. \ourtool creates the following predicate
+30 times it evaluated to true. \ourtool creates the following predicate
 profile:
 
-\noindent $\langle$ \CodeIn{maxsize}, \CodeIn{newSequence.size() > maxsize}, 100, 30$\rangle$.
+\noindent $\langle$\CodeIn{maxsize}, \CodeIn{newSequence.size() > maxsize}, 100, 30$\rangle$.
 
 \vspace{1mm}
 

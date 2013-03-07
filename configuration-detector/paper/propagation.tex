@@ -42,7 +42,7 @@ in lines 104, 312, and 315 are affected by the configuration option \CodeIn{maxs
 However, the predicates in lines 104 and 315, though possibly
 affected by \CodeIn{maxsize}, are actually irrelevant
 to \CodeIn{maxsize}'s value. That is, the value of \CodeIn{maxsize}
-controls the length of a generated a sequence rather
+controls the length of a generated sequence rather
 than deciding whether a sequence has an active flag (line 104) or
 a sequence has been executed before (line 315).
 
@@ -55,28 +55,24 @@ a sequence has been executed before (line 315).
 
 To address this limitation, our technique uses thin
 slicing \cite{Sridharan:2007}, which includes
-\textit{only} statements that are \textit{directly} affected by a configuration option.
-\todo{I modified the next sentence}
+only statements that are \textit{directly} affected by a configuration option.
 Different from traditional slicing~\cite{Horwitz:1988}, thin slicing
-focuses on statements to which values flow from the seed (here, a
-seed is the initialization statement of a configuration option), ignoring the 
-control flow dependencies as well as the uses of
-base pointers. Thin slicing improves the relevance
-of the slice by only including the statements that compute
-and copy a value to a configuration option.
+focuses on data flow from the seed (here, a
+seed is the initialization statement of a configuration option), ignoring
+control flow dependencies as well as uses of
+base pointers. 
+Thin slicing is attractive because it
 This property separates
-pointer computations from the flow of configuration option values,
+pointer computations from the flow of configuration option values and
 naturally connects a configuration option with its
-directly affected statements, and makes thin slicing
-especially attractive.
+directly affected statements.
 For example, in the code excerpt of
 Figure~\ref{fig:example},
 a forward thin slice computed for \CodeIn{maxsize}
 only includes the predicate in line 312.
 Section~\ref{sec:evaluation} 
 empirically demonstrates that thin slicing
-is a better choice than traditional full slicing.
-%than traditional full slicing.
+is a better choice than traditional full slicing for our purposes.
 \looseness=-1
 
 %When Randoop is used to generate tests for different inputs (here,

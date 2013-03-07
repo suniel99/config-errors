@@ -46,24 +46,23 @@ root cause configuration option. Column ``\#Options'' shows the
 number of available configuration options, taken from Figure~\ref{tab:subjects}.
 Column ``\ourtool'' shows the results of using our technique. 
 Column ``\#Profiles'' shows the number of similar execution profiles selected
-from the pre-built database for comparison, and the total size of the database.
-Column ``ConfAnalyzer'' shows the results of using an existing technique~\cite{Rabkin:2011:PPC} (Section~\ref{sec:confanalyzer});
-and the data in this column is taken from~\cite{Rabkin:2011:PPC}.
-\todo{I added the above sentence to explain where the data comes from}
-Columns ``Coverage Analysis'' and ``Invariant Analysis'' show the results of using
-two fault localization techniques as described in Section~\ref{sec:comparison}.
-\todo{I added the following sentences}
-For these two columns, a slash ``/'' separates the results of using
-the selected similar execution profiles by \ourtool (Section~\ref{sec:similar}) and the results of using all execution profiles from
-the pre-built database.
-Column ``Full Slicing'' shows the results of using full slicing~\cite{Horwitz:1988} to compute
-the affected predicates (Section~\ref{sec:choices}).
+from the pre-built database for comparison, and the number of executions in the database.
 For each technique, Column ``Rank'' shows the absolute rank of the actual root 
 cause in its output (lower is better). ``X''
 means the technique is not applicable (i.e., requiring a crashing point), and ``N'' means the technique
 does not identify the actual root cause. When computing the average
 rank, each ``X'' or ``N'' is treated as half of the number of configuration options, because
 a user would need to examine on average half of the options to find the root cause.
+Column ``ConfAnalyzer'' shows the results of using a previous technique~\cite{Rabkin:2011:PPC} (Section~\ref{sec:confanalyzer});
+the data in this column is taken from~\cite{Rabkin:2011:PPC}.
+Columns ``Coverage Analysis'' and ``Invariant Analysis'' show the results of using
+two fault localization techniques as described in Section~\ref{sec:comparison}.
+\todo{Remove the following from the table and caption; write it into the
+  text instead.}For these two columns, a slash ``/'' separates the results of using
+the selected similar execution profiles by \ourtool (Section~\ref{sec:similar}) and the results of using all execution profiles from
+the pre-built database.
+Column ``Full Slicing'' shows the results of using full slicing~\cite{Horwitz:1988} to compute
+the affected predicates (Section~\ref{sec:choices}).
 }}
 \end{figure*}
 
