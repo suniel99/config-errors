@@ -34,16 +34,8 @@ to identify its affecting configuration options as the root causes.
 \end{itemize}
 
 
-\todo{I edited the following paragraph}
-For both techniques, we measured the results of using the selected
-similar execution profiles and the results of using
-all execution profiles from the pre-built
-database. As show in the columns ``Coverage Analysis'' and ``Invariant Analysis''
-of Figure~\ref{tab:results}, both techniques produce less accurate results.
-%; and for some errors, even fail to identify the actual root causes.
-
 In Coverage Analysis, the statement-level granularity is \textit{too fine-grained}.
-Many statements have exactly the same coverage by the failing/passing executions,
+Many statements have exactly the same coverage in the failing/passing executions,
 and thus have the same suspiciousness score as computed by Tarantula~\cite{Jones:2002}.
 Furthermore, Tarantula only records whether a
 statement has been executed or not but does not record how a statement is 
@@ -55,19 +47,12 @@ In Invariant Analysis, the method-level granularity is \textit{too coarse-graine
 Invariant detection techniques like Daikon~\cite{Ernst:1999}
 only check program states at method entries and exits to infer
 likely pre- and post-conditions, and thus are less
-sensitive to many control flow details within a method (e.g., a predicate's
+sensitive to control flow details within a method (e.g., a predicate's
 true ratio). In our study, Invariant Analysis failed to diagnose 3
-errors because it failed to infer invariants for 1 program (Synoptic),
-and reported the same invariants for the other two programs (Soot and Randoop)
-on the method containing behaviorally-deviated predicates between an undesired execution and correct executions.
-
-\todo{I added the following pragraph}
-Both techniques tend to produce less accurate results when only
-using the selected similar execution profiles. This is because
-the suspiciousness of a statement or method
-is inversely proportional to the number of correct execution profiles that cover
-it. When using fewer correct execution profiles,
-more statements or methods would have the same suspiciousness scores.
+errors.  For Synoptic, it failed to infer invariants.  For Soot and
+Randoop, it reported the same invariants
+over undesired and correct executions, for
+the method containing behaviorally-deviated predicates.
 
 
 
@@ -75,14 +60,13 @@ more statements or methods would have the same suspiciousness scores.
 %is not sensitive enough on small control flow changes. for example, the invariant is the same
 
 
-\todo{I edited the following paragraph}
 This experiment suggests that we cannot
 treat configuration options as just another regular program input,
-and then directly applying existing 
+and then directly apply existing 
 fault localization techniques~\cite{Jones:2002, McCamant:2003} to
 find the error causes. 
 The primary reason is that, unlike a program input,
 a configuration option is often used to control a
-program's control rather than produce results. 
+program's control rather than produce result data. 
 Thus, focusing on the behaviors of relevant predicates as our tool does
  may be a good choice.

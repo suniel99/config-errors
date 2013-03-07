@@ -2,34 +2,37 @@
 an undesired execution. It selects similar
 profiles from known correct executions (Section~\ref{sec:similar}), compares
 each selected profile with
-the undesired one to identify the most behavioral-deviated predicates
+the undesired one to identify the most behaviorally-deviated predicates
 (Section~\ref{sec:deviation}), and then determines
 the likely root cause options (Section~\ref{sec:linking}).
 
 
 \subsubsection{Selecting Similar Execution Profiles for Comparison}
 \label{sec:similar}
-
-\ourtool's database contains a number of
+\ourtool's database contains
 profiles from known correct executions.  These execution profiles 
 can be dramatically different from another.  To avoid reporting irrelevant
 differences when 
 determining how and why the observed execution profile behaves
 differently from the correct ones, \ourtool first
-compares the undesired profile with the existing
+compares the undesired profile with the
 correct profiles, then selects a set of similar ones
 as the basis of diagnosis.
 
-Given an execution profile $e$, \ourtool first aggregates
-the collected predicate profiles into a $n$-dimensional
+\ourtool first converts each execution profile $e$
+into a $n$-dimensional
 vector $v_e$ =$\langle r_{e1}, r_{e2}, ..., r_{en}\rangle$, where $n$
-is the number of all possible predicate profiles in the program
+is the number of all possible predicate profiles\todo{Is this the number of
+predicates affected by configuration options, or the number of predicate
+profiles?  The paper is inconsistent about this.  Does it make a difference
+which you choose, and how are they treated?  This needs to be clarified
+throughout.} in the program
 and each $r_{ei}$ is a ratio representing how often the $i$-th predicate
 profile evaluated to true at run time.
 If a predicate has never been executed in an execution,
 \ourtool uses 0 as its ratio. 
 
-\ourtool computes the similarity of two executions profiles $e$ and $f$
+\ourtool computes the similarity of two execution profiles $e$ and $f$
 by computing the cosine similarity from information retrieval~\cite{Witten96managinggigabytes}
 of $v_{e}$ and $v_{f}$.
 
@@ -45,9 +48,10 @@ of $v_{e}$ and $v_{f}$.
 \vspace{-3mm}
 %\todo{Weird enough that why two sqrt symbols above are not the same size?}
 
-This similarity metric basically compares two execution profiles based on
- control flow taken (approximated by how often a predicate is evaluated to
-true). Its value ranges from 0 meaning completely different, to 1 meaning almost the same, 
+This similarity metric compares two execution profiles based on
+ control flow taken (approximated by how often each predicate evaluated to
+true). Its value ranges from 0 meaning completely different, to 1 meaning
+ almost\todo{cut ``almost?''} the same, 
 and in-between values indicating intermediate similarity.
 
 
@@ -82,7 +86,7 @@ and in-between values indicating intermediate similarity.
 
 
 A crashing error sometimes happens soon after the program is launched,
-the resulting execution profile is much smaller than
+so the resulting execution profile is much smaller than
 most correct execution profiles.
 To avoid comparing un-executed predicates,
 when diagnosing a crashing error, \ourtool
@@ -134,7 +138,7 @@ incorrect and why. %This helps to further reason about its root cause.
 
 \ourtool 
 characterizes the dynamic behavior of a predicate by 
-how often it is
+how often it was
 evaluated (i.e., the number of 
 observed executions), and how often it evaluated to true (i.e., the true ratio).
 The true ratio is more important, but it is less dependable the fewer times
@@ -202,7 +206,7 @@ $1/\|totalExecNum|(e, p)$.
 
 
 The following $Deviation$ metric
-characterizes a predicate $p$'s deviation across two execution
+compares a predicate $p$ across two execution
 profiles $e$ and $f$. A larger $\|Deviation|$ value indicates that the
 behavior is more different. % between $e$ and $f$.
 
@@ -229,7 +233,7 @@ behavior is more different. % between $e$ and $f$.
 % In practice, 
 Often $1/\|trueRatio|(e, p) \gg 1/\|totalExecNum|(e, p)$, and
 then the value of $\|Deviation|(p, e, f)$ depends primarily on $p$'s
-true ratio change between execution profiles $e$ and $f$. 
+true ratio difference between execution profiles $e$ and $f$. 
 
 % \todo{A few more properties I do not known how (and whether need) to write down:
 % (1) when \|totalExecNum|(e, p) increases to some extent, the change Deviation(p)
@@ -249,8 +253,9 @@ true ratio change between execution profiles $e$ and $f$.
 %(the wording here is bad)
 
 
-\ourtool computes the $Deviation$ value for each predicate $p$
-appearing in two execution profiles $e$ or $f$, and
+\ourtool computes the $Deviation$ value for each predicate $p$\todo{Or
+predicate profile?}
+appearing in two execution profiles $e$ or\todo{``and''?} $f$, and
 ranks them in decreasing order. 
 
 %After comparing the undesired execution profile with one selected correct execution profile,
@@ -309,8 +314,8 @@ involved options, but this did not occur in our experiments.
 
 In the final output report (e.g., Figure~\ref{fig:output}), \ourtool 
 generates a brief explanation for each behaviorally-deviated predicate
-by showing the difference of the predicate's true ratio between
-all correct executions from the database and the undesired execution.
+by showing the difference between the predicate's true ratio during
+correct executions from the database and during the undesired execution.
 
 %The predicate's true ratio in normal runs is calculated by summing up
 %all observations from the database, and its true ratio in the undesir

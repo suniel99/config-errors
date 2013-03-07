@@ -6,7 +6,7 @@ We model a configuration as a set of key-value pairs, where
 the keys are strings and the values have arbitrary type. This
 abstraction is offered
 by the POSIX system environment, the Java Properties API,
-and the Windows registry.
+and the Windows Registry.
 
 
 \tinysqueeze
@@ -56,8 +56,8 @@ root causes, and reports these to the user (Section~\ref{sec:analysis}).
 
 \subsection{Discussion}
 
-In this paper, we focus specifically on configuration errors,
-assuming the application code is correct, but the software		
+This paper focuses specifically on configuration errors,
+assuming the application code is correct but the software		
 is inappropriately configured so that it does not		
 behave as desired. We next discuss some design issues in \ourtool.
 
@@ -68,7 +68,8 @@ We used our judgment to distinguish configuration options
 from other program inputs. A configuration option is
 often used to control a program's control flow rather
 than produce results, and is often supplied via a command-line
-flag or configuration file.
+flag or configuration file.\todo{Be more specific.  How did we make the
+  decision in the experiments?}
 
 %A configurable software system exposes a range of configuration
 %options that permit users to

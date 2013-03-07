@@ -8,11 +8,13 @@ program dynamically,
 and treats a configuration option as a root cause if its
 value may flow to a crashing point.
 ConfAnalyzer works remarkably well for most of the crashing errors (all of
-which are selected from the ConfAnalyzer paper~\cite{Rabkin:2011:PPC}), though as
+which are from the ConfAnalyzer paper~\cite{Rabkin:2011:PPC}), though as
 described above these are often easy to diagnose even without tool
 support. However, ConfAnalyzer cannot diagnose non-crashing errors.
 
-The experimental results of ConfAnalyzer are shown in Figure~\ref{tab:results} (Column ``ConfAnalyzer'').
+The experimental results of ConfAnalyzer are shown in
+Figure~\ref{tab:results} (Column ``ConfAnalyzer'').\todo{Explain why we
+didn't run ConfAnalyzer ourselves?}
 For the 9 crashing errors, \ourtool produced better results for 3 of them,
 the same results for another 3, and worse results for the remaining 3.
 
@@ -22,7 +24,7 @@ almost immediately after the software is launched.
 In such cases, only a small number of configuration options are initialized and
 few of them can flow to the crashing point. 
 \ourtool fails to produce good diagnosis for these errors, because it can not identify
- the statistically-behavioral-deviated predicates based on the limited
+ the statistically-behaviorally-deviated predicates based on the limited
 observation of program behaviors.
 
 ConfAnalyzer outputs less accurate or no results

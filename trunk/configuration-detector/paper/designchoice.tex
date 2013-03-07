@@ -78,18 +78,18 @@ memory on Soot.
 %the full slice presents far too much information for the task at hand.
 
 
-As shown in Figure~\ref{tab:selection}, varying the comparison
-strategy yields substantially different results,
+As shown in Figure~\ref{tab:selection}, varying the selection
+strategy for correct traces can affect the results,
 depending on the application being analyzed.
 %\todo{following sentence needs a rewrite}
 Using all available execution profiles or randomly
-selecting execution profiles is ineffective, because
+selecting execution profiles is less effective, because
 they make \ourtool report many irrelevant
 differences between an undesired
 execution and a dramatically different execution.
 %, which will not be selected by \ourtool's similary-based selection strategy (Section~\ref{sec:similar}).
-Diagnosing a crashing error is less sensitive 
-to the comparison execution profiles than diagnosing a non-crashing error.
+When diagnosing a crashing error, \ourtool is less sensitive 
+to the comparison execution profiles.
 This is because crashing profiles are often much smaller, executing
 fewer predicates before reaching the crashing points; and \ourtool
 reduces each correct execution profile before diagnosis (Section~\ref{sec:similar}).
@@ -107,3 +107,21 @@ Thus, many irrelevant differences have already been removed.
 %For the \crash crashing errors, the only difference yielded
 %from using different profile selection strategies is on
 %the error 13. $\blacksquare$
+
+
+\todo{Rewrite the following two paragraphs and integrate them in.}
+
+For both techniques, we measured the results of using the selected
+similar execution profiles and the results of using
+all execution profiles from the pre-built
+database. As show in the columns ``Coverage Analysis'' and ``Invariant Analysis''
+of Figure~\ref{tab:results}, both techniques produce less accurate results.
+%; and for some errors, even fail to identify the actual root causes.
+
+Both techniques tend to produce less accurate results when only
+using the selected similar execution profiles. This is because
+the suspiciousness of a statement or method
+is inversely proportional to the number of correct execution profiles that cover
+it. When using fewer correct execution profiles,
+more statements or methods would have the same suspiciousness scores.
+

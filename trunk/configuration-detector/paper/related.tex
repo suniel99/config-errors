@@ -1,7 +1,7 @@
 \section{Related Work}
 \vspace{-1mm}
 
-We next discuss closely-related work on
+This section discusses closely-related work on
 software configuration error diagnosis, automated
 debugging, and configuration-aware software
 analysis techniques.
@@ -19,11 +19,11 @@ virtual machine checkpoint and binary search to find the
 point in time where the program behavior
 switched from correct to incorrect. AutoBash~\cite{Su:2007:AIC}
 fixes a misconfiguration by using
-OS-level speculation execution to try possible
+OS-level speculative execution to try possible
 configurations, examine their effects, and roll them back when necessary.
 PeerPressure~\cite{Wang:2004:AMT} 
 uses statistical methods to compare
-configuration states in the Windows registry on different machines.
+configuration states in the Windows Registry on different machines.
 When a registry entry value on a machine exhibiting erroneous behavior differs
 from the value usually chosen by other machines, PeerPressure
 flags the value as a potential error. More recently, ConfAid~\cite{Attariyan:2010:ACT}
@@ -34,25 +34,25 @@ possible configuration error diagnoses for every possible crashing point
 in a program. 
 
 Our technique is significantly different
-from the existing approaches.
-First, most existing approaches focus exclusively on configuration errors
-that lead to software crash or assertion failures~\cite{Attariyan:2008:UCD, 
+from the other approaches.
+First, most previous approaches focus exclusively on configuration errors
+that lead to a crash or assertion failure~\cite{Attariyan:2008:UCD, 
 Whitaker:2004:CDS, 
 Attariyan:2010:ACT, Rabkin:2011:PPC}.
 %, by leveraging valuable crashing information such as stack traces.
 By contrast, our technique can diagnose both
 \textit{crashing} and \textit{non-crashing} errors.
-Second, several existing approaches~\cite{Attariyan:2010:ACT, Whitaker:2004:CDS}
+Second, several approaches~\cite{Attariyan:2010:ACT, Whitaker:2004:CDS}
 assume the existence of a testing oracle that can 
 check whether the software functions correctly. However, such oracles are often
-absent in practice. Writing them may
-require a substantial amount of time and effort that a
-typical software user would not prefer, and should not be expected, to invest.
+absent in practice or may not apply to the specific configuration problem.
+A typical software user should not be expected, to invest the substantial
+time and effort to create an oracle.
 By contrast, our technique eliminates this assumption.
 Third, approaches like PeerPressure~\cite{Wang:2004:AMT} benefit from
-the known schema of the Windows registry, but cannot detect configuration errors
+the known schema of the Windows Registry, but cannot detect configuration errors
 that lie outside the registry. Our technique of analyzing the
-affected predicate behavior is more general for configurable software.
+affected predicate behavior is more general.
 
 %Most prior work on configuration debugging has relied
 %on large user communities or on modifying the program’s execution
@@ -93,17 +93,18 @@ can not be directly applied to diagnose a non-crashing error.
 
 Delta debugging~\cite{Zeller:2002:ICC} is a general
 algorithm to isolate software error causes.
-It works by differences between a working state and a broken
+It reduces differences between a working state and a broken
 state to isolate a set of failure-inducing changes.
-When using Delta debugging, users must provide a testing oracle to check
+When using delta debugging, users must provide a testing oracle to check
 whether an intermediate program state behaves correctly,
-and a working state which Delta debugging can refer to.
+and a single working state.
 However, besides the difficulty in writing a good testing oracle,
-a working state is often absent in practice since the error-revealing
+a working state is often absent in practice since\todo{I don't understand
+  the relationship between the text that precedes ``since'' and the text
+  that follows.} the error-revealing
 input and configuration may have already been minimized (such as the
 \errors configuration errors in our experiments).
-\todo{I added the following sentence for explanation}
-Furthermore, as a minimization technique, Delta debugging
+Furthermore, as a minimization technique, delta debugging
 is not applicable to data (i.e., configuration option values)
 that are missing nor ones that are incorrect.
 By contrast, \ourtool eliminates these assumptions by comparing
@@ -118,7 +119,7 @@ the behavioral difference.
 
 
 %.
-%In addition, when using Delta debugging to diagnose an error, the user must
+%In addition, when using delta debugging to diagnose an error, the user must
 %also provide a working state. However, besides 
 % cannot diagnose errors
 %where no working configuration is available. \ourtool overcomes the above limitations $\blacksquare$
@@ -224,7 +225,7 @@ By contrast, our technique is designed to diagnose an exhibited error.
 %Yilmaz:2008:TTF}. However, our work has a different abstraction than theirs.
 
 %\textbf{Software error isolation techniques.} Many techniques have been developed
-%in the software engineering community. Representative work include delta debugging~\cite{Zeller:2002:ICC},
+%in the software engineering community. Representative work includes delta debugging~\cite{Zeller:2002:ICC},
 %dynamic slicing~\cite{Zhang:2006:LFT},
 %capture and replay-based technique~\cite{Qi:2011:LFE}, approaches permitting
 %users to ask program behaviors~\cite{Ko:2008:DRA},

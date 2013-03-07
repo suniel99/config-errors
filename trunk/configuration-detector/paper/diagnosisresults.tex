@@ -3,18 +3,24 @@
 As shown in Figure~\ref{tab:results},
 \ourtool is highly effective in pinpointing the root cause of
 misconfigurations. For all \noncrash non-crashing errors
-and 5 out of the \crash crashing errors, it lists the actual root cause as one of the top 3 options. 
+and 5 of the \crash crashing errors, it lists the actual root cause as one of the top 3 options. 
 
 
-\ourtool is particularly effective in diagnosing non-crashing configuration errors,
-which are not supported by most existing tools. The primary reason is due to
+\paragraph{Non-crashing configuration errors.}
+
+\ourtool is particularly effective in diagnosing non-crashing configuration
+errors,
+which are not supported by most other tools.
+The average rank of the root cause
+in \ourtool's output is 1.6.
+The primary reason is
 \ourtool's ability to identify the behaviorally-deviated predicates through
 execution profile comparison. The top-ranked deviated predicates often provide
 useful clues about what parts of a program might be abnormal and why.
 
 We use the non-crashing error in Weka as an example to illustrate
 this point. 
-Weka's decision tree implementation is highly-tuned, achieving 70--90\% accuracy on
+Weka's decision tree implementation is highly tuned, achieving 70--90\% accuracy on
 its included examples. However, its accuracy drops to 62\%
 on a different dataset we experimented on. We used \ourtool to diagnose this
 problem by first building a database by running Weka on its examples, and
@@ -41,13 +47,13 @@ obtaining the undesired execution profile by running it on our dataset. As a res
 
 \vspace{-4mm}
 
-The above report reveals an important fact for the low accuracy.
+The above report reveals an important fact about the low accuracy.
 The predicate \CodeIn{numFold $<$ numInstances() \% numFolds} controls
 the depth of a decision tree. Its
 true ratio is substantially higher in the undesired execution
-than normal executions. A higher true ratio leads
+than in normal executions. A higher true ratio leads
 to a deeper tree that is more likely to overfit the training
-data, and yields low accuracy on the testing data.
+data and yield low accuracy on the testing data.
 To resolve this problem, we changed \CodeIn{m\_numFolds}
 value from 2 to 3 to reduce the tree depth, and
 gained a 5\% performance increase.
@@ -56,14 +62,31 @@ gained a 5\% performance increase.
 %Changing the default value of m\_numFolds from 3 to 2 leads to
 %an immediate increase of 5\% improvement
 
+\paragraph{Crashing configuration errors.}
+
+%Although \ourtool ranked the actual root course of several crashing errors lower, 
+Crashing errors are often easy for a user to diagnose.
+This is because a crashing error often produces a stack trace with valuable diagnosis clues.
+Consider the 4 errors in in Figure~\ref{tab:results} for which \ourtool
+does not rank the root cause first.
+For error \#14, when JChord crashes, it throws a \CodeIn{ClassNotFoundException}
+that reminds the user to check the classpath setting.  For errors \#8,
+\#10, and \#11, 
+JChord outputs the relevant configuration option value in the
+error message.  Thus, between \ourtool and the pragram output, the user is
+always led directly to the root cause.\todo{Is the same true for
+  Confanalyzer?  Say explicitly.}
+
 Compared to non-crashing errors, \ourtool is less effective
-in diagnosing crashing errors.
+in diagnosing crashing errors (the average rank of the root cause
+in \ourtool's output is 6.7).
 %For 4 crashing errors, the actual causes are ranked below the top 3 options.
 This is a direct result of lacking enough predicate behavior observations,
 since most crashing errors occur soon
-after the program is launched. Therefore, many predicates are
-only executed once and their $Deviation$ scores
- (Section~\ref{sec:deviation}) turn out to be the same; and the BFS-distance-based heuristic to resolve ties (Section~\ref{sec:linking})
+after the program is launched.  Many predicates are
+only executed once, so their $Deviation$ scores
+ (Section~\ref{sec:deviation}) turn out to be the same; and the
+ BFS-distance-based heuristic to resolve ties (Section~\ref{sec:linking}) only
 works half the time.
 
 
@@ -73,17 +96,6 @@ works half the time.
 %$\blacksquare$ the configuration option has
 %a long propagation chain, and seems hard for \ourtool
 %to diagnose correctly. no statistical significance...
-
-%Although \ourtool ranked the actual root course of several crashing errors lower, 
-Crashing errors are generally much easier to diagnose than non-crashing errors.
-This is because a crashing error often produces a stack trace with valuable diagnosis clues.
-For example, in Figure~\ref{tab:results}, \ourtool ranks the root cause of
-error 14  8th.
-However, when JChord crashes, it throws a \CodeIn{ClassNotFoundException}
-that reminds users to check the classpath setting. For the other three crashing errors (error 8, 10, and 11),
-JChord even outputs the wrong configuration option value in the
-error message, which
-directly guides users to the root cause. 
 
 
 
