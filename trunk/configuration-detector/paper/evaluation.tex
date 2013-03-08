@@ -300,11 +300,15 @@ that cause poor performance.
 %
 Second, in this paper, we focus specifically on
 configuration errors, assuming the application code is correct.
-In our experiments, all \errors errors
+Furthermore, in our experiments, all \errors errors
 have been minimized (as end-users often do
 when reporting an error). \ourtool might produce
 different error diagnosis results on buggy application 
-code with non-minimized inputs.
+code with non-minimized inputs.  A user who did not know whether a program
+was misbehaving due to a bug in the code or an incorrect configuration
+option would need to apply multiple debugging techniques.  We have not
+yet formulated guidance regarding when the user should give up on \ourtool
+and assume the error is not related to a configuration option.
 %
 Third, we only compared two dependence
 analyses (thin slicing and full slicing), three
