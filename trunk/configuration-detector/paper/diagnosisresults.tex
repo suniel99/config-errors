@@ -75,11 +75,14 @@ that reminds the user to check the classpath setting.  For errors \#8,
 JChord outputs the relevant configuration option value in the
 error message.  Thus, between \ourtool and the program output, the user is
 always led directly to the root cause.\todo{Is the same true for
-  ConfAnalyzer?  Say explicitly.}
+  ConfAnalyzer?  Say explicitly.  Mike wants to review this text once it is
+  written.  It would be good to determine, for \emph{every} crashing error
+  (not just 8, 9, 10, 11, 13, and 14), whether the program output gives a
+  clue as to the configuration option, and maybe even put this in Figure~\ref{tab:results}.}
 
-Compared to non-crashing errors, \ourtool is less effective
+If a user were to unrealistically ignore program output, then \ourtool is less effective
 in diagnosing crashing errors (the average rank of the root cause
-in \ourtool's output is 6.7).
+in \ourtool's output is 6.7) than non-crashing errors (average rank: 1.6)
 %For 4 crashing errors, the actual causes are ranked below the top 3 options.
 This is a direct result of lacking enough predicate behavior observations,
 since most crashing errors occur soon
