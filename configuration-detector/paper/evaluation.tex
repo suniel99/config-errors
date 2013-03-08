@@ -273,20 +273,14 @@ and experiments are restricted to Java.
 Second, we evaluated \ourtool on configuration errors
 involving just one mis-configured option.
 %
-\todo{I don't see why this wouldn't work.  It's just that we haven't
-  evaluated this yet, so it would go in threats to validity rather than
-  tool limitations.}Third, \ourtool does not yet help diagnose misconfigurations
-that cause poor performance (e.g., making a program run faster
-by increasing JVM's heap size via the option \CodeIn{-Xmx}).
-%
-Fourth,  our implementation currently does not
+Third,  our implementation currently does not
 support debugging non-deterministic errors. 
 For non-deterministic errors, \ourtool could potentially leverage 
 a deterministic replay system
 that can capture an undesired non-deterministic
 execution and faithfully reproduce it for later analysis.
 %
-Fifth, \ourtool's effectiveness  largely
+Fourth, \ourtool's effectiveness  largely
 depends on the availability of a similar but correct execution profile.
 Using an arbitrary execution profile (as we demonstrated in Section~\ref{sec:choices}
 by random selection) may significantly affect the results.
@@ -295,9 +289,15 @@ by random selection) may significantly affect the results.
 
 \noindent \textbf{\textit{Threats to Validity.}} 
 There are three major threats to validity in our evaluation. 
+%
 First, the \subjectnum programs and the configuration errors may not be
 representative. Thus, we can not claim the results can be
 generalized to an arbitrary program.
+For example, we did not evaluate \ourtool to diagnose misconfigurations
+that cause poor performance.
+% (e.g., making a program run faster
+% by increasing JVM's heap size via the option \CodeIn{-Xmx}).
+%
 Second, in this paper, we focus specifically on
 configuration errors, assuming the application code is correct.
 In our experiments, all \errors errors
@@ -305,6 +305,7 @@ have been minimized (as end-users often do
 when reporting an error). \ourtool might produce
 different error diagnosis results on buggy application 
 code with non-minimized inputs.
+%
 Third, we only compared two dependence
 analyses (thin slicing and full slicing), three
 abstraction granularities (at the predicate level,
@@ -343,4 +344,5 @@ permit \ourtool to produce more accurate diagnosis than other approaches.
 
 % LocalWords:  Weka JChord LOC Config CLOC pre classpath misconfigured 35MB 4GB
 % LocalWords:  ConfAnalyzer 72MB JChord's kobjK getInteger kobj 67GHz 2GB mis
-% LocalWords:  misconfigurations JVM's Xmx
+% LocalWords:  misconfigurations JVM's Xmx datarace 35MB 72MB 67GHz 4GB
+%%  LocalWords:  2GB

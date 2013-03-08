@@ -95,15 +95,10 @@ Delta debugging~\cite{Zeller:2002:ICC} is a general
 algorithm to isolate software error causes.
 It reduces differences between a working state and a broken
 state to isolate a set of failure-inducing changes.
-When using delta debugging, users must provide a testing oracle to check
-whether an intermediate program state behaves correctly,
-and a single working state.
-However, besides the difficulty in writing a good testing oracle,
-a working state is often absent in practice since\todo{I don't understand
-  the relationship between the text that precedes ``since'' and the text
-  that follows.} the error-revealing
-input and configuration may have already been minimized (such as the
-\errors configuration errors in our experiments).
+When using delta debugging, the user must provide 
+a single nearby working state and 
+a testing oracle to check
+whether an intermediate program state behaves correctly --- both of which are difficult tasks.
 Furthermore, as a minimization technique, delta debugging
 is not applicable to data (i.e., configuration option values)
 that are missing nor ones that are incorrect.
@@ -111,6 +106,7 @@ By contrast, \ourtool eliminates these assumptions by comparing
 the undesired execution profile with correct execution profiles, and
 then identifying the root cause configuration options to account for
 the behavioral difference.
+\todo{Check the above paragraph.}
 
 %diagnoses a configuration error from a different perspective.
 %It compares the profile from an undesired execution with 

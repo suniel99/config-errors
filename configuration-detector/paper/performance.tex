@@ -22,7 +22,9 @@ in reproducing an error in a \ourtool-instrumented program.
  4. Synoptic & 3.6 & 24  & $<$ 1 \\
  5. Soot     & 3.1 & 95  & 21    \\
 \hline
-Average & 4.4 & 72 & 21 \\
+% With arithmetic mean:  Average & 4.4 & 72 & 21 \\
+% (geometric-mean 1.1 1.2 13.2 3.6 3.1)
+Mean & 2.9 & 72 & 21 \\
 \hline
 \hline
 \multicolumn{4}{|l|}{Crashing errors}   \\
@@ -37,18 +39,19 @@ Average & 4.4 & 72 & 21 \\
  13. JChord  & 1.9  & 147 & 8  \\
  14. JChord  & 1.4  & 147 & 80 \\
 \hline
-Average & 13 & 147 & 44 \\
+% With arithmetic mean:  Average & 13 & 147 & 44 \\
+% (geometric-mean 2.4 1.4 1.5 28.5 13.7 65.1 1.6 1.9 1.4)
+Mean & 4.3 & 147 & 44 \\
 \hline
 \end{tabular}
 }
 \Caption{{\label{tab:performance} \ourtool's
-performance in diagnosing configuration
-errors. The time cost has been divided into
-two parts: computing thin slices and diagnosing
-an error.}}
-\todo{Since the slowdowns are ratios, a sensible way to combine them is via
-  geometric mean rather than average.  This also results in much more
-  favorable numbers.}
+performance.  The run-time slowdown column shows the cost of reproducing
+the error in an instrumented version of the subject program, and the
+mean is the geometric mean.
+The \ourtool time has been divided into
+two parts --- computing thin slices and diagnosing
+an error --- and the mean is the arithmetic mean.}}
 \end{figure}
 
 Figure~\ref{tab:performance} shows the results.
@@ -64,14 +67,15 @@ to share across diagnoses. %for future use.
 
 The performance overhead to reproduce the buggy behavior varies
 among applications. The current tool implementation
-imposes an average slowdown of 13 times when reproducing
-an error in a \ourtool-instrumented version.
+imposes a substantial slowdown when reproducing
+errors 3, 9, 10, and 11 in a \ourtool-instrumented version.
 %This performance overhead, admittedly high, is still acceptable
 %for offline error diagnosis.
-For errors 3, 9, 10, and 11, the slowdown is significant\todo{Can you
-  explain why?  Better, I have an idea for significantly reducing the overhead.}, but the
-absolute time cost for error reproduction is still low (less than 13
-minutes per error).\todo{Add run times to table??}
+This is due to \ourtool's naive,
+inefficient instrumentation code, which we have made no effort to optimize.
+Even so, an error can be reproduced in less than \avgtime 
+minutes on average, with a worst case of 13 minutes.
+\todo{Add run times to table??}
 % For the other 10 errors, the average slowdown is only 1.9.
 
 %\todo{Maybe add one more sentence here: for error 9, 10, 11, the slowdown for
@@ -86,3 +90,5 @@ minutes per error).\todo{Add run times to table??}
 %an error varies among applications.  XXX app takes less than xxx,
 %while xxx takes xxx to complete.
 
+
+%%  LocalWords:  Weka JChord

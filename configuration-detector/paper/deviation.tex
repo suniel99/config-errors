@@ -1,3 +1,5 @@
+% -*- mode: LaTeX -*-
+
 \ourtool starts error diagnosis after obtaining the execution profile from
 an undesired execution. It selects similar
 profiles from known correct executions (Section~\ref{sec:similar}), compares
@@ -22,11 +24,7 @@ as the basis of diagnosis.
 \ourtool first converts each execution profile $e$
 into a $n$-dimensional
 vector $v_e$ =$\langle r_{e1}, r_{e2}, ..., r_{en}\rangle$, where $n$
-is the number of all possible predicate profiles\todo{Is this the number of
-predicates affected by configuration options, or the number of predicate
-profiles?  The paper is inconsistent about this.  Does it make a difference
-which you choose, and how are they treated?  This needs to be clarified
-throughout.} in the program
+is the number of predicates affected by configuration options
 and each $r_{ei}$ is a ratio representing how often the $i$-th predicate
 profile evaluated to true at run time.
 If a predicate has never been executed in an execution,
@@ -50,8 +48,8 @@ of $v_{e}$ and $v_{f}$.
 
 This similarity metric compares two execution profiles based on
  control flow taken (approximated by how often each predicate evaluated to
-true). Its value ranges from 0 meaning completely different, to 1 meaning
- almost\todo{cut ``almost?''} the same, 
+true). Its value ranges from 0 meaning completely different predicate behavior, to 1 meaning
+ the same predicate behavior, 
 and in-between values indicating intermediate similarity.
 
 
@@ -253,10 +251,11 @@ true ratio difference between execution profiles $e$ and $f$.
 %(the wording here is bad)
 
 
-\ourtool computes the $Deviation$ value for each predicate $p$\todo{Or
-predicate profile?}
-appearing in two execution profiles $e$ or\todo{``and''?} $f$, and
-ranks them in decreasing order. 
+\ourtool computes the $Deviation$ value for each predicate $p$
+appearing in two execution profiles $e$ and $f$, and
+ranks them in decreasing order.  The two execution profiles $e$ and $f$ are for the
+same program, so they have exactly the same set of predicates affected by
+configuration options.
 
 %After comparing the undesired execution profile with one selected correct execution profile,
 %\ourtool ranks all observed predicate profiles in
