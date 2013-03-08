@@ -67,15 +67,30 @@ gained a 5\% performance increase.
 %Although \ourtool ranked the actual root course of several crashing errors lower, 
 Crashing errors are often easy for a user to diagnose.
 This is because a crashing error often produces a stack trace with valuable diagnosis clues.
-Consider the 4 errors in in Figure~\ref{tab:results} for which \ourtool
-does not rank the root cause first.
+\todo{Edited the following text} As show in the ``Rank in Output''
+column of Figure~\ref{tab:results}, for 6 out of \crash crashing errors
+(including 3 errors that \ourtool does not rank the root cause first),
+JChord outputs the relevant configuration option in its error message.
 For error \#14, when JChord crashes, it throws a \CodeIn{ClassNotFoundException}
-that reminds the user to check the classpath setting.  For errors \#8,
-\#10, and \#11, 
-JChord outputs the relevant configuration option value in the
-error message.  Thus, between \ourtool and the program output, the user is
-always led directly to the root cause.\todo{Is the same true for
-  ConfAnalyzer?  Say explicitly.  Mike wants to review this text once it is
+that reminds the user to check the classpath setting.  
+For error \#6 , JChord throws a \CodeIn{NoClassDefFoundError}
+which reminds the user that a non-existed class might be provided.
+For error \#7, JChord outputs an error message of ``Could not find main class [...]
+or main method in that class'' that explicitly informs users that
+the configuration option to specify a main class might be wrong.
+Thus, between both tools (\ourtool
+and ConfAnalyzer) and the program output, the user is always
+led directly to the root cause of crashing errors.
+
+
+%Consider the 4 errors in in Figure~\ref{tab:results} for which \ourtool
+%does not rank the root cause first. For errors \#8,
+%\#10, and \#11, 
+%JChord outputs the relevant configuration option value in the
+%error message.  
+%\todo{Is the same true for
+%  ConfAnalyzer?  Say explicitly.  
+\todo{Mike wants to review this text once it is
   written.  It would be good to determine, for \emph{every} crashing error
   (not just 8, 9, 10, 11, 13, and 14), whether the program output gives a
   clue as to the configuration option, and maybe even put this in Figure~\ref{tab:results}.}

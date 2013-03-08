@@ -47,9 +47,9 @@
 
 % Add line between figure and text
 \makeatletter
-\def\topfigrule{\kern3\p@ \hrule \kern -3.4\p@} % the \hrule is .4pt high
-\def\botfigrule{\kern-3\p@ \hrule \kern 2.6\p@} % the \hrule is .4pt high
-\def\dblfigrule{\kern3\p@ \hrule \kern -3.4\p@} % the \hrule is .4pt high
+%\def\topfigrule{\kern3\p@ \hrule \kern -3.4\p@} % the \hrule is .4pt high
+%\def\botfigrule{\kern-3\p@ \hrule \kern 2.6\p@} % the \hrule is .4pt high
+%\def\dblfigrule{\kern3\p@ \hrule \kern -3.4\p@} % the \hrule is .4pt high
 \makeatother \addtolength{\textfloatsep}{-.5\textfloatsep}
 \addtolength{\dbltextfloatsep}{-.5\dbltextfloatsep}
 \addtolength{\floatsep}{-.5\floatsep}
@@ -118,7 +118,7 @@
 \begin{document}
 \normalem
 
-\title{\huge Automated Diagnosis of Software Configuration Errors} 
+\title{Automated Diagnosis of Software Configuration Errors} 
 
 \author{\IEEEauthorblockN{Sai Zhang \quad Michael D. Ernst}
 \IEEEauthorblockA{Computer Science \& Engineering\\
@@ -151,7 +151,7 @@ University of Washington, USA\\
 
 \input{evaluation}
 
-\smallsqueeze
+%\smallsqueeze
 \smallsqueeze
 
 \input{related}
@@ -161,16 +161,15 @@ University of Washington, USA\\
 
 \input{conclusion}
 
-\vspace{2mm}
+\smallsqueeze
 
-\noindent \textbf{Acknowledgements.} This work was supported
+\section*{Acknowledgements}
+This work was supported
 in part by ABB Corporation and NSF grant CCF-1016701.
 
 \tinysqueeze
 \tinysqueeze
 
-\todo{Horwitz is a weird citation for full slicing.  You could even omit
-  that reference to save space if you want.}
 
 \bibliographystyle{abbrv}
 %\tinysqueeze
