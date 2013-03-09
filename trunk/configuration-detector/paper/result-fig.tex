@@ -3,13 +3,15 @@
 
 \begin{figure*}[t]
 \vspace{1mm}
-\setlength{\tabcolsep}{.10\tabcolsep}
-\small{
-\begin{tabular}{|l|c|c|c||c|c||c||c|c||c|}
+\setlength{\tabcolsep}{.5\tabcolsep}
+\centerline{%
+\small{%
+\begin{tabular}{|l|c|c||c||c|c||c||c|c||c|}
 \hline
- Error ID.  & Root Cause & \#Options& Rank in& \multicolumn{2}{|c||}{\ourtool} & ConfAnalyzer& Coverage Analysis& Invariant Analysis & Full Slicing \\
-\cline{5-10}
- Program &  & & Output & \#Profiles& Rank  & Rank & Rank & Rank & Rank \\
+ Error ID.  & Root Cause & \#Options& Program & \multicolumn{2}{|c||}{\ourtool} & ConfAnalyzer& Coverage& Invariant & \ourtool \\
+ Program  & Configuration Option & & Output & \multicolumn{2}{|c||}{} & & Analysis& Analysis & w/ Full Slicing \\
+\cline{4-10}
+ &  & & Rank & \#Profiles& Rank  & Rank & Rank & Rank & Rank \\
  \hline
 \hline
 \multicolumn{10}{|l|}{Non-crashing errors}   \\
@@ -37,16 +39,14 @@
 \hline
  \multicolumn{2}{|l|}{Average} & 79 && 4.2 / 6 & 6.7 & 5.7 & 11.5\omitsel{ / 9.2} & 19.5\omitsel{ / 16.1} & 19.8\\
 \hline
-\end{tabular}
-}
-\vspace{-3mm}
+\end{tabular}}}
+\vspace{-1mm}
 \Caption{{\label{tab:results} Experimental results in diagnosing software
 configuration errors. Column ``Root Cause'' shows the actual
 root cause configuration option. Column ``\#Options'' shows the
 number of available configuration options, taken from Figure~\ref{tab:subjects}.
-\todo{Add the following sentence}
-Column ``Rank in Output'' shows the rank of the root cause in the program's
-output, in which ``N'' means the program does not output the root cause in this error message.
+Column ``Program Output'' shows the rank of the root cause as indicated by the program's
+output, such as an error message.
 Column ``\ourtool'' shows the results of using our technique. 
 Column ``\#Profiles'' shows the number of similar execution profiles selected
 from the pre-built database for comparison, and the number of executions in the database.
