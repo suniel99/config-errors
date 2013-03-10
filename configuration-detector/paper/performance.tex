@@ -4,6 +4,7 @@ in reproducing an error in a \ourtool-instrumented program.
 %Figure~\ref{tab:performance} shows the results.
 
 \begin{figure}[t]
+\vspace{1mm}
 \setlength{\tabcolsep}{.94\tabcolsep}
 \small{
 \begin{tabular}{|l|c|c|c|}
@@ -54,8 +55,8 @@ two parts --- computing thin slices and diagnosing
 an error --- and the mean is the arithmetic mean.}}
 \end{figure}
 
-Figure~\ref{tab:performance} shows the results.
-The performance of \ourtool is reasonable.
+As shown in Figure~\ref{tab:performance},
+the performance of \ourtool is reasonable.
 On average, it uses less than \avgtime minutes to
 diagnose one configuration error (including
 the time to compute thin slices and the time
@@ -64,6 +65,8 @@ thin slices for all configuration options
 is expensive. However, this step is one-time effort
 per program and the computed slices can be cached
 to share across diagnoses. %for future use.
+
+%\vspace{-2mm}
 
 The performance overhead to reproduce the buggy behavior varies
 among applications. The current tool implementation
