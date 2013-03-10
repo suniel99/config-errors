@@ -70,16 +70,22 @@ This is because a crashing error often produces a stack trace or error message w
 In fact, for the crashing errors selected by the ConfAnalyzer authors, the
 user is always led to the root cause by the program output,
 without the need for further analysis.
-For error \#6, JChord throws a \CodeIn{NoClassDefFoundError}\todo{For what class?}
-which reminds the user that a non-existant class might be provided.
+For error \#6, JChord throws a \CodeIn{NoClassDefFoundError}
+when loading a user-specified class. This error
+reminds the user that a non-existant class might be provided.
 For error \#7, JChord outputs an error message of ``Could not find main class [...]
 or main method in that class'' that explicitly informs the user that
 the configuration option to specify a main class might be wrong.
 For error \#8--13,
 JChord outputs the relevant configuration option in its error message.
-For error \#14, JChord throws a \CodeIn{ClassNotFoundException}\todo{For
-what class?} that reminds the user to check the classpath setting.  
+For error \#14, JChord throws a \CodeIn{ClassNotFoundException}
+(for the main class) that reminds the user to check the classpath setting.  
+Thus, between the program output and \ourtool, the user is
+always led directly to the
+root cause.
 
+\todo{Mike wants to review this text once it is
+  written.}
 
 %Consider the 4 errors in in Figure~\ref{tab:results} for which \ourtool
 %does not rank the root cause first. For errors \#8,
@@ -88,12 +94,8 @@ what class?} that reminds the user to check the classpath setting.
 %error message.  
 %\todo{Is the same true for
 %  ConfAnalyzer?  Say explicitly.  
-\todo{Mike wants to review this text once it is
-  written.}
 
-Between the program output and \ourtool, the user is led directly to the
-root cause
-and ConfAnalyzer) and the program output.
+%and ConfAnalyzer) and the program output.
 
 If a user were to unrealistically ignore program output, then \ourtool is less effective
 in diagnosing crashing errors (the average rank of the root cause
