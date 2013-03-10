@@ -37,14 +37,14 @@
  13. JChord& \CodeIn{chord.reflect.kind}& 79 &1 &6 / 6 & 1& 3 & 5\omitsel{ / 6} & 9\omitsel{ / 9} & 11\\
  14. JChord& \CodeIn{chord.class.path}& 79 & N &4 / 6 & 8 &  N& 21\omitsel{ / 2} & 26\omitsel{ / 5} & 6\\
 \hline
- \multicolumn{2}{|l|}{Average} & 79 && 4.2 / 6 & 6.7 & 5.7 & 11.5\omitsel{ / 9.2} & 19.5\omitsel{ / 16.1} & 19.8\\
+ \multicolumn{2}{|l|}{Average} & 79 &13.8& 4.2 / 6 & 6.7 & 5.7 & 11.5\omitsel{ / 9.2} & 19.5\omitsel{ / 16.1} & 19.8\\
 \hline
 \end{tabular}}}
 \vspace{-1mm}
 \Caption{{\label{tab:results} Experimental results in diagnosing software
-configuration errors. Column ``Root Cause'' shows the actual
+configuration errors. Column ``Root Cause Configuration Option'' shows the actual
 root cause configuration option. Column ``\#Options'' shows the
-number of available configuration options, taken from Figure~\ref{tab:subjects}.
+number of configuration options, taken from Figure~\ref{tab:subjects}.
 Column ``Program Output'' shows the rank of the root cause as indicated by the program's
 output, such as an error message.
 Column ``\ourtool'' shows the results of using our technique. 
@@ -63,7 +63,7 @@ two fault localization techniques as described in Section~\ref{sec:comparison}.
 \omitsel{For these two columns, a slash ``/'' separates the results of using
 the selected similar execution profiles by \ourtool (Section~\ref{sec:similar}) and the results of using all execution profiles from
 the pre-built database.}
-Column ``Full Slicing'' shows the results of using full slicing~\cite{Horwitz:1988} to compute
+Column ``\ourtool w/ Full Slicing'' shows the results of using full slicing~\cite{Horwitz:1988} to compute
 the affected predicates (Section~\ref{sec:choices}).
 }}
 \end{figure*}
