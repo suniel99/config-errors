@@ -76,16 +76,13 @@ reminds the user that a non-existent class might be provided.
 For error \#7, JChord outputs an error message of ``Could not find main class [...]
 or main method in that class'' that explicitly informs the user that
 the configuration option to specify a main class might be wrong.
-For error \#8--13,
+For errors \#8--13,
 JChord outputs the relevant configuration option in its error message.
 For error \#14, JChord throws a \CodeIn{ClassNotFoundException}
 (for the main class) that reminds the user to check the classpath setting.  
-Thus, between the program output and \ourtool, the user is
-always led directly to the
-root cause.
-
-\todo{Mike wants to review this text once it is
-  written.}
+% Thus, between the program output and \ourtool, the user is
+% always led directly to the
+% root cause.
 
 %Consider the 4 errors in in Figure~\ref{tab:results} for which \ourtool
 %does not rank the root cause first. For errors \#8,
@@ -98,13 +95,10 @@ root cause.
 % Between the program output and \ourtool, the user is led directly to the
 % root cause
 
-If a user were to unrealistically ignore program output, then \ourtool is less effective
-in diagnosing crashing errors (the average rank of the root cause
-in \ourtool's output is 6.7) than non-crashing errors (average rank: 1.6)
-%For 4 crashing errors, the actual causes are ranked below the top 3 options.
-This is a direct result of lacking enough predicate behavior observations,
-since most crashing errors occur soon
-after the program is launched.  Many predicates are
+\ourtool is more effective in diagnosing non-crashing errors (average
+rank: 1.6) than crashing errors (average rank: 6.7).
+Most of the crashing errors occur soon
+after the program is launched, so \ourtool  lacks enough predicate behavior observations.  Many predicates are
 only executed once, so their $Deviation$ scores
  (Section~\ref{sec:deviation}) turn out to be the same; and the
  BFS-distance-based heuristic to resolve ties (Section~\ref{sec:linking}) only
