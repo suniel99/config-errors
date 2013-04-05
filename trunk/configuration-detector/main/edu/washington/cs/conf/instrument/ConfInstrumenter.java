@@ -25,6 +25,7 @@ import com.ibm.wala.shrikeCT.ClassWriter;
 
 import edu.washington.cs.conf.util.Globals;
 import edu.washington.cs.conf.util.Utils;
+import edu.washington.cs.conf.util.WALAUtils;
 
 public class ConfInstrumenter extends AbstractInstrumenter {
 
@@ -96,7 +97,7 @@ public class ConfInstrumenter extends AbstractInstrumenter {
 	        MethodEditor me = new MethodEditor(d);
 	        me.beginPass();
 
-        	final String methodSig = this.getMethodSignature(d);
+        	final String methodSig = WALAUtils.getMethodSignature(d);
         	Map<String, Set<Integer>> confInstPoints = null;
         	if(this.schema == null) {
 //        		continue; //go to the next method

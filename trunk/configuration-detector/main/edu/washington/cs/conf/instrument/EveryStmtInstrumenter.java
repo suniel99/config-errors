@@ -20,6 +20,7 @@ import com.ibm.wala.shrikeCT.ClassWriter;
 
 import edu.washington.cs.conf.util.Globals;
 import edu.washington.cs.conf.util.Utils;
+import edu.washington.cs.conf.util.WALAUtils;
 
 public class EveryStmtInstrumenter extends AbstractInstrumenter {
 	
@@ -90,7 +91,7 @@ public class EveryStmtInstrumenter extends AbstractInstrumenter {
 	        me.beginPass();
 
 	        //the unique method signature
-        	String methodSig = this.getMethodSignature(d);
+        	String methodSig = WALAUtils.getMethodSignature(d);
         	
         	//instrument every instruction
 	        int length = me.getInstructions().length;
