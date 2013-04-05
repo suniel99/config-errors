@@ -208,6 +208,10 @@ public class WALAUtils {
 			return Utils.translateSlashToDot(packageName);
 		}
 		
+		public static boolean isClassInPackages(CGNode node, String[] packages) {
+			return isClassInPackages(node.getMethod().getDeclaringClass(), packages);
+		}
+		
 		public static boolean isClassInPackages(IClass clazz, String[] packages) {
 			String packageName = getJavaPackageName(clazz);
 			boolean isIn = false;
