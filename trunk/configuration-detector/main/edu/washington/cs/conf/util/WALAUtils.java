@@ -39,6 +39,7 @@ import com.ibm.wala.ipa.slicer.NormalStatement;
 import com.ibm.wala.ipa.slicer.SDG;
 import com.ibm.wala.ipa.slicer.Statement;
 import com.ibm.wala.properties.WalaProperties;
+import com.ibm.wala.shrikeBT.MethodData;
 import com.ibm.wala.ssa.SSAInstruction;
 import com.ibm.wala.types.ClassLoaderReference;
 import com.ibm.wala.types.TypeName;
@@ -301,6 +302,17 @@ public class WALAUtils {
 	    public static String javaClassToWalaClass(String javaFullClassName) {
 	    	return "L" + Utils.translateDotToSlash(javaFullClassName);
 	    }
+	    
+	    //return La/b/c.name sig
+		public static String getMethodSignature(MethodData d) {
+			  String sig = d.getSignature();
+			  String name = d.getName();
+			  String jvmClassName = d.getClassType();
+			  Utils.checkTrue(jvmClassName.startsWith("L"));
+			  Utils.checkTrue(jvmClassName.endsWith(";"));
+			  String javaClassName =  Utils.translateSlashToDot(jvmClassName.substring(1, jvmClassName.length() - 1));
+			  return javaClassName + "." + name + sig;
+		  }
 	    
 	    //utilities for ir
 	    public static String getAllIRAsString(CGNode node) {
