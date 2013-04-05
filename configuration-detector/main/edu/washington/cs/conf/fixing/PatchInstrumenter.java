@@ -23,6 +23,7 @@ import edu.washington.cs.conf.instrument.AbstractInstrumenter;
 import edu.washington.cs.conf.instrument.InstrumentStats;
 import edu.washington.cs.conf.util.Globals;
 import edu.washington.cs.conf.util.Utils;
+import edu.washington.cs.conf.util.WALAUtils;
 
 /**
  * Patching the original program via instrumentation
@@ -73,7 +74,7 @@ public class PatchInstrumenter extends AbstractInstrumenter {
 	        me.beginPass();
 
 	        //the unique method signature
-        	String methodSig = this.getMethodSignature(d);
+        	String methodSig = WALAUtils.getMethodSignature(d);
         	System.out.println(methodSig);
         	
         	//instrument every instruction

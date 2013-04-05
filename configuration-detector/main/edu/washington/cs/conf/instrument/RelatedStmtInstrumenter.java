@@ -26,6 +26,7 @@ import edu.washington.cs.conf.analysis.ConfPropOutput;
 import edu.washington.cs.conf.analysis.IRStatement;
 import edu.washington.cs.conf.util.Globals;
 import edu.washington.cs.conf.util.Utils;
+import edu.washington.cs.conf.util.WALAUtils;
 
 /**
  * Only instruments statements which are affected by at least
@@ -124,7 +125,7 @@ public class RelatedStmtInstrumenter extends AbstractInstrumenter {
 	        me.beginPass();
 
 	        //the unique method signature
-        	String methodSig = this.getMethodSignature(d);
+        	String methodSig = WALAUtils.getMethodSignature(d);
         	
         	//instrument every instruction
 	        int length = me.getInstructions().length;

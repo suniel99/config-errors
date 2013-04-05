@@ -10,6 +10,7 @@ import com.ibm.wala.shrikeBT.shrikeCT.ClassInstrumenter;
 import com.ibm.wala.shrikeBT.shrikeCT.OfflineInstrumenter;
 
 import edu.washington.cs.conf.util.Utils;
+import edu.washington.cs.conf.util.WALAUtils;
 
 public abstract class AbstractInstrumenter {
 
@@ -52,13 +53,7 @@ public abstract class AbstractInstrumenter {
 	  protected abstract void doClass(final ClassInstrumenter ci, Writer w) throws Exception;
 	  
 	  //some utility methods
-	  protected String getMethodSignature(MethodData d) {
-		  String sig = d.getSignature();
-		  String name = d.getName();
-		  String jvmClassName = d.getClassType();
-		  Utils.checkTrue(jvmClassName.startsWith("L"));
-		  Utils.checkTrue(jvmClassName.endsWith(";"));
-		  String javaClassName =  Utils.translateSlashToDot(jvmClassName.substring(1, jvmClassName.length() - 1));
-		  return javaClassName + "." + name + sig;
-	  }
+//	  protected String getMethodSignature(MethodData d) {
+//		  return WALAUtils.getMethodSignature(d);
+//	  }
 }
