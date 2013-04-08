@@ -50,6 +50,10 @@ public abstract class AbstractInstrumenter {
 	      instrumenter.close();
 	  }
 	  
+	  public void setDisasm(boolean disasm) {
+		  this.disasm = disasm;
+	  }
+	  
 	  protected abstract void doClass(final ClassInstrumenter ci, Writer w) throws Exception;
 	  
 	  //some utility methods
