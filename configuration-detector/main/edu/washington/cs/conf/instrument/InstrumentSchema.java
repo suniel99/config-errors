@@ -136,6 +136,16 @@ public class InstrumentSchema {
 		return confEntity;
 	}
 	
+	public boolean hasInstrumentationPredicates(String methodSig, int instrIndex) {
+		Map<String, Set<Integer>>  points = getInstrumentationPoints(methodSig);
+		for(String predicate : points.keySet()) {
+			if(points.get(predicate).contains(instrIndex)) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
 	public Set<String> getInstrumentationPredicates(String methodSig, int instrIndex) {
 		Set<String> predicates = new LinkedHashSet<String>();
 		Map<String, Set<Integer>>  points = getInstrumentationPoints(methodSig);
