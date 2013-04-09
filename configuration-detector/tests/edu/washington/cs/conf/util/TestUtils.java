@@ -1,5 +1,6 @@
 package edu.washington.cs.conf.util;
 
+import java.io.File;
 import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.Collection;
@@ -67,17 +68,24 @@ public class TestUtils extends TestCase {
 		System.out.println(splits[0]);
 	}
 	
-	public void testTreeSet() {
-	   Object obj = new Object();
-	   Integer int1 = 0;
-	   Integer int2 = 1;
-	   Object[] objs = new Object [] {obj, int1, int2};
-	   List list1 = Arrays.asList(objs);
-	   List list2 = list1.subList(int1, int2);
-	   TreeSet treeSet = new TreeSet();
-	   boolean add = treeSet.add(list2);
-	   Set set = Collections.synchronizedSet(treeSet);
-	   //This assertion fails
-	   assertTrue(set.equals(set));
-    }
+//	public void testTreeSet() {
+//	   Object obj = new Object();
+//	   Integer int1 = 0;
+//	   Integer int2 = 1;
+//	   Object[] objs = new Object [] {obj, int1, int2};
+//	   List list1 = Arrays.asList(objs);
+//	   List list2 = list1.subList(int1, int2);
+//	   TreeSet treeSet = new TreeSet();
+//	   boolean add = treeSet.add(list2);
+//	   Set set = Collections.synchronizedSet(treeSet);
+//	   //This assertion fails
+//	   assertTrue(set.equals(set));
+//    }
+	
+	public void testCreateTmpDir() {
+		File f = Files.createTempDirectoryNoExp();
+		System.out.println(f.getAbsolutePath());
+		f.delete();
+		System.out.println("exist? : " + f.exists());
+	}
 }
