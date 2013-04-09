@@ -351,6 +351,41 @@ public final class Files {
     File f = new File(path);
     return f.delete();
   }
+  
+	public static void deleteDirectory(File f) {
+		if (f.isDirectory()) {
+			for (File c : f.listFiles())
+				deleteDirectory(c);
+		}
+		if (!f.delete()) {
+			throw new Error("Failed to delete file: " + f);
+		}
+
+	}
+  
+  public static File createTempDirectoryNoExp() {
+	  try {
+		  return createTempDirectory();
+	  } catch (Throwable e) {
+		  throw new Error(e);
+	  }
+  }
+  
+	public static File createTempDirectory() throws IOException {
+		final File temp;
+		temp = File.createTempFile("conf_evol_proj", Long.toString(System.nanoTime()));
+
+		if (!(temp.delete())) {
+			throw new IOException("Could not delete temp file: "
+					+ temp.getAbsolutePath());
+		}
+		if (!(temp.mkdir())) {
+			throw new IOException("Could not create temp directory: "
+					+ temp.getAbsolutePath());
+		}
+
+		return (temp);
+	}
 
   /**
    * Reads a single long from the file.
