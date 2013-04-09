@@ -88,4 +88,11 @@ public class TestUtils extends TestCase {
 		f.delete();
 		System.out.println("exist? : " + f.exists());
 	}
+	
+	public void testMergeJarFiles() {
+		JarUtils.mergeWithTracer(
+				new File("./output.jar"),
+				new File(JarUtils.TRACER_FILE),
+				new File("./output-tracer.jar"));
+	}
 }
