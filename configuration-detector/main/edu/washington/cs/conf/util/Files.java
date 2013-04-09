@@ -3,7 +3,9 @@ package edu.washington.cs.conf.util;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -11,6 +13,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.LineNumberReader;
 import java.io.Reader;
+import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -159,6 +162,35 @@ public final class Files {
     }
     return retval;
   }
+  
+  public static void copyFileNoExp(File sourceFile, File destFile) {
+	  try {
+		  copyFile(sourceFile, destFile);
+	  } catch (IOException e) {
+		  throw new Error(e);
+	  }
+  }
+  
+  public static void copyFile(File sourceFile, File destFile) throws IOException {
+	    if(!destFile.exists()) {
+	        destFile.createNewFile();
+	    }
+	    FileChannel source = null;
+	    FileChannel destination = null;
+	    try {
+	        source = new FileInputStream(sourceFile).getChannel();
+	        destination = new FileOutputStream(destFile).getChannel();
+	        destination.transferFrom(source, 0, source.size());
+	    }
+	    finally {
+	        if(source != null) {
+	            source.close();
+	        }
+	        if(destination != null) {
+	            destination.close();
+	        }
+	    }
+	}
 
   public static void writeToFile(String s, File file) throws IOException {
     writeToFile(s, file, false);
