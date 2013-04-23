@@ -107,6 +107,7 @@ public class PredicateInstrumenter extends AbstractInstrumenter {
 							// methodSig is not a uniquely-identifiable,
 							// so plus the instruction index before evaluation
 							final String predSig = methodSig + EfficientTracer.SEP + i;
+							InstrumentStats.addInstrumentedPositions(predSig);
 							me.insertBefore(i, new MethodEditor.Patch() {
 								@Override
 								public void emitTo(MethodEditor.Output w) {
@@ -171,7 +172,7 @@ public class PredicateInstrumenter extends AbstractInstrumenter {
 			return false;
 		}
 		String cName = Utils.translateSlashToDot(className);
-		if(Utils.startWith(cName, this.appPkgNames)) {
+		if(!Utils.startWith(cName, this.appPkgNames)) {
 			return true;
 		}
 		return false;

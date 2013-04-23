@@ -18,6 +18,8 @@ public abstract class AbstractInstrumenter {
 	  protected final boolean verify = true;
 	  protected OfflineInstrumenter instrumenter;
 	  
+	  private String disasmFile = "report.txt";
+	  
 	  public static String PRE = "evaluating";
 	  public static String POST = "entering";
 	  public static String SEP = "#";
@@ -32,7 +34,10 @@ public abstract class AbstractInstrumenter {
 	  public void instrument(String inputElement, String outputJar) throws Exception {
 		  System.out.println("start instrumentating");
 	      instrumenter = new OfflineInstrumenter();
-	      Writer w = new BufferedWriter(new FileWriter("report", false));
+	      Writer w = null;
+	      if(this.disasmFile != null) {
+	          w = new BufferedWriter(new FileWriter(this.disasmFile, false));
+	      }
 	      instrumenter.addInputElement(inputElement);
 	      instrumenter.setOutputJar(new File(outputJar));
 	      instrumenter.setPassUnmodifiedClasses(true);
@@ -54,10 +59,10 @@ public abstract class AbstractInstrumenter {
 		  this.disasm = disasm;
 	  }
 	  
+	  public void setDisasmFile(String fileName) {
+		  this.disasmFile = fileName;
+	  }
+	  
 	  protected abstract void doClass(final ClassInstrumenter ci, Writer w) throws Exception;
 	  
-	  //some utility methods
-//	  protected String getMethodSignature(MethodData d) {
-//		  return WALAUtils.getMethodSignature(d);
-//	  }
 }
