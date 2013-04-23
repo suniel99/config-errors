@@ -43,11 +43,12 @@ public class TestJChordBaseline extends TestCase {
 		String[] badStmtFiles = new String[]{"./experiments/jchord-baseline-stmt/bad_no_race-related.txt"};
 		String[] goodStmtFiles = new String[]{
 				"./experiments/jchord-baseline-stmt/good_datarace-related.txt",
-				"./experiments/jchord-baseline-stmt/good_deadlock-related.txt",
-				"./experiments/jchord-baseline-stmt/good_dlog-related.txt",
-				"./experiments/jchord-baseline-stmt/do-nothing-stmt-related.txt",
-				"./experiments/jchord-baseline-stmt/ctxts-analysis-stmt-related.txt",
-				"./experiments/jchord-baseline-stmt/print-project-stmt-related.txt"};
+//				"./experiments/jchord-baseline-stmt/good_deadlock-related.txt",
+//				"./experiments/jchord-baseline-stmt/good_dlog-related.txt",
+//				"./experiments/jchord-baseline-stmt/do-nothing-stmt-related.txt",
+//				"./experiments/jchord-baseline-stmt/ctxts-analysis-stmt-related.txt",
+//				"./experiments/jchord-baseline-stmt/print-project-stmt-related.txt"
+				};
 		
 		StmtCoverageBasedDiagnoserMain.findResponsibleOptions(outputs, badStmtFiles, goodStmtFiles);
 	}
@@ -59,11 +60,12 @@ public class TestJChordBaseline extends TestCase {
 		String[] badStmtFiles = new String[]{"./experiments/jchord-baseline-stmt/bad_no_race.txt"};
 		String[] goodStmtFiles = new String[]{
 				"./experiments/jchord-baseline-stmt/good_datarace.txt",
-				"./experiments/jchord-baseline-stmt/good_deadlock.txt",
-				"./experiments/jchord-baseline-stmt/good_dlog.txt",
-				"./experiments/jchord-baseline-stmt/do-nothing-stmt.txt",
-				"./experiments/jchord-baseline-stmt/ctxts-analysis-stmt.txt",
-				"./experiments/jchord-baseline-stmt/print-project-stmt.txt"};
+//				"./experiments/jchord-baseline-stmt/good_deadlock.txt",
+//				"./experiments/jchord-baseline-stmt/good_dlog.txt",
+//				"./experiments/jchord-baseline-stmt/do-nothing-stmt.txt",
+//				"./experiments/jchord-baseline-stmt/ctxts-analysis-stmt.txt",
+//				"./experiments/jchord-baseline-stmt/print-project-stmt.txt"
+				};
 		
 		StmtCoverageBasedDiagnoserMain.findResponsibleOptions(outputs, badStmtFiles, goodStmtFiles);
 	}

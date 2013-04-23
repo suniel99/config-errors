@@ -27,6 +27,8 @@ public class TestCrashingErrorDiagnosisInvariants extends TestCase {
 	String[] invDb = new String[]{ctxtAnalysis, datarace, deadlock, dlog, donothing,
 			printproject};
 	
+	String[] selectDb = new String[]{ctxtAnalysis, datarace, printproject};
+	
 	//crashing invariants
 	String invalidCtxtsKind = "./experiments/jchord-crashing-error-invariants/chord-crash-invalid-ctxts-kind.inv.gz";
 	String invalidReflectKind = "./experiments/jchord-crashing-error-invariants/chord-crash-invalid-reflect-kind.inv.gz";
@@ -41,7 +43,9 @@ public class TestCrashingErrorDiagnosisInvariants extends TestCase {
 	static Collection<ConfPropOutput> confs = TestSliceJChordConfigOptions.getJChordConfOutputs();
 	
 	private void diagnoseErrorCauses(String invFile) {
-		List<ConfEntity> entities = MethodBasedDiagnoser.computeResponsibleOptions(Arrays.asList(invDb), 
+		List<ConfEntity> entities = MethodBasedDiagnoser.computeResponsibleOptions(
+				Arrays.asList(invDb), 
+//				Arrays.asList(selectDb),
 				invFile, confs);
 		
 		StringBuilder sb = new StringBuilder();

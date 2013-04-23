@@ -28,10 +28,10 @@ public class TestSynopticBaseline extends TestCase {
 		String[] goodStmtFiles = new String[]{
 				"./experiments/synoptic-baseline/good_100tx_stmt-related.txt",
 				"./experiments/synoptic-baseline/good_5tx_stmt-related.txt",
-				"./experiments/synoptic-baseline/synoptic-all-help-related.txt",
-				"./experiments/synoptic-baseline/synoptic-apache-related.txt",
-				"./experiments/synoptic-baseline/synoptic-help-related.txt",
-				"./experiments/synoptic-baseline/synoptic-version-related.txt",
+//				"./experiments/synoptic-baseline/synoptic-all-help-related.txt",
+//				"./experiments/synoptic-baseline/synoptic-apache-related.txt",
+//				"./experiments/synoptic-baseline/synoptic-help-related.txt",
+//				"./experiments/synoptic-baseline/synoptic-version-related.txt",
 		       };
 		
 		StmtCoverageBasedDiagnoserMain.findResponsibleOptions(outputs, badStmtFiles, goodStmtFiles);
