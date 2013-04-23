@@ -55,6 +55,9 @@ public class StmtCoverageBasedDiagnoserMain {
 		if(outputFile != null) {
 			try {
 				Files.createIfNotExist(outputFile);
+				System.out.println("Writing: ");
+				System.out.println(sb);
+				System.out.println("to: " + outputFile);
 				Files.writeToFile(sb.toString(), outputFile);
 			} catch (IOException e) {
 				e.printStackTrace();

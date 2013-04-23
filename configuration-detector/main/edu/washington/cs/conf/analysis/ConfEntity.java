@@ -1,8 +1,6 @@
 package edu.washington.cs.conf.analysis;
 
 import java.io.Serializable;
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
 import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
