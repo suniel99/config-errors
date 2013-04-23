@@ -34,7 +34,8 @@ public class TestRandoopBaseline extends TestCase {
 		InstrumentStats.showInstrumentationStats();
 	}
 	
-	//max size ranks 13
+	//max size ranks 13 with all traces
+	//max size ranks 13 with selected traces
 	public void testDiagnoseOptionsByRelatedStmt() {
 		List<StmtExecuted> good1 = StmtFileReader.readStmts("./experiments/randoop-baseline-stmt/good-arraylist-60s-related-stmt.txt");
 		List<StmtExecuted> good2 = StmtFileReader.readStmts("./experiments/randoop-baseline-stmt/good-binarysearchtree-60s-related-stmt.txt");
@@ -61,8 +62,8 @@ public class TestRandoopBaseline extends TestCase {
 		goodRuns.add(good6);
 		goodRuns.add(good7);
 		goodRuns.add(good8);
-		goodRuns.add(good9);
-		goodRuns.add(good10);
+//		goodRuns.add(good9);
+//		goodRuns.add(good10);
 		goodRuns.add(good11);
 		goodRuns.add(good12);
 		
@@ -182,13 +183,13 @@ public class TestRandoopBaseline extends TestCase {
 		goodInvs.add(goodInvFile2);
 		goodInvs.add(goodInvFile3);
 		goodInvs.add(goodInvFile4);
-		goodInvs.add(goodInvFile5);
+//		goodInvs.add(goodInvFile5);
 		goodInvs.add(goodInvFile6);
 		goodInvs.add(goodInvFile7);
 		goodInvs.add(goodInvFile8);
 		goodInvs.add(goodInvFile9);
 		goodInvs.add(goodInvFile10);
-		goodInvs.add(goodInvFile11);
+//		goodInvs.add(goodInvFile11);
 		goodInvs.add(goodInvFile12);
 		goodInvs.add(goodInvFile13);
 		

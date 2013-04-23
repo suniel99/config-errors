@@ -25,7 +25,23 @@ public class TestCrashingErrorDiagnosisStmts extends TestCase {
 	String[] db = new String[]{ctxtAnalysisRelated, doNothingRelated, good_dataraceRelated, good_deadlockRelated,
 			good_dlogRelated, print_projectRelated};
 	
-	String[] dbRelated = new String[]{ctxtAnalysis, doNothing, good_datarace, good_deadlock, good_dlog, print_project};
+	String[] dbRelated = new String[]{
+			ctxtAnalysis, 
+			doNothing, 
+			good_datarace,
+			good_deadlock, 
+			good_dlog, 
+			print_project
+			};
+	
+	String[] selected = new String[]{
+			ctxtAnalysis, 
+//			doNothing, 
+			good_datarace,
+//			good_deadlock, 
+//			good_dlog, 
+//			print_project
+			};
 	
 	//crashing error coverage
 	String invalidCtxtKind = "./experiments/jchord-crashing-error-linecoverage/chord-crash-invalid-ctxt-kind-stmt.txt";
@@ -58,7 +74,10 @@ public class TestCrashingErrorDiagnosisStmts extends TestCase {
 	
 	void diagnoseByRelatedStmt(String stmtFile) {
 		String outputFile = stmtFile + "_related_result.txt";
-		StmtCoverageBasedDiagnoserMain.findResponsibleOptions(outputs, new String[]{stmtFile}, dbRelated,
+		StmtCoverageBasedDiagnoserMain.findResponsibleOptions(outputs,
+				new String[]{stmtFile}, 
+				//selected, 
+				dbRelated,
 				outputFile, new String[]{"chord."});
 	}
 	
