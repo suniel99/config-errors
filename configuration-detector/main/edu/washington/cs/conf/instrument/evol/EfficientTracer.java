@@ -13,6 +13,7 @@ public class EfficientTracer {
 
 	public static String SEP = "##";
 	public static String PRED_SEP = "==";
+	public static String EVAL_SEP = ":";
 	
 	//use two large maps to keep track of the evaluation
 	//result of each predicate
@@ -36,7 +37,7 @@ public class EfficientTracer {
 		if(!predicateFrequency.containsKey(predicateStr)) {
 			predicateFrequency.put(predicateStr, 1);
 		} else {
-			predicateFrequency.put(predicateStr, predicateFrequency.get(predicateStr));
+			predicateFrequency.put(predicateStr, predicateFrequency.get(predicateStr) + 1);
 		}
 //		System.out.println("freq: " + predicateStr);
 	}
@@ -45,7 +46,7 @@ public class EfficientTracer {
 		if(!predicateResult.containsKey(predicateStr)) {
 			predicateResult.put(predicateStr, 1);
 		} else {
-			predicateResult.put(predicateStr, predicateResult.get(predicateStr));
+			predicateResult.put(predicateStr, predicateResult.get(predicateStr) + 1);
 		}
 //		System.out.println("result: " + predicateStr);
 	}
@@ -55,13 +56,17 @@ public class EfficientTracer {
 		return new  Thread() {
 	        @Override
 	        public void run() {
+	        	if(predicateFrequency.isEmpty()) {
+	        		System.out.println("----------no traces recorded-------");
+	        		return;
+	        	}
 	        	System.out.println("----------dumping traces to files-------");
 	            synchronized(predicateFrequency) {
 	            	synchronized(predicateResult) {
 	            		StringBuilder sb = new StringBuilder();
 	                	for(String key : predicateFrequency.keySet()) {
 	                    	sb.append(key + PRED_SEP + predicateFrequency.get(key)
-	                    			+ ":" + (predicateResult.containsKey(key) ? predicateResult.get(key) : 0));
+	                    			+ EVAL_SEP + (predicateResult.containsKey(key) ? predicateResult.get(key) : 0));
 	                    	sb.append(lineSep);
 	                    }
 	                	try {
