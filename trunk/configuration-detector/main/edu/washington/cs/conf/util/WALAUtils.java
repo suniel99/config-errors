@@ -41,6 +41,7 @@ import com.ibm.wala.ipa.slicer.Statement;
 import com.ibm.wala.properties.WalaProperties;
 import com.ibm.wala.shrikeBT.MethodData;
 import com.ibm.wala.ssa.SSAInstruction;
+import com.ibm.wala.ssa.SymbolTable;
 import com.ibm.wala.types.ClassLoaderReference;
 import com.ibm.wala.types.TypeName;
 import com.ibm.wala.util.WalaException;
@@ -320,10 +321,26 @@ public class WALAUtils {
 	    	List<SSAInstruction> list = getAllIRs(node);
 	    	int count = 0;
 	    	for(SSAInstruction ssa : list) {
-	    		sb.append(count++);
+	    		sb.append(count);
 	    		sb.append(". ");
 	    		sb.append(ssa);
+	    		
+	    		//append some explanation afterward
+	    		if(ssa != null && ssa.getNumberOfUses() > 0) {
+	    			SymbolTable st = node.getIR().getSymbolTable();
+	    			sb.append("  ==> ");
+	    		    for(int i = 0; i < ssa.getNumberOfUses(); i++) {
+	    		    	int useId = ssa.getUse(i);
+	    			    if(st.isConstant(useId)) {
+	    			    	sb.append(useId);
+		    			    sb.append(" is: ");
+	    			    	sb.append("const: " + st.getValue(useId));
+	    			    }
+	    		    }
+	    		}
+	    		
 	    		sb.append(Globals.lineSep);
+	    		count++;
 	    	}
 	    	return sb.toString();
 	    }
