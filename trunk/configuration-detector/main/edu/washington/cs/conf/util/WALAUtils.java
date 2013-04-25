@@ -318,7 +318,10 @@ public class WALAUtils {
 	    public static String getAllIRAsString(CGNode node) {
 	    	StringBuilder sb = new StringBuilder();
 	    	List<SSAInstruction> list = getAllIRs(node);
+	    	int count = 0;
 	    	for(SSAInstruction ssa : list) {
+	    		sb.append(count++);
+	    		sb.append(". ");
 	    		sb.append(ssa);
 	    		sb.append(Globals.lineSep);
 	    	}
