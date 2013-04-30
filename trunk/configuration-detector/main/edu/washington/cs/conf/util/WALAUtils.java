@@ -40,6 +40,9 @@ import com.ibm.wala.ipa.slicer.SDG;
 import com.ibm.wala.ipa.slicer.Statement;
 import com.ibm.wala.properties.WalaProperties;
 import com.ibm.wala.shrikeBT.MethodData;
+import com.ibm.wala.ssa.ISSABasicBlock;
+import com.ibm.wala.ssa.SSACFG;
+import com.ibm.wala.ssa.SSACFG.BasicBlock;
 import com.ibm.wala.ssa.SSAInstruction;
 import com.ibm.wala.ssa.SymbolTable;
 import com.ibm.wala.types.ClassLoaderReference;
@@ -153,6 +156,15 @@ public class WALAUtils {
 		  }
 		  
 		  return nodes;
+	  }
+	  
+	  public static CGNode lookupMatchedCGNode(Graph<CGNode> cg, String signature) {
+		  for(CGNode node : cg) {
+			  if(node.getMethod().getSignature().equals(signature)) {
+				  return node;
+			  }
+		  }
+		  return null;
 	  }
 	  
 	  public static Set<IClass> getAllAppClasses(ClassHierarchy cha) {
@@ -352,6 +364,111 @@ public class WALAUtils {
 	    		list.add(ins);
 	    	}
 	    	return list;
+	    }
+	    
+	    public static List<ISSABasicBlock> getSuccBasicBlocks(CGNode node, ISSABasicBlock bb) {
+	    	SSACFG cfg = node.getIR().getControlFlowGraph();
+	    	List<ISSABasicBlock> bbList = new LinkedList<ISSABasicBlock>();
+	    	
+	    	Iterator<ISSABasicBlock> succIter = cfg.getSuccNodes(bb);
+	    	while(succIter.hasNext()) {
+	    		bbList.add(succIter.next());
+	    	}
+	    	
+	    	return bbList;
+	    }
+	    
+	    public static List<ISSABasicBlock> getPredBasicBlocks(CGNode node, ISSABasicBlock bb) {
+	    	SSACFG cfg = node.getIR().getControlFlowGraph();
+	    	List<ISSABasicBlock> predBBs = new LinkedList<ISSABasicBlock>();
+	    	Iterator<ISSABasicBlock> predIter = cfg.iterator();
+			while(predIter.hasNext()) {
+				ISSABasicBlock currBB = predIter.next();
+				Iterator<ISSABasicBlock> succIter = cfg.getSuccNodes(currBB);
+				while(succIter.hasNext()) {
+					if(succIter.next().equals(bb)) {
+						predBBs.add(currBB);
+						break;
+					}
+				}
+			}
+			return predBBs;
+	    }
+	    
+	    public static ISSABasicBlock getHostBasicBlock(CGNode node, SSAInstruction ssa) {
+	    	ISSABasicBlock bb = null;
+	    	SSACFG cfg = node.getIR().getControlFlowGraph();
+			Iterator<ISSABasicBlock> iter = cfg.iterator();
+			while(iter.hasNext()) {
+				ISSABasicBlock tmpBlock = iter.next();
+				Iterator<SSAInstruction> instIter = tmpBlock.iterator();
+				while(instIter.hasNext()) {
+					if(instIter.next().equals(ssa)) {
+						bb = tmpBlock;
+						break;
+					}
+				}
+				if(bb != null) {
+					break;
+				}
+			}
+			return bb;
+	    }
+	    
+	    public static void printCFG(CGNode node) {
+	    	SSACFG cfg = node.getIR().getControlFlowGraph();
+	    	
+	    	//first show all basic blocks
+	    	BasicBlock bb = cfg.entry();
+	    	Iterator<ISSABasicBlock> iter = cfg.iterator();
+	    	while(iter.hasNext()) {
+	    		ISSABasicBlock issabb = iter.next();
+	    		System.out.println(issabb);
+	    		Iterator<SSAInstruction> iter_ssa = issabb.iterator();
+	    		while(iter_ssa.hasNext()) {
+	    			System.out.println("    " + iter_ssa.next());
+	    		}
+	    		
+	    	}
+//	    	System.out.println(cfg);
+	    	
+	    	bb = cfg.entry();
+	    	List<ISSABasicBlock> list = new LinkedList<ISSABasicBlock>();
+	    	Set<ISSABasicBlock> visited = new LinkedHashSet<ISSABasicBlock>();
+	    	list.add(bb);
+	    	while(!list.isEmpty()) {
+	    		ISSABasicBlock top = list.remove(0);
+	    		if(visited.contains(top)) {
+	    			continue;
+	    		}
+	    		visited.add(top);
+	    		System.out.println(top.getNumber());
+	    		Iterator<ISSABasicBlock> nextIter = cfg.getSuccNodes(top);
+	    		while(nextIter.hasNext()) {
+	    			ISSABasicBlock nextBb = nextIter.next();
+	    			System.out.println("  --> " + nextBb.getNumber());
+	    			list.add(nextBb);
+	    		}
+	    	}
+	    }
+	    
+	    public static List<SSAInstruction> getAllIRs(ISSABasicBlock bb) {
+	    	List<SSAInstruction> list = new LinkedList<SSAInstruction>();
+	    	Iterator<SSAInstruction> iter = bb.iterator();
+	    	while(iter.hasNext()) {
+	    		list.add(iter.next());
+	    	}
+	    	return list;
+	    }
+	    
+	    public static String getAllIRsString(BasicBlock bb) {
+	    	StringBuilder sb = new StringBuilder();
+	    	List<SSAInstruction> list = getAllIRs(bb);
+	    	for(SSAInstruction ssa : list) {
+	    		sb.append(ssa.toString());
+	    		sb.append(Globals.lineSep);
+	    	}
+	    	return sb.toString();
 	    }
 	    
 	    public static int getInstructionIndex(CGNode node, SSAInstruction instr) {
