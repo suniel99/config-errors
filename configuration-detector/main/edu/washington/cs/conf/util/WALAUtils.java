@@ -366,6 +366,17 @@ public class WALAUtils {
 	    	return list;
 	    }
 	    
+	    public static List<ISSABasicBlock> getAllBasicBlocks(CGNode node) {
+	    	List<ISSABasicBlock> bbList = new LinkedList<ISSABasicBlock>();
+	    	
+	    	Iterator<ISSABasicBlock> iter = node.getIR().getControlFlowGraph().iterator();
+	    	while(iter.hasNext()) {
+	    		bbList.add(iter.next());
+	    	}
+	    	
+	    	return bbList;
+	    }
+	    
 	    public static List<ISSABasicBlock> getSuccBasicBlocks(CGNode node, ISSABasicBlock bb) {
 	    	SSACFG cfg = node.getIR().getControlFlowGraph();
 	    	List<ISSABasicBlock> bbList = new LinkedList<ISSABasicBlock>();
