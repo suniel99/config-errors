@@ -80,6 +80,8 @@ public class MethodMatcher {
 		
 		Set<Pair<ISSABasicBlock, ISSABasicBlock>> matched =
 			new LinkedHashSet<Pair<ISSABasicBlock, ISSABasicBlock>>();
+		Set<ISSABasicBlock> oldMatchedBBs = new LinkedHashSet<ISSABasicBlock>();
+		Set<ISSABasicBlock> newMatchedBBs = new LinkedHashSet<ISSABasicBlock>();
 		
 		Stack<Pair<ISSABasicBlock, ISSABasicBlock>> stack
 		    = new Stack<Pair<ISSABasicBlock, ISSABasicBlock>>();
@@ -87,11 +89,20 @@ public class MethodMatcher {
 		
 		while(!stack.isEmpty()) {
 			Pair<ISSABasicBlock, ISSABasicBlock> pair = stack.pop();
-			if(matched.contains(pair)) {
+			System.out.println("Popup pair: " + pair.a.getNumber() + ", " + pair.b.getNumber());
+			System.out.println("  current old set: " + WALAUtils.getAllBasicBlockIDList(oldMatchedBBs));
+			System.out.println("  current new set: " + WALAUtils.getAllBasicBlockIDList(newMatchedBBs));
+			if(oldMatchedBBs.contains(pair.a)) {
+				System.out.println("Skip already matched in old version: " + pair.a.getNumber());
+				continue;
+			}
+			if(newMatchedBBs.contains(pair.b)) {
+				System.out.println("Skip already matched in new version: " + pair.b.getNumber());
 				continue;
 			}
 			Pair<ISSABasicBlock, ISSABasicBlock> matchedPair = null;
-			if(this.comp(pair.a, pair.b, threshold)) {
+			if(comp(pair.a, pair.b, threshold)) {
+				System.out.println("Matched: " + pair.a.getNumber() + ", " + pair.b.getNumber());
 				matchedPair = pair;
 			} else {
 				//initialize two lists
@@ -122,7 +133,7 @@ public class MethodMatcher {
 					
 					//then start to match
 					for(ISSABasicBlock bb2 : succSet2) {
-						if(this.comp(pair.a, bb2, threshold)) {
+						if(comp(pair.a, bb2, threshold)) {
 							matchedPair = new Pair<ISSABasicBlock, ISSABasicBlock>(pair.a, bb2);
 							break;
 						}
@@ -130,7 +141,7 @@ public class MethodMatcher {
 					
 					if(matchedPair == null) {
 						for(ISSABasicBlock bb1 : succSet1) {
-							if(this.comp(bb1, pair.b, threshold)) {
+							if(comp(bb1, pair.b, threshold)) {
 								matchedPair = new Pair<ISSABasicBlock, ISSABasicBlock>(bb1, pair.b);
 								break;
 							}
@@ -139,48 +150,93 @@ public class MethodMatcher {
 					
 					if(matchedPair != null) {
 						break;
-					}
+					} //other wise increase the look ahead length
 				}
-				//record the matched pair
-				if(matchedPair != null) {
-					stack.push(matchedPair); //the matched pair
-				}
-				
-				//add the following nodes of pair.a, pair.b to the stack
-				List<ISSABasicBlock> succBB1 = WALAUtils.getSuccBasicBlocks(oldNode, pair.a);
-				List<ISSABasicBlock> succBB2 = WALAUtils.getSuccBasicBlocks(newNode, pair.b);
-				Utils.checkTrue(succBB1.size() <= 2 && succBB2.size() <= 2);
-				
-				if(succBB1.isEmpty() || succBB2.isEmpty()) {
-					continue;
-				} else if (succBB1.size() == 1 && succBB2.size() == 1) {
-					stack.push(new Pair<ISSABasicBlock, ISSABasicBlock>(succBB1.get(0), succBB2.get(0)));
-				} else if (succBB1.size() == 1 && succBB2.size() == 2) {
-					stack.push(new Pair<ISSABasicBlock, ISSABasicBlock>(succBB1.get(0), succBB2.get(0)));
-					stack.push(new Pair<ISSABasicBlock, ISSABasicBlock>(succBB1.get(0), succBB2.get(1)));
-				} else if(succBB1.size() == 2 && succBB2.size() == 1) {
-					stack.push(new Pair<ISSABasicBlock, ISSABasicBlock>(succBB1.get(0), succBB2.get(0)));
-					stack.push(new Pair<ISSABasicBlock, ISSABasicBlock>(succBB1.get(1), succBB2.get(0)));
-				} else if (succBB1.size() == 2 && succBB2.size() == 2) {
-					stack.push(new Pair<ISSABasicBlock, ISSABasicBlock>(succBB1.get(0), succBB2.get(0)));
-					stack.push(new Pair<ISSABasicBlock, ISSABasicBlock>(succBB1.get(1), succBB2.get(1)));
-				} else {
-					throw new Error();
-				}
-				
 			}
+
+			ISSABasicBlock nextBB1 = pair.a;
+			ISSABasicBlock nextBB2 = pair.b;
+			
+			//record the matched pair
+			if(matchedPair != null) {
+				if(!oldMatchedBBs.contains(matchedPair.a) && !newMatchedBBs.contains(matchedPair.b)) {
+				    System.out.println("ADD to matched set: " + matchedPair.a.getNumber() + ", " + matchedPair.b.getNumber());
+				    matched.add(matchedPair); //add to the matched list
+				    oldMatchedBBs.add(matchedPair.a);
+				    newMatchedBBs.add(matchedPair.b);
+				    //change the next basic blocks
+				    nextBB1 = matchedPair.a;
+				    nextBB2 = matchedPair.b;
+				} else {
+					System.out.println("Skip non-null pairs: " + matchedPair.a.getNumber() + ", "
+							+ matchedPair.b.getNumber());
+				}
+			}
+			
+			//add the following nodes of pair.a, pair.b to the stack
+			List<ISSABasicBlock> succBB1 = WALAUtils.getSuccBasicBlocks(oldNode, nextBB1);
+			List<ISSABasicBlock> succBB2 = WALAUtils.getSuccBasicBlocks(newNode, nextBB2);
+			Utils.checkTrue(succBB1.size() <= 2 && succBB2.size() <= 2);
+			
+			System.out.println("Number of succ blocks in old: "
+					+ pair.a.getNumber() + " : " + succBB1.size()
+					+ ", are: " + WALAUtils.getAllBasicBlockIDList(succBB1));
+			System.out.println("Number of succ blocks in new: "
+					+ pair.b.getNumber() + " : " + succBB2.size()
+					+ ", are: " + WALAUtils.getAllBasicBlockIDList(succBB2));
+			
+			//FIXME how to follow the matched edge is not clear in
+			//(at least to me) in the JDiff paper. I use the following
+			//approximated way
+			if(succBB1.isEmpty() || succBB2.isEmpty()) {
+				continue;
+			} else if (succBB1.size() == 1 && succBB2.size() == 1) {
+				System.out.println("Push: " + succBB1.get(0).getNumber() + ", and " + succBB2.get(0).getNumber());
+				stack.push(new Pair<ISSABasicBlock, ISSABasicBlock>(succBB1.get(0), succBB2.get(0)));
+			} else if (succBB1.size() == 1 && succBB2.size() == 2) {
+				System.out.println("Push: " + succBB1.get(0).getNumber() + ", and " + succBB2.get(0).getNumber());
+				System.out.println("Push: " + succBB1.get(0).getNumber() + ", and " + succBB2.get(1).getNumber());
+				stack.push(new Pair<ISSABasicBlock, ISSABasicBlock>(succBB1.get(0), succBB2.get(0)));
+				stack.push(new Pair<ISSABasicBlock, ISSABasicBlock>(succBB1.get(0), succBB2.get(1)));
+			} else if(succBB1.size() == 2 && succBB2.size() == 1) {
+				System.out.println("Push: " + succBB1.get(0).getNumber() + ", and " + succBB2.get(0).getNumber());
+				System.out.println("Push: " + succBB1.get(1).getNumber() + ", and " + succBB2.get(0).getNumber());
+				stack.push(new Pair<ISSABasicBlock, ISSABasicBlock>(succBB1.get(0), succBB2.get(0)));
+				stack.push(new Pair<ISSABasicBlock, ISSABasicBlock>(succBB1.get(1), succBB2.get(0)));
+			} else if (succBB1.size() == 2 && succBB2.size() == 2) {
+				System.out.println("Push: " + succBB1.get(0).getNumber() + ", and " + succBB2.get(0).getNumber());
+				System.out.println("Push: " + succBB1.get(1).getNumber() + ", and " + succBB2.get(1).getNumber());
+				stack.push(new Pair<ISSABasicBlock, ISSABasicBlock>(succBB1.get(0), succBB2.get(0)));
+				stack.push(new Pair<ISSABasicBlock, ISSABasicBlock>(succBB1.get(1), succBB2.get(1)));
+			} else {
+				throw new Error();
+			}
+			
+			System.out.println("Stack size: " + stack.size());
+		}
+		
+		System.out.println("all matched pairs: ");
+		for(Pair<ISSABasicBlock, ISSABasicBlock> pair : matched) {
+		    System.out.println(pair.a.getNumber() + ",  " +  pair.b.getNumber());
 		}
 		
 		return false;
 	}
 	
-	private boolean comp(ISSABasicBlock c1, ISSABasicBlock c2, float threshold) {
+	public static boolean comp(ISSABasicBlock c1, ISSABasicBlock c2, float threshold) {
+		System.out.println("starting compare: " + c1.getNumber() + ", with: " + c2.getNumber());
 		if((c1.isEntryBlock() && c2.isEntryBlock()) || (c1.isExitBlock() && c2.isExitBlock())) {
 			return true;
 		}
-		if((c1.isEntryBlock() && c2.isExitBlock()) || (c1.isExitBlock() && c2.isEntryBlock())) {
+		if((c1.isEntryBlock() && !c2.isEntryBlock())
+				|| (c1.isExitBlock() && !c2.isExitBlock())
+				|| (c2.isEntryBlock() && !c1.isEntryBlock())
+				|| (c2.isExitBlock() && !c1.isExitBlock())) {
 			return false;
 		}
+		
+		System.out.println("  -- c1: " + c1.getNumber() + " : " + WALAUtils.getAllIRsString(c1));
+		System.out.println("  -- c2: " + c2.getNumber() + " : " + WALAUtils.getAllIRsString(c2));
 		
 		//check each instructions
 		List<SSAInstruction> ssalist1 = WALAUtils.getAllIRs(c1);
@@ -197,6 +253,10 @@ public class MethodMatcher {
 		} else {
 			percentage = (float)matchedCount/(float)ssalist1.size();
 		}
+		
+		System.out.println("matching: " + c1.getNumber() + ", with : " + c2.getNumber()
+				+ ",  matchedCount: " + matchedCount
+				+ ",  total ssa in c1: " + ssalist1.size());
 		
 		return percentage >= threshold;
 	}

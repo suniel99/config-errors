@@ -377,7 +377,24 @@ public class WALAUtils {
 	    	return bbList;
 	    }
 	    
+	    //only for debugging purpose
+	    public static String getAllBasicBlockIDList(Collection<ISSABasicBlock> coll) {
+	    	StringBuilder sb = new StringBuilder();
+	    	
+	    	sb.append("[");
+	    	for(ISSABasicBlock bb : coll) {
+	    		if(sb.length() > 1) {
+	    		    sb.append(", ");
+	    		}
+	    		sb.append(bb.getNumber());
+	    	}
+	    	sb.append("]");
+	    	
+	    	return sb.toString();
+	    }
+	    
 	    public static List<ISSABasicBlock> getSuccBasicBlocks(CGNode node, ISSABasicBlock bb) {
+	    	Utils.checkTrue(node.getMethod().equals(bb.getMethod()));
 	    	SSACFG cfg = node.getIR().getControlFlowGraph();
 	    	List<ISSABasicBlock> bbList = new LinkedList<ISSABasicBlock>();
 	    	
@@ -472,7 +489,7 @@ public class WALAUtils {
 	    	return list;
 	    }
 	    
-	    public static String getAllIRsString(BasicBlock bb) {
+	    public static String getAllIRsString(ISSABasicBlock bb) {
 	    	StringBuilder sb = new StringBuilder();
 	    	List<SSAInstruction> list = getAllIRs(bb);
 	    	for(SSAInstruction ssa : list) {
