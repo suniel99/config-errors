@@ -66,6 +66,11 @@ public class CodeAnalyzer {
 		if(!hasSameType) {
 			return false;
 		}
+		
+		//the following should be ignored for non-invoking instruction
+		if(!(ssa instanceof SSAAbstractInvokeInstruction)) {
+			return hasSameType;
+		}
 		//further the method call
 		boolean hasSameMethod = false;
 		if(ssa instanceof SSAAbstractInvokeInstruction) {
