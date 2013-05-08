@@ -22,14 +22,46 @@ public class TestMethodMatcher extends TestCase {
 		System.out.println(oldNode);
 		System.out.println(newNode);
 		
-		System.out.println("----------------");
-		WALAUtils.printCFG(oldNode);
-		System.out.println("----------------");
-		WALAUtils.printCFG(newNode);
+//		System.out.println("----------------");
+//		WALAUtils.printCFG(oldNode);
+//		System.out.println("----------------");
+//		WALAUtils.printCFG(newNode);
 		
+		boolean matched = false;
+		
+		MethodMatcher.debug = false;
 		MethodMatcher matcher = new MethodMatcher(coder121.getCallGraph(), coder132.getCallGraph());
-		boolean matched = matcher.matchNodes(oldNode, newNode, 0.6f, 5);
-		System.out.println(matched);
+		
+//		matched = matcher.matchNodes(oldNode, newNode, 0.6f, 5);
+//		System.out.println(matched);
+//		
+//		MethodMatcher.debug = true;
+//		methodSig = "randoop.main.Help.handle([Ljava/lang/String;)Z";
+//		newNode = WALAUtils.lookupMatchedCGNode(coder132.getCallGraph(), methodSig);
+//		System.out.println("----------------");
+//		WALAUtils.printCFG(newNode);
+//		matched = matcher.matchNodes(oldNode, newNode, 0.6f, 5);
+//		System.out.println(matched);
+		
+//		MethodMatcher.debug = true;
+//		methodSig = "randoop.util.ProgressDisplay.display()V";
+//		newNode = WALAUtils.lookupMatchedCGNode(coder132.getCallGraph(), methodSig);
+//		System.out.println("----------------");
+//		WALAUtils.printCFG(oldNode);
+//		System.out.println("----------------");
+//		WALAUtils.printCFG(newNode);
+//		matched = matcher.matchNodes(oldNode, newNode, 0.6f, 5);
+//		System.out.println(matched);
+		
+		for(CGNode n : coder132.getCallGraph()) {
+			if(WALAUtils.getFullMethodName(n.getMethod()).startsWith("randoop.")) {
+				matched = matcher.matchNodes(oldNode, n, 0.6f, 5);
+				if(matched) {
+					System.out.println(matched + " -- " + n);
+				}
+			}
+		}
 	}
+	
 	
 }
