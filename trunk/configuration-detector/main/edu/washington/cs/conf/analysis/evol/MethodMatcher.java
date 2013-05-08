@@ -69,6 +69,8 @@ public class MethodMatcher {
 		return retNodes;
 	}
 	
+	
+	static boolean debug = true;
 	public boolean matchNodes(CGNode oldNode, CGNode newNode, float threshold, int lh) {
 		Utils.checkTrue(lh >= 0);
 		Utils.checkTrue(threshold >= 0 && threshold <= 1);
@@ -89,20 +91,28 @@ public class MethodMatcher {
 		
 		while(!stack.isEmpty()) {
 			Pair<ISSABasicBlock, ISSABasicBlock> pair = stack.pop();
-			System.out.println("Popup pair: " + pair.a.getNumber() + ", " + pair.b.getNumber());
-			System.out.println("  current old set: " + WALAUtils.getAllBasicBlockIDList(oldMatchedBBs));
-			System.out.println("  current new set: " + WALAUtils.getAllBasicBlockIDList(newMatchedBBs));
+			if(debug) {
+			    System.out.println("Popup pair: " + pair.a.getNumber() + ", " + pair.b.getNumber());
+			    System.out.println("  current old set: " + WALAUtils.getAllBasicBlockIDList(oldMatchedBBs));
+			    System.out.println("  current new set: " + WALAUtils.getAllBasicBlockIDList(newMatchedBBs));
+			}
 			if(oldMatchedBBs.contains(pair.a)) {
-				System.out.println("Skip already matched in old version: " + pair.a.getNumber());
+				if(debug) {
+				    System.out.println("Skip already matched in old version: " + pair.a.getNumber());
+				}
 				continue;
 			}
 			if(newMatchedBBs.contains(pair.b)) {
-				System.out.println("Skip already matched in new version: " + pair.b.getNumber());
+				if(debug) {
+				    System.out.println("Skip already matched in new version: " + pair.b.getNumber());
+				}
 				continue;
 			}
 			Pair<ISSABasicBlock, ISSABasicBlock> matchedPair = null;
 			if(comp(pair.a, pair.b, threshold)) {
-				System.out.println("Matched: " + pair.a.getNumber() + ", " + pair.b.getNumber());
+				if(debug) {
+				    System.out.println("Matched: " + pair.a.getNumber() + ", " + pair.b.getNumber());
+				}
 				matchedPair = pair;
 			} else {
 				//initialize two lists
@@ -160,7 +170,9 @@ public class MethodMatcher {
 			//record the matched pair
 			if(matchedPair != null) {
 				if(!oldMatchedBBs.contains(matchedPair.a) && !newMatchedBBs.contains(matchedPair.b)) {
-				    System.out.println("ADD to matched set: " + matchedPair.a.getNumber() + ", " + matchedPair.b.getNumber());
+					if(debug) {
+				        System.out.println("ADD to matched set: " + matchedPair.a.getNumber() + ", " + matchedPair.b.getNumber());
+					}
 				    matched.add(matchedPair); //add to the matched list
 				    oldMatchedBBs.add(matchedPair.a);
 				    newMatchedBBs.add(matchedPair.b);
@@ -168,75 +180,128 @@ public class MethodMatcher {
 				    nextBB1 = matchedPair.a;
 				    nextBB2 = matchedPair.b;
 				} else {
-					System.out.println("Skip non-null pairs: " + matchedPair.a.getNumber() + ", "
+					if(debug) {
+					    System.out.println("Skip non-null pairs: " + matchedPair.a.getNumber() + ", "
 							+ matchedPair.b.getNumber());
+					}
 				}
 			}
 			
 			//add the following nodes of pair.a, pair.b to the stack
 			List<ISSABasicBlock> succBB1 = WALAUtils.getSuccBasicBlocks(oldNode, nextBB1);
-			List<ISSABasicBlock> succBB2 = WALAUtils.getSuccBasicBlocks(newNode, nextBB2);
-			Utils.checkTrue(succBB1.size() <= 2 && succBB2.size() <= 2);
+			//remove the exit basic blocks
+			//XXX fix me, remove the catch block
+			if(succBB1.size() > 2) {
+				List<ISSABasicBlock> filteredBB = new LinkedList<ISSABasicBlock>();
+			    for(ISSABasicBlock bb : succBB1) {
+				    if(bb.isExitBlock() || bb.isCatchBlock()) {
+				    	continue;
+				    }
+				    filteredBB.add(bb);
+			    }
+			    succBB1.clear();
+			    succBB1.addAll(filteredBB);
+			}
 			
-			System.out.println("Number of succ blocks in old: "
+			List<ISSABasicBlock> succBB2 = WALAUtils.getSuccBasicBlocks(newNode, nextBB2);
+			if(succBB2.size() > 2) {
+				List<ISSABasicBlock> filteredBB = new LinkedList<ISSABasicBlock>();
+			    for(ISSABasicBlock bb : succBB2) {
+				    if(bb.isExitBlock() || bb.isCatchBlock()) {
+				    	continue;
+				    }
+				    filteredBB.add(bb);
+			    }
+			    succBB2.clear();
+			    succBB2.addAll(filteredBB);
+			}
+			
+			if(succBB1.size() > 2) {
+				WALAUtils.printCFG(oldNode);
+			}
+			if(succBB2.size() > 2) {
+				WALAUtils.printCFG(newNode);
+			}
+			
+			Utils.checkTrue(succBB1.size() <= 2 && succBB2.size() <= 2,
+					"size: " + nextBB1.getNumber() + " : " + succBB1.size()
+					+ ", " + nextBB2.getNumber() + " : " + succBB2.size());
+			
+			if(debug) {
+			    System.out.println("Number of succ blocks in old: "
 					+ pair.a.getNumber() + " : " + succBB1.size()
 					+ ", are: " + WALAUtils.getAllBasicBlockIDList(succBB1));
-			System.out.println("Number of succ blocks in new: "
+			    System.out.println("Number of succ blocks in new: "
 					+ pair.b.getNumber() + " : " + succBB2.size()
 					+ ", are: " + WALAUtils.getAllBasicBlockIDList(succBB2));
+			}
 			
 			//FIXME how to follow the matched edge is not clear in
 			//(at least to me) in the JDiff paper. I use the following
 			//approximated way
+			//XXX or can exhaust all comparison
 			if(succBB1.isEmpty() || succBB2.isEmpty()) {
 				continue;
 			} else if (succBB1.size() == 1 && succBB2.size() == 1) {
-				System.out.println("Push: " + succBB1.get(0).getNumber() + ", and " + succBB2.get(0).getNumber());
+				if(debug)
+				    System.out.println("Push: " + succBB1.get(0).getNumber() + ", and " + succBB2.get(0).getNumber());
 				stack.push(new Pair<ISSABasicBlock, ISSABasicBlock>(succBB1.get(0), succBB2.get(0)));
 			} else if (succBB1.size() == 1 && succBB2.size() == 2) {
-				System.out.println("Push: " + succBB1.get(0).getNumber() + ", and " + succBB2.get(0).getNumber());
-				System.out.println("Push: " + succBB1.get(0).getNumber() + ", and " + succBB2.get(1).getNumber());
+				if(debug) {
+				    System.out.println("Push: " + succBB1.get(0).getNumber() + ", and " + succBB2.get(0).getNumber());
+				    System.out.println("Push: " + succBB1.get(0).getNumber() + ", and " + succBB2.get(1).getNumber());
+				}
 				stack.push(new Pair<ISSABasicBlock, ISSABasicBlock>(succBB1.get(0), succBB2.get(0)));
 				stack.push(new Pair<ISSABasicBlock, ISSABasicBlock>(succBB1.get(0), succBB2.get(1)));
 			} else if(succBB1.size() == 2 && succBB2.size() == 1) {
-				System.out.println("Push: " + succBB1.get(0).getNumber() + ", and " + succBB2.get(0).getNumber());
-				System.out.println("Push: " + succBB1.get(1).getNumber() + ", and " + succBB2.get(0).getNumber());
+				if(debug) {
+				    System.out.println("Push: " + succBB1.get(0).getNumber() + ", and " + succBB2.get(0).getNumber());
+				    System.out.println("Push: " + succBB1.get(1).getNumber() + ", and " + succBB2.get(0).getNumber());
+				}
 				stack.push(new Pair<ISSABasicBlock, ISSABasicBlock>(succBB1.get(0), succBB2.get(0)));
 				stack.push(new Pair<ISSABasicBlock, ISSABasicBlock>(succBB1.get(1), succBB2.get(0)));
 			} else if (succBB1.size() == 2 && succBB2.size() == 2) {
-				System.out.println("Push: " + succBB1.get(0).getNumber() + ", and " + succBB2.get(0).getNumber());
-				System.out.println("Push: " + succBB1.get(1).getNumber() + ", and " + succBB2.get(1).getNumber());
+				if(debug) {
+				    System.out.println("Push: " + succBB1.get(0).getNumber() + ", and " + succBB2.get(0).getNumber());
+				    System.out.println("Push: " + succBB1.get(1).getNumber() + ", and " + succBB2.get(1).getNumber());
+				}
 				stack.push(new Pair<ISSABasicBlock, ISSABasicBlock>(succBB1.get(0), succBB2.get(0)));
 				stack.push(new Pair<ISSABasicBlock, ISSABasicBlock>(succBB1.get(1), succBB2.get(1)));
 			} else {
 				throw new Error();
 			}
-			
-			System.out.println("Stack size: " + stack.size());
+			if(debug) {
+			    System.out.println("Stack size: " + stack.size());
+			}
 		}
 		
-		System.out.println("all matched pairs: ");
-		for(Pair<ISSABasicBlock, ISSABasicBlock> pair : matched) {
-		    System.out.println(pair.a.getNumber() + ",  " +  pair.b.getNumber());
+		if(debug) {
+		    System.out.println("all matched pairs: ");
+		    for(Pair<ISSABasicBlock, ISSABasicBlock> pair : matched) {
+		        System.out.println(pair.a.getNumber() + ",  " +  pair.b.getNumber());
+		    }
 		}
 		
-		return false;
+		int totalSize = WALAUtils.getAllBasicBlocks(oldNode).size();
+		float ratio = (float)matched.size() / (float)totalSize;
+		return ratio >= threshold;
 	}
 	
 	public static boolean comp(ISSABasicBlock c1, ISSABasicBlock c2, float threshold) {
-		System.out.println("starting compare: " + c1.getNumber() + ", with: " + c2.getNumber());
+		if(debug) {
+		    System.out.println("starting compare: " + c1.getNumber() + ", with: " + c2.getNumber());
+		}
 		if((c1.isEntryBlock() && c2.isEntryBlock()) || (c1.isExitBlock() && c2.isExitBlock())) {
 			return true;
 		}
-		if((c1.isEntryBlock() && !c2.isEntryBlock())
-				|| (c1.isExitBlock() && !c2.isExitBlock())
-				|| (c2.isEntryBlock() && !c1.isEntryBlock())
-				|| (c2.isExitBlock() && !c1.isExitBlock())) {
+		if( (c1.isEntryBlock() != c2.isEntryBlock()) || (c1.isExitBlock() != c2.isExitBlock())) {
 			return false;
 		}
 		
-		System.out.println("  -- c1: " + c1.getNumber() + " : " + WALAUtils.getAllIRsString(c1));
-		System.out.println("  -- c2: " + c2.getNumber() + " : " + WALAUtils.getAllIRsString(c2));
+		if(debug) {
+		    System.out.println("  -- c1: " + c1.getNumber() + " : " + WALAUtils.getAllIRsString(c1));
+		    System.out.println("  -- c2: " + c2.getNumber() + " : " + WALAUtils.getAllIRsString(c2));
+		}
 		
 		//check each instructions
 		List<SSAInstruction> ssalist1 = WALAUtils.getAllIRs(c1);
@@ -254,9 +319,11 @@ public class MethodMatcher {
 			percentage = (float)matchedCount/(float)ssalist1.size();
 		}
 		
-		System.out.println("matching: " + c1.getNumber() + ", with : " + c2.getNumber()
+		if(debug) {
+		    System.out.println("matching: " + c1.getNumber() + ", with : " + c2.getNumber()
 				+ ",  matchedCount: " + matchedCount
 				+ ",  total ssa in c1: " + ssalist1.size());
+		}
 		
 		return percentage >= threshold;
 	}
