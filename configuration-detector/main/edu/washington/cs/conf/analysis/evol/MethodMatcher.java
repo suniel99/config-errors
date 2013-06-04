@@ -34,6 +34,10 @@ public class MethodMatcher {
 		return WALAUtils.lookupMatchedCGNode(cgOld, methodSig);
 	}
 	
+	public CGNode getMethodInNewCG(String methodSig) {
+		return WALAUtils.lookupMatchedCGNode(cgNew, methodSig);
+	}
+	
 	public List<CGNode> getMethodInNewCG(CGNode oldNode) {
 		List<CGNode> retNodes = new LinkedList<CGNode>();
 		Utils.checkNotNull(oldNode);
@@ -69,6 +73,15 @@ public class MethodMatcher {
 		return retNodes;
 	}
 	
+	public List<CGNode> getMatchedNodes(CGNode oldNode, float threshold, int lh) {
+		List<CGNode> matchedNodes = new LinkedList<CGNode>();
+		for(CGNode newNode : this.cgNew) {
+			if(this.matchNodes(oldNode, newNode, threshold, lh)) {
+				matchedNodes.add(newNode);
+			}
+		}
+		return matchedNodes;
+	}
 	
 	static boolean debug = true;
 	public boolean matchNodes(CGNode oldNode, CGNode newNode, float threshold, int lh) {

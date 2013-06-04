@@ -26,6 +26,14 @@ public class PredicateExecInfo {
 		this.evalResultCount = result;
 	}
 	
+	public String getMethod() {
+		return this.context;
+	}
+	
+	public int getIndex() {
+		return Integer.parseInt(this.predicate);
+	}
+	
 	//a sample line:
 	//randoop.util.Reflection.isVisible(Ljava/lang/Class;)Z##11==1:0
 	public static PredicateExecInfo createPredicateExecInfo(String line) {

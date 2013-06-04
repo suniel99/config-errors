@@ -36,7 +36,7 @@ public class PredicateMatcher {
 		return WALAUtils.lookupMatchedCGNode(cgOld, methodSig);
 	}
 	
-	public List<SSAInstruction> matchPredicateInNewCG(CGNode oldNode, SSAInstruction oldSsa) {
+	public List<SSAInstruction> matchPredicateInNewCG(CGNode oldNode, CGNode newNode, SSAInstruction oldSsa) {
 		//find the basic block containing the given ssa
 		ISSABasicBlock bb = WALAUtils.getHostBasicBlock(oldNode, oldSsa);
 		Utils.checkNotNull(bb);
@@ -52,7 +52,6 @@ public class PredicateMatcher {
 		System.out.println("pred bblist: " + predBBList);
 		
 		//look at the predicate in the new graph node
-		CGNode newNode = this.getMatchedMethodInNewCG(oldNode);
 		Utils.checkNotNull(newNode);
 		
 		//find the predicate in the new Node for which, the pred basic block
@@ -116,7 +115,7 @@ public class PredicateMatcher {
 	
 	
 	//FIXME just use method with the same name
-	public CGNode getMatchedMethodInNewCG(CGNode node) {
+	public CGNode getExactNameMatchedNodeInNewCG(CGNode node) {
 		return WALAUtils.lookupMatchedCGNode(cgNew, node.getMethod().getSignature());
 	}
 }
