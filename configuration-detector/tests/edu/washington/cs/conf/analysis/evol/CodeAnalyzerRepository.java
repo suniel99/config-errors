@@ -5,6 +5,8 @@ import edu.washington.cs.conf.util.Globals;
 
 public class CodeAnalyzerRepository {
 
+	//for the randoop case
+	
 	public static CodeAnalyzer getRandoop121Analyzer() {
 		String randoop121Path = "D:\\research\\confevol\\subject-programs\\randoop\\randoop-1.2.1\\randoop-1.2.1.jar";
 		
@@ -30,5 +32,6 @@ public class CodeAnalyzerRepository {
 		
 		return coder132;
 	}
+	
 	
 }
