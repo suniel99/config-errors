@@ -21,6 +21,7 @@ import com.ibm.wala.ssa.SSAReturnInstruction;
 import com.ibm.wala.ssa.SSAThrowInstruction;
 
 import edu.washington.cs.conf.analysis.ConfigurationSlicer;
+import edu.washington.cs.conf.util.Utils;
 import edu.washington.cs.conf.util.WALAUtils;
 
 public class CodeAnalyzer {
@@ -37,6 +38,16 @@ public class CodeAnalyzer {
 	
 	public CallGraph getCallGraph() {
 		return this.slicer.getCallGraph();
+	}
+	
+	public boolean hasNode(CGNode node) {
+		Utils.checkNotNull(node);
+		for(CGNode n : this.getCallGraph()) {
+			if(n.getMethod().getSignature().equals(node.getMethod().getSignature())) {
+				return true;
+			}
+		}
+		return false;
 	}
 	
 	public SSAInstruction getInstruction(String methodSig, int index) {
