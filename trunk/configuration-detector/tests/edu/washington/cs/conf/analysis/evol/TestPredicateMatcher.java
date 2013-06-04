@@ -23,13 +23,13 @@ public class TestPredicateMatcher extends TestCase {
 		CGNode oldNode = matcher.getMethodInOldCG(methodSig);
 		System.out.println(oldNode);
 		
-		CGNode newNode = matcher.getMatchedMethodInNewCG(oldNode);
+		CGNode newNode = matcher.getExactNameMatchedNodeInNewCG(oldNode);
 		System.out.println(newNode);
 		
 		SSAInstruction oldSsa = matcher.getPredicateInOldCG(methodSig, index);
 		System.out.println(oldSsa);
 		
-		List<SSAInstruction> ssalist = matcher.matchPredicateInNewCG(oldNode, oldSsa);
+		List<SSAInstruction> ssalist = matcher.matchPredicateInNewCG(oldNode, newNode, oldSsa);
 		System.out.println(ssalist);
 		assertEquals("[conditional branch(eq) 7,8]", ssalist.toString());
 	}
