@@ -11,13 +11,13 @@ import edu.washington.cs.conf.util.WALAUtils;
 public class PredicateExecInfoFinder {
 
 	public static PredicateExecInfo findPredicate(Collection<PredicateExecInfo> coll,
-			CGNode hostMethod, SSAInstruction ssa) {
-		String hostMethodSig = hostMethod.getMethod().getSignature();
-		int index = WALAUtils.getInstructionIndex(hostMethod, ssa);
+			CGNode hostNode, SSAInstruction ssa) {
+		String hostMethodSig = hostNode.getMethod().getSignature();
+		int index = WALAUtils.getInstructionIndex(hostNode, ssa);
 		Utils.checkTrue(index != -1, "The host method does not contain the ssa.");
 		//iterate through the predicate exec info pool, and find the matched ssa
 		for(PredicateExecInfo predicateExec : coll) {
-			String methodSig = predicateExec.getMethod();
+			String methodSig = predicateExec.getMethodSig();
 			int predIndex = predicateExec.getIndex();
 			if(hostMethodSig.equals(methodSig) && index == predIndex) {
 				return predicateExec;
@@ -25,5 +25,4 @@ public class PredicateExecInfoFinder {
 		}
 		return null;
 	}
-	
 }

@@ -2,7 +2,7 @@ package edu.washington.cs.conf.analysis.evol;
 
 import java.util.Comparator;
 
-public class Comparators {
+public class PredicateExecInfoComparators {
 
 	public static Comparator<PredicateExecInfo> getFreqComparator() {
 		Comparator<PredicateExecInfo> comparator = new Comparator<PredicateExecInfo>() {
