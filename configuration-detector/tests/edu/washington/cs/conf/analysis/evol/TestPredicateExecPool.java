@@ -16,7 +16,7 @@ public class TestPredicateExecPool extends TestCase {
 		//need t sort
 		//System.out.println(p);
 		
-		Comparator<PredicateExecInfo> comparator = Comparators.getFreqComparator();
+		Comparator<PredicateExecInfo> comparator = PredicateExecInfoComparators.getFreqComparator();
 		
 		Collections.sort(pool.predicates, comparator);
 		Collections.reverse(pool.predicates);
