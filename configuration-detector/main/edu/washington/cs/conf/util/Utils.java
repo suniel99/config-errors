@@ -46,6 +46,7 @@ public class Utils {
 	
 	public static void checkNotNull(Object o, String msg) {
 		if(o == null) {
+			System.err.println(msg);
 			throw new RuntimeException(msg);
 		}
 	}
@@ -56,6 +57,7 @@ public class Utils {
 	
 	public static void checkTrue(boolean cond, String msg) {
 		if(!cond) {
+			System.err.println(msg);
 			throw new RuntimeException(msg);
 		}
 	}
