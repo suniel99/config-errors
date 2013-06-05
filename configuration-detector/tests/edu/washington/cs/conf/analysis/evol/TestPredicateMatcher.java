@@ -5,6 +5,8 @@ import java.util.List;
 import com.ibm.wala.ipa.callgraph.CGNode;
 import com.ibm.wala.ssa.SSAInstruction;
 
+import edu.washington.cs.conf.util.WALAUtils;
+
 import junit.framework.TestCase;
 
 public class TestPredicateMatcher extends TestCase {
@@ -23,7 +25,8 @@ public class TestPredicateMatcher extends TestCase {
 		CGNode oldNode = matcher.getMethodInOldCG(methodSig);
 		System.out.println(oldNode);
 		
-		CGNode newNode = matcher.getExactNameMatchedNodeInNewCG(oldNode);
+		CGNode newNode = WALAUtils.lookupMatchedCGNode(coder132.getCallGraph(), oldNode.getMethod().getSignature());
+		
 		System.out.println(newNode);
 		
 		SSAInstruction oldSsa = matcher.getPredicateInOldCG(methodSig, index);

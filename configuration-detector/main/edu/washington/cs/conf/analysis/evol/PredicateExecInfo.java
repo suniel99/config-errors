@@ -4,9 +4,14 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
+import com.ibm.wala.ipa.callgraph.CGNode;
+import com.ibm.wala.ipa.callgraph.CallGraph;
+import com.ibm.wala.ssa.SSAInstruction;
+
 import edu.washington.cs.conf.instrument.evol.EfficientTracer;
 import edu.washington.cs.conf.util.Files;
 import edu.washington.cs.conf.util.Utils;
+import edu.washington.cs.conf.util.WALAUtils;
 
 public class PredicateExecInfo {
 
@@ -60,6 +65,18 @@ public class PredicateExecInfo {
 			coll.add(execInfo);
 		}
 		return coll;
+	}
+	
+	//this is just for debugging purpose
+	public void showContext(CallGraph cg) {
+		this.showContext(WALAUtils.lookupMatchedCGNode(cg, this.getMethodSig()));
+	}
+	public void showContext(CGNode node) {
+		Utils.checkNotNull(node);
+		Utils.checkTrue(this.getMethodSig().equals(node.getMethod().getSignature()));
+		WALAUtils.printCFG(node);
+		SSAInstruction ssa = node.getIR().getInstructions()[this.getIndex()];
+		System.out.println("The " + this.getIndex() + "-th instruction is: " + ssa);
 	}
 	
 	@Override

@@ -260,41 +260,22 @@ public class MethodMatcher {
 					+ ", are: " + WALAUtils.getAllBasicBlockIDList(succBB2));
 			}
 			
-			//FIXME how to follow the matched edge is not clear in
-			//(at least to me) in the JDiff paper. I use the following
-			//approximated way
-			//XXX or can exhaust all comparison
+			//FIXME how to follow the matched edge is not clear in (at least to me) in the JDiff paper.
+			//I exhaustively enumerate all possibilities in matching edges
+			int num = 0; //for debugging only
 			if(succBB1.isEmpty() || succBB2.isEmpty()) {
 				continue;
-			} else if (succBB1.size() == 1 && succBB2.size() == 1) {
-				if(debug)
-				    System.out.println("Push: " + succBB1.get(0).getNumber() + ", and " + succBB2.get(0).getNumber());
-				stack.push(new Pair<ISSABasicBlock, ISSABasicBlock>(succBB1.get(0), succBB2.get(0)));
-			} else if (succBB1.size() == 1 && succBB2.size() == 2) {
-				if(debug) {
-				    System.out.println("Push: " + succBB1.get(0).getNumber() + ", and " + succBB2.get(0).getNumber());
-				    System.out.println("Push: " + succBB1.get(0).getNumber() + ", and " + succBB2.get(1).getNumber());
-				}
-				stack.push(new Pair<ISSABasicBlock, ISSABasicBlock>(succBB1.get(0), succBB2.get(0)));
-				stack.push(new Pair<ISSABasicBlock, ISSABasicBlock>(succBB1.get(0), succBB2.get(1)));
-			} else if(succBB1.size() == 2 && succBB2.size() == 1) {
-				if(debug) {
-				    System.out.println("Push: " + succBB1.get(0).getNumber() + ", and " + succBB2.get(0).getNumber());
-				    System.out.println("Push: " + succBB1.get(1).getNumber() + ", and " + succBB2.get(0).getNumber());
-				}
-				stack.push(new Pair<ISSABasicBlock, ISSABasicBlock>(succBB1.get(0), succBB2.get(0)));
-				stack.push(new Pair<ISSABasicBlock, ISSABasicBlock>(succBB1.get(1), succBB2.get(0)));
-			} else if (succBB1.size() == 2 && succBB2.size() == 2) {
-				if(debug) {
-				    System.out.println("Push: " + succBB1.get(0).getNumber() + ", and " + succBB2.get(0).getNumber());
-				    System.out.println("Push: " + succBB1.get(1).getNumber() + ", and " + succBB2.get(1).getNumber());
-				}
-				stack.push(new Pair<ISSABasicBlock, ISSABasicBlock>(succBB1.get(0), succBB2.get(0)));
-				stack.push(new Pair<ISSABasicBlock, ISSABasicBlock>(succBB1.get(1), succBB2.get(1)));
 			} else {
-				throw new Error();
+				for(ISSABasicBlock bb1 : succBB1) {
+					for(ISSABasicBlock bb2 : succBB2) {
+						stack.push(new Pair<ISSABasicBlock, ISSABasicBlock>(bb1, bb2));
+						num++;
+					}
+				}
 			}
+			
 			if(debug) {
+				System.out.println("Adding: " + num + " to the stack.");
 			    System.out.println("Stack size: " + stack.size());
 			}
 		}
@@ -331,7 +312,7 @@ public class MethodMatcher {
 		List<SSAInstruction> ssalist1 = WALAUtils.getAllIRs(c1);
 		int matchedCount = 0;
 		for(SSAInstruction ssa : ssalist1) {
-			if(CodeAnalyzer.containInstruction(c2, ssa)) {
+			if(CodeAnalyzer.approxContainInstruction(c2, ssa)) {
 				matchedCount++;
 			}
 		}
@@ -350,5 +331,9 @@ public class MethodMatcher {
 		}
 		
 		return percentage >= threshold;
+	}
+	
+	public CGNode getExactNameMatchedNodeInNewCG(CGNode node) {
+		return WALAUtils.lookupMatchedCGNode(cgNew, node.getMethod().getSignature());
 	}
 }

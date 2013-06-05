@@ -36,6 +36,11 @@ public class TestPredicateAnalyzer extends TestCase {
 			PredicateExecInfo newP = p.b;
 			System.out.println(oldP + " ==> " + newP);
 			System.out.println("   " + predicatePairs.get(p));
+			p.a.showContext(oldAnalyzer.getCallGraph());
+			p.b.showContext(newAnalyzer.getCallGraph());
+			
+			System.out.println("---------------------");
+			break;
 		}
  	}
 	
