@@ -14,6 +14,8 @@ public class TestMethodMatcher extends TestCase {
 		CodeAnalyzer coder132 = CodeAnalyzerRepository.getRandoop132Analyzer();
 		coder132.buildAnalysis();
 		
+		AnalysisScope scope = AnalysisScopeRepository.createRandoopScore();
+		
 		String methodSig = "randoop.util.ReflectionExecutor.executeReflectionCode(Lrandoop/util/ReflectionCode;Ljava/io/PrintStream;)Ljava/lang/Throwable;";
 		
 		CGNode oldNode = WALAUtils.lookupMatchedCGNode(coder121.getCallGraph(), methodSig);
@@ -30,7 +32,8 @@ public class TestMethodMatcher extends TestCase {
 		boolean matched = false;
 		
 		MethodMatcher.debug = false;
-		MethodMatcher matcher = new MethodMatcher(coder121.getCallGraph(), coder132.getCallGraph());
+		MethodMatcher matcher = new MethodMatcher(coder121.getCallGraph(),
+				coder132.getCallGraph(), scope);
 		
 //		matched = matcher.matchNodes(oldNode, newNode, 0.6f, 5);
 //		System.out.println(matched);
