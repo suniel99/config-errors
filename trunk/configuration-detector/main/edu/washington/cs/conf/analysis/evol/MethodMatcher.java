@@ -22,12 +22,15 @@ public class MethodMatcher {
 	
 	public final CallGraph cgOld;
 	public final CallGraph cgNew;
+	public final AnalysisScope scope;
 	
-	public MethodMatcher(CallGraph cgOld, CallGraph cgNew) {
+	public MethodMatcher(CallGraph cgOld, CallGraph cgNew, AnalysisScope scope) {
 		Utils.checkNotNull(cgOld);
 		Utils.checkNotNull(cgNew);
+		Utils.checkNotNull(scope);
 		this.cgOld = cgOld;
 		this.cgNew = cgNew;
+		this.scope = scope;
 	}
 	
 	public CGNode getMethodInOldCG(String methodSig) {
@@ -76,6 +79,14 @@ public class MethodMatcher {
 	public List<CGNode> getMatchedNodes(CGNode oldNode, float threshold, int lh) {
 		List<CGNode> matchedNodes = new LinkedList<CGNode>();
 		for(CGNode newNode : this.cgNew) {
+			//skip methods that are in the same scope
+			if(!this.scope.isInScope(newNode.getMethod().getDeclaringClass())) {
+				continue;
+			}
+			//skip methods with empty bodies
+			if(newNode.getIR() == null || newNode.getIR().getControlFlowGraph() == null) {
+				continue;
+			}
 			if(this.matchNodes(oldNode, newNode, threshold, lh)) {
 				matchedNodes.add(newNode);
 			}

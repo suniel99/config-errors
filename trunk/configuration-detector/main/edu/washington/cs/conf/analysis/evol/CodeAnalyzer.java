@@ -41,7 +41,7 @@ public class CodeAnalyzer {
 	}
 	
 	public boolean hasNode(CGNode node) {
-		Utils.checkNotNull(node);
+		Utils.checkNotNull(node, "not existed: " + node.getMethod().getSignature());
 		for(CGNode n : this.getCallGraph()) {
 			if(n.getMethod().getSignature().equals(node.getMethod().getSignature())) {
 				return true;

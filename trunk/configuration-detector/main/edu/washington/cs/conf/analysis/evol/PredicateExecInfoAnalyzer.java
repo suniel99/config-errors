@@ -29,12 +29,13 @@ public class PredicateExecInfoAnalyzer {
 	private Metrics metric = Metrics.Behavior;
 	
 	public PredicateExecInfoAnalyzer(CodeAnalyzer oldAnalyzer, CodeAnalyzer newAnalyzer,
+			AnalysisScope scope,
 			String oldTraceFile, String newTraceFile) {
 		this.oldAnalyzer = oldAnalyzer;
 		this.newAnalyzer = newAnalyzer;
 		this.oldTraceFile = oldTraceFile;
 		this.newTraceFile = newTraceFile;
-		this.predicateMatcher = new PredicateMatchingLogics(oldAnalyzer, newAnalyzer);
+		this.predicateMatcher = new PredicateMatchingLogics(oldAnalyzer, newAnalyzer, scope);
 	}
 	
 	public void readPredicates() {
@@ -66,6 +67,10 @@ public class PredicateExecInfoAnalyzer {
 			for(Pair<SSAInstruction, CGNode> newPredicatePair : newPredicatePairList) {
 				PredicateExecInfo newPredicate =
 					PredicateExecInfoFinder.findPredicate(this.newPredicates, newPredicatePair.b, newPredicatePair.a);
+				if(newPredicate == null) {
+					System.err.println("No matched for: " + oldPredicate);
+					continue;
+				}
 				Utils.checkNotNull(newPredicate);
 				float deviationScore = 0.0f;
 				if(this.metric == Metrics.Behavior) {
