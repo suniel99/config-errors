@@ -26,7 +26,7 @@ public class PredicateExecInfo {
 		this.evalResultCount = result;
 	}
 	
-	public String getMethod() {
+	public String getMethodSig() {
 		return this.context;
 	}
 	
