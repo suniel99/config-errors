@@ -1,13 +1,11 @@
 package edu.washington.cs.conf.analysis.evol;
 
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
 import com.ibm.wala.ipa.callgraph.CGNode;
 import com.ibm.wala.ipa.callgraph.CallGraph;
 import com.ibm.wala.ssa.ISSABasicBlock;
-import com.ibm.wala.ssa.SSAAbstractInvokeInstruction;
 import com.ibm.wala.ssa.SSAConditionalBranchInstruction;
 import com.ibm.wala.ssa.SSAInstruction;
 
@@ -18,6 +16,8 @@ public class PredicateMatcher {
 
 	public final CallGraph cgOld;
 	public final CallGraph cgNew;
+	
+	static boolean debug = true;
 	
 	public PredicateMatcher(CallGraph cgOld, CallGraph cgNew) {
 		Utils.checkNotNull(cgOld);
@@ -36,6 +36,9 @@ public class PredicateMatcher {
 		return WALAUtils.lookupMatchedCGNode(cgOld, methodSig);
 	}
 	
+	//
+	//needs a more precise matching
+	//XXX if there are multiple matches, should choose a good one
 	public List<SSAInstruction> matchPredicateInNewCG(CGNode oldNode, CGNode newNode, SSAInstruction oldSsa) {
 		//find the basic block containing the given ssa
 		ISSABasicBlock bb = WALAUtils.getHostBasicBlock(oldNode, oldSsa);
@@ -44,12 +47,16 @@ public class PredicateMatcher {
 		//get succ
 		List<ISSABasicBlock> succBBList = WALAUtils.getSuccBasicBlocks(oldNode, bb);
 		Utils.checkTrue(succBBList.size() == 2);
-		System.out.println("succ bblist: " + succBBList);
+		if(debug) {
+		    System.out.println("succ bblist: " + succBBList);
+		}
 		
 		//get the incoming basic block
 		List<ISSABasicBlock> predBBList = WALAUtils.getPredBasicBlocks(oldNode, bb);
 		Utils.checkTrue(!predBBList.isEmpty());
-		System.out.println("pred bblist: " + predBBList);
+		if(debug) {
+		    System.out.println("pred bblist: " + predBBList);
+		}
 		
 		//look at the predicate in the new graph node
 		Utils.checkNotNull(newNode);
@@ -77,8 +84,10 @@ public class PredicateMatcher {
 					&& this.containBasicBlocks(predBBList, newPredBlocks)) {
 				//for debugging purpose:
 				//its containing basic block
-				System.out.println("Hosting basic block: ");
-				System.out.println(allInstr);
+				if(debug) {
+				    System.out.println("Hosting basic block: ");
+				    System.out.println(allInstr);
+				}
 				matchedInstructions.add(allInstr.get(allInstr.size() - 1));
 			}
 		}
@@ -99,7 +108,7 @@ public class PredicateMatcher {
 			for(SSAInstruction ssa : ssaList) {
 				boolean contained = false;
 				for(ISSABasicBlock newBB : newBBs) {
-					if(CodeAnalyzer.containInstruction(newBB, ssa)) {
+					if(CodeAnalyzer.approxContainInstruction(newBB, ssa)) {
 						contained = true;
 						break;
 					}
@@ -111,11 +120,5 @@ public class PredicateMatcher {
 		}
 		
 		return true;
-	}
-	
-	
-	//FIXME just use method with the same name
-	public CGNode getExactNameMatchedNodeInNewCG(CGNode node) {
-		return WALAUtils.lookupMatchedCGNode(cgNew, node.getMethod().getSignature());
 	}
 }

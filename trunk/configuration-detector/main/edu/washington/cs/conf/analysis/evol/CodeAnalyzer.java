@@ -54,6 +54,18 @@ public class CodeAnalyzer {
 		return getInstruction(this.slicer.getCallGraph(), methodSig, index);
 	}
 	
+	public String getAllInstruction(String methodSig) {
+		for(CGNode node : this.slicer.getCallGraph()) {
+			if(node.getMethod().getSignature().equals(methodSig)) {
+				return WALAUtils.getAllIRAsString(node);
+			}
+		}
+		return null;
+	}
+	
+	/***
+	 * All static methods below
+	 * */
 	public static SSAInstruction getInstruction(CallGraph cg, String methodSig, int index) {
 		for(CGNode node : cg) {
 			if(node.getMethod().getSignature().equals(methodSig)) {
@@ -68,19 +80,10 @@ public class CodeAnalyzer {
 		return null;
 	}
 	
-	public String getAllInstruction(String methodSig) {
-		for(CGNode node : this.slicer.getCallGraph()) {
-			if(node.getMethod().getSignature().equals(methodSig)) {
-				return WALAUtils.getAllIRAsString(node);
-			}
-		}
-		return null;
-	}
-	
-	public static boolean containInstruction(ISSABasicBlock bb, SSAInstruction ssa) {
+	public static boolean approxContainInstruction(ISSABasicBlock bb, SSAInstruction ssa) {
 		List<SSAInstruction> ssaList = WALAUtils.getAllIRs(bb);
 		for(SSAInstruction instruction : ssaList) {
-			if(sameInstruction(ssa, instruction)) {
+			if(approxSameInstruction(ssa, instruction)) {
 				return true;
 			}
 		}
@@ -89,7 +92,7 @@ public class CodeAnalyzer {
 
 	
 	//Approximate comparison
-	public static boolean sameInstruction(SSAInstruction ssa1, SSAInstruction ssa2) {
+	public static boolean approxSameInstruction(SSAInstruction ssa1, SSAInstruction ssa2) {
 		if(!ssa1.getClass().equals(ssa2.getClass())) {
 			return false;
 		}
