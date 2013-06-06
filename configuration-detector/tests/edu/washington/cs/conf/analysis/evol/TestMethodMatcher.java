@@ -19,6 +19,8 @@ public class TestMethodMatcher extends TestCase {
 		
 		AnalysisScope scope = AnalysisScopeRepository.createRandoopScore();
 		
+		AnalysisCache cache = AnalysisCache.createCache(coder121, coder132, scope);
+		
 		String methodSig = "randoop.util.ReflectionExecutor.executeReflectionCode(Lrandoop/util/ReflectionCode;Ljava/io/PrintStream;)Ljava/lang/Throwable;";
 		
 		CGNode oldNode = WALAUtils.lookupMatchedCGNode(coder121.getCallGraph(), methodSig);
@@ -31,12 +33,12 @@ public class TestMethodMatcher extends TestCase {
 		
 		MethodMatcher.debug = false;
 		MethodMatcher matcher = new MethodMatcher(coder121.getCallGraph(),
-				coder132.getCallGraph(), scope);
+				coder132.getCallGraph(), scope, cache);
 		
 		List<CGNode> matchedNodes = new LinkedList<CGNode>();
 		for(CGNode n : coder132.getCallGraph()) {
 			if(WALAUtils.getFullMethodName(n.getMethod()).startsWith("randoop.")) {
-				matched = matcher.matchNodes(oldNode, n, 0.6f, 5);
+				matched = matcher.fuzzMatchNodes(oldNode, n, MethodMatcher.default_threshold, MethodMatcher.default_la);
 				if(matched) {
 					matchedNodes.add(n);
 				}
