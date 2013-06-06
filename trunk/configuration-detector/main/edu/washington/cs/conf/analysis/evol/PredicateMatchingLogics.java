@@ -13,21 +13,29 @@ import edu.washington.cs.conf.util.WALAUtils;
 
 public class PredicateMatchingLogics {
 	
+	public static boolean USE_FINE_GRAINED = true;
+	
 	public final CodeAnalyzer oldAnalyzer;
 	public final CodeAnalyzer newAnalyzer;
 	
 	public final PredicateMatcher matcher;
+	public final FineGrainedPredicateMatcher fineMatcher;
 	public final AnalysisScope scope;
+	public final AnalysisCache cache;
 	
 	public PredicateMatchingLogics(CodeAnalyzer oldAnalyzer, CodeAnalyzer newAnalyzer,
-			AnalysisScope scope) {
+			AnalysisScope scope, AnalysisCache cache) {
 		Utils.checkNotNull(oldAnalyzer);
 		Utils.checkNotNull(newAnalyzer);
 		Utils.checkNotNull(scope);
+		Utils.checkNotNull(cache);
 		this.oldAnalyzer = oldAnalyzer;
 		this.newAnalyzer = newAnalyzer;
 		this.scope = scope;
 		this.matcher = new PredicateMatcher(oldAnalyzer.getCallGraph(), newAnalyzer.getCallGraph());
+		this.fineMatcher = new FineGrainedPredicateMatcher(oldAnalyzer.getCallGraph(),
+				newAnalyzer.getCallGraph(), scope, cache);
+		this.cache = cache;
 	}
 	
 	public List<Pair<SSAInstruction, CGNode>> getMatchedPredicates(String methodSig, int index) {
@@ -36,13 +44,19 @@ public class PredicateMatchingLogics {
 			System.err.println("No node corresponding to: " + methodSig);
 			return new LinkedList<Pair<SSAInstruction, CGNode>>();
 		}
-		MethodMatchingLogics mmLogics = new MethodMatchingLogics(this.oldAnalyzer, this.newAnalyzer, this.scope);
+		MethodMatchingLogics mmLogics = new MethodMatchingLogics(this.oldAnalyzer, this.newAnalyzer,
+				this.scope, this.cache);
 		List<CGNode> matchedNewNodes = mmLogics.getMatchedMethods(oldNode);
 		
 		List<Pair<SSAInstruction, CGNode>> matchedPredicates = new LinkedList<Pair<SSAInstruction, CGNode>>();
 		SSAInstruction oldSSA = this.matcher.getPredicateInOldCG(methodSig, index);
 		for(CGNode newNode : matchedNewNodes) {
-			List<SSAInstruction> ssas = this.matcher.matchPredicateInNewCG(oldNode, newNode, oldSSA);
+			List<SSAInstruction> ssas = null;
+			if(USE_FINE_GRAINED) {
+				ssas = this.fineMatcher.matchInstructionInNewCG(oldNode, newNode, oldSSA);
+			} else {
+			    ssas = this.matcher.matchPredicateInNewCG(oldNode, newNode, oldSSA);
+			}
 			List<Pair<SSAInstruction, CGNode>> pairList = new LinkedList<Pair<SSAInstruction, CGNode>>();
 			for(SSAInstruction ssa : ssas) {
 				pairList.add(new Pair<SSAInstruction, CGNode>(ssa, newNode));

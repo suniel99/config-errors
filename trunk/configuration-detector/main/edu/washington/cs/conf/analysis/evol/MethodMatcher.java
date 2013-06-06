@@ -20,17 +20,23 @@ import edu.washington.cs.conf.util.WALAUtils;
 
 public class MethodMatcher {
 	
+	public static int default_la = 5;
+	public static float default_threshold = 0.6f;
+	
 	public final CallGraph cgOld;
 	public final CallGraph cgNew;
 	public final AnalysisScope scope;
+	public final AnalysisCache cache;
 	
-	public MethodMatcher(CallGraph cgOld, CallGraph cgNew, AnalysisScope scope) {
+	public MethodMatcher(CallGraph cgOld, CallGraph cgNew, AnalysisScope scope, AnalysisCache cache) {
 		Utils.checkNotNull(cgOld);
 		Utils.checkNotNull(cgNew);
 		Utils.checkNotNull(scope);
+		Utils.checkNotNull(cache);
 		this.cgOld = cgOld;
 		this.cgNew = cgNew;
 		this.scope = scope;
+		this.cache = cache;
 	}
 	
 	public CGNode getMethodInOldCG(String methodSig) {
@@ -76,8 +82,9 @@ public class MethodMatcher {
 		return retNodes;
 	}
 	
-	public List<CGNode> getMatchedNodes(CGNode oldNode, float threshold, int lh) {
+	public List<CGNode> getFuzzMatchedNodes(CGNode oldNode, float threshold, int lh) {
 		List<CGNode> matchedNodes = new LinkedList<CGNode>();
+		int debugCount = 0;
 		for(CGNode newNode : this.cgNew) {
 			//skip methods that are in the same scope
 			if(!this.scope.isInScope(newNode.getMethod().getDeclaringClass())) {
@@ -87,17 +94,31 @@ public class MethodMatcher {
 			if(newNode.getIR() == null || newNode.getIR().getControlFlowGraph() == null) {
 				continue;
 			}
-			if(this.matchNodes(oldNode, newNode, threshold, lh)) {
+			//if it is not unmatched
+			if(!this.cache.isUnmatchedInNewVersion(newNode.getMethod().getSignature())) {
+				continue;
+			}
+			debugCount++;
+			if(this.fuzzMatchNodes(oldNode, newNode, threshold, lh)) {
 				matchedNodes.add(newNode);
 			}
 		}
+		System.out.println("Matching: " + oldNode);
+		System.out.println("   count: " + debugCount + ", matched: " + matchedNodes.size());
 		return matchedNodes;
 	}
 	
-	static boolean debug = true;
-	public boolean matchNodes(CGNode oldNode, CGNode newNode, float threshold, int lh) {
-		Utils.checkTrue(lh >= 0);
+	public boolean fuzzMatchNodes(CGNode oldNode, CGNode newNode, float threshold, int lh) {
 		Utils.checkTrue(threshold >= 0 && threshold <= 1);
+		Set<Pair<ISSABasicBlock, ISSABasicBlock>> matched = this.createMatchedBlocks(oldNode, newNode, threshold, lh);
+		int totalSize = WALAUtils.getAllBasicBlocks(oldNode).size();
+		float ratio = (float)matched.size() / (float)totalSize;
+		return ratio >= threshold;
+	}
+	
+	static boolean debug = true;
+	public Set<Pair<ISSABasicBlock, ISSABasicBlock>> createMatchedBlocks(CGNode oldNode, CGNode newNode, float threshold, int lh) {
+		Utils.checkTrue(lh >= 0);
 		SSACFG oldcfg = oldNode.getIR().getControlFlowGraph();
 		SSACFG newcfg = newNode.getIR().getControlFlowGraph();
 		
@@ -247,9 +268,10 @@ public class MethodMatcher {
 				WALAUtils.printCFG(newNode);
 			}
 			
-			Utils.checkTrue(succBB1.size() <= 2 && succBB2.size() <= 2,
-					"size: " + nextBB1.getNumber() + " : " + succBB1.size()
-					+ ", " + nextBB2.getNumber() + " : " + succBB2.size());
+			//remove it, because we enumerate every possible pairs
+//			Utils.checkTrue(succBB1.size() <= 2 && succBB2.size() <= 2,
+//					"size: " + nextBB1.getNumber() + " : " + succBB1.size()
+//					+ ", " + nextBB2.getNumber() + " : " + succBB2.size());
 			
 			if(debug) {
 			    System.out.println("Number of succ blocks in old: "
@@ -287,9 +309,7 @@ public class MethodMatcher {
 		    }
 		}
 		
-		int totalSize = WALAUtils.getAllBasicBlocks(oldNode).size();
-		float ratio = (float)matched.size() / (float)totalSize;
-		return ratio >= threshold;
+		return matched;
 	}
 	
 	public static boolean comp(ISSABasicBlock c1, ISSABasicBlock c2, float threshold) {
