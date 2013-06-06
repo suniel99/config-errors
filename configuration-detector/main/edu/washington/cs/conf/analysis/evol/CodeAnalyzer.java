@@ -10,6 +10,7 @@ import com.ibm.wala.ssa.SSAArrayReferenceInstruction;
 import com.ibm.wala.ssa.SSABinaryOpInstruction;
 import com.ibm.wala.ssa.SSACheckCastInstruction;
 import com.ibm.wala.ssa.SSAComparisonInstruction;
+import com.ibm.wala.ssa.SSAConditionalBranchInstruction;
 import com.ibm.wala.ssa.SSAConversionInstruction;
 import com.ibm.wala.ssa.SSAFieldAccessInstruction;
 import com.ibm.wala.ssa.SSAGetCaughtExceptionInstruction;
@@ -66,6 +67,10 @@ public class CodeAnalyzer {
 	/***
 	 * All static methods below
 	 * */
+	public static boolean isPredicateInstruction(SSAInstruction ssa) {
+		return ssa instanceof SSAConditionalBranchInstruction;
+	}
+	
 	public static SSAInstruction getInstruction(CallGraph cg, String methodSig, int index) {
 		for(CGNode node : cg) {
 			if(node.getMethod().getSignature().equals(methodSig)) {

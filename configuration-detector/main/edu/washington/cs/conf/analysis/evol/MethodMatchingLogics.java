@@ -21,15 +21,20 @@ public class MethodMatchingLogics {
 	
 	public final MethodMatcher matcher;
 	public final AnalysisScope scope;
+	public final AnalysisCache cache;
 	
-	public MethodMatchingLogics(CodeAnalyzer oldAnalyzer, CodeAnalyzer newAnalyzer, AnalysisScope scope) {
+	public MethodMatchingLogics(CodeAnalyzer oldAnalyzer, CodeAnalyzer newAnalyzer,
+			AnalysisScope scope, AnalysisCache cache) {
 		Utils.checkNotNull(oldAnalyzer);
 		Utils.checkNotNull(newAnalyzer);
 		Utils.checkNotNull(scope);
+		Utils.checkNotNull(cache);
 		this.oldAnalyzer = oldAnalyzer;
 		this.newAnalyzer = newAnalyzer;
-		this.matcher = new MethodMatcher(oldAnalyzer.getCallGraph(), newAnalyzer.getCallGraph(), scope);
+		this.matcher = new MethodMatcher(oldAnalyzer.getCallGraph(), newAnalyzer.getCallGraph(),
+				scope, cache);
 		this.scope = scope;
+		this.cache = cache;
 	}
 	
 	public void setThreshold(float d) {
@@ -56,10 +61,11 @@ public class MethodMatchingLogics {
 		if(exactMatchedNode != null) {
 			nodeList.add(exactMatchedNode);
 		} else {
+			//if there is no exact matching
 			if(USE_FUZZING_MATCHING) {
 			    //use the fuzzing matching
 			    List<CGNode> fuzzMatchedNodes
-			        = this.matcher.getMatchedNodes(oldNode, threshold, lookahead);
+			        = this.matcher.getFuzzMatchedNodes(oldNode, threshold, lookahead);
 			    nodeList.addAll(fuzzMatchedNodes);
 			}
 		}

@@ -29,13 +29,13 @@ public class PredicateExecInfoAnalyzer {
 	private Metrics metric = Metrics.Behavior;
 	
 	public PredicateExecInfoAnalyzer(CodeAnalyzer oldAnalyzer, CodeAnalyzer newAnalyzer,
-			AnalysisScope scope,
+			AnalysisScope scope, AnalysisCache cache,
 			String oldTraceFile, String newTraceFile) {
 		this.oldAnalyzer = oldAnalyzer;
 		this.newAnalyzer = newAnalyzer;
 		this.oldTraceFile = oldTraceFile;
 		this.newTraceFile = newTraceFile;
-		this.predicateMatcher = new PredicateMatchingLogics(oldAnalyzer, newAnalyzer, scope);
+		this.predicateMatcher = new PredicateMatchingLogics(oldAnalyzer, newAnalyzer, scope, cache);
 	}
 	
 	public void readPredicates() {
@@ -62,7 +62,7 @@ public class PredicateExecInfoAnalyzer {
 		for(PredicateExecInfo oldPredicate : oldPredicates) {
 			//get the matched pairs of a predicate
 			List<Pair<SSAInstruction, CGNode>> newPredicatePairList
-			    = this.predicateMatcher.getMatchedPredicates(oldPredicate.getMethodSig(), oldPredicate.getIndex());
+			    = this.predicateMatcher.getMatchedPredicates(oldPredicate.getMethodSig(),oldPredicate.getIndex());
 			//iterate through each matched predicate
 			for(Pair<SSAInstruction, CGNode> newPredicatePair : newPredicatePairList) {
 				PredicateExecInfo newPredicate =

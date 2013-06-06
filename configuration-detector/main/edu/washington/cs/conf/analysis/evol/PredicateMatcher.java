@@ -96,6 +96,7 @@ public class PredicateMatcher {
 	}
 	
 	//FIXME wrong implementation
+	//check if the new basic block list contains all old basic blocks
 	private boolean containBasicBlocks(List<ISSABasicBlock> oldBBs, List<ISSABasicBlock> newBBs) {
 		//the number of new basic block must >=  the number of new basic block 
 		if(newBBs.size() < oldBBs.size()) {
