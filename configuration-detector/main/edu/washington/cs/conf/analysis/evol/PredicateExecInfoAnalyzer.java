@@ -68,7 +68,7 @@ public class PredicateExecInfoAnalyzer {
 				PredicateExecInfo newPredicate =
 					PredicateExecInfoFinder.findPredicate(this.newPredicates, newPredicatePair.b, newPredicatePair.a);
 				if(newPredicate == null) {
-					System.err.println("No matched for: " + oldPredicate);
+					System.err.println("No new predicate matching for: " + oldPredicate);
 					continue;
 				}
 				Utils.checkNotNull(newPredicate);
