@@ -118,6 +118,8 @@ public class MethodMatcher {
 	
 	static boolean debug = true;
 	public Set<Pair<ISSABasicBlock, ISSABasicBlock>> createMatchedBlocks(CGNode oldNode, CGNode newNode, float threshold, int lh) {
+		System.out.println("Matching node: " + oldNode + ", with: " + newNode);
+		
 		Utils.checkTrue(lh >= 0);
 		SSACFG oldcfg = oldNode.getIR().getControlFlowGraph();
 		SSACFG newcfg = newNode.getIR().getControlFlowGraph();
@@ -127,8 +129,13 @@ public class MethodMatcher {
 		
 		Set<Pair<ISSABasicBlock, ISSABasicBlock>> matched =
 			new LinkedHashSet<Pair<ISSABasicBlock, ISSABasicBlock>>();
+		
+		//keep the nodes that has already been matched
 		Set<ISSABasicBlock> oldMatchedBBs = new LinkedHashSet<ISSABasicBlock>();
 		Set<ISSABasicBlock> newMatchedBBs = new LinkedHashSet<ISSABasicBlock>();
+		
+		//keep the node pair that has not been matched yet
+		Set<Pair<ISSABasicBlock, ISSABasicBlock>> unMatchedBBs = new LinkedHashSet<Pair<ISSABasicBlock, ISSABasicBlock>>();
 		
 		Stack<Pair<ISSABasicBlock, ISSABasicBlock>> stack
 		    = new Stack<Pair<ISSABasicBlock, ISSABasicBlock>>();
@@ -153,6 +160,13 @@ public class MethodMatcher {
 				}
 				continue;
 			}
+			if(unMatchedBBs.contains(Pair.of(pair.a, pair.b))) {
+				if(debug) {
+				    System.out.println("Skip already unmatched pairs: (" + pair.a.getNumber() + ", "
+				    		+ pair.b.getNumber() + ")");
+				}
+				continue;
+			}
 			Pair<ISSABasicBlock, ISSABasicBlock> matchedPair = null;
 			if(comp(pair.a, pair.b, threshold)) {
 				if(debug) {
@@ -160,6 +174,9 @@ public class MethodMatcher {
 				}
 				matchedPair = pair;
 			} else {
+				//the pair is not matched
+				unMatchedBBs.add(pair);
+				
 				//initialize two lists
 				Set<ISSABasicBlock> set1 = new LinkedHashSet<ISSABasicBlock>();
 				set1.add(pair.a);
@@ -191,6 +208,8 @@ public class MethodMatcher {
 						if(comp(pair.a, bb2, threshold)) {
 							matchedPair = new Pair<ISSABasicBlock, ISSABasicBlock>(pair.a, bb2);
 							break;
+						} else {
+							unMatchedBBs.add(Pair.of(pair.a, bb2));
 						}
 					}
 					
@@ -199,6 +218,8 @@ public class MethodMatcher {
 							if(comp(bb1, pair.b, threshold)) {
 								matchedPair = new Pair<ISSABasicBlock, ISSABasicBlock>(bb1, pair.b);
 								break;
+							} else {
+								unMatchedBBs.add(Pair.of(bb1, pair.b));
 							}
 						}
 					}
@@ -209,6 +230,9 @@ public class MethodMatcher {
 				}
 			}
 
+			//what is the next node, if no matches, the next nodes
+			//should be the descends of pair.a, and pair.b
+			//otherwise, use the matched pair
 			ISSABasicBlock nextBB1 = pair.a;
 			ISSABasicBlock nextBB2 = pair.b;
 			
@@ -226,13 +250,13 @@ public class MethodMatcher {
 				    nextBB2 = matchedPair.b;
 				} else {
 					if(debug) {
-					    System.out.println("Skip non-null pairs: " + matchedPair.a.getNumber() + ", "
+					    System.out.println("Skip already matched non-null pairs: " + matchedPair.a.getNumber() + ", "
 							+ matchedPair.b.getNumber());
 					}
 				}
 			}
 			
-			//add the following nodes of pair.a, pair.b to the stack
+			//add the following nodes of the matched node to the stack
 			List<ISSABasicBlock> succBB1 = WALAUtils.getSuccBasicBlocks(oldNode, nextBB1);
 			//remove the exit basic blocks
 			//XXX fix me, remove the catch block
@@ -261,18 +285,6 @@ public class MethodMatcher {
 			    succBB2.addAll(filteredBB);
 			}
 			
-			if(succBB1.size() > 2) {
-				WALAUtils.printCFG(oldNode);
-			}
-			if(succBB2.size() > 2) {
-				WALAUtils.printCFG(newNode);
-			}
-			
-			//remove it, because we enumerate every possible pairs
-//			Utils.checkTrue(succBB1.size() <= 2 && succBB2.size() <= 2,
-//					"size: " + nextBB1.getNumber() + " : " + succBB1.size()
-//					+ ", " + nextBB2.getNumber() + " : " + succBB2.size());
-			
 			if(debug) {
 			    System.out.println("Number of succ blocks in old: "
 					+ pair.a.getNumber() + " : " + succBB1.size()
@@ -282,7 +294,7 @@ public class MethodMatcher {
 					+ ", are: " + WALAUtils.getAllBasicBlockIDList(succBB2));
 			}
 			
-			//FIXME how to follow the matched edge is not clear in (at least to me) in the JDiff paper.
+			//Hhow to follow the matched edge is not clear in (at least to me) in the JDiff paper.
 			//I exhaustively enumerate all possibilities in matching edges
 			int num = 0; //for debugging only
 			if(succBB1.isEmpty() || succBB2.isEmpty()) {
@@ -290,7 +302,8 @@ public class MethodMatcher {
 			} else {
 				for(ISSABasicBlock bb1 : succBB1) {
 					for(ISSABasicBlock bb2 : succBB2) {
-						stack.push(new Pair<ISSABasicBlock, ISSABasicBlock>(bb1, bb2));
+						Pair<ISSABasicBlock, ISSABasicBlock> newPair = Pair.of(bb1, bb2);
+						stack.push(newPair);
 						num++;
 					}
 				}
@@ -308,6 +321,11 @@ public class MethodMatcher {
 		        System.out.println(pair.a.getNumber() + ",  " +  pair.b.getNumber());
 		    }
 		}
+		
+		//reclaim memory
+		oldMatchedBBs.clear();
+		newMatchedBBs.clear();
+		unMatchedBBs.clear();
 		
 		return matched;
 	}

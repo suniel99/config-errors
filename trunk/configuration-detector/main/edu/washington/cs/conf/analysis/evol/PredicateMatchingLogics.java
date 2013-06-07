@@ -41,7 +41,7 @@ public class PredicateMatchingLogics {
 	public List<Pair<SSAInstruction, CGNode>> getMatchedPredicates(String methodSig, int index) {
 		CGNode oldNode = WALAUtils.lookupMatchedCGNode(oldAnalyzer.getCallGraph(), methodSig);
 		if(oldNode == null) {
-			System.err.println("No node corresponding to: " + methodSig);
+			System.err.println("In predicate matching, No node corresponding to: " + methodSig);
 			return new LinkedList<Pair<SSAInstruction, CGNode>>();
 		}
 		MethodMatchingLogics mmLogics = new MethodMatchingLogics(this.oldAnalyzer, this.newAnalyzer,
