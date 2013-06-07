@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.ibm.wala.ipa.callgraph.CGNode;
 
+import edu.washington.cs.conf.util.Utils;
 import edu.washington.cs.conf.util.WALAUtils;
 import junit.framework.TestCase;
 
@@ -50,5 +51,33 @@ public class TestMethodMatcher extends TestCase {
 				"Ljava/io/PrintStream;)Ljava/lang/Throwable; > Context: " +
 				"Everywhere",
 				matchedNodes.get(0).toString());
+	}
+	
+	//Matching node: Node: < Application, Lrandoop/RegressionCaptureVisitor, visitAfter(Lrandoop/ExecutableSequence;I)Z >
+	//with: Node: < Application, Lrandoop/ExecutableSequence, executeStatement(Lrandoop/Sequence;Ljava/util/List;I[Ljava/lang/Object;)V > Context: Everywhere
+
+	public void testRandoopBuggyMatching() {
+		CodeAnalyzer oldAnalyzer = CodeAnalyzerRepository.getRandoop121Analyzer();
+		oldAnalyzer.buildAnalysis();
+		
+		CodeAnalyzer newAnalyzer = CodeAnalyzerRepository.getRandoop132Analyzer();
+		newAnalyzer.buildAnalysis();
+		
+		AnalysisScope scope = AnalysisScopeRepository.createRandoopScore();
+		AnalysisCache cache = AnalysisCache.createCache(oldAnalyzer, newAnalyzer, scope);
+		
+		String oldMethodSig = "randoop.RegressionCaptureVisitor.visitAfter(Lrandoop/ExecutableSequence;I)Z";
+		String newMethodSig = "randoop.ExecutableSequence.executeStatement(Lrandoop/Sequence;Ljava/util/List;I[Ljava/lang/Object;)V";
+		CGNode oldNode = WALAUtils.lookupMatchedCGNode(oldAnalyzer.getCallGraph(), oldMethodSig);
+		CGNode newNode = WALAUtils.lookupMatchedCGNode(newAnalyzer.getCallGraph(), newMethodSig);
+		
+		Utils.checkNotNull(oldNode);
+		Utils.checkNotNull(newNode);
+		
+		//The matching will never end
+		MethodMatcher matcher = new MethodMatcher(oldAnalyzer.getCallGraph(), newAnalyzer.getCallGraph(), scope, cache);
+		boolean matched = matcher.fuzzMatchNodes(oldNode, newNode, MethodMatcher.default_threshold, MethodMatcher.default_la);
+		System.out.println(matched);
+		assertFalse(matched);
 	}
 }
