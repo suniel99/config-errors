@@ -1,7 +1,9 @@
 package edu.washington.cs.conf.analysis.evol;
 
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import com.ibm.wala.ipa.callgraph.CGNode;
 
@@ -51,6 +53,19 @@ public class MethodMatchingLogics {
 		CGNode oldNode = WALAUtils.lookupMatchedCGNode(this.oldAnalyzer.getCallGraph(), methodSig);
 		Utils.checkNotNull(oldNode);
 		return this.getMatchedMethods(oldNode);
+	}
+	
+	//from an old node to a list of new nodes
+	public Map<CGNode, List<CGNode>> getAllMatchedMethods() {
+		Map<CGNode, List<CGNode>> resultMap = new LinkedHashMap<CGNode, List<CGNode>>();
+		for(CGNode oldNode : this.oldAnalyzer.getCallGraph()) {
+			if(!this.scope.isInScope(oldNode.getMethod().getDeclaringClass())) {
+				continue;
+			}
+			List<CGNode> matchedMethods = this.getMatchedMethods(oldNode);
+			resultMap.put(oldNode, matchedMethods);
+		}
+		return resultMap;
 	}
 	
 	public List<CGNode> getMatchedMethods(CGNode oldNode) {
