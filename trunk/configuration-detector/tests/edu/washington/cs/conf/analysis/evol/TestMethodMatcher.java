@@ -2,6 +2,7 @@ package edu.washington.cs.conf.analysis.evol;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import com.ibm.wala.ipa.callgraph.CGNode;
 
@@ -80,4 +81,43 @@ public class TestMethodMatcher extends TestCase {
 		System.out.println(matched);
 		assertFalse(matched);
 	}
+	
+	public void testAllNodeMatchesInRandoop() {
+		MethodMatcher.debug = false;
+		
+		CodeAnalyzer oldAnalyzer = CodeAnalyzerRepository.getRandoop121Analyzer();
+		oldAnalyzer.buildAnalysis();
+		
+		CodeAnalyzer newAnalyzer = CodeAnalyzerRepository.getRandoop132Analyzer();
+		newAnalyzer.buildAnalysis();
+		
+		AnalysisScope scope = AnalysisScopeRepository.createRandoopScore();
+		AnalysisCache cache = AnalysisCache.createCache(oldAnalyzer, newAnalyzer, scope);
+		
+		MethodMatchingLogics matcher = new MethodMatchingLogics(oldAnalyzer, newAnalyzer, scope, cache);
+		Map<CGNode, List<CGNode>> map = matcher.getAllMatchedMethods();
+		for(CGNode node : map.keySet()) {
+			List<CGNode> matchedNodes = map.get(node);
+			if(matchedNodes.size() != 1 ) {
+				System.out.println(node);
+				System.out.println("   " + matchedNodes.size());
+			}
+		}
+	}
+	
+//	public void showAllMatches(CodeAnalyzer oldAnalyzer, CodeAnalyzer newAnalyzer,
+//			AnalysisScope scope, AnalysisCache cache) {
+//		MethodMatchingLogics matcher = new MethodMatchingLogics(oldAnalyzer, newAnalyzer,
+//				scope, cache);
+//		for(CGNode node : oldAnalyzer.getCallGraph()) {
+//			if(!scope.isInScope(node.getMethod().getDeclaringClass())) {
+//				continue;
+//			}
+//			List<CGNode> nodeList = matcher.getMatchedMethods(node);
+//			if(nodeList.size() != 1) {
+//				System.out.println("matching: " + node);
+//				System.out.println("   " + nodeList.size());
+//			}
+//		}
+//	}
 }
