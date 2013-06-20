@@ -7,6 +7,9 @@ import edu.washington.cs.conf.util.Utils;
 import plume.Pair;
 import junit.framework.TestCase;
 
+/**
+ * Check the predicate behaviors
+ * */
 public class TestPredicateAnalyzer extends TestCase {
 
 	public void testRandoop() {

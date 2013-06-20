@@ -6,8 +6,32 @@ import junit.framework.TestCase;
 
 public class TestPredicateExecInfo extends TestCase {
 
-	public void testParsingTraces() {
-		String fileName = "./evol-experiments/randoop/randoop-1.2.1.txt";
+	
+	public void testRandoop() {
+		this.testParsingTraces("./evol-experiments/randoop/randoop-1.2.1.txt");
+	}
+	
+	public void testSynoptic() {
+		this.testParsingTraces(TraceRepository.synopticOldTrace);
+	}
+	
+	public void testJMeter() {
+		this.testParsingTraces(TraceRepository.jmeterOldTrace);
+	}
+	
+	public void testWeka() {
+		this.testParsingTraces(TraceRepository.wekaOldTrace);
+	}
+	
+	public void testJChordP1() {
+		this.testParsingTraces(TraceRepository.jchordP1OldTrace);
+	}
+	
+	public void testJChordP2() {
+		this.testParsingTraces(TraceRepository.jchordP2OldTrace);
+	}
+	
+	private void testParsingTraces(String fileName) {
 		Collection<PredicateExecInfo> coll = PredicateExecInfo.createPredicateExecInfoList(fileName);
 		
 		System.out.println(coll.size());
@@ -16,5 +40,4 @@ public class TestPredicateExecInfo extends TestCase {
 			System.out.println(info);
 		}
 	}
-	
 }
