@@ -9,8 +9,31 @@ import junit.framework.TestCase;
 
 public class TestPredicateExecPool extends TestCase {
 
-	public void testGetMostFrequent() {
-		String fileName = "./evol-experiments/randoop/randoop-1.2.1.txt";
+	public void testRandoop() {
+		this.testGetMostFrequent(TraceRepository.randoopOldTrace);
+	}
+	
+	public void testSynoptic() {
+		this.testGetMostFrequent(TraceRepository.synopticOldTrace);
+	}
+	
+	public void testJMeter() {
+		this.testGetMostFrequent(TraceRepository.jmeterOldTrace);
+	}
+	
+	public void testWeka() {
+		this.testGetMostFrequent(TraceRepository.wekaOldTrace);
+	}
+	
+	public void testJChordP1() {
+		this.testGetMostFrequent(TraceRepository.jchordP1OldTrace);
+	}
+	
+	public void testJChordP2() {
+		this.testGetMostFrequent(TraceRepository.jchordP2OldTrace);
+	}
+	
+	private void testGetMostFrequent(String fileName) {
 		PredicateExecPool pool = new PredicateExecPool(fileName);
 		//PredicateExecInfo p = pool.getMostFrequentlyExecuted();
 		//need t sort
