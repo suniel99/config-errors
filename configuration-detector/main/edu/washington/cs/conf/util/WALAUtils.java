@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Collection;
 import java.util.Enumeration;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
@@ -28,6 +29,8 @@ import com.ibm.wala.ipa.callgraph.AnalysisOptions;
 import com.ibm.wala.ipa.callgraph.AnalysisScope;
 import com.ibm.wala.ipa.callgraph.CGNode;
 import com.ibm.wala.ipa.callgraph.CallGraph;
+import com.ibm.wala.ipa.callgraph.Entrypoint;
+import com.ibm.wala.ipa.callgraph.impl.DefaultEntrypoint;
 import com.ibm.wala.ipa.callgraph.impl.Util;
 import com.ibm.wala.ipa.callgraph.propagation.LocalPointerKey;
 import com.ibm.wala.ipa.callgraph.propagation.SSAPropagationCallGraphBuilder;
@@ -50,6 +53,7 @@ import com.ibm.wala.types.TypeName;
 import com.ibm.wala.util.WalaException;
 import com.ibm.wala.util.collections.CollectionFilter;
 import com.ibm.wala.util.collections.Filter;
+import com.ibm.wala.util.collections.HashSetFactory;
 import com.ibm.wala.util.config.AnalysisScopeReader;
 import com.ibm.wala.util.debug.Assertions;
 import com.ibm.wala.util.graph.Graph;
@@ -188,6 +192,27 @@ public class WALAUtils {
 			  names.add(WALAUtils.getJavaFullClassName(c));
 		  }
 		  return names;
+	  }
+	  
+	  //a.b.c,  methodName is a token
+	  public static Iterable<Entrypoint> createEntrypoints(String className, String methodName, ClassHierarchy cha) {
+		  final HashSet<Entrypoint> result = HashSetFactory.make();
+          for(IClass c : cha) {
+                  if(c.getClassLoader().getReference().equals(ClassLoaderReference.Application)) {
+                          String fullClassName = WALAUtils.getJavaFullClassName(c);
+                          if(!fullClassName.equals(className)) {
+                        	  continue;
+                          }
+                          for(IMethod m : c.getDeclaredMethods()) {
+                                  if(m.getName().toString().equals(methodName)) {
+                                          Entrypoint ep = new DefaultEntrypoint(m, cha);
+                                          result.add(ep);
+                                  }
+                          }
+                  }
+          }
+          
+          return result;
 	  }
 	  
 	  //given class name like a.b.c.d
