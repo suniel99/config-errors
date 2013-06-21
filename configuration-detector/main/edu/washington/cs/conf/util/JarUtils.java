@@ -1,10 +1,12 @@
 package edu.washington.cs.conf.util;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Enumeration;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
@@ -106,6 +108,24 @@ public class JarUtils {
 		}
 		return strs;
 	}
+	
+	public static String concaAllJarFiles(String dir) {
+		StringBuilder sb = new StringBuilder();
+		try {
+			List<File> files = Files.getFileListing(new File(dir), ".jar");
+			int count = 0;
+			for(File f : files) {
+				if(count != 0) {
+					sb.append(Globals.pathSep);
+				}
+				count++;
+				sb.append(f.getAbsolutePath());
+			}
+		} catch (FileNotFoundException e) {
+			throw new Error(e);
+		}
+		return sb.toString();
+	}
 
 	public static void main(String[] args) throws ZipException, IOException {
 //		Collection<String> content = getContentsAsStr(new File(args[0]));
@@ -113,7 +133,10 @@ public class JarUtils {
 //			System.out.println(c);
 //		}
 		
-		Command.exec(new String[]{ANT_BAT, "-f", "D:\\research\\confevol\\subject-programs\\ant-test\\build.xml"});
+		String dir = "D:\\research\\confevol\\subject-programs\\jmeter\\apache-jmeter-2.9\\lib";
+		System.out.println(JarUtils.concaAllJarFiles(dir));
+		
+//		Command.exec(new String[]{ANT_BAT, "-f", "D:\\research\\confevol\\subject-programs\\ant-test\\build.xml"});
 		//Command.runCommand(command, prompt, verbose, nonVerboseMessage, gobbleChars)
 	}
 }
