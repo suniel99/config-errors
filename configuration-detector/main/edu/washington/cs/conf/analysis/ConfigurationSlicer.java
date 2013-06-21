@@ -1,5 +1,6 @@
 package edu.washington.cs.conf.analysis;
 
+import java.io.IOException;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -19,6 +20,7 @@ import com.ibm.wala.ipa.callgraph.Entrypoint;
 import com.ibm.wala.ipa.callgraph.impl.Util;
 import com.ibm.wala.ipa.callgraph.propagation.PointerAnalysis;
 import com.ibm.wala.ipa.cha.ClassHierarchy;
+import com.ibm.wala.ipa.cha.ClassHierarchyException;
 import com.ibm.wala.ipa.cha.IClassHierarchy;
 import com.ibm.wala.ipa.slicer.NormalReturnCaller;
 import com.ibm.wala.ipa.slicer.NormalStatement;
@@ -80,15 +82,23 @@ public class ConfigurationSlicer {
 		this.controlOption = ControlDependenceOptions.FULL;
 	}
 	
+	
+	
 	public void buildAnalysis() {
 		try {
 		  System.out.println("Using exclusion file: " + this.exclusionFile);
 		  System.out.println("CG type: " + this.type);
 		  
-	      this.scope = AnalysisScopeReader.makeJavaBinaryAnalysisScope(this.classPath, (new FileProvider())
-	          .getFile(exclusionFile));
-	      this.cha = ClassHierarchy.make(this.scope);
-	      this.entrypoints = com.ibm.wala.ipa.callgraph.impl.Util.makeMainEntrypoints(scope, cha, mainClass);
+//	      this.scope = AnalysisScopeReader.makeJavaBinaryAnalysisScope(this.classPath, (new FileProvider())
+//	          .getFile(exclusionFile));
+//	      this.cha = ClassHierarchy.make(this.scope);
+	      this.buildScope(); //compute values to this.scope and this.cha
+	      this.buildClassHierarchy();
+	      if(this.entrypoints == null) {
+	          this.entrypoints = com.ibm.wala.ipa.callgraph.impl.Util.makeMainEntrypoints(scope, cha, mainClass);
+	      } else {
+	    	  System.err.println("Note, use customized entry points: " + this.entrypoints);
+	      }
 	      this.options = CallGraphTestUtil.makeAnalysisOptions(scope, entrypoints);
 	      this.builder = chooseCallGraphBuilder(options, new AnalysisCache(), cha, scope);
 	      //build the call graph
@@ -116,6 +126,10 @@ public class ConfigurationSlicer {
 		this.exclusionFile = fileName;
 	}
 	
+	public void setEntrypoints(Iterable<Entrypoint> entrypoints) {
+		this.entrypoints = entrypoints;
+	}
+	
 	public void setCFAPrecision(int length) {
 		this.cfaprecision = length;
 	}
@@ -134,6 +148,26 @@ public class ConfigurationSlicer {
 	
 	public void setTargetPackageName(String packageName) {
 		this.targetPackageName = packageName;
+	}
+	
+	public void buildScope() {
+		try {
+			this.scope = AnalysisScopeReader.makeJavaBinaryAnalysisScope(this.classPath, (new FileProvider())
+			          .getFile(exclusionFile));
+		} catch (IOException e) {
+			throw new Error(e);
+		}
+	}
+	
+	public void buildClassHierarchy() {
+		if(this.scope == null) {
+			this.buildScope();
+		}
+		try {
+			this.cha = ClassHierarchy.make(this.scope);
+		} catch (ClassHierarchyException e) {
+			throw new Error(e);
+		}
 	}
 	
 	public ClassHierarchy getClassHierarchy() {
