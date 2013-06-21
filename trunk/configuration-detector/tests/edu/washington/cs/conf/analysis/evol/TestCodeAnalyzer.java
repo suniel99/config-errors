@@ -38,4 +38,53 @@ public class TestCodeAnalyzer extends TestCase {
 		WALAUtils.printCFG(node);
 	}
 	
+	public void testRandoopCoder() {
+		CodeAnalyzer coder = null;
+		
+		coder = CodeAnalyzerRepository.getRandoop121Analyzer();
+		coder.buildAnalysis();
+		
+		coder = CodeAnalyzerRepository.getRandoop132Analyzer();
+		coder.buildAnalysis();
+	}
+	
+	public void testSynopticCoder() {
+		CodeAnalyzer coder = null;
+		
+		coder = CodeAnalyzerRepository.getSynopticOldAnalyzer();
+		coder.buildAnalysis();
+		
+		coder = CodeAnalyzerRepository.getSynopticNewAnalyzer();
+		coder.buildAnalysis();
+	}
+	
+	public void testWekaCoder() {
+		CodeAnalyzer coder = null;
+		
+		coder = CodeAnalyzerRepository.getWekaOldAnalyzer();
+		coder.buildAnalysis();
+		
+		coder = CodeAnalyzerRepository.getWekaNewAnalyzer();
+		coder.buildAnalysis();
+	}
+	
+	public void testJChordCoder() {
+		CodeAnalyzer coder = null;
+		
+		coder = CodeAnalyzerRepository.getJChordOldAnalyzer();
+		coder.buildAnalysis();
+		
+		coder = CodeAnalyzerRepository.getJChordNewAnalyzer();
+		coder.buildAnalysis();
+	}
+	
+	public void testJMeterCoder() {
+		CodeAnalyzer coder = null;
+		
+		coder = CodeAnalyzerRepository.getJMeterOldAnalyzer();
+		coder.buildAnalysis();
+		
+		coder = CodeAnalyzerRepository.getJMeterNewAnalyzer();
+		coder.buildAnalysis();
+	}
 }

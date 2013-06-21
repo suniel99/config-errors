@@ -19,8 +19,8 @@ public class TestPredicateAnalyzer extends TestCase {
 		oldAnalyzer.buildAnalysis();
 		CodeAnalyzer newAnalyzer = CodeAnalyzerRepository.getRandoop132Analyzer();
 		newAnalyzer.buildAnalysis();
-		String oldTraceFile = "./evol-experiments/randoop/randoop-1.2.1.txt";
-		String newTraceFile = "./evol-experiments/randoop/randoop-1.3.2.txt";
+		String oldTraceFile = TraceRepository.randoopOldTrace;
+		String newTraceFile = TraceRepository.randoopNewTrace;
 		AnalysisScope scope = AnalysisScopeRepository.createRandoopScore();
 		AnalysisCache cache = AnalysisCache.createCache(oldAnalyzer, newAnalyzer, scope);
 		
@@ -58,6 +58,10 @@ public class TestPredicateAnalyzer extends TestCase {
 //			break;
 		}
  	}
+	
+	public void testSynoptic() {
+		
+	}
 	
 	public void tearDown() {
 		MethodMatchingLogics.USE_FUZZING_MATCHING = true;
