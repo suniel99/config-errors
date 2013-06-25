@@ -50,6 +50,9 @@ public class PredicateMatchingLogics {
 		
 		List<Pair<SSAInstruction, CGNode>> matchedPredicates = new LinkedList<Pair<SSAInstruction, CGNode>>();
 		SSAInstruction oldSSA = this.matcher.getPredicateInOldCG(methodSig, index);
+		if(oldSSA == null) {
+			return matchedPredicates;
+		}
 		for(CGNode newNode : matchedNewNodes) {
 			List<SSAInstruction> ssas = null;
 			if(USE_FINE_GRAINED) {

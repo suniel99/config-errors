@@ -20,7 +20,7 @@ public class PredicateMetrics {
 		if(trueRatio == 0.0f) {
 			trueRatio = 1 / (float)info.evalFreqCount;
 		}
-		float importance = 1 / ((1/trueRatio) + (1/info.evalFreqCount));
+		float importance = 2 / ((1/trueRatio) + (1/info.evalFreqCount));
 		return importance;
 	}
 	

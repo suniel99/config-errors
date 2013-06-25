@@ -28,8 +28,19 @@ public class PredicateMatcher {
 	
 	public SSAInstruction getPredicateInOldCG(String methodSig, int index) {
 		SSAInstruction instruction = CodeAnalyzer.getInstruction(this.cgOld, methodSig, index);
-		Utils.checkTrue(instruction instanceof SSAConditionalBranchInstruction);
-		return instruction;
+		if(instruction == null) {
+			return null;
+		}
+		if(instruction instanceof SSAConditionalBranchInstruction) {
+			return instruction;
+		} else {
+			System.err.println("Potential problem: " + instruction
+					+ ", its type: " + instruction.getClass());
+		}
+		return null;
+//		Utils.checkTrue(instruction instanceof SSAConditionalBranchInstruction, "Type: " + instruction.getClass()
+//				+ ", instruction: " + instruction + ", in method: " + methodSig);
+//		return instruction;
 	}
 	
 	public CGNode getMethodInOldCG(String methodSig) {
