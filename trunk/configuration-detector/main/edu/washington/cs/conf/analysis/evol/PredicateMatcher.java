@@ -27,7 +27,7 @@ public class PredicateMatcher {
 	}
 	
 	public SSAInstruction getPredicateInOldCG(String methodSig, int index) {
-		SSAInstruction instruction = CodeAnalyzer.getInstruction(this.cgOld, methodSig, index);
+		SSAInstruction instruction = CodeAnalysisUtils.getInstruction(this.cgOld, methodSig, index);
 		if(instruction == null) {
 			return null;
 		}
@@ -120,7 +120,7 @@ public class PredicateMatcher {
 			for(SSAInstruction ssa : ssaList) {
 				boolean contained = false;
 				for(ISSABasicBlock newBB : newBBs) {
-					if(CodeAnalyzer.approxContainInstruction(newBB, ssa)) {
+					if(CodeAnalysisUtils.approxContainInstruction(newBB, ssa)) {
 						contained = true;
 						break;
 					}

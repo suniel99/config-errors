@@ -350,7 +350,7 @@ public class MethodMatcher {
 		List<SSAInstruction> ssalist1 = WALAUtils.getAllIRs(c1);
 		int matchedCount = 0;
 		for(SSAInstruction ssa : ssalist1) {
-			if(CodeAnalyzer.approxContainInstruction(c2, ssa)) {
+			if(CodeAnalysisUtils.approxContainInstruction(c2, ssa)) {
 				matchedCount++;
 			}
 		}
