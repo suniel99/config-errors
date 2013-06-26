@@ -10,6 +10,7 @@ import com.ibm.wala.ssa.SSAInstruction;
 
 import plume.Pair;
 
+import edu.washington.cs.conf.util.Log;
 import edu.washington.cs.conf.util.Utils;
 
 public class PredicateExecInfoAnalyzer {
@@ -60,17 +61,21 @@ public class PredicateExecInfoAnalyzer {
 		    = new LinkedHashMap<Pair<PredicateExecInfo, PredicateExecInfo>, Float>();
 		
 		for(PredicateExecInfo oldPredicate : oldPredicates) {
+			Log.logln(" => finding matched predicate for: " + oldPredicate);
 			//get the matched pairs of a predicate
 			List<Pair<SSAInstruction, CGNode>> newPredicatePairList
 			    = this.predicateMatcher.getMatchedPredicates(oldPredicate.getMethodSig(),oldPredicate.getIndex());
 			//iterate through each matched predicate
+			Log.logln("   all matched predicate: " + newPredicatePairList.size());
 			for(Pair<SSAInstruction, CGNode> newPredicatePair : newPredicatePairList) {
 				PredicateExecInfo newPredicate =
 					PredicateExecInfoFinder.findPredicate(this.newPredicates, newPredicatePair.b, newPredicatePair.a);
 				if(newPredicate == null) {
 					System.err.println("No new predicate matching for: " + oldPredicate);
+					Log.logln("  -- No new predicate matching for: " + oldPredicate);
 					continue;
 				}
+				Log.logln(" find predicate: " + newPredicate);
 				Utils.checkNotNull(newPredicate);
 				float deviationScore = 0.0f;
 				if(this.metric == Metrics.Behavior) {
@@ -80,6 +85,7 @@ public class PredicateExecInfoAnalyzer {
 				} else {
 					throw new Error("Error value: " + this.metric);
 				}
+				Log.logln("  deviation score. " + deviationScore);
 				//put to the map
 				Pair<PredicateExecInfo, PredicateExecInfo> predicatePair
 				    = new Pair<PredicateExecInfo, PredicateExecInfo>(oldPredicate, newPredicate);

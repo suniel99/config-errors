@@ -8,6 +8,7 @@ import plume.Pair;
 import com.ibm.wala.ipa.callgraph.CGNode;
 import com.ibm.wala.ssa.SSAInstruction;
 
+import edu.washington.cs.conf.util.Log;
 import edu.washington.cs.conf.util.Utils;
 import edu.washington.cs.conf.util.WALAUtils;
 
@@ -53,7 +54,9 @@ public class PredicateMatchingLogics {
 		if(oldSSA == null) {
 			return matchedPredicates;
 		}
+		Log.logln("    Number of matched nodes: " + matchedNewNodes.size());
 		for(CGNode newNode : matchedNewNodes) {
+			Log.logln("     -> " + newNode);
 			List<SSAInstruction> ssas = null;
 			if(USE_FINE_GRAINED) {
 				ssas = this.fineMatcher.matchInstructionInNewCG(oldNode, newNode, oldSSA);

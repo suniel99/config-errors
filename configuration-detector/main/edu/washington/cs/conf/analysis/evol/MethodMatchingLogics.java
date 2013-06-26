@@ -13,7 +13,7 @@ import edu.washington.cs.conf.util.WALAUtils;
 //the strategy taken to match methods
 public class MethodMatchingLogics {
 	
-	public static boolean USE_FUZZING_MATCHING = true;
+	public static boolean USE_FUZZING_MATCHING = false;
 	
 	public final CodeAnalyzer oldAnalyzer;
 	public final CodeAnalyzer newAnalyzer;

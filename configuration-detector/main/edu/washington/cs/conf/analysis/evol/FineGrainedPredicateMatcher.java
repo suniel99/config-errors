@@ -56,7 +56,7 @@ public class FineGrainedPredicateMatcher {
 
 	public List<SSAInstruction> matchInstructionInNewCG(CGNode oldNode,
 			CGNode newNode, SSAInstruction oldSSA) {
-		Utils.checkTrue(CodeAnalyzer.isPredicateInstruction(oldSSA), "Other ssa: " + oldSSA
+		Utils.checkTrue(CodeAnalysisUtils.isPredicateInstruction(oldSSA), "Other ssa: " + oldSSA
 				+ " is not supported.");
 		Set<Pair<SSAInstruction, SSAInstruction>> pairSet = this.findCachedMap(oldNode, newNode);
 		if (pairSet == null) {
@@ -84,7 +84,8 @@ public class FineGrainedPredicateMatcher {
 	}
 
 	// use a JDiff like algorithm
-	private Set<Pair<SSAInstruction, SSAInstruction>> createInstructionMap(CGNode oldNode, CGNode newNode) {
+	//FIXME should make it private
+	public Set<Pair<SSAInstruction, SSAInstruction>> createInstructionMap(CGNode oldNode, CGNode newNode) {
 		MethodMatcher matcher = new MethodMatcher(this.oldGraph, this.newGraph, this.scope, this.analysisCache);
 		Set<Pair<ISSABasicBlock, ISSABasicBlock>> matchedBlocks
 		    = matcher.createMatchedBlocks(oldNode, newNode, this.threshold, this.lookahead);
@@ -104,8 +105,8 @@ public class FineGrainedPredicateMatcher {
 			}
 			SSAInstruction oldLast = oldBB.getLastInstruction();
 			SSAInstruction newLast = newBB.getLastInstruction();
-			if(CodeAnalyzer.isPredicateInstruction(oldLast)
-				&& CodeAnalyzer.isPredicateInstruction(newLast)) {
+			if(CodeAnalysisUtils.isPredicateInstruction(oldLast)
+				&& CodeAnalysisUtils.isPredicateInstruction(newLast)) {
 				matchedSSAs.add(new Pair<SSAInstruction, SSAInstruction>(oldLast, newLast));
 			}
 		}
