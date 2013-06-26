@@ -525,6 +525,10 @@ public class WALAUtils {
 	    	return sb.toString();
 	    }
 	    
+	    public static SSAInstruction getInstruction(CGNode node, int index) {
+	    	return node.getIR().getInstructions()[index];
+	    }
+	    
 	    public static int getInstructionIndex(CGNode node, SSAInstruction instr) {
 	    	int index = -1;
 	    	
