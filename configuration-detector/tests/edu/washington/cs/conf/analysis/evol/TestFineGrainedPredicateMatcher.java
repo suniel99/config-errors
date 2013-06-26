@@ -30,7 +30,7 @@ public class TestFineGrainedPredicateMatcher extends TestCase {
 		Utils.checkNotNull(newNode);
 		
 		for(SSAInstruction oldSSA : WALAUtils.getAllIRs(oldNode)) {
-			if(CodeAnalyzer.isPredicateInstruction(oldSSA)) {
+			if(CodeAnalysisUtils.isPredicateInstruction(oldSSA)) {
 		        List<SSAInstruction> matchedInstructions
 		            = matcher.matchInstructionInNewCG(oldNode, newNode, oldSSA);
 		        System.out.println("matching: " + oldSSA);

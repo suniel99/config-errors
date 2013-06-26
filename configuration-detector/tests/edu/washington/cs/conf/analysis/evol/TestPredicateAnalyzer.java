@@ -2,6 +2,7 @@ package edu.washington.cs.conf.analysis.evol;
 
 import java.util.Map;
 
+import edu.washington.cs.conf.util.Log;
 import edu.washington.cs.conf.util.Utils;
 
 import plume.Pair;
@@ -60,6 +61,7 @@ public class TestPredicateAnalyzer extends TestCase {
  	}
 	
 	public void testSynoptic() {
+		Log.logConfig("./evol-experiments/synoptic/log.txt");
 		boolean matchDebug = false;
 		boolean fuzzMatching = false;
 		CodeAnalyzer oldAnalyzer = CodeAnalyzerRepository.getSynopticOldAnalyzer();
@@ -68,6 +70,7 @@ public class TestPredicateAnalyzer extends TestCase {
 		String newTraceFile = TraceRepository.synopticNewTrace;
 		AnalysisScope scope = AnalysisScopeRepository.createSynopticScope();
 		this.findDeviatedPredicates(matchDebug, fuzzMatching, oldAnalyzer, newAnalyzer, oldTraceFile, newTraceFile, scope);
+		Log.removeLogging();
 	}
 	
 	//FIXME, the chord bytecode needs to be re-compiled, seems
@@ -110,6 +113,7 @@ public class TestPredicateAnalyzer extends TestCase {
 	
 	public void findDeviatedPredicates(boolean matchDebug, boolean fuzzMatching, CodeAnalyzer oldAnalyzer,
 			CodeAnalyzer newAnalyzer, String oldTraceFile, String newTraceFile, AnalysisScope scope) {
+		Log.logln(" ..... finding deviated predicates .......");
 		MethodMatcher.debug = matchDebug;
 		
 		oldAnalyzer.buildAnalysis();
@@ -134,7 +138,9 @@ public class TestPredicateAnalyzer extends TestCase {
 			PredicateExecInfo oldP = p.a;
 			PredicateExecInfo newP = p.b;
 			System.out.println(oldP + " ==> " + newP);
+			Log.logln(oldP + " ==> " + newP);
 			System.out.println("   " + predicatePairs.get(p));
+			Log.logln("   " + predicatePairs.get(p));
 		}
 	}
 	
