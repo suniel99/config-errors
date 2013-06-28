@@ -11,17 +11,17 @@ import junit.framework.TestCase;
 public class TestFindPostDominator extends TestCase {
 	
 	public void testPostDomExampleFoo() {
-		CodeAnalysisUtils.post_dom_debug = false;
+		PostDominatorFinder.post_dom_debug = false;
 		this.showPostDomExample("test.evol.examples.PostDominate.foo");
 	}
 
     public void testPostDomExampleBar() {
-    	CodeAnalysisUtils.post_dom_debug = false;
+    	PostDominatorFinder.post_dom_debug = false;
 		this.showPostDomExample("test.evol.examples.PostDominate.bar");
 	}
     
     public void testPostDomExampleLoop() {
-    	CodeAnalysisUtils.post_dom_debug = false;
+    	PostDominatorFinder.post_dom_debug = false;
 		this.showPostDomExample("test.evol.examples.PostDominate.loop");
 	}
 	
@@ -39,7 +39,7 @@ public class TestFindPostDominator extends TestCase {
 		WALAUtils.printCFG(node);
 		
 		for(ISSABasicBlock bb : WALAUtils.getAllBasicBlocks(node)) {
-			ISSABasicBlock postbb = CodeAnalysisUtils.computeImmediatePostDominator(node, bb);
+			ISSABasicBlock postbb = PostDominatorFinder.computeImmediatePostDominator(node, bb);
 			System.out.println("The immediate post of: " + bb.getNumber() + " is: " + postbb);
 			System.out.println("------------");
 		}
