@@ -15,6 +15,7 @@ import java.net.URLClassLoader;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
@@ -39,6 +40,10 @@ import org.xml.sax.helpers.DefaultHandler;
 import com.ibm.wala.ipa.callgraph.CGNode;
 
 public class Utils {
+	
+	public static void unimplemented() {
+		throw new Error();
+	}
 	
 	public static void checkNotNull(Object o) {
 		checkNotNull(o, null);
@@ -288,6 +293,18 @@ public class Utils {
 			count++;
 		}
 		return sb.toString();
+	}
+	
+	//cannot contain null
+	public static <T> Set<T> intersect(Set<T> set1, Set<T> set2) {
+		Set<T> intersect = new HashSet<T>();
+		for(T t : set1) {
+			checkNotNull(t);
+			if(set2.contains(t)) {
+				intersect.add(t);
+			}
+		}
+		return intersect;
 	}
 	
 	public static <T> boolean includedIn(T target, T[] array) {
