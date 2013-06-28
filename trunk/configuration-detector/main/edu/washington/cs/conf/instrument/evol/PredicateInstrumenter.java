@@ -1,10 +1,14 @@
 package edu.washington.cs.conf.instrument.evol;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import com.ibm.wala.shrikeBT.ConditionalBranchInstruction;
@@ -29,6 +33,7 @@ import edu.washington.cs.conf.analysis.evol.InstructionExecInfo;
 import edu.washington.cs.conf.instrument.AbstractInstrumenter;
 import edu.washington.cs.conf.instrument.InstrumentSchema;
 import edu.washington.cs.conf.instrument.InstrumentStats;
+import edu.washington.cs.conf.util.Files;
 import edu.washington.cs.conf.util.Globals;
 import edu.washington.cs.conf.util.Utils;
 import edu.washington.cs.conf.util.WALAUtils;
@@ -53,6 +58,11 @@ public class PredicateInstrumenter extends AbstractInstrumenter {
 	private Set<String> skipClassNames = new HashSet<String>();
 	
 	private InstrumentSchema schema = null;
+	
+	//rather than recording the whole string, map a string to an integer
+	private boolean useSigMapping = false;
+	private Map<String, Integer> sigMap = new HashMap<String, Integer>();
+	private int sigCount = 0;
 
 	public PredicateInstrumenter() {
 		this(Collections.<String> emptyList(), Collections.<String> emptyList());
@@ -69,6 +79,10 @@ public class PredicateInstrumenter extends AbstractInstrumenter {
 	public void setInstrumentSchema(InstrumentSchema schema) {
 		Utils.checkNotNull(schema);
 		this.schema = schema;
+	}
+	
+	public void setUseSigMap(boolean useSigMap) {
+		this.useSigMapping = useSigMap;
 	}
 
 	@Override
@@ -231,7 +245,41 @@ public class PredicateInstrumenter extends AbstractInstrumenter {
 	}
 	
 	private String constructStmtSig(String methodSig, int index) {
-		return methodSig + EfficientTracer.SEP + index;
+		String sig = methodSig + EfficientTracer.SEP + index;
+		if(!this.useSigMapping) {
+		    return sig;
+		} else {
+			if(this.sigMap.containsKey(sig)) {
+				return this.sigMap.get(sig).toString();
+			} else {
+				this.sigCount++;
+				this.sigMap.put(sig, this.sigCount);
+				return String.valueOf(this.sigCount);
+			}
+		}
+	}
+	
+	public static final String sigSep = "=>";
+	public static final String defaultSigMapFile = "./sig_map.txt";
+	public void saveSigMappings() throws IOException {
+		this.saveSigMappings(defaultSigMapFile);
+	}
+	public void saveSigMappings(String fileName) throws IOException {
+		System.out.println("Write sig mapping...");
+		Utils.checkTrue(this.useSigMapping);
+		Files.deleteFile(fileName);
+		Files.createIfNotExist(fileName);
+		BufferedWriter writer = new BufferedWriter(new FileWriter(fileName, true));
+		try {
+		    for(String sig : this.sigMap.keySet()) {
+			    writer.append(sig);
+			    writer.append(sigSep);
+			    writer.append(this.sigMap.get(sig)+"");
+		        writer.append(Globals.lineSep);
+		    } 
+		} finally {
+			   writer.close();
+		}
 	}
 	
 	//FIXME it is better to double check this, and only
