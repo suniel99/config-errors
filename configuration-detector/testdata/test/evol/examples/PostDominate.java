@@ -37,6 +37,15 @@ public class PostDominate {
 			int k = y - 1;
 			bar(k);
 		}
+		loop(y);
+	}
+	
+	public void loop(int y) {
+		int z = y;
+		while(z-- > 0) {
+		  System.out.println("k");
+		}
+		System.err.println("OK");
 	}
 	
 	public static void main(String[] args) {
