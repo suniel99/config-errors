@@ -477,10 +477,11 @@ public class WALAUtils {
 	    	while(iter.hasNext()) {
 	    		ISSABasicBlock issabb = iter.next();
 	    		System.out.println(issabb);
-	    		System.out.println(issabb.getClass());
+//	    		System.out.println(issabb.getClass());
 	    		Iterator<SSAInstruction> iter_ssa = issabb.iterator();
 	    		while(iter_ssa.hasNext()) {
 	    			System.out.println("    " + iter_ssa.next());
+	    			System.out.println();
 	    		}
 	    		
 	    	}
