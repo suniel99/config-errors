@@ -9,17 +9,23 @@ import java.util.Set;
 
 import com.ibm.wala.shrikeBT.ConditionalBranchInstruction;
 import com.ibm.wala.shrikeBT.ConstantInstruction;
+import com.ibm.wala.shrikeBT.Constants;
 import com.ibm.wala.shrikeBT.Disassembler;
 import com.ibm.wala.shrikeBT.IInstruction;
 import com.ibm.wala.shrikeBT.Instruction;
+import com.ibm.wala.shrikeBT.LoadInstruction;
 import com.ibm.wala.shrikeBT.MethodData;
 import com.ibm.wala.shrikeBT.MethodEditor;
+import com.ibm.wala.shrikeBT.ReturnInstruction;
+import com.ibm.wala.shrikeBT.ThrowInstruction;
 import com.ibm.wala.shrikeBT.Util;
+import com.ibm.wala.shrikeBT.MethodEditor.Output;
 import com.ibm.wala.shrikeBT.analysis.Analyzer.FailureException;
 import com.ibm.wala.shrikeBT.analysis.Verifier;
 import com.ibm.wala.shrikeBT.shrikeCT.ClassInstrumenter;
 import com.ibm.wala.shrikeCT.ClassWriter;
 
+import edu.washington.cs.conf.analysis.evol.InstructionExecInfo;
 import edu.washington.cs.conf.instrument.AbstractInstrumenter;
 import edu.washington.cs.conf.instrument.InstrumentSchema;
 import edu.washington.cs.conf.instrument.InstrumentStats;
@@ -38,6 +44,9 @@ public class PredicateInstrumenter extends AbstractInstrumenter {
 			new Class[] { String.class });
 	static final Instruction predicateResultTrace = Util.makeInvoke(
 			EfficientTracer.class, "tracePredicateResult",
+			new Class[] { String.class });
+	static final Instruction normalInstrTrace = Util.makeInvoke(
+			EfficientTracer.class, "traceNormalInstruction",
 			new Class[] { String.class });
 
 	private String[] appPkgNames = null;
@@ -90,6 +99,9 @@ public class PredicateInstrumenter extends AbstractInstrumenter {
 
 				final String methodSig = WALAUtils.getMethodSignature(d);
 				
+				//instrument the beginning and end of a method
+				this.instrumentMethod(me, methodSig);
+				
 				// profiling the predicates
 				int length = me.getInstructions().length;
 				for (int i = 0; i < length; i++) {
@@ -102,17 +114,18 @@ public class PredicateInstrumenter extends AbstractInstrumenter {
 					}
 					
 					IInstruction inst = me.getInstructions()[i];
-					if (this.isPredicate(inst)) {
+//					final String stmtSig = methodSig + EfficientTracer.SEP + i;
+					final String stmtSig = this.constructStmtSig(methodSig, i);
+					if (this.isPredicate(inst)) { /**instrument the predicate**/
 //						   System.out.println("instr: " + inst);
 							// methodSig is not a uniquely-identifiable,
 							// so plus the instruction index before evaluation
-							final String predSig = methodSig + EfficientTracer.SEP + i;
-							InstrumentStats.addInstrumentedPositions(predSig);
+							InstrumentStats.addInstrumentedPositions(stmtSig);
 							me.insertBefore(i, new MethodEditor.Patch() {
 								@Override
 								public void emitTo(MethodEditor.Output w) {
 									w.emit(getTracer);
-									w.emit(ConstantInstruction.makeString(predSig));
+									w.emit(ConstantInstruction.makeString(stmtSig));
 									w.emit(predicateFreqTrace);
 									InstrumentStats.addInsertedInstructions(1);
 								}
@@ -121,11 +134,23 @@ public class PredicateInstrumenter extends AbstractInstrumenter {
 								@Override
 								public void emitTo(MethodEditor.Output w) {
 									w.emit(getTracer);
-									w.emit(ConstantInstruction.makeString(predSig));
+									w.emit(ConstantInstruction.makeString(stmtSig));
 									w.emit(predicateResultTrace);
 									InstrumentStats.addInsertedInstructions(1);
 								}
 							});
+					} else {/**instrument other instructions */
+						//FIXME insert before?
+						me.insertBefore(i, new MethodEditor.Patch() {
+							@Override
+							public void emitTo(MethodEditor.Output w) {
+								w.emit(getTracer);
+								w.emit(ConstantInstruction.makeString(stmtSig));
+								w.emit(normalInstrTrace);
+								InstrumentStats.addInsertedInstructions(1);
+							}
+						});
+						InstrumentStats.addNormalInsertations(1);
 					}
 				}
 
@@ -146,6 +171,51 @@ public class PredicateInstrumenter extends AbstractInstrumenter {
 			instrumenter.outputModifiedClass(ci, cw);
 		}
 	}
+	
+	/**
+	 * Instrument before and after a method
+	 * */
+	private void instrumentMethod(MethodEditor me, final String methodSig) {
+		final String startSig = this.constructStmtSig(methodSig, InstructionExecInfo.startIndex);
+		final String endSig = this.constructStmtSig(methodSig, InstructionExecInfo.endIndex);
+		me.insertAtStart(new MethodEditor.Patch() {
+            @Override
+            public void emitTo(MethodEditor.Output w) {
+              w.emit(getTracer);
+              w.emit(ConstantInstruction.makeString(startSig));
+              w.emit(normalInstrTrace);
+              InstrumentStats.addNormalInsertations(1);
+            }
+          });
+    	
+    	  IInstruction[] instr = me.getInstructions();
+          for (int i = 0; i < instr.length; i++) {
+            if (instr[i] instanceof ReturnInstruction) {
+              me.insertBefore(i, new MethodEditor.Patch() {
+                @Override
+                public void emitTo(MethodEditor.Output w) {
+                	w.emit(getTracer);
+                    w.emit(ConstantInstruction.makeString(endSig));
+                    w.emit(normalInstrTrace);
+                  InstrumentStats.addNormalInsertations(1);
+                }
+              });
+            }
+          }
+          
+          me.addMethodExceptionHandler(null, new MethodEditor.Patch() {
+            @Override
+            public void emitTo(Output w) {
+            	w.emit(getTracer);
+                w.emit(ConstantInstruction.makeString(endSig));
+                w.emit(normalInstrTrace);
+                //keep the statistics
+                InstrumentStats.addNormalInsertations(1);
+                //must rethrow the exception
+                w.emit(ThrowInstruction.make(false));
+            }
+          });
+	}
 
 	private void disamAndVerify(MethodData d, Writer w) throws IOException,
 			FailureException {
@@ -158,6 +228,10 @@ public class PredicateInstrumenter extends AbstractInstrumenter {
 			Verifier v = new Verifier(d);
 			v.verify();
 		}
+	}
+	
+	private String constructStmtSig(String methodSig, int index) {
+		return methodSig + EfficientTracer.SEP + index;
 	}
 	
 	//FIXME it is better to double check this, and only
