@@ -9,6 +9,7 @@ import edu.washington.cs.conf.util.Globals;
 public class InstrumentStats {
 
 	static int numOfInsertedInstructions = 0;
+	static int numOfNormalInstructions = 0;
 	
 	static Set<String> instrumentedPos = new LinkedHashSet<String>();
 	
@@ -17,11 +18,16 @@ public class InstrumentStats {
 	}
 	
 	public static void showInstrumentationStats() {
-		System.out.println(numOfInsertedInstructions);
+		System.out.println("Predicate num: " + numOfInsertedInstructions);
+		System.out.println("Normal instruction num: " + numOfNormalInstructions);
 	}
 	
 	public static void addInstrumentedPositions(String pos) {
 		instrumentedPos.add(pos);
+	}
+	
+	public static void addNormalInsertations(int num) {
+		numOfNormalInstructions += num;
 	}
 	
 	public static void writeInstrumentedPositions(String fileName) {
