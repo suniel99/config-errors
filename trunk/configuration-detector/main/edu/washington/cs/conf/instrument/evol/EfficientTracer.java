@@ -4,6 +4,7 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -19,6 +20,7 @@ public class EfficientTracer {
 	
 	public static String EXEC = "EXEC:";
 	public static String EVAL = "EVAL:";
+	public static String NORMAL = "NORMAL:";
 	
 	//use two large maps to keep track of the evaluation
 	//result of each predicate
@@ -47,6 +49,10 @@ public class EfficientTracer {
 			predicateFrequency.put(predicateStr, predicateFrequency.get(predicateStr) + 1);
 		}
 //		System.out.println("freq: " + predicateStr);
+	}
+	
+	public void traceNormalInstruction(String str) {
+		predicateExecHistory.add(NORMAL + str);
 	}
 	
 	public void tracePredicateResult(String predicateStr) {
@@ -78,31 +84,31 @@ public class EfficientTracer {
 	                    			+ EVAL_SEP + (predicateResult.containsKey(key) ? predicateResult.get(key) : 0));
 	                    	sb.append(lineSep);
 	                    }
-	                	//record the full history
-	                	StringBuilder historySb = new StringBuilder();
-	                	for(String line : predicateExecHistory) {
-	                		historySb.append(line);
-	                		historySb.append(lineSep);
-	                	}
+	                	
 	                	try {
-	                		long time = System.currentTimeMillis();
-	                		String fileName = "./tmp-output-folder/predicate_dump_" + time + ".txt";
-	                		File f = new File(fileName);
-	                		
-	                		if(!f.getParentFile().exists()) {
-	                			System.out.println("Create folder: " + f.getParentFile().getAbsolutePath());
-	                			f.getParentFile().mkdirs();
+	                		String dir = "./tmp-output-folder";
+	                		File dirFile = new File(dir);
+	                		if(!dirFile.exists()) {
+	                			System.out.println("Create folder: " + dirFile.getAbsolutePath());
+	                			dirFile.mkdirs();
+	                		} else {
+	                			if(dirFile.isFile()) {
+	                				System.err.println("Exit, a file: " + dirFile.getAbsolutePath() + " exist!");
+	                				System.exit(1);
+	                			}
 	                		}
-	                		System.out.println("write to file: " + f.getAbsolutePath());
-	                		//Did not re-use Files utility since this class need to be separated
-	                		//and packed into one jar
-	        				EfficientTracer.writeToFile(sb.toString(), f, false);
+	                		
+	                		long time = System.currentTimeMillis();
+	                		String predicateFileName = dir + "/predicate_dump_" + time + ".txt";
+	                		File predicateFile = new File(predicateFileName);
+	                		System.out.println("write predicate behaviors to file: " + predicateFile.getAbsolutePath());
+	        				EfficientTracer.writeToFile(sb.toString(), predicateFile, false);
 	        				
-
+	        				//due to the large volume the history must be written directly
 	                		String historyFileName = "./tmp-output-folder/history_dump_" + time + ".txt";
 	                		File hf = new File(historyFileName);
-	                		System.out.println("write to file: " + hf.getAbsolutePath());
-	                		EfficientTracer.writeToFile(historySb.toString(), hf, false);
+	                		System.out.println("write full history to file: " + hf.getAbsolutePath());
+	                		EfficientTracer.directWriteToFile(predicateExecHistory, hf);
 	                		
 	        			} catch (IOException e) {
 	        				e.printStackTrace();
@@ -113,6 +119,9 @@ public class EfficientTracer {
 		};
 		
 	}
+
+	//Did not re-use Files utility since this class need to be separated
+	//and packed into one jar
 	
 	private static void writeToFile(String s, File file, Boolean append) throws IOException {
 	    BufferedWriter writer= new BufferedWriter(new FileWriter(file, append));
@@ -121,5 +130,23 @@ public class EfficientTracer {
 	    } finally {
 	      writer.close();
 	    }        
+   }
+
+   private static final String lineSep = System.getProperty("line.separator");
+	
+   private static <T> void directWriteToFile(Collection<T> coll, File file) throws IOException {
+	   if(file.exists()) {
+		   file.delete();
+		   System.err.println("Delete existing file: " + file.getAbsolutePath());
+	   }
+	   BufferedWriter writer = new BufferedWriter(new FileWriter(file, true));  //use append here
+	   try {
+	       for(T t : coll) {
+		       writer.append(t + "");
+		       writer.append(lineSep);
+	       }
+	   } finally {
+		   writer.close();
+	   }
    }
 }
