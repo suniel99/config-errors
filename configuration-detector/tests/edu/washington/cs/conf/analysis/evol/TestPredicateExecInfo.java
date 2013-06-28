@@ -32,7 +32,7 @@ public class TestPredicateExecInfo extends TestCase {
 	}
 	
 	private void testParsingTraces(String fileName) {
-		Collection<PredicateExecInfo> coll = PredicateExecInfo.createPredicateExecInfoList(fileName);
+		Collection<PredicateExecInfo> coll = ExecutionTraceReader.createPredicateExecInfoList(fileName);
 		
 		System.out.println(coll.size());
 		
