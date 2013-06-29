@@ -391,6 +391,18 @@ public class WALAUtils {
 	    	return list;
 	    }
 	    
+	    public static List<SSAInstruction> getAllNotNullIRs(CGNode node) {
+	    	List<SSAInstruction> list = new LinkedList<SSAInstruction>();
+	    	SSAInstruction[] instructions = node.getIR().getInstructions();
+	    	for(SSAInstruction ins : instructions) {
+	    		if(ins == null) {
+	    			continue;
+	    		}
+	    		list.add(ins);
+	    	}
+	    	return list;
+	    }
+	    
 	    public static List<ISSABasicBlock> getAllBasicBlocks(CGNode node) {
 	    	List<ISSABasicBlock> bbList = new LinkedList<ISSABasicBlock>();
 	    	
@@ -466,6 +478,22 @@ public class WALAUtils {
 				}
 			}
 			return bb;
+	    }
+	    
+	    public static boolean containNode(CallGraph cg, CGNode node) {
+			Utils.checkNotNull(node, "cannot be null ");
+			for(CGNode n : cg) {
+				if(n.equals(node)){
+					return true;
+				}
+			}
+			return false;
+		}
+	    
+	    public static void printAllIRs(CGNode node) {
+	    	for(SSAInstruction ssa : WALAUtils.getAllNotNullIRs(node)) {
+	    		System.out.println(ssa + ",  type: " + ssa.getClass());
+	    	}
 	    }
 	    
 	    public static void printCFG(CGNode node) {
