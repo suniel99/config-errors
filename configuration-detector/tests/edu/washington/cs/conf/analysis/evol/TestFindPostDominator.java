@@ -38,6 +38,8 @@ public class TestFindPostDominator extends TestCase {
 		
 		WALAUtils.printCFG(node);
 		
+		WALAUtils.printAllIRs(node);
+		
 		for(ISSABasicBlock bb : WALAUtils.getAllBasicBlocks(node)) {
 			ISSABasicBlock postbb = PostDominatorFinder.computeImmediatePostDominator(node, bb);
 			System.out.println("The immediate post of: " + bb.getNumber() + " is: " + postbb);
