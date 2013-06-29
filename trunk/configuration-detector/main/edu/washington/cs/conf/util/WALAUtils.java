@@ -507,6 +507,11 @@ public class WALAUtils {
 	    	}
 	    }
 	    
+	    public static int getBasicBlockSize(CGNode node, SSAInstruction ssa) {
+			ISSABasicBlock bb = node.getIR().getBasicBlockForInstruction(ssa);
+			return WALAUtils.getAllIRs(bb).size();
+		}
+	    
 	    public static List<SSAInstruction> getAllIRs(ISSABasicBlock bb) {
 	    	List<SSAInstruction> list = new LinkedList<SSAInstruction>();
 	    	Iterator<SSAInstruction> iter = bb.iterator();
