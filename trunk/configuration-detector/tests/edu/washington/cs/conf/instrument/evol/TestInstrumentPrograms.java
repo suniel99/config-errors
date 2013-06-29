@@ -1,5 +1,6 @@
 package edu.washington.cs.conf.instrument.evol;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -23,6 +24,7 @@ public class TestInstrumentPrograms extends TestCase {
 	}
 	
 	public void testInstrumentRandoop1_2_1() {
+//		useSigMap = true;
 		String inputJar = "D:\\research\\confevol\\subject-programs\\randoop\\randoop-1.2.1\\randoop-1.2.1.jar";
 		String outputJar = "D:\\research\\confevol\\subject-programs\\randoop\\randoop-1.2.1\\randoop-1.2.1-instrumented.jar";
 		this.doInstrumentation(inputJar, outputJar, Arrays.asList("randoop."), false);
@@ -92,14 +94,23 @@ public class TestInstrumentPrograms extends TestCase {
 		this.doInstrumentation(inputJar, outputJar, Arrays.asList("chord."), false);
 	}
 
+    boolean useSigMap = false;
     private void doInstrumentation(String input, String output, Collection<String> appPkgs,
     		boolean disasm) {
 		PredicateInstrumenter instrumenter = new PredicateInstrumenter(appPkgs, Collections.<String> emptyList());
 		instrumenter.setDisasm(disasm);
+		instrumenter.setUseSigMap(useSigMap);
 		try {
 		    instrumenter.instrument(input, output);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
+		}
+		if(useSigMap) {
+			try {
+				instrumenter.saveSigMappings();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
 		InstrumentStats.showInstrumentationStats();
 	}
