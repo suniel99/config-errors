@@ -65,9 +65,43 @@ public class PredicateExecutionDelta {
 	//in total due to the different branch it takes
 	//for example, a branch is taken 4 times in old version, but 3 times in the new
 	//version. what is the total delta instructions
-	public int getTotalDeltaInstructionNumber() {
+	private int getTotalDeltaInstructionNumber() {
 		throw new Error();
 	}
 	
-	
+	public int getOldExecFreq() {
+		return oldExecFreq;
+	}
+
+	public void setOldExecFreq(int oldExecFreq) {
+		Utils.checkTrue(oldExecFreq >= 0);
+		this.oldExecFreq = oldExecFreq;
+	}
+
+	public int getOldEvalTrue() {
+		return oldEvalTrue;
+	}
+
+	public void setOldEvalTrue(int oldEvalTrue) {
+		Utils.checkTrue(oldEvalTrue >= 0);
+		this.oldEvalTrue = oldEvalTrue;
+	}
+
+	public int getNewExecFreq() {
+		return newExecFreq;
+	}
+
+	public void setNewExecFreq(int newExecFreq) {
+		Utils.checkTrue(newExecFreq >= 0);
+		this.newExecFreq = newExecFreq;
+	}
+
+	public int getNewEvalTrue() {
+		return newEvalTrue;
+	}
+
+	public void setNewEvalTrue(int newEvalTrue) {
+		Utils.checkTrue(newEvalTrue >= 0);
+		this.newEvalTrue = newEvalTrue;
+	}
 }
