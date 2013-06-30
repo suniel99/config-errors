@@ -40,8 +40,8 @@ public class PredicateExecInfoAnalyzer {
 	}
 	
 	public void readPredicates() {
-		this.oldPredicates = PredicateExecInfo.createPredicateExecInfoList(oldTraceFile);
-		this.newPredicates = PredicateExecInfo.createPredicateExecInfoList(newTraceFile);
+		this.oldPredicates = ExecutionTraceReader.createPredicateExecInfoList(oldTraceFile);
+		this.newPredicates = ExecutionTraceReader.createPredicateExecInfoList(newTraceFile);
 	}
 	
 	public void setMetrics(Metrics m) {
