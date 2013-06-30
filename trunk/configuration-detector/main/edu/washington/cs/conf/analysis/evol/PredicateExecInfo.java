@@ -39,33 +39,6 @@ public class PredicateExecInfo {
 		return Integer.parseInt(this.predicate);
 	}
 	
-	//a sample line:
-	//randoop.util.Reflection.isVisible(Ljava/lang/Class;)Z##11==1:0
-	public static PredicateExecInfo createPredicateExecInfo(String line) {
-		Utils.checkNotNull(line);
-		String[] splits = line.split(EfficientTracer.SEP);
-		String context = splits[0];
-		String[] indexAndEval = splits[1].split(EfficientTracer.PRED_SEP);
-		String predicate = indexAndEval[0];
-		String[] results = indexAndEval[1].split(EfficientTracer.EVAL_SEP);
-		Integer freq = Integer.parseInt(results[0]);
-		Integer eval = Integer.parseInt(results[1]);
-		Utils.checkTrue(freq >= eval);
-		return new PredicateExecInfo(context, predicate, freq, eval);
-	}
-	
-	public static Collection<PredicateExecInfo> createPredicateExecInfoList(String fileName) {
-		Collection<PredicateExecInfo> coll = new LinkedList<PredicateExecInfo>();
-		List<String> fileContent = Files.readWholeNoExp(fileName);
-		for(String line : fileContent) {
-			if(line.trim().isEmpty()) {
-				continue;
-			}
-			PredicateExecInfo execInfo = createPredicateExecInfo(line);
-			coll.add(execInfo);
-		}
-		return coll;
-	}
 	
 	//this is just for debugging purpose
 	public void showContext(CallGraph cg) {

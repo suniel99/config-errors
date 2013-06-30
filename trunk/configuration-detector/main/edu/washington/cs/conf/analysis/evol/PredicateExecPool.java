@@ -14,7 +14,7 @@ public class PredicateExecPool {
 	public final List<PredicateExecInfo> predicates;
 	
 	public PredicateExecPool(String fileName) {
-		Collection<PredicateExecInfo> infos = PredicateExecInfo.createPredicateExecInfoList(fileName);
+		Collection<PredicateExecInfo> infos = ExecutionTraceReader.createPredicateExecInfoList(fileName);
 		this.predicates = new LinkedList<PredicateExecInfo>();
 		this.predicates.addAll(infos);
 	}

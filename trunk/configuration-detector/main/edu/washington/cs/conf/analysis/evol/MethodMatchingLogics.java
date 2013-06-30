@@ -69,7 +69,8 @@ public class MethodMatchingLogics {
 	}
 	
 	public List<CGNode> getMatchedMethods(CGNode oldNode) {
-		Utils.checkTrue(this.oldAnalyzer.hasNode(oldNode), "Old node is: " + oldNode.getMethod().getSignature());
+		Utils.checkTrue(WALAUtils.containNode(this.oldAnalyzer.getCallGraph(), oldNode),
+				"Old node is: " + oldNode.getMethod().getSignature());
 		List<CGNode> nodeList = new LinkedList<CGNode>();
 		
 		CGNode exactMatchedNode = this.matcher.getMethodInNewCG(oldNode.getMethod().getSignature());
