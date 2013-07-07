@@ -704,4 +704,14 @@ public class WALAUtils {
 			};
 			return GraphSlicer.prune(sdg, f);
 	    }
+	    
+	    public static Collection<Statement> extractNormalStatements(Collection<Statement> coll) {
+	    	Collection<Statement> normalStmts = new LinkedList<Statement>();
+	    	for(Statement s : coll) {
+	    		if(s instanceof NormalStatement) {
+	    			normalStmts.add(s);
+	    		}
+	    	}
+	    	return normalStmts;
+	    }
 }
