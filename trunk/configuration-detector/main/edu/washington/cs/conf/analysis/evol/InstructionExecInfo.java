@@ -43,6 +43,10 @@ public class InstructionExecInfo {
 		return this.context;
 	}
 	
+	public int getIndex() {
+		return this.index;
+	}
+	
 	public boolean isBranchInstruction() {
 		return false;
 	}
