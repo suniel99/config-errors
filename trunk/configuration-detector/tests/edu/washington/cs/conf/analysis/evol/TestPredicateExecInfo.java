@@ -2,6 +2,8 @@ package edu.washington.cs.conf.analysis.evol;
 
 import java.util.Collection;
 
+import edu.washington.cs.conf.analysis.evol.experimental.PredicateExecInfo;
+
 import junit.framework.TestCase;
 
 public class TestPredicateExecInfo extends TestCase {
