@@ -41,6 +41,10 @@ import com.ibm.wala.ipa.callgraph.CGNode;
 
 public class Utils {
 	
+	public static void fail(String message) {
+		checkNotNull(null, message);
+	}
+	
 	public static void unimplemented() {
 		throw new Error();
 	}
@@ -462,6 +466,12 @@ public class Utils {
 		}
 		return sum;
 	}
+	
+//	public static <T> Set<T> intersect(Set<T> s1, Set<T> s2) {
+//		Set<T> retSet = new LinkedHashSet<T>();
+//		
+//		return retSet;
+//	}
 	
 	public static <K, V> Map<K, V> sortByKey(Map<K, V> map, final boolean increase) {
 	     List<Entry<K, V>> list = new LinkedList<Entry<K, V>>(map.entrySet());
