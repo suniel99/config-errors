@@ -2,6 +2,7 @@ package edu.washington.cs.conf.analysis.evol;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -10,13 +11,15 @@ import java.util.Set;
 
 import com.ibm.wala.ipa.callgraph.CGNode;
 import com.ibm.wala.ssa.ISSABasicBlock;
+import com.ibm.wala.ssa.SSAInstruction;
+import com.ibm.wala.ssa.SSAPhiInstruction;
 
 import edu.washington.cs.conf.util.Utils;
 import edu.washington.cs.conf.util.WALAUtils;
 
 public class PostDominatorFinder {
 	//FIXME the result can be cached
-	public static boolean post_dom_debug = true;
+	public static boolean post_dom_debug = false;
 	public static ISSABasicBlock computeImmediatePostDominator(CGNode node, ISSABasicBlock block) {
 		List<ISSABasicBlock> listBBs = WALAUtils.getAllBasicBlocks(node);
 		Map<ISSABasicBlock, Set<ISSABasicBlock>> postDom = new HashMap<ISSABasicBlock, Set<ISSABasicBlock>>();
@@ -136,5 +139,53 @@ public class PostDominatorFinder {
 		} else {
 			return node.getIR().getExitBlock();
 		}
+	}
+	
+	/**
+	 * We need to skip the phi and other instruction that is not in the node
+	 * */
+	public static SSAInstruction getImmediatePostDominatorInstruction(CGNode node, ISSABasicBlock block) {
+		Iterator<SSAInstruction> iter = block.iterator();
+		while(iter.hasNext()) {
+			SSAInstruction ssa = iter.next();
+			if(ssa instanceof SSAPhiInstruction) {
+				continue;
+			}
+			int index = WALAUtils.getInstructionIndex(node, ssa);
+			if(index != -1) {
+				return ssa;
+			}
+		}
+		Utils.checkTrue(false, "The basic block is wrong, why all phi instructions");
+		return null;
+	}
+	
+	//it includes the start and end basic blocks
+	public static Set<ISSABasicBlock> findAllBasicBlocksBetween(CGNode node, ISSABasicBlock block) {
+		ISSABasicBlock startBlock = block;
+		ISSABasicBlock endBlock = computeImmediatePostDominator(node, startBlock);
+		
+		Set<ISSABasicBlock> bbSet = new LinkedHashSet<ISSABasicBlock>();
+		Set<ISSABasicBlock> visited = new HashSet<ISSABasicBlock>();
+		List<ISSABasicBlock> queue = new LinkedList<ISSABasicBlock>();
+		queue.addAll(WALAUtils.getSuccBasicBlocks(node, startBlock));
+		while(!queue.isEmpty()) {
+			ISSABasicBlock top = queue.remove(0);
+			if(top == startBlock || top == endBlock || top.isExitBlock()) {
+				continue;
+			}
+			if(visited.contains(top)) {
+				continue;
+			}
+			visited.add(top);
+			bbSet.add(top);
+			queue.addAll(WALAUtils.getSuccBasicBlocks(node, top));
+		}
+		
+		//incldue the start and end block
+		bbSet.add(startBlock);
+		bbSet.add(endBlock);
+		
+		return bbSet;
 	}
 }

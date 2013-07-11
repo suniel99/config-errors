@@ -25,8 +25,23 @@ public class SliceSeedFinder {
 	/**
 	 * Given a predicate in a node, find all possible seeds.
 	 * */
+	
+	public Collection<Statement> createSliceSeedsBySSAs(CGNode node, int predIndex,
+			Set<SSAInstruction> executedSSAs) {
+		Set<ISSABasicBlock> executedBlocks = new LinkedHashSet<ISSABasicBlock>();
+		
+		for(SSAInstruction ssa : executedSSAs) {
+			ISSABasicBlock bb = node.getIR().getBasicBlockForInstruction(ssa);
+			if(bb != null) {
+				executedBlocks.add(bb);
+			}
+		}
+		
+		return createSliceSeedsByBBs(node, predIndex, executedBlocks);
+	}
+	
 	//for each variable, check whether it escapes the block
-	public Collection<Statement> createSliceSeeds(CGNode node, int predIndex,
+	public Collection<Statement> createSliceSeedsByBBs(CGNode node, int predIndex,
 			Set<ISSABasicBlock> executedBlocks) {
 		SSAInstruction predSSA = node.getIR().getInstructions()[predIndex];
 		Utils.checkTrue(CodeAnalysisUtils.isPredicateInstruction(predSSA));
