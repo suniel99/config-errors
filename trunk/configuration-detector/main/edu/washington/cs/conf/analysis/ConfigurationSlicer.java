@@ -219,6 +219,12 @@ public class ConfigurationSlicer {
 		Statement s = this.extractConfStatement(entity);
 		Utils.checkNotNull(s, "statement is null? " + entity);
 		//compute the slice
+		return this.performSlicing(s);
+	}
+	
+	public Collection<Statement> performSlicing(Statement s) {
+		this.checkCG();
+		Utils.checkNotNull(s);
 		try {
 			if(this.contextSensitive) {
 			    return computeContextSensitiveForwardSlice(s);
