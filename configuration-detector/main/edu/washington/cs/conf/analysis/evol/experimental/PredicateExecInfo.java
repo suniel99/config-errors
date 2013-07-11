@@ -1,4 +1,4 @@
-package edu.washington.cs.conf.analysis.evol;
+package edu.washington.cs.conf.analysis.evol.experimental;
 
 import java.util.Collection;
 import java.util.LinkedList;
@@ -13,6 +13,7 @@ import edu.washington.cs.conf.util.Files;
 import edu.washington.cs.conf.util.Utils;
 import edu.washington.cs.conf.util.WALAUtils;
 
+@Deprecated
 public class PredicateExecInfo {
 
 	public final String context; //the outside method
@@ -37,20 +38,7 @@ public class PredicateExecInfo {
 	
 	public int getIndex() {
 		return Integer.parseInt(this.predicate);
-	}
-	
-	
-	//this is just for debugging purpose
-	public void showContext(CallGraph cg) {
-		this.showContext(WALAUtils.lookupMatchedCGNode(cg, this.getMethodSig()));
-	}
-	public void showContext(CGNode node) {
-		Utils.checkNotNull(node);
-		Utils.checkTrue(this.getMethodSig().equals(node.getMethod().getSignature()));
-		WALAUtils.printCFG(node);
-		SSAInstruction ssa = node.getIR().getInstructions()[this.getIndex()];
-		System.out.println("The " + this.getIndex() + "-th instruction is: " + ssa);
-	}
+	}	
 	
 	@Override
 	public boolean equals(Object o) {
@@ -71,5 +59,19 @@ public class PredicateExecInfo {
 	@Override
 	public String toString() {
 		return predicate + "@" + context + " -> " + evalFreqCount + ":" + evalResultCount;
+	}
+	
+    /**
+     * The following methods are for debugging purpose.
+     **/
+	public void showContext(CallGraph cg) {
+		this.showContext(WALAUtils.lookupMatchedCGNode(cg, this.getMethodSig()));
+	}
+	public void showContext(CGNode node) {
+		Utils.checkNotNull(node);
+		Utils.checkTrue(this.getMethodSig().equals(node.getMethod().getSignature()));
+		WALAUtils.printCFG(node);
+		SSAInstruction ssa = node.getIR().getInstructions()[this.getIndex()];
+		System.out.println("The " + this.getIndex() + "-th instruction is: " + ssa);
 	}
 }

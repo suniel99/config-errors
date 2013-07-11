@@ -2,6 +2,7 @@ package edu.washington.cs.conf.analysis.evol;
 
 import java.util.Comparator;
 
+import edu.washington.cs.conf.analysis.evol.experimental.PredicateExecInfo;
 import edu.washington.cs.conf.util.Utils;
 
 public class PredicateMetrics {

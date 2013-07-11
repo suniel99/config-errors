@@ -1,4 +1,4 @@
-package edu.washington.cs.conf.analysis.evol;
+package edu.washington.cs.conf.analysis.evol.experimental;
 
 import java.util.Collection;
 import java.util.LinkedHashMap;
@@ -10,10 +10,22 @@ import com.ibm.wala.ssa.SSAInstruction;
 
 import plume.Pair;
 
+import edu.washington.cs.conf.analysis.evol.AnalysisCache;
+import edu.washington.cs.conf.analysis.evol.AnalysisScope;
+import edu.washington.cs.conf.analysis.evol.CodeAnalyzer;
+import edu.washington.cs.conf.analysis.evol.ExecutionTraceReader;
+import edu.washington.cs.conf.analysis.evol.PredicateMatchingLogics;
+import edu.washington.cs.conf.analysis.evol.PredicateMetrics;
 import edu.washington.cs.conf.util.Log;
 import edu.washington.cs.conf.util.Utils;
 import edu.washington.cs.conf.util.WALAUtils;
 
+/**
+ * This class is used in a relatively isolated way. Mainly used
+ * for testing purpose.
+ * */
+
+@Deprecated
 public class PredicateExecInfoAnalyzer {
 	
 	enum Metrics{Ratio, Behavior}

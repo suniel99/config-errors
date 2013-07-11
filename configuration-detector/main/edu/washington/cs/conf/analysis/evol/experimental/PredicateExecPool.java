@@ -1,14 +1,16 @@
-package edu.washington.cs.conf.analysis.evol;
+package edu.washington.cs.conf.analysis.evol.experimental;
 
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
+import edu.washington.cs.conf.analysis.evol.ExecutionTraceReader;
 import edu.washington.cs.conf.util.Utils;
 
 /**
- * A list of predicate exec info
+ * A list of predicate exec info. Not really necessary
  * */
+@Deprecated
 public class PredicateExecPool {
 
 	public final List<PredicateExecInfo> predicates;

@@ -17,6 +17,8 @@ public class InstructionExecInfo {
 	public static final int startIndex = -1;
 	public static final int endIndex = 9999;
 	
+	private SSAInstruction ssa = null;
+	
 	//there are two special index, -1 => start, 9999 => end
 	public InstructionExecInfo(String context, int index) {
 		Utils.checkNotNull(context);
@@ -26,9 +28,13 @@ public class InstructionExecInfo {
 	}
 	
 	public SSAInstruction getInstruction(CGNode node) {
+		if(this.ssa != null) {
+			return this.ssa;
+		}
 		Utils.checkNotNull(node);
 		Utils.checkTrue(node.getMethod().getSignature().equals(context));
-		return WALAUtils.getInstruction(node, this.index);
+		this.ssa =  WALAUtils.getInstruction(node, this.index);
+		return this.ssa;
 	}
 	
 	public boolean isStart() {
