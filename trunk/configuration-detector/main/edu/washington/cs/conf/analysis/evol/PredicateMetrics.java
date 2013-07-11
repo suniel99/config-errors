@@ -1,5 +1,7 @@
 package edu.washington.cs.conf.analysis.evol;
 
+import java.util.Comparator;
+
 import edu.washington.cs.conf.util.Utils;
 
 public class PredicateMetrics {
@@ -26,5 +28,16 @@ public class PredicateMetrics {
 	
 	public static float computeBehaviorDiff(PredicateExecInfo info1, PredicateExecInfo info2) {
 		return Math.abs(computeBehavior(info1) - computeBehavior(info2));
+	}
+	
+	public static Comparator<PredicateExecInfo> getFreqComparator() {
+		Comparator<PredicateExecInfo> comparator = new Comparator<PredicateExecInfo>() {
+			@Override
+			public int compare(PredicateExecInfo o1, PredicateExecInfo o2) {
+				return o1.evalFreqCount > o2.evalFreqCount ? 1 : 0;
+			}
+			
+		};
+		return comparator;
 	}
 }

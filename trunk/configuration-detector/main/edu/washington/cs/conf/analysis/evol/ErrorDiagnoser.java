@@ -1,7 +1,41 @@
 package edu.washington.cs.conf.analysis.evol;
 
-public class ErrorDiagnoser {
+import java.util.LinkedHashSet;
+import java.util.Set;
 
+import edu.washington.cs.conf.analysis.ConfEntity;
+import edu.washington.cs.conf.util.Utils;
+
+public class ErrorDiagnoser {
+	
+	public final ExecutionTrace oldTrace;
+	public final ExecutionTrace newTrace;
+	
+	public final CodeAnalyzer oldCoder;
+	public final CodeAnalyzer newCoder;
+	
+	private final Set<ConfEntity> oldConfigs = new LinkedHashSet<ConfEntity>();
+	private final Set<ConfEntity> newConfigs = new LinkedHashSet<ConfEntity>();
+	
+	public final IterativeSlicer oldSlicer;
+	public final IterativeSlicer newSlicer;
+	
+	private final TraceComparator comparator;
+	
+	public ErrorDiagnoser(ExecutionTrace oldTrace, ExecutionTrace newTrace,
+			CodeAnalyzer oldCoder, CodeAnalyzer newCoder) {
+		Utils.checkNotNull(oldTrace);
+		Utils.checkNotNull(newTrace);
+		Utils.checkNotNull(oldCoder);
+		Utils.checkNotNull(newCoder);
+		this.oldTrace = oldTrace;
+		this.newTrace = newTrace;
+		this.oldCoder = oldCoder;
+		this.newCoder = newCoder;
+		this.oldSlicer = new IterativeSlicer(this.oldCoder);
+		this.newSlicer = new IterativeSlicer(this.newCoder);
+		this.comparator = new TraceComparator(this.oldTrace, this.newTrace);
+	}
 }
 
 /**
@@ -46,6 +80,10 @@ public class ErrorDiagnoser {
  *   (not both side, only for the executed part)
  * 
  * - old: OK natural
+ * 
+ * what about "changing the predicate"?? e.g.,
+ * 
+ * changing  if(pred)   to  if(!pred)
  * 
  * */
 
