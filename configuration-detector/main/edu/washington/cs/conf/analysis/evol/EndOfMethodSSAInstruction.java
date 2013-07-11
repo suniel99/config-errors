@@ -8,8 +8,11 @@ import com.ibm.wala.ssa.SymbolTable;
 
 import edu.washington.cs.conf.util.Utils;
 
+/**
+ * Cannot remember where will this class be used for
+ * */
 
-
+@Deprecated
 public class EndOfMethodSSAInstruction extends SSAInstruction {
 	public final int hashCode;
 	public EndOfMethodSSAInstruction() {
