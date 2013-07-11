@@ -42,10 +42,14 @@ import com.ibm.wala.ipa.slicer.NormalStatement;
 import com.ibm.wala.ipa.slicer.SDG;
 import com.ibm.wala.ipa.slicer.Statement;
 import com.ibm.wala.properties.WalaProperties;
+import com.ibm.wala.shrikeBT.ConditionalBranchInstruction;
 import com.ibm.wala.shrikeBT.MethodData;
 import com.ibm.wala.ssa.ISSABasicBlock;
 import com.ibm.wala.ssa.SSACFG;
 import com.ibm.wala.ssa.SSACFG.BasicBlock;
+import com.ibm.wala.ssa.SSAConditionalBranchInstruction;
+import com.ibm.wala.ssa.SSAGetInstruction;
+import com.ibm.wala.ssa.SSAGotoInstruction;
 import com.ibm.wala.ssa.SSAInstruction;
 import com.ibm.wala.ssa.SymbolTable;
 import com.ibm.wala.types.ClassLoaderReference;
@@ -492,8 +496,31 @@ public class WALAUtils {
 	    
 	    public static void printAllIRs(CGNode node) {
 	    	for(SSAInstruction ssa : WALAUtils.getAllNotNullIRs(node)) {
-	    		System.out.println(ssa + ",  type: " + ssa.getClass());
+	    		System.out.println(ssa + ", type: " + ssa.getClass());
+//	    		if(ssa instanceof ConditionalBranchInstruction) {
+//	    			System.out.println(((ConditionalBranchInstruction)ssa).getTarget());
+//	    		}
 	    	}
+	    }
+	    
+	    public static void printAllIRsWithIndices(CGNode node) {
+	    	List<SSAInstruction> list = WALAUtils.getAllIRs(node);
+	    	for(int i = 0; i < list.size(); i++) {
+	    		SSAInstruction ssa = list.get(i);
+	    		System.out.println(i + ", " + ssa);
+//	    		if(ssa instanceof SSAGetInstruction) {
+//	    			System.out.println("   :" + ((SSAGetInstruction)ssa).getDeclaredField().getDeclaringClass().getName());
+//	    		}
+	    	}
+	    }
+	    
+	    public static void printBasicBlock(ISSABasicBlock bb) {
+	    	System.out.println(bb);
+    		Iterator<SSAInstruction> iter_ssa = bb.iterator();
+    		while(iter_ssa.hasNext()) {
+    			System.out.println("    " + iter_ssa.next());
+    			System.out.println();
+    		}
 	    }
 	    
 	    public static void printCFG(CGNode node) {
@@ -705,11 +732,11 @@ public class WALAUtils {
 			return GraphSlicer.prune(sdg, f);
 	    }
 	    
-	    public static Collection<Statement> extractNormalStatements(Collection<Statement> coll) {
-	    	Collection<Statement> normalStmts = new LinkedList<Statement>();
+	    public static Collection<NormalStatement> extractNormalStatements(Collection<Statement> coll) {
+	    	Collection<NormalStatement> normalStmts = new LinkedList<NormalStatement>();
 	    	for(Statement s : coll) {
 	    		if(s instanceof NormalStatement) {
-	    			normalStmts.add(s);
+	    			normalStmts.add((NormalStatement)s);
 	    		}
 	    	}
 	    	return normalStmts;
