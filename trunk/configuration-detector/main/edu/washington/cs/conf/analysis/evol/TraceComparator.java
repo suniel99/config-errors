@@ -1,6 +1,9 @@
 package edu.washington.cs.conf.analysis.evol;
 
 import java.util.List;
+import java.util.Set;
+
+import com.ibm.wala.ssa.SSAInstruction;
 
 import edu.washington.cs.conf.util.Utils;
 
@@ -26,20 +29,22 @@ public class TraceComparator {
 		this.newTrace = newTrace;
 	}
 	
-	//predicate executed in old trace, but not in the new trace
-	public List<PredicateExecutionDelta> findMissedPredicates() {
-		throw new Error();
+	public Set<PredicateExecution> getPredicateOnlyExecutedInOldVersion() {
+		return null;
 	}
 	
-	//predicate not executed in old trace, but in the new trace
-	public List<PredicateExecutionDelta> findNewExecutedPredicates() {
-		throw new Error();
+	public Set<PredicateExecution> getPredicateOnlyExecutedInNewVersion() {
+		return null;
 	}
 	
-	//executed in both executions, but not the same
-	public List<PredicateExecutionDelta> findDeviatedPredicates() {
-		throw new Error();
+	public Set<PredicateExecution> getPredicateExecutedInBothVersions() {
+		return null;
 	}
+	
+	public Set<PredicateExecution> getPredicateWithDifferentBehaviors() {
+		return null;
+	}
+	
 
 	/****************
 	 * Simple setters

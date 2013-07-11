@@ -1,11 +1,13 @@
-package edu.washington.cs.conf.analysis.evol;
+package edu.washington.cs.conf.analysis.evol.experimental;
 
 import com.ibm.wala.ipa.callgraph.CGNode;
 import com.ibm.wala.ssa.SSAInstruction;
 
+import edu.washington.cs.conf.analysis.evol.CodeAnalysisUtils;
 import edu.washington.cs.conf.util.Utils;
 import edu.washington.cs.conf.util.WALAUtils;
 
+@Deprecated
 public class PredicateExecutionDelta {
 
 	public final CGNode oldNode;

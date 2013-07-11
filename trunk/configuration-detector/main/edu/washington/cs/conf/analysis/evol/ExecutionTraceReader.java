@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
+import edu.washington.cs.conf.analysis.evol.experimental.PredicateExecInfo;
 import edu.washington.cs.conf.instrument.evol.EfficientTracer;
 import edu.washington.cs.conf.util.Files;
 import edu.washington.cs.conf.util.Utils;
