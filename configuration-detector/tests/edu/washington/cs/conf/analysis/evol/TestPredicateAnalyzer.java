@@ -2,6 +2,8 @@ package edu.washington.cs.conf.analysis.evol;
 
 import java.util.Map;
 
+import edu.washington.cs.conf.analysis.evol.experimental.PredicateExecInfo;
+import edu.washington.cs.conf.analysis.evol.experimental.PredicateExecInfoAnalyzer;
 import edu.washington.cs.conf.util.Log;
 import edu.washington.cs.conf.util.Utils;
 

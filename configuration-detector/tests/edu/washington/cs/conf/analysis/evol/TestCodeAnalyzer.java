@@ -29,7 +29,8 @@ public class TestCodeAnalyzer extends TestCase {
 		SSAInstruction ssa = coder.getInstruction(methodSig, index);
 		System.out.println(ssa);
 		
-		String allIRs = coder.getAllInstruction(methodSig);
+		CGNode matchedNode = WALAUtils.lookupMatchedCGNode(coder.getCallGraph(), methodSig);
+		String allIRs = WALAUtils.getAllIRAsString(matchedNode);
 		System.out.println(allIRs);
 		
 		//look at the node

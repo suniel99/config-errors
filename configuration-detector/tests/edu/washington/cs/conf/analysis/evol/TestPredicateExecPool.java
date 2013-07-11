@@ -5,6 +5,9 @@ import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import edu.washington.cs.conf.analysis.evol.experimental.PredicateExecInfo;
+import edu.washington.cs.conf.analysis.evol.experimental.PredicateExecPool;
+
 import junit.framework.TestCase;
 
 public class TestPredicateExecPool extends TestCase {
@@ -39,7 +42,7 @@ public class TestPredicateExecPool extends TestCase {
 		//need t sort
 		//System.out.println(p);
 		
-		Comparator<PredicateExecInfo> comparator = PredicateExecInfoComparators.getFreqComparator();
+		Comparator<PredicateExecInfo> comparator = PredicateMetrics.getFreqComparator();
 		
 		Collections.sort(pool.predicates, comparator);
 		Collections.reverse(pool.predicates);
