@@ -27,6 +27,9 @@ public class PredicateExecution {
 	private int execFreqInNew = -1;
 	private int evalResultInNew = -1;
 	
+	private int monitoredExec = -1;
+	private int monitoredEval = -1;
+	
 	public PredicateExecution(String methodSig, int index) {
 		Utils.checkNotNull(methodSig);
 		Utils.checkTrue(index >= 0);
@@ -51,17 +54,35 @@ public class PredicateExecution {
 		return this.node;
 	}
 	
-	public void setExecutionInfo(int oldFreq, int oldResult, int newFreq, int newResult) {
+	public void setOldExecutionInfo(int oldFreq, int oldResult) {
 		Utils.checkTrue(oldFreq >= 0);
 		Utils.checkTrue(oldResult >= 0);
 		Utils.checkTrue(oldFreq >= oldResult);
+		this.execFreqInOld = oldFreq;
+		this.evalResultInOld = oldResult;
+	}
+	
+	public void setNewExecutionInfo(int newFreq, int newResult) {
 		Utils.checkTrue(newFreq >= 0);
 		Utils.checkTrue(newResult >= 0);
 		Utils.checkTrue(newFreq >= newResult);
-		this.execFreqInOld = oldFreq;
-		this.evalResultInOld = oldResult;
 		this.execFreqInNew = newFreq;
 		this.evalResultInNew = newResult;
+	}
+	
+	public void setMonitoredInfo(int freq, int result) {
+		Utils.checkTrue(freq >= 0);
+		Utils.checkTrue(result >= 0);
+		this.monitoredExec = freq;
+		this.monitoredEval = result;
+	}
+	
+	public int getMonitorFreq() {
+		return this.monitoredExec;
+	}
+	
+	public int getMonitorEval() {
+		return this.monitoredEval;
 	}
 	
 	public boolean isExecutedOnOldVersion() {
@@ -76,6 +97,10 @@ public class PredicateExecution {
 			Utils.fail("should set the execution info first");
 		}
 		return this.execFreqInNew > 0;
+	}
+	
+	public boolean isBehaviorChanged() {
+		throw new Error();
 	}
 	
 	private boolean isValid() {

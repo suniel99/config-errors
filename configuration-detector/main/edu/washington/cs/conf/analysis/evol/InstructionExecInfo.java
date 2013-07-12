@@ -10,6 +10,8 @@ import edu.washington.cs.conf.util.WALAUtils;
  * The execution of each instruction
  * */
 public class InstructionExecInfo {
+	
+	public static final String SEP = "##";
 
 	public final String context; //the outer method sig
 	public final int index;
@@ -57,6 +59,10 @@ public class InstructionExecInfo {
 	
 	public String getMethodSig() {
 		return this.context;
+	}
+	
+	public String getPredicateSig() {
+		return this.getMethodSig() + SEP + this.getIndex(); 
 	}
 	
 	public int getIndex() {
