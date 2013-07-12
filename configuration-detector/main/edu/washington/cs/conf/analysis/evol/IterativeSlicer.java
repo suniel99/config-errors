@@ -36,9 +36,15 @@ public class IterativeSlicer {
 		this.finder = new SliceSeedFinder();
 	}
 	
+	public int compute_cost_by_slice(CGNode node, SSAInstruction seed,
+			Set<SSAInstruction> executedDiffSSAs) {
+		return this.iterate_slice(node, seed, executedDiffSSAs).size();
+	}
+	
 	/**
 	 * Iteratively find all instructions affected.
 	 * The seed must be a conditional branch instruction.
+	 * Collecting the affected statements
 	 * */
 	public Collection<NormalStatement> iterate_slice(CGNode node, SSAInstruction seed,
 			Set<SSAInstruction> executedDiffSSAs) {

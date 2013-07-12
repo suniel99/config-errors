@@ -144,6 +144,11 @@ public class PostDominatorFinder {
 	/**
 	 * We need to skip the phi and other instruction that is not in the node
 	 * */
+	public static SSAInstruction getImmediatePostDominatorInstruction(CGNode node, SSAInstruction ssa) {
+		ISSABasicBlock bb = node.getIR().getBasicBlockForInstruction(ssa);
+		return getImmediatePostDominatorInstruction(node, bb);
+	}
+	
 	public static SSAInstruction getImmediatePostDominatorInstruction(CGNode node, ISSABasicBlock block) {
 		Iterator<SSAInstruction> iter = block.iterator();
 		while(iter.hasNext()) {
