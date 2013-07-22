@@ -8,7 +8,9 @@ import com.ibm.wala.ssa.SSANewInstruction;
 public class SSAFilter {
 
 	/**
-	 * true means filter this instruction
+	 * True means filter this instruction. Used to compute
+	 * iterative slicing, deciding whether an instruction should
+	 * be a seed statement or not.
 	 * */
 	public static boolean filterSSAForSlicing(SSAInstruction ssa) {
 		if(ssa instanceof SSAInvokeInstruction) {
