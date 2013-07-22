@@ -8,6 +8,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 
@@ -261,8 +262,13 @@ public class PredicateInstrumenter extends AbstractInstrumenter {
 	
 	public static final String sigSep = "=>";
 	public static final String defaultSigMapFile = "./sig_map.txt";
-	public void saveSigMappings() throws IOException {
-		this.saveSigMappings(defaultSigMapFile);
+	
+	public void saveSigMappings() {
+		try {
+			this.saveSigMappings(defaultSigMapFile);
+		} catch (IOException e) {
+			throw new Error(e);
+		}
 	}
 	public void saveSigMappings(String fileName) throws IOException {
 		System.out.println("Write sig mapping...");
