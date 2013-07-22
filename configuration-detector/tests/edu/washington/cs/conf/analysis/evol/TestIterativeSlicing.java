@@ -57,7 +57,7 @@ public class TestIterativeSlicing extends TestCase {
 	private Collection<Statement> checkSeedStatements(CGNode node, int predIndex) {
 		System.out.println("------");
 		SliceSeedFinder finder = new SliceSeedFinder();
-		Set<ISSABasicBlock> executedBlocks = new HashSet<ISSABasicBlock>();
+		Set<ISSABasicBlock> executedBlocks = new HashSet<ISSABasicBlock>(WALAUtils.getAllBasicBlocks(node));
 		Collection<Statement> stmts = finder.createSliceSeedsByBBs(node, predIndex, executedBlocks);
 		System.out.println("slicing seeds: ");
 		for(Statement stmt : stmts) {
