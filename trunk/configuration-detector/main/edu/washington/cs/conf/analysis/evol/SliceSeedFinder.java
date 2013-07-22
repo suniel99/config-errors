@@ -66,9 +66,9 @@ public class SliceSeedFinder {
 		Set<ISSABasicBlock> betweenBlocks = PostDominatorFinder.findAllBasicBlocksBetween(node, startBlock);
 		System.out.println(WALAUtils.getAllBasicBlockIDList(betweenBlocks));
 		
-		//NOT enabled yet FIXME
-		//Utils.intersect(betweenBlocks, executedBlocks);
-		Set<ISSABasicBlock> intersectBlocks = betweenBlocks;
+		//FIXME may affect some test cases
+		Set<ISSABasicBlock> intersectBlocks = Utils.intersect(betweenBlocks, executedBlocks); 
+        // was = betweenBlocks;
 		intersectBlocks.remove(startBlock);
 		intersectBlocks.remove(endBlock);
 		
@@ -95,62 +95,100 @@ public class SliceSeedFinder {
 		System.out.println("After removing nested");
 		System.out.println(WALAUtils.getAllBasicBlockIDList(intersectBlocks));
 		
-		//find all instructions
-		Set<SSAInstruction> instrSet = new LinkedHashSet<SSAInstruction>();
+		//first get all instructions, then remove those the value will be used again later
+		//in the same basic block
+		Set<SSAInstruction> allSSA = new LinkedHashSet<SSAInstruction>();
 		for(ISSABasicBlock bb : intersectBlocks) {
 			Iterator<SSAInstruction> iter = bb.iterator();
 			while(iter.hasNext()) {
 				SSAInstruction instr = iter.next();
-				if(valueMayFlowOut(node, instr, instrSet)) {
-					instrSet.add(instr);
-				}
+				allSSA.add(instr);
 			}
 		}
-		
-		//find out instructions whose value may "flow out"
-		//for every thin slicing, reduce the weight half, if the slice result
-		//does not affect the predicate, ignore it.
-		Collection<Statement> stmts = new LinkedHashSet<Statement>();
-		
-		//create the statement for indexed instructions
-		for(SSAInstruction ssa : instrSet) {
-			int index = WALAUtils.getInstructionIndex(node, ssa);
-			if(index != -1) {
-				Statement s = new NormalStatement(node, index);
-				stmts.add(s);
-				System.out.println(" index: " + index + ", bb id: " + node.getIR().getBasicBlockForInstruction(ssa));
-			}
-		}
-		
 		//we also need to return the phi statements in the end block
 		Iterator<SSAPhiInstruction> iter = endBlock.iteratePhis();
 		while(iter.hasNext()) {
 			SSAPhiInstruction ssaPhiInstr = iter.next();
-			PhiStatement phiStmt = new PhiStatement(node, ssaPhiInstr);
-			stmts.add(phiStmt);
+			allSSA.add(ssaPhiInstr);
 		}
 		
+		//extract the seed statements
+		Set<SSAInstruction> seedSSA = this.extractSeedInstructions(allSSA);
+		
+		//create statement for it
+		Collection<Statement> stmts = new LinkedHashSet<Statement>();
+		for(SSAInstruction ssa : seedSSA) {
+			int index = WALAUtils.getInstructionIndex(node, ssa);
+			if(index != -1) {
+				Statement s = new NormalStatement(node, index);
+				stmts.add(s);
+			} else {
+				if(ssa instanceof SSAPhiInstruction) {
+					PhiStatement phiStmt = new PhiStatement(node, (SSAPhiInstruction)ssa);
+					stmts.add(phiStmt);
+				}
+			}
+		}
 		
 		return stmts;
 		
 	}
 	
-	//FIXME
-	public boolean valueMayFlowOut(CGNode node, SSAInstruction ssa, Set<SSAInstruction> set) {
-		//test whether the
-		if(ssa instanceof SSAPutInstruction) {
-			return true;
-		}
-		if(ssa instanceof SSAGetInstruction) {
-			return false;
-		}
-		if(ssa instanceof SSAAbstractThrowInstruction) {
-			return false;
-		}
-		if(!ssa.hasDef()) {
-			return false;
-		}
-		return true;
-	}
+//	//FIXME
+//	//Rewrite this part
+//	public boolean valueMayFlowOut(CGNode node, SSAInstruction ssa) {
+//		//test whether the
+//		if(ssa instanceof SSAPutInstruction) {
+//			return true;
+//		}
+//		if(ssa instanceof SSAGetInstruction) {
+//			return false;
+//		}
+//		if(ssa instanceof SSAAbstractThrowInstruction) {
+//			return false;
+//		}
+//		if(!ssa.hasDef()) {
+//			return false;
+//		}
+//		return true;
+//	}
 	
+	
+	public Set<SSAInstruction> extractSeedInstructions(Set<SSAInstruction> ssaSet) {
+		Set<SSAInstruction> seedSSAs = new LinkedHashSet<SSAInstruction>();
+		
+		for(SSAInstruction ssa : ssaSet) {
+			if(!ssa.hasDef()) {
+				continue;
+			}
+			if(SSAFilter.filterSSAForSlicing(ssa)) {
+				continue;
+			}
+			//only focus on statement that has def
+			int def = ssa.getDef();
+			boolean isDefUsedLater = false;
+			for(SSAInstruction anSSA : ssaSet) {
+				if(!anSSA.hasDef()) {
+					continue;
+				}
+				int useNum = anSSA.getNumberOfUses();
+				for(int i = 0; i < useNum; i++) {
+					if(anSSA.getUse(i) == def) {
+						isDefUsedLater = true;
+						break;
+					}
+				}
+				if(isDefUsedLater) {
+					break;
+				}
+			}
+			//if the output of this instruction is used later, ignore it
+			//if the output of this instruction is never used later
+			if(!isDefUsedLater) {
+				seedSSAs.add(ssa);
+			}
+		}
+		
+		return seedSSAs;
+	}
 }
