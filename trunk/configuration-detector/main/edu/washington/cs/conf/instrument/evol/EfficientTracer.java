@@ -24,7 +24,7 @@ public class EfficientTracer {
 	
 	public static String EXEC = "EXEC:";
 	public static String EVAL = "EVAL:";
-	public static String NORMAL = "NORMAL:";
+	public static String NORMAL = "NOR:";
 	
 	//use two large maps to keep track of the evaluation
 	//result of each predicate
