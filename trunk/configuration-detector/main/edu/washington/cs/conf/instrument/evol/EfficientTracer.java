@@ -11,6 +11,10 @@ import java.util.List;
 import java.util.Map;
 
 //import edu.washington.cs.conf.util.Files;
+/**
+ * Note that this class should not use classes not defined in
+ * the standard JDK, since it would be used separately.
+ * */
 
 public class EfficientTracer {
 
