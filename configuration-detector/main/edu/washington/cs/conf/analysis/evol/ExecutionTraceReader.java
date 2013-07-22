@@ -3,9 +3,11 @@ package edu.washington.cs.conf.analysis.evol;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import edu.washington.cs.conf.analysis.evol.experimental.PredicateExecInfo;
 import edu.washington.cs.conf.instrument.evol.EfficientTracer;
+import edu.washington.cs.conf.instrument.evol.TraceParser;
 import edu.washington.cs.conf.util.Files;
 import edu.washington.cs.conf.util.Utils;
 
@@ -32,6 +34,26 @@ public class ExecutionTraceReader {
 			throw new Error("Invalid: " + line);
 		}
 		return execInfo;
+	}
+	
+	public static List<InstructionExecInfo> createInstructionExecInfoList(String traceFileName,
+			String mapFileName) {
+		Map<Integer, String> sigMap = TraceParser.parseSigNumMapping(mapFileName);
+		List<InstructionExecInfo> list = new LinkedList<InstructionExecInfo>();
+		List<String> fileContent = Files.readWholeNoExp(traceFileName);
+		for(String line : fileContent) {
+			if(line.trim().isEmpty()) {
+				continue;
+			}
+			//convert the line into the real instruction
+			Integer num = Integer.parseInt(line);
+			String instrStr = sigMap.get(num);
+			Utils.checkNotNull(instrStr);
+			//the above code snippet is the only difference from the below method
+			InstructionExecInfo execInfo = createInstructionExecInfo(instrStr);
+			list.add(execInfo);
+		}
+		return list;
 	}
 	
 	public static List<InstructionExecInfo> createInstructionExecInfoList(String fileName) {
