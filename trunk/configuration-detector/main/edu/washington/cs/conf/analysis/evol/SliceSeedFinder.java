@@ -25,7 +25,6 @@ public class SliceSeedFinder {
 	/**
 	 * Given a predicate in a node, find all possible seeds.
 	 * */
-	
 	public Collection<Statement> createSliceSeedsBySSAs(CGNode node, int predIndex,
 			Set<SSAInstruction> executedSSAs) {
 		Set<ISSABasicBlock> executedBlocks = new LinkedHashSet<ISSABasicBlock>();
@@ -109,12 +108,11 @@ public class SliceSeedFinder {
 		}
 		
 		//find out instructions whose value may "flow out"
-		
 		//for every thin slicing, reduce the weight half, if the slice result
 		//does not affect the predicate, ignore it.
-		
 		Collection<Statement> stmts = new LinkedHashSet<Statement>();
 		
+		//create the statement for indexed instructions
 		for(SSAInstruction ssa : instrSet) {
 			int index = WALAUtils.getInstructionIndex(node, ssa);
 			if(index != -1) {
