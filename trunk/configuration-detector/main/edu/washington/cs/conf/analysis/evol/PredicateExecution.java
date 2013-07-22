@@ -99,8 +99,10 @@ public class PredicateExecution {
 		return this.execFreqInNew > 0;
 	}
 	
+	//FIXME the following criteria might not be perfect
 	public boolean isBehaviorChanged() {
-		throw new Error();
+		return this.execFreqInOld == this.execFreqInNew 
+		    & this.evalResultInOld == this.evalResultInNew;
 	}
 	
 	private boolean isValid() {
