@@ -1,0 +1,57 @@
+\begin{figure}[t]
+\textbf{Input}: two versions of the software: $\mathit{V_{old}}$ and $V_{new}$
+
+\quad two traces on the two software versions: $\mathit{T_{old}}$ and $T_{new}$\\
+\textbf{Output}: a ranked list of configuration options\\
+\vspace{-4mm}%
+diagnoseConfigurationErrors($\mathit{V_{old}}$, $\mathit{V_{new}}$, $\mathit{T_{old}}$, $\mathit{T_{new}}$)\\
+\begin{algorithmic}[1]
+\STATE $\mathit{weights}$ = new Map$\langle$Option, Float$\rangle$
+\STATE $\mathit{basicBlocks_{+}}$ $\leftarrow$ fetchNewCoveredBasicBlocks($T_{old}$, $T_{new}$)
+\STATE $\mathit{basicBlocks_{-}}$ $\leftarrow$ fetchUncoveredBasicBlocks($T_{old}$, $T_{new}$)
+\STATE $\mathit{basicBlocks_{\delta}}$ $\leftarrow$ fetchChangedBasicBlocks($T_{old}$, $T_{new}$)
+\STATE $\mathit{blocks_{diff}}$ $\leftarrow$ $\mathit{basicBlocks_{+}}$ $\cup$ $\mathit{basicBlocks_{-}}$ $\cup$ $\mathit{basicBlocks_{\delta}}$
+\STATE computeWeights($\mathit{weights}$, $\mathit{basicBlocks_{+}}$, $\mathit{V_{new}}$, $\mathit{T_{new}}$, $\mathit{blocks_{diff}}$)
+\STATE computeWeights($\mathit{weights}$, $\mathit{basicBlocks_{-}}$, $\mathit{V_{old}}$, $\mathit{T_{old}}$, $\mathit{blocks_{diff}}$)
+\STATE computeWeights($\mathit{weights}$, $\mathit{basicBlocks_{\delta}}$, $\mathit{V_{new}}$, $\mathit{T_{new}}$, $\mathit{blocks_{diff}}$)
+\RETURN $\mathit{weightMap}$.sortedKeys()
+\end{algorithmic}
+
+\vspace{2mm}
+
+\textbf{Input}: a software version: $\mathit{V}$, an execute trace: $\mathit{T}$, 
+
+\quad a set of basic blocks: $\mathit{basicBlocks}$, 
+
+\quad a set of different blocks: $\mathit{blocks_{diff}}$, and
+
+\quad a weight map: $\mathit{weightMap}$\\
+\textbf{Output}: None. The algorithm mutates the weight map: $\mathit{weightMap}$\\
+\vspace{-4mm}%
+computeWeights($\mathit{V}$, $\mathit{T}$, $\mathit{blocks_{diff}}$, $\mathit{weightMap}$)\\
+\begin{algorithmic}[1]
+\STATE $\mathit{worklist}$ $\leftarrow$ new Queue$\langle$BasicBlock$\rangle$
+\STATE $\mathit{worklist}$.enqueueAll($\mathit{basicBlocks}$)
+\WHILE{$\mathit{worklist}$ is not empty}
+\STATE $\mathit{basicBlock}$ $\leftarrow$ $\mathit{worklist}$.dequeue()
+\STATE $\mathit{options}$ $\leftarrow$ getAffectingOptions($\mathit{basicBlock}$, $\mathit{V}$)
+\STATE $\mathit{cost}$ $\leftarrow$ getCost($\mathit{basicBlock}$, $\mathit{T}$, $\mathit{V}$)
+\FOR{each $\mathit{option}$ in $\mathit{options}$}
+\STATE $\mathit{weightMap}$[$\mathit{options}$] $\leftarrow$ $\mathit{weightMap}$[$\mathit{options}$] + $\mathit{cost}$
+\ENDFOR
+\STATE $\mathit{updatedVars}$ $\leftarrow$ new List$\langle$Variable$\rangle$
+\IF{$\mathit{basicBlock}$ is new covered}
+\STATE $\mathit{updatedVars}$ $\leftarrow$ getUpdatedVars($\mathit{basicBlock}$)
+\ENDIF
+\FOR{each $\mathit{var}$ in $\mathit{updatedVars}$}
+\IF{$\mathit{var}$ escapes $\mathit{basicBlock}$}
+\STATE $\mathit{succBasicBlocks}$ $\leftarrow$ getAffectingBasicBlocks($\mathit{var}$)
+\STATE $\mathit{worklist}$.enqueueAll($\mathit{succBasicBlocks}$ $\cap$ $\mathit{blocks_{diff}}$)
+\ENDIF
+\ENDFOR
+\ENDWHILE
+\vspace{-2mm}
+\end{algorithmic}
+\caption{Algorithm for diagnosing configuration errors.
+}
+\end{figure}

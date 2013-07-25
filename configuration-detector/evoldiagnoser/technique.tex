@@ -1,0 +1,171 @@
+\section{Diagnosis Technique}
+\label{sec:technique}
+
+\subsection{Overview}
+
+\begin{figure*}[t]
+%\todo{In the figure, replace each occurrence of ``clicking'' by ``click''.}
+%\todo{Delete ``on Crossword'' in upper left corner.}
+%\todo{Use some kind of grouping, such as a horizontal brace, to show that UI
+%Action 1 through UI Action 3 are all associated with ``3. Random Action Execution''.}
+  \centerline{\includegraphics[scale=0.72]{workflow}}
+  \vspace*{-2.0ex}\caption {{\label{fig:overview} Workflow..
+}}
+\end{figure*}
+
+
+\subsection{Configuration-Aware Instrumentation}
+
+\subsection{Execution Profile Comparison}
+
+The goal is to attribute specific execution differences
+to one or more root causes.
+
+\subsubsection{Static Program Matching}
+
+Given a predicate, find the matched predicate in the
+new program.
+
+\input{matchalgorithm}
+
+\subsubsection{Dynamic Trace Comparison}
+
+An alternate path is any path not taken by the actual
+program execution that starts at a conditional
+branch instruction for which the branch condition
+is affected by one or more configuration options.
+
+\subsection{Root Cause Analysis}
+
+what about 
+
+if(a) \{
+
+    if(b) \{
+        //should a and b equally important
+     \}
+
+    \}
+
+\subsubsection{Configuration Option Identification}
+
+Essentially, this step answers the question:
+``how likely is it that changing a configuration
+option would have prevented this event
+from executing?''.
+\ourtool uses two heuristics: xxx.
+These heuristics cause real root causes to rank
+higher than false positives.
+
+
+\ourtool next determines why each different path
+gets executed. \ourtool associates each block
+with a set of root causes, More specifically,
+it uses thin slicing to identify a
+set of configuration options for each deviated
+execution path as the root causes.
+
+
+\ourtool propagates configuration options xx to
+other locations in the program according to the
+dependencies introduced via data and control flow.
+Rather than tracking as a binary value, \ourtool
+associates a floating-point weight (between
+zero and one) with each configuration option
+as its effects propagates in the program.
+The weight represents the strength of the causual
+relationship between the configuration option
+and the execution path.
+
+(using floating-point weight is necessary)
+
+Two configuration options are considered equal
+root causes even if one has a direct causal
+relationship to a location (e.g., the value
+in memory was read directly from the configuration value)
+and another has a nebulous relationship (e.g., 
+its effects is propagated along a long chain
+of conditional assignments).
+
+Data flow dependencies are treated to be more likely
+to lead to the root cause than control flow
+dependencies. Control flow dependencies are assumed
+to be more likely to the root cause if they occur
+later in the execution (i.e., closer to the
+deviated execution paths).
+
+Assign control flow dependence only half the weight
+of the weight introduced by data flow dependencies.
+Further, each nested conditional branches reduces
+the weight by prior branch in the nest one half.
+
+\subsubsection{Difference Summarization}
+
+\input{diagalgorithm.tex}
+
+\todo{mention implementation details about recursive, avoid double count}
+
+\ourtool uses the number of instructions in a basic
+block as a metric to characterize the execution path.
+\todo{xxx}
+
+The block's execution depends on the value of
+the configuration option, and the associated weight
+indicates the strength of the dependency.
+
+
+\ourtool also tracks implicit control flow dependencies.
+
+It assumes that control flow dependencies are more likely
+to lead to the root cause if they
+occur closer to the basic block being executed.
+
+This represents the belief that the execution of
+the basic block is affected by XXX.
+Since these are two independent probabilities:
+potentially changing either of the two options
+might cause the basic block to not have been executed.
+Thus, the weights of configuration options associated
+with a basic block need not sum to one.
+
+\ourtool determines the root cause of each divergence.
+It attributes the cost of the divergence (xxx executed
+basic block) to the associated configuration options.
+It calculates a cost for the divergence by first summing
+the costs of all basic blocks along the divergent
+path. It attributes the divergence
+to root cause configuration options by multiplying
+the cost of the divergence by the weights of the configuration
+options that are relevant to the divergence.
+the 
+
+\todo{repeatedly applying thin slicing is different than full slicing.}
+
+
+\subsection{Discussion}
+
+This paper
+
+\todo{test case passes, configuration option
+may not be thought of}
+
+\ourtool currently assumes that only one
+configuration option has an incorrect value.
+If fixing a particular configuration error
+requires changing values of two configuration options,
+then \ourtool may not identify both of them.
+
+
+Deterministic, not multithreaded
+
+Exclude libraries
+
+\noindent \textbf{Cases that \ourtool may not work well.}
+Containing lots of redundant computation that have
+little effect to the output, and such redundant computation
+is not controlled by any configuration option.
+This is highly unlikely for realistic programs.
+
+\noindent \textbf{Why not use dynamic slicing?} The code
+omission problem. Some omitted code may lead to
+other code omitted.

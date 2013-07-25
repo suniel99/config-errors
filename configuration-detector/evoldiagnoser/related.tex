@@ -1,0 +1,235 @@
+\section{Related Work}
+\label{sec:related}
+
+The most closely related work falls into
+four categories; (1) techniques for
+supporting software evolution; (2) software
+configuration error diagnosis techniques;
+(3) automated software debugging techniques;
+and (4) configuration-aware software analysis techniques.
+
+\subsection{Supporting Software Evolution}
+
+As software evolves, its behavior must be validated.
+Regression test selection and prioritization~\cite{}
+indicate which tests need to be executed for a changed
+program. When a regression test fails, developers need
+to understand its root cause~\cite{}. To address this
+problem, many error diagnosis techniques are developed for evolving
+software. For example, Delta Debugging aims to find a minimal
+subset of changes that still makes the test fail~\cite{}.
+Test minimization techniques~\cite{} simplify the failed
+test to ease comprehension for developers. Recently,
+Qi et al.~\cite{} proposed a symbolic execution-based
+error diagnosis approach to synthesize new inputs that
+differ marginally from the failing input in their
+control flow behavior, then compare the execution traces
+of the failing input and the new inputs to obtain critical
+clues to the root-cause of the failure. \todo{todo ..} 
+
+\todo{cite golden impl~\cite{Banerjee:2010:GID}}
+
+\todo{discuss some matching techniques here, as well
+as the matching algorithm}
+Program differencing techniques~\cite{} try to identify
+differences between two program versions.
+\todo{give some example here}
+Related, change impact analysis techniques, which
+are often built on top of such program differencing
+techniques, identify not only the changes, but also
+which code fragments are affcted by which
+changes. For example, a recent work~\cite{} uses symbolic
+execution to accurately capture behavioral differences
+between program versions. \todo{the semantic diff}
+\todo{comparison} Overall, the works on program
+differencing try to identify possible software regressions,
+rather than finding the root-cause of a given software regression
+\todo{need revise}
+
+Zhang et al.~\cite{} developed a technique to match entire
+execution histories of two program versions running with
+the same input~\cite{}. The execution history contains control
+flow taken, values produced, addresses referenced and
+data dependences. Significantly different than \ourtool, their
+work assumes semantically equivalent versions (e.g. optimized
+and unoptimized) while \ourtool compares different version of
+a program that can include functional changes. 
+
+Use execution traces for detecting couplings~\cite{Giroux:2006:DIF}
+
+
+\subsection{Software Configuration Error Diagnosis}
+
+Software configuration problems are time-consuming
+and frustrating to diagnose. To reduce the time and human
+effort needed to troubleshoot software misconfigurations,
+several prior research efforts have applied different techniques
+to the problem of configuration error diagnosis~\cite{Attariyan:2008:UCD, 
+Whitaker:2004:CDS, Wang:2004:AMT,
+Attariyan:2010:ACT, Rabkin:2011:PPC, keller:conferr}.
+Chronus~\cite{Whitaker:2004:CDS} relies on a user-provided
+testing oracle to check the behavior of the system, and uses
+virtual machine checkpoint and binary search to find the
+point in time where the program behavior
+switched from correct to incorrect. AutoBash~\cite{Su:2007:AIC}
+fixes a misconfiguration by using
+OS-level speculative execution to try possible
+configurations, examine their effects, and roll them back when necessary.
+PeerPressure~\cite{Wang:2004:AMT} 
+uses statistical methods to compare
+configuration states in the Windows Registry on different machines.
+When a registry entry value on a machine exhibiting erroneous behavior differs
+from the value usually chosen by other machines, PeerPressure
+flags the value as a potential error. More recently, ConfAid~\cite{Attariyan:2010:ACT}
+uses dynamic taint analysis to diagnose configuration problems 
+by monitoring causality within the program binary as it executes.
+\todo{discuss X-ray here}
+ConfAnalyzer~\cite{Rabkin:2011:PPC} uses dynamic information flow analysis to precompute
+possible configuration error diagnoses for every possible crashing point
+in a program. 
+
+Our technique is significantly different from the other approaches.
+First, most previous approaches focus exclusively on a single software
+version and diagnose configuration errors that lead to a crash or
+assertion failure~\cite{Attariyan:2008:UCD, Whitaker:2004:CDS, 
+Attariyan:2010:ACT, Rabkin:2011:PPC}.
+\todo{multiple versions}
+Second, several approaches~\cite{Attariyan:2010:ACT, Whitaker:2004:CDS}
+assume the existence of a testing oracle that can 
+check whether the software functions correctly. However,
+such oracles are often
+absent in practice or may not apply to the specific configuration problem.
+A typical software user should not be expected, to invest the substantial
+time and effort to create an oracle.
+By contrast, our technique eliminates this assumption by
+\todo{comparing traces}
+Third, approaches like PeerPressure~\cite{Wang:2004:AMT}
+and \todo{xiong's paper} benefit from
+the known schema of the Windows Registry and
+\todo{xx}, but cannot detect configuration errors
+that lie outside these specific domains. Our technique
+of analyzing the execution traces is more general.
+
+In our previous work~\cite{}, we proposed \prevtool, an automated
+software configuration error diagnosis tool. \ourtool
+differs from \prevtool in three key aspects.
+First, \todo{versions ...}. Second, \todo{no assumption}.
+Third, \todo{algorithm differences}
+
+\todo{cite some re-configuration papers, see bib}
+
+
+\subsection{Automated Debugging}
+
+Over the years, researchers have proposed
+increasingly sophisticated debugging techniques,
+so the body of this category is broad.
+For the sake of space, we focus on representative techniques
+that are most related to \ourtool.
+
+Program slicing~\cite{} is a
+well-known technique to determine which statements and
+inputs could affect a pariticular program variable.
+
+\todo{cite differential slicing, dual slicing, semantic trace
+analysis, tao wang}
+different executions with different inputs.
+
+\todo{cite differential static analysis from MSR ppl, change contract,
+differential symbolic exe, robbilard's work of coupling changes}
+
+\todo{discuss dual slicing, trace causality comparison}
+
+\todo{discuss why such techniques cannot be used}
+
+\todo{cite bugex}
+
+Formula-based debugging techniques use static and
+dynamic analyses to transform programs and program executions
+into formulas and manipulate these formulas to locate suspicious
+statements. BugAssist~\cite{} transforms a program, an input that
+makes the program fail, and the negation of the failing assertion
+for that input into a formula that consists of clauses in
+conjunctive normal form. It then treats the satisfiability of
+the formula as a MAX-SAT problem ~\cite{},
+so as to identify a subset of clauses
+that, if removed, make the formula satisfiable. Finally, it reports
+the code corresponding to these clauses as a potential cause of the
+failure. A similar approach, Error Invariants~\cite{},
+transforms a single failing trace, rather than a complete program,
+into a formula. This technique leverages interpolants to identify
+the points in the
+failing trace where the state is modified in a way that affects the 
+outcome of the execution. It then reports the statements in these
+points as potential causes of the failure. One limitation of this
+technique is that it cannot handle control flow related faults because it
+does not encode control flow information in the formula.
+\todo{comparison for differences}
+ Formula based approaches can identify potential causes precisely
+ and in a principled way, but they rely on an
+extremely expensive analysis that prevents these techniques from
+being applicable in practice, at least in their current formulation.
+
+
+
+Statistical algorithms have been applied to the automated
+debugging domain. \todo{cite tarantula}
+The CBI project~\cite{} analyzes executions
+collected from deployed software to isolate software failure
+causes. Significantly different than \ourtool, CBI correlates
+a predicate's evaluation result (either true or false) rather
+than its true ratio and execution frequency with the observed
+behaviors. In addition, CBI identifies likely buggy statements as
+its final output, while ConfDiagnoser identifies the
+behaviorally-deviated program predicates and links the undesired behavior
+to specific configuration options. \todo{needs revise}
+\todo{cannot be applied to our cases}
+\todo{integrate with trace synthesisi work}
+
+
+\subsection{Configuration-Aware Software Analysis}
+
+Empirical studies show that configuration errors are pervasive, costly,
+and time-consuming to diagnose~\cite{Yin:2011:ESC, Hubaux:2012}.
+\todo{say the empirical study results of this paper.}
+To alleviate this problem, researchers have designed various
+software analysis techniques to improve configuration
+management~\cite{Garvin:2011} and understand and test
+the behavior of a configurable software
+system~\cite{Garvin:2011, Qu:2008:CRT}.
+For example, Garvin et al.~\cite{Garvin:2011} show how to
+use historical data to avoid system failures during reconfiguration.
+However, their work aims to reduce the burden of
+configuration management and prevent certain errors from happening,
+while our technique is designed to diagnose an exhibited problem.
+Qu et al.~\cite{Qu:2008:CRT} proposed a combinatorial interaction
+testing technique to model and generate configuration samples for
+use in regression testing. Compared to \ourtool, those techniques
+can be used to find new errors in
+a configurable software system earlier, but cannot
+identify the root cause of a revealed configuration error.
+\todo{differences} By contrast, our technique is designed
+to diagnose an exhibited error.
+\todo{none of them aim to find regression}
+
+cite SPLat paper at FSE'13
+
+
+cite papers~\cite{Huang:2013:CRL, Thummalapenta:2010:ESM, Xing:2005:UAO, r2fix}
+papers~\cite{Kim:2013, Jin:2012:BRF,xray,Nguyen:2010:RBF,Dig:2006:ADR,
+Apel:2009:FLA, Shang:2013:ADB, rangefix, Kamiya:2002:CMT, Staats:2011:PTO}
+papers~\cite{Mostafa:2009:TPA}
+
+cite papers~\cite{Grechanik:2009:MEG, Fischer:2005:SET, publication-8111}
+production line, configuration modelling~\cite{Acher:2012:SCF}
+
+cite evolution~\cite{Bhattacharya:2012:GAP, Nguyen:2010:GAA}
+
+use history for bug predication~\cite{Nagappan:2006:UHI}
+
+software product line~\cite{Bodden:2013:SLS, Kang:2005:FRL, Mende:2008:SGM, Kruger:2005:SAE}
+
+configuration~\cite{Denaro:Self-Test:TACOS:2003, Cooray:2010:RRD, Barreiros:2009:MRC, TerBeek:2011:GCE}
+
+study~\cite{Rabiser:2012:QSU}
+cite tarantula~\cite{Jones:2002}

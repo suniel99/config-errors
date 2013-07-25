@@ -1,0 +1,97 @@
+
+Difference summarization first attributes XXX costs
+such as xxx and xxx to xxx. Then, it uses xxx to
+associate each xxx with a set of configuration options.
+The cost of each xxx is assigned to potential
+root cause configuration options by the relative
+probability that the particular root cause
+led to the execution of that predicate. Finally,
+the per-cause costs for xxx in the program execution are
+summed together. The end result is a ranked
+list of configuration options ordered by
+their likelihood of being the root cause.
+
+Difference summarization identifies branches where the
+desired execution and the undesired execution diverged.
+It assigns a XXX cost to each path taken from the branch,
+then uses XXXX analysis to determine why the
+two executions diverged at that point. It attributes
+the difference in XXX costs between the
+two executions to the identified root causes according to their
+relative likelihood. The costs of all such divergences are
+summed. The output of \ourtool is a set of reasons of why
+the output of two requests differ, along with a
+relative impact for each reason.
+
+
+To find behavioral differences, \ourtool first compares the collected
+execution profiles using xxx. \ourtool then classifies these
+differences into categories that distinguish a likely
+reason behind the differences: undesired behavioral changes,
+indirect code modification effect,
+desired behavioral changes. Finally, 
+
+
+\ourtool automatically tracks behavioral differences between two
+versions to provide users with feedback as to how to re-configure
+the software.
+
+
+The goal of this work is to reduce the burden
+of diagnosing software errors caused by software evolution. 
+In particular, we anayze the applicability of
+\textit{dynamic trace analysis} for diagnosing configuration
+errors.
+Even when a software system outputs an error message
+as a configuration error occurs,
+it is often cryptic or misleading~\cite{}. Users may not
+even think of configuration as a cause of their problem.
+
+small configuration errors can lead to hard-to-diagnose
+undesired behaviors. 
+
+The goal of\ourtool is to improve the configuration error diagnosis
+process by automating it as much as possible.
+
+when something goes wrong,
+diagnosing a configuration problem can be both
+time-consuming and furstrating.
+
+Software evolves through the introduction of new features, bug fixes,
+performance optimizations, and refactorings. 
+
+For example, software
+patches can break existing functionality~\cite{}.
+Seemsly unrelated library upgradation can
+\todo{xxx} -- for example, by corrupting Windows
+registry keys or shared configuration options.
+Changes to security  \todo{xxx}
+
+%\todo{such evolution may fail the original configuration,
+%and require reconfiguration}
+
+
+To help users troubleshoot configuration problems caused
+by software evolution, this paper presents
+a technique (and its tool implementation, called
+\ourtool) to identify the root cause of a configuration
+error between two software versions.  \ourtool takes as input
+two versions of a configurable software,
+an input, and a configuration. Using the same configuration,
+the input produces \textit{desired} behavior
+on the old version but exhibits \textit{undesired} behavior on the new version.
+\ourtool automatically diagnoses such regression
+error, and outputs a single configuration option
+that can be changed to produce desired behavior on the
+new software version.
+
+\todo{xx} Given two executions and some observed differences between them,
+\ourtool reasons about the causes of such differences -- a single configuration
+\todo{xx}. \ourtool does so by \todo{xx}. it makes a number
+of key advances: it properly handles xxx (changes); it also leverages
+xx ().
+
+\todo{xx} \ourtool detects configuration options whose values
+that may contribute to the behavioral differences
+between two versions.
+

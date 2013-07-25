@@ -1,0 +1,33 @@
+\begin{abstract}
+
+
+Modern software often expose
+a wide range of configuration options for users to
+customize its behaviors. During software evolution,
+changes can introduce unexpected behavioral differences, 
+making the software does not behave as desired.
+Often, users need to re-configure the software,
+i.e., changing values of certain configuration options,
+when using a new software version.
+
+This paper presents a technique (and its tool implementation,
+called \ourtool) to help software users
+troubleshoot configuration errors caused by software evolution, 
+\ourtool uses dynamic profiling, execution trace
+comparison, and static analysis to link the undesired
+behavior to its root cause -- a single configuration option
+whose value can be changed to produce desired behavior on the new
+software version.
+
+We evaluated \ourtool on \errornum configuration errors
+from \subjnum configurable software systems written in Java.
+On average, the root cause was \ourtool's XXX-ranked
+suggestion; in XXX out of XXX errors, the root cause was
+one of the top 3 suggestions; and \todo{when ...}, the root cause was the first suggestion.
+Overall, \ourtool produced significantly better results
+than XXX alternative approaches.
+\ourtool runs in a only a few minutes, making it an attractive
+alternative to manual debugging.
+
+\todo{data is missing above}
+\end{abstract}
