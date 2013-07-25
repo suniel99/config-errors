@@ -1,0 +1,49 @@
+\begin{figure}[t]
+\textbf{Input}: two methods from two software versions: $\mathit{m_{old}}$ and $m_{new}$,
+
+\quad a similarity threshold $\mathit{s}$, and a maximum lookahead value $\mathit{lh}$\\
+\textbf{Output}: matched statements between old and new versions.
+\vspace{-4mm}%
+matchStatements($\mathit{m_{old}}$, $\mathit{m_{new}}$, $\mathit{s}$, $\mathit{lh}$)\\
+\begin{algorithmic}[1]
+\STATE $\mathit{matchedStmts}$ $\leftarrow$ new Map$\langle$Stmt, Stmt$\rangle$
+\STATE $\mathit{cfg_{old}}$ $\leftarrow$ constructControlFlowGraph($\mathit{m_{old}}$)
+\STATE $\mathit{cfg_{new}}$ $\leftarrow$ constructControlFlowGraph($\mathit{m_{new}}$)
+\STATE $\mathit{stack}$ $\leftarrow$ new Stack$\langle$Stmt, Stmt$\rangle$
+\STATE $\mathit{stack}$.push($\mathit{cfg_{old}}$.$\mathit{entry}$, $\mathit{cfg_{new}}$.$\mathit{entry}$)
+\WHILE{$\mathit{stack}$ is not empty}
+\STATE $\langle$$\mathit{stmt_{old}}$, $\mathit{stmt_{new}}$$\rangle$ $\leftarrow$ $\mathit{stack}$.pop()
+\IF{$\mathit{stmt_{old}}$ or $\mathit{stmt_{new}}$ is matched}
+\STATE \textbf{continue}
+\ENDIF
+\IF{$\mathit{stmt_{old}}$ = $\mathit{stmt_{new}}$}
+\STATE $\mathit{matchedStmts}$[$\mathit{stmt_{old}}$] = $\mathit{stmt_{new}}$
+\ELSE
+\STATE $L_{old}$ $\leftarrow$ \{$\mathit{stmt_{old}}$\}, $L_{new}$ $\leftarrow$ \{$\mathit{stmt_{new}}$\}
+\FOR{$\mathit{d}$ = 0; $\mathit{d}$ < $\mathit{lh}$; d++}
+\STATE $L_{old}$ $\leftarrow$ succ(\{$\mathit{L_{old}}$\}), $L_{new}$ $\leftarrow$ succ(\{$\mathit{L_{new}}$\})
+\FOR{each $\mathit{s_{old}}$ in $\mathit{L_{old}}$}
+\FOR{each $\mathit{s_{new}}$ in $\mathit{L_{new}}$}
+\IF{$\mathit{s_{old}}$ = $\mathit{s_{new}}$}
+\STATE \textbf{break}
+\ENDIF
+\ENDFOR
+\ENDFOR
+\ENDFOR
+\ENDIF
+\IF{matched}
+\STATE stack.push(matched)
+\FOR{each xxx}
+\FOR{each xxx}
+\STATE stack.push()
+\ENDFOR{each}
+\ENDFOR{each}
+\ENDIF
+\ENDWHILE
+\RETURN $\mathit{matchedStmts}$
+\end{algorithmic}
+\label{fig:matching}
+\vspace{-4mm}
+\caption{Algorithm for matching two program versions.
+}
+\end{figure}
