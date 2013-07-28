@@ -1,87 +1,26 @@
 \section{Configuration Changes in\\ Software Evolution}
 \label{sec:study}
 
-This section describes an empirical study 
-to investigate whether and how configuration changes
-arise during software evolution.
-\todo{say the object is whether such changes
-often exist in practice?}
+This section describes a preliminary study to investigate whether
+and how configuration changes arise during software evolution.
+%\todo{say the object is whether such changes
+%often exist in practice?}
+\todo{perphas the study purpose should be toned down a bit. donot
+claim too much. just say whether configuration changes are frequent or not.}
 
-Desipte a rich body of configuration analysis work
-in the softare engineering community~\cite{},
+In the software engineering literature, desipte a rich body of
+software change analysis work, 
 software configuration changes across multiple
 versions are less studied.
-Knowing how configuration options evolve in practice
+Knowing whether and how configuration options evolve in practice
 can be beneficial for both software developers
 and tool designers. For example, knowing what types
 of configuration changes are common in practice
 can help developers improve the current designs and
 implementations to create better systems or documentations
-; for tool builders, so that they
-can improve their tools to match reality (e.g.,
-by finding the types of errors that plague
-existing systems).
-
-
-
-
-\subsection{Subject Programs and Study Methodology}
-
-We investigate how software configuration evolves in
-\studysubjnum open-source configurable systems, as listed
-in Table~\ref{tab:subjects}. The \studysubjnum contains
-three C/C++ software and six Java software.
-MySQL~\cite{}  is a popular relational database management
-system. Apache~\cite{} is a HTTP server which has acquired
-the largest share on the internet since 1996. FireFox~\cite{}
-is an open-source browser available on multiple platforms.
-Randoop~\cite{} is an automated test generator for Java
-programs. Weka~\cite{} is a toolkit that implements machine
-learning algorithms. JChord~\cite{} is a program analysis platform that
-enables users to design, implement, and evaluate static and
-dynamic program analyses for Java. Synoptic~\cite{} mines a
-finite state machine model representation of a system from
-logs. JMeter~\cite{} is a tool to load test functional
-behavior and measure performance.
-Each program is highly configurable, and has evolved over
-a long period of time (xx--xx years).
-
-
-In comparison to software bugs that have well-maintained
-bug databases and have benefits from many
-software bug characteristic studies~\cite{},
-a configuration evolution study is much harder, mainly
-because historical misconfigurations (due
-to configuration changes) usually have not been
-recorded rigorously in database. Usually, when
-regression tests pass, developers may treat the
-software behaviors have been validated. Therefore,
-the description of software misconfigurations is user-driven,
-the ``fixes'' may be recorded simply as pointers
-to manuals and best-practice documents.
-
-In our study, rather than searching bug repositories,
-we manually examine the revision history of the subject programs
-in the past XXX years, and searched for the related
-keywords such as ``Added/Removed/Updated option'' in
-in commit messages and in the change logs,
-which records developers' activities
-during software evolution. For each match,
-we read the description of the change,
-and the ``diff'' of the original file and the
-changed file. This information indicated
-to us whether the change affects how the
-software should be configured to produce
-the original behavior. We identifies the
-changed code and its affected configuration options
-manually.
-
-It is worth noting that our methodology
-is by no means complete. It only studies
-changes that directly change options \todo{xxx}.
-It is entirely possibly, changes like
-modifying code would lead to reconfigure
-the software\todo{xxx}
+; for tool builders, so that they can improve their tools
+to match reality (e.g., by knowing the types of configuration
+changes that occur most frequently).
 
 
 \begin{table}[t]
@@ -89,43 +28,31 @@ the software\todo{xxx}
 \centering
 \small{
 \setlength{\tabcolsep}{.40\tabcolsep}
-\begin{tabular}{|l||c|c|c|c|c|c|}
+\begin{tabular}{|l||c|c|c|c|}
 \hline
- Program & Versions & Years & LOC & $\Delta$LOC & \#Options & Lang\\
+ Program & Versions & Years & LOC (latest version)  & Language\\
  \hline
  \hline
- MySQL & 5.1, 5.5, 5.6, 5.7 & 3 && & &C/C++\\
- Apache& 2.0, 2.2, 2.4 & 3 && & &C/C++\\
- FireFox& 7.0--22.0 (16 versions) & 3 && & &C/C++\\
- Randoop & 1.2.1, 1.3.2, 1.3.3 & 6 &  &  &  &Java\\
- Weka & 3.4, 3.5, 3.6, 3.7  & 2  & && &Java\\
- JChord & 1.0, 2.0, 2.1 &  4 & & & &Java\\
- Synoptic & 0.04, 0.05, 0.1 & 2 & & & &Java\\
- JMeter & 2.6, 2.7, 2.8, 2.9& 2 & & & &Java\\
+ MySQL & 5.1, 5.5, 5.6, 5.7 & 3 && C/C++\\
+ Apache& 2.0, 2.2, 2.4 & 3  & &C/C++\\
+ FireFox& 7.0--22.0 (16 versions) & 3  & &C/C++\\
+ Randoop & 1.2.1, 1.3.2, 1.3.3 & 6 &    &Java\\
+ Weka & 3.4, 3.5, 3.6, 3.7  & 2  &  &Java\\
+ JChord & 1.0, 2.0, 2.1 &  4 &   &Java\\
+ Synoptic & 0.04, 0.05, 0.1 & 2   & &Java\\
+ JMeter & 2.6, 2.7, 2.8, 2.9& 2   & &Java\\
 \hline
 \end{tabular}
 }
 \vspace{-2mm}
 \Caption{{\label{tab:subjects} The open-source
 software systems we studied and their characteristics.
-Column ``LOC'' is the number of lines of code in
-the latest version, as counted by UNIX diff. Column ``Years'' is the
-active development period
-for the selected versions. Column ``$\Delta$LOC''
-is the number of changed lines of code between
-the earlies and latest versions.
-Column ``\#Options'' is the number of configuration
-options supported in the latest version.
-Column ``Lang'' shows the major programming
-language used in development.
-\todo{remove the options}
+Column ``Years'' is the active development period
+for the selected versions. 
 }
 }
 \end{table}
 
-
-
-\subsection{Configuration Changes}
 
 \begin{table}[t]
 \vspace{1mm}
@@ -190,16 +117,16 @@ study from the subject programs in Table~\ref{tab:subjects}.}
 }
 \end{table}
 
-
-
 \begin{table}[t]
 \vspace{1mm}
 \centering
 \small{
 \setlength{\tabcolsep}{.50\tabcolsep}
-\begin{tabular}{|l||c|c|c|c|c|}
+\begin{tabular}{|l|c|c|c|c|}
 \hline
- Program & Bugs & Renaming & Features & Reliability \\
+ Program & \multicolumn{4}{|c|}{\textbf{\#Changed Configuration Options}} \\
+ \cline{2-5}
+ & Bugs & Renaming & Features & Reliability \\
  \hline
  \hline
  MySQL & 0 & 15 & 55 & 3 \\
@@ -213,7 +140,7 @@ study from the subject programs in Table~\ref{tab:subjects}.}
  JMeter & 7  & 0 & 18 & 7 \\
 \hline
 \hline
- Total & 36 & 24 & 306 & 33 \\
+ Total & 36 & 24 & 301 & 33 \\
 \hline
 \end{tabular}
 }
@@ -222,12 +149,70 @@ study from the subject programs in Table~\ref{tab:subjects}.}
 each type (Table~\ref{tab:conftypes}).}}
 \end{table}
 
+
+\subsection{Subject Programs and Study Methodology}
+
+We investigate how software configuration evolves in
+\studysubjnum open-source configurable systems, as listed
+in Table~\ref{tab:subjects}. The \studysubjnum contains
+three C/C++ software and six Java software.
+MySQL~\cite{}  is a popular relational database management
+system. Apache~\cite{} is a HTTP server which has acquired
+the largest share on the internet since 1996. FireFox~\cite{}
+is an open-source browser available on multiple platforms.
+Randoop~\cite{} is an automated test generator for Java
+programs. Weka~\cite{} is a toolkit that implements machine
+learning algorithms. JChord~\cite{} is a program analysis platform that
+enables users to design, implement, and evaluate static and
+dynamic program analyses for Java. Synoptic~\cite{} mines a
+finite state machine model representation of a system from
+logs. JMeter~\cite{} is a tool to load test functional
+behavior and measure performance.
+Each program is highly configurable, and has evolved over
+a long period of time (\todo{xx--xx} years).
+
+
+In comparison to software bugs that have well-maintained
+bug databases and have benefits from many
+software bug characteristic studies~\cite{},
+a configuration evolution study is much harder, mainly
+because historical misconfigurations (due
+to configuration changes) usually have not been
+recorded rigorously in database. Usually, when
+regression tests pass, developers may treat the
+software behaviors have been validated. Therefore,
+the description of software misconfigurations is user-driven,
+the ``fixes'' may be recorded simply as pointers
+to manuals and best-practice documents.
+
+In our study, rather than searching bug repositories,
+we manually examine the revision history of the subject programs
+in the past XXX years, and searched for the related
+keywords such as ``Added/Removed/Updated option'' in
+in commit messages and in the change logs,
+which records developers' activities
+during software evolution. For each match,
+we read the description of the change,
+and the ``diff'' of the original file and the
+changed file. This information indicated
+to us whether the change affects how the
+software should be configured to produce
+the original behavior. We identifies the
+changed code and its affected configuration options
+manually.
+
+The identified configuration changes by our methodology is certainly not complete.
+Our methodology only studies changes that are directly made to options \todo{xxx}.
+However, it is entirely possible that other
+changes to the core logic code would also
+ lead to reconfigure the software\todo{rephrase above}
+
+
+\subsection{Configuration Changes}
+
 Tables~\ref{tab:options} and~\ref{tab:categories}
 summarize the study results.
 
-The following are options obsolete and have been removed in
-MySQL 5.5. Where alternatives are shown, applications should
-be updated to use them
 
 \vspace{1mm}
 \noindent\textbf{Characteristics}
@@ -242,6 +227,11 @@ Feature related changes are the largest group across
 all subject programs. These changes include
 adding new configuration options to control \todo{xx}.
 \todo{normal examples}
+
+The following are options obsolete and have been removed in
+MySQL 5.5. Where alternatives are shown, applications should
+be updated to use them
+\todo{need rephrase}
 
 Other three categories of canges occur as well, although
 with less frequency than the feature-related changes.
@@ -271,23 +261,23 @@ to identify a more complete set of
 configuration changes.
 
 
-\todo{see ari's paper}
-
 \subsection{Summary}
 
-Our empirical study indicates that: (1) configuration
+Our study has three chief findings:
+\textbf{(1)} configuration
 changes arise frequently during software evolution: for
-all subject programs we have studied, every release
-includes configuration changes. (2) most configuration
+all subject programs we have studied, every version
+includes configuration changes. \textbf{(2)} most configuration
 changes fall into a small number of types, among
 which \todo{most of them are feature related.}
-and (3) a large number of
+and \textbf{(3)} a large number of
 configuration changes may affect a program's
 behaviors. Users must properly reconfigure a
 program in order to maintain its original behavior.
+\todo{rephrase above. the purpose is to
+illustrate configuration change is prevalent}
 
-\todo{show percentage?}
-
-
-\textbf{Implications.} If a user ignore the changes, even if the tests
-all pass. User-driven
+Our study also indicates that configuration errors
+can be frequent... \todo{xxx}
+%\textbf{Implications.} If a user ignore the changes, even if the tests
+%all pass. User-driven

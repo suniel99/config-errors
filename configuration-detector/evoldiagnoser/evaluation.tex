@@ -2,40 +2,52 @@
 \section{Evaluation}
 \label{sec:evaluation}
 
-\subsection{Subject Programs}
+We evaluated XX aspects of \ourtool's effectiveness, answering
+the following research questions:
 
+\begin{enumerate}
+\item How accurate is \ourtool in diagnosing configuration errors
+caused by software evolution? That is, what is the rank of the
+actual root cause configuration option in \ourtool's output (Section~\ref{sec:accuracy})?
 
+\item How long does it take for \ourtool to diagnose
+a configuration error (Section~\ref{sec:timecost})?
 
+\item How does \ourtool's effectiveness compare to
+existing approaches (Section~\ref{sec:existing})?
 
-\subsubsection{Configuration Problems}
+\item How does \ourtool's effectiveness compare to
+an alternative approach based on \todo{describe it} (Section~\ref{sec:alternative})?
+
+\end{enumerate}
+
+\subsection{Subject Programs and Configuration Errors}
+
 
 \subsection{Evaluation Procedure}
 
 \subsection{Results}
 
 \subsubsection{Diagnosis Accuracy}
+\label{sec:accuracy}
 
 \subsubsection{Performance of \ourtool}
+\label{sec:timecost}
 
-\subsubsection{Comparison with Existing Techniques}
+\subsubsection{Comparison with Existing Approaches}
+\label{sec:existing}
 
-\subsubsection{Evaluation of Two Design Choices}
+\todo{want to compare with ConfDiagnoser and ConfAnalyzer}
+
+\subsubsection{Comparison with Alternative Approaches}
+\label{sec:alternative}
+
+\todo{use ConfDiagnoser's ranking, full slicing, no iterative slicing}
 
 \subsection{Discussion}
 
-Software configuration lies in the gray zone between
-the software developers of software end-users.
-The responsibility for creating correct configurations
-lies with both parties; the developer should create
-intuitive configuration logic, build logic that detects
-errors, and convey configuration knowledge to users
-effectively; \todo{evolve} the end-user should imbibe the
-knowledge and manage cross-version configurations.
-This shared responsibility is non-trivial to efficiently
-achieve. For example, there is no obviously ``correct'' way to
-build configuration logic; also, unlike fixing a bug once,
-every software user has to be informed on the right way to
-configure the system. Perhaps as a result, misconfigurations
-have been one of the dominant causes of system issues and
-is likely to continue so.
+\noindent \textbf{\textit{Threats to validity.}}
 
+\vspace{1mm}
+
+\noindent \textbf{\textit{Experimental conclusions.}}
