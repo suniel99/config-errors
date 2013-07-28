@@ -17,15 +17,15 @@ program.  Program differencing techniques~\cite{Giroux:2006:DIF, Xing:2005:UAO, 
 \todo{semdiff}
 try to identify changes between two program versions,
 and present the change list to developers for inspection.
-Related, change impact analysis techniques, which
+Related, change impact analysis techniques~\cite{}, which
 are often built on top of program differencing
 techniques, identify not only the changes, but also
-which code fragments are affcted by which
-changes. For example, a recent work~\cite{} uses symbolic
-execution to accurately capture behavioral differences
-between program versions. Different than \ourtool,
-the work on change analysis identifies possible
-software regressions, but is not applicable to
+which code fragments are affcted by which changes. 
+%For example, a recent work~\cite{} uses symbolic
+%execution to accurately capture behavioral differences
+%between program versions.
+Different than \ourtool, these techniques can identify possible
+software regressions, but are not applicable to
 identifying the root-cause of a given software regression.
 \todo{discuss the matching algorithm here}
 \todo{check recent MSR papers on differential analysis}
@@ -55,19 +55,19 @@ differ marginally from the failing input in their
 control flow behavior, then compare the execution traces
 of the failing input and the new inputs to obtain critical
 clues to the root-cause of the failure. \ourtool
-is significantly different from the other approaches.
+is significantly different from these approaches.
 First, \ourtool targets software configuration errors
 casued by evolution rather than a regression bug.
 As we discussed in introduction, configuration errors are
-often user driven and often do not indicate problems in the source
+often user driven and do not indicate problems in the source
 code. Second, most of the existing techniques identify
 \textit{what} causes the regression error but leave
 the more challenging question of \textit{how} to
 fix the error unanswered. By contrast, \ourtool
 explicitly guides users to suspicious configuration options.
 Third, most of the regression error diagnosis techniques
-requires users to provide a testing oracle, while \ourtool
-eliminates this assumption.
+require users to provide a testing oracle, while \ourtool
+eliminates this assumption. \todo{need a few sentences to explain}
 
 \todo{check related work of using history for
 bug predication~\cite{Nagappan:2006:UHI}
@@ -121,7 +121,7 @@ A typical software user should not be expected, to invest the substantial
 time and effort to create an oracle.
 By contrast, our technique eliminates this assumption by
 \todo{comparing traces} Third, approaches like
-PeerPressure~\cite{Wang:2004:AMT} and \todo{xiong's paper} benefit from
+PeerPressure~\cite{Wang:2004:AMT} and RangeFixer~\cite{} benefit from
 the known schema of the Windows Registry and
 \todo{xx}, but cannot detect configuration errors
 that lie outside these specific domains. Our technique
@@ -177,5 +177,5 @@ configurations~\cite{Denaro:Self-Test:TACOS:2003, Acher:2012:SCF}
 managing configurations~\cite{Rabiser:2012:QSU, Cooray:2010:RRD, Barreiros:2009:MRC, TerBeek:2011:GCE},
 and selecting good configurations~\cite{reconfig}
 have been developed. However, none of the existing techniques
-can be directly used to localize root causes of a configuration error.
+can be directly applied to localize root causes of a configuration error.
 \todo{more discussion above}

@@ -9,12 +9,24 @@
 %\todo{Use some kind of grouping, such as a horizontal brace, to show that UI
 %Action 1 through UI Action 3 are all associated with ``3. Random Action Execution''.}
   \centerline{\includegraphics[scale=0.72]{workflow}}
-  \vspace*{-2.0ex}\caption {{\label{fig:overview} Workflow..
+  \vspace*{-2ex}\caption {{\label{fig:overview} The workflow of
+  our \ourtool technique. The instrumented program versions and
+  two execution profiles are produced by the step in Section~\ref{sec:profiling}. 
+  The ``Execution Trace Comparison'' step is described in
+  Section~\ref{sec:comparison}. The ``Root Cause Analysis'' step
+  is described in Section~\ref{sec:rootcause}.
 }}
 \end{figure*}
 
 
-\subsection{Configuration-Aware Instrumentation}
+\subsection{Instrumentation and Profiling}
+\label{sec:profiling}
+
+\subsection{Execution Trace Comparison}
+\label{sec:comparison}
+
+\subsection{Execution Trace Comparison}
+\label{sec:rootcause}
 
 \subsection{Execution Profile Comparison}
 
@@ -143,6 +155,23 @@ the
 
 
 \subsection{Discussion}
+
+\noindent \textbf{\textit{Fixing configuration errors vs. Fixing software bugs.}}
+It appears that software configuration lies in the gray zone between
+the software developers of software users.
+The responsibility for creating correct configurations
+lies with both parties; the developer should create
+intuitive configuration logic, build logic that detects
+errors, and convey configuration knowledge to users
+effectively; \todo{evolve} the end-user should imbibe the
+knowledge and manage cross-version configurations.
+This shared responsibility is non-trivial to efficiently
+achieve. For example, there is no obviously ``correct'' way to
+build configuration logic; also, unlike fixing a bug once,
+every software user has to be informed on the right way to
+configure the system. Perhaps as a result, misconfigurations
+have been one of the dominant causes of system issues and
+is likely to continue so.
 
 This paper
 
