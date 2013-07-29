@@ -1,160 +1,248 @@
+
 \section{Diagnosis Technique}
 \label{sec:technique}
 
+In \ourtool, we model a configuration as a set of key-value
+pairs, where the keys are strings and the values have
+arbitrary type. As an example, in the error-fixing
+configuration setting \CodeIn{output\_format = XML} for JMeter in Section~\ref{sec:evolerror},
+\CodeIn{output\_format} is the configuration option name,
+and \CodeIn{XML} is the value. This key-value abstraction
+is used by the POSIX system environment, the Java
+Properties API, and the Windows Registry.
+
 \subsection{Overview}
 
-\begin{figure*}[t]
-%\todo{In the figure, replace each occurrence of ``clicking'' by ``click''.}
-%\todo{Delete ``on Crossword'' in upper left corner.}
-%\todo{Use some kind of grouping, such as a horizontal brace, to show that UI
-%Action 1 through UI Action 3 are all associated with ``3. Random Action Execution''.}
-  \centerline{\includegraphics[scale=0.72]{workflow}}
-  \vspace*{-2ex}\caption {{\label{fig:overview} The workflow of
-  our \ourtool technique. The instrumented program versions and
-  two execution profiles are produced by the step in Section~\ref{sec:profiling}. 
-  The ``Execution Trace Comparison'' step is described in
-  Section~\ref{sec:comparison}. The ``Root Cause Analysis'' step
-  is described in Section~\ref{sec:rootcause}.
-}}
-\end{figure*}
-
+Figure~\ref{fig:overview} sketches the high-level workflow of
+\ourtool. To diagnose an error, \ourtool first asks the user to demonstrate
+the different behaviors by executing the same input values and
+configuration on two instrumented program versions (Section~\ref{sec:profiling}). 
+After that, \ourtool analyzes the desired and undesired
+execution profiles produced by user demonstration, and identifies
+predicates that two executions behave differently (Section~\ref{sec:comparison}).
+Then, \ourtool analyzes the identified execution differences
+to reason about which configuration option may cause such differences,
+and reports these to the user (Section~\ref{sec:rootcause}).
 
 \subsection{Instrumentation and Profiling}
 \label{sec:profiling}
 
+\ourtool first instruments both the old and new versions
+of the target program offline by inserting code to monitor
+the execution of each predicate at runtime. A predicate
+is a Boolean expression in a conditional or loop statement,
+whose evaluation result determines whether to execute the
+following statement or not. A predicate's run-time outcome
+affects the program control flow. 
+
+Then, \ourtool asks the user to demonstrate the different
+behaviors on two instrumented versions. Demonstration is
+one of the simplest way for a user to describe their problem;
+it is easier than writing specifications or scripts of any form.
+
+Executing the instrumented program produces an execution profile,
+which consists of a sequence of executed predicates and their
+evaluation results. Such captured predicate behaviors are by
+no means complete in recording the full execution trace. However,
+they capture control flows a program is taking. Thus, using the
+recorded predicate execution result, \ourtool could faithfully
+derive the full control flow. 
+
 \subsection{Execution Trace Comparison}
 \label{sec:comparison}
 
-\subsection{Execution Trace Comparison}
-\label{sec:rootcause}
-
-\subsection{Execution Profile Comparison}
-
-The goal is to attribute specific execution differences
-to one or more root causes.
-
-\subsubsection{Static Program Matching}
-
-Given a predicate, find the matched predicate in the
-new program.
 
 \input{matchalgorithm}
 
-\subsubsection{Dynamic Trace Comparison}
+In this step, \ourtool compares two execution profiles
+produced by the desired and undesired program behaviors, and
+then summarizes the predicates that behave differently
+across two versions.
 
-An alternate path is any path not taken by the actual
-program execution that starts at a conditional
-branch instruction for which the branch condition
-is affected by one or more configuration options.
+\subsubsection{Matching Predicates}
+
+For each predicate recorded in the desired execution profile,
+\ourtool matches it in the new program version, and identified
+the matched predicate in the undesired execution profile.
+
+To match a predicate, \ourtool first matches its hosting method
+by using two strategies in the following order:
+
+\begin{enumerate}
+\item \textbf{Similar method name}
+\item \textbf{Similar method content} Use a JDiff-like algorithm
+as shown in Figure~\ref{fig:matching}.
+\end{enumerate}
+
+\todo{more details needed above}
+
+After determining the matched method, \ourtool identifies
+the matched predicate by examing the similarity in the
+instructions of its two outgoing branches.
+
+\todo{above is the basic idea. need more elaboration}
+
+
+\subsubsection{Summarizing Differences}
+
+Using the matched predicate information, \ourtool further
+summarizes the behaviorally-different predicates between
+two executions. It summarizes differences in three aspects:
+
+\begin{enumerate}
+\item Predicates that only executed in the desired execution
+\item Predicates that only executed in the undesired execution
+\item Predicates that executed in two executions, but have
+different behaviors. \todo{elaborate different behaviors in details}
+\end{enumerate}
+
+Differences in predicate behaviors indicate different executed paths
+between two versions. Such differences provide evidence of
+which part of the program might be behaving abnormally and why.
+
+%is any path not taken by the actual
+%program execution that starts at a conditional
+%branch instruction for which the branch condition
+%is affected by one or more configuration options.
+
 
 \subsection{Root Cause Analysis}
+\label{sec:rootcause}
 
-what about 
+%An alternate path is any path not taken by the actual
+%program execution that starts at a conditional
+%branch instruction for which the branch condition
+%is affected by one or more configuration options.
 
-if(a) \{
+In this step, \ourtool attribute execution differences
+to one or more root cause configuration options.
+The key idea is to identify configuration options that
+may affect the behaviorally-deviated predicates, and rank
+such options by the degree of how they may cause
+the execution differences.
 
-    if(b) \{
-        //should a and b equally important
-     \}
+\subsubsection{Identifying Affecting Configuration Options}
 
-    \}
+\ourtool uses thin slicing to identify the affecting
+configuration options for each predicate.
 
-\subsubsection{Configuration Option Identification}
+\todo{illustrate why thin slicing is a good choice, and
+give an example.}
+
+
+\subsubsection{Finding Root Causes}
 
 Essentially, this step answers the question:
-``how likely is it that changing a configuration
-option would have prevented this event
-from executing?''.
-\ourtool uses two heuristics: xxx.
-These heuristics cause real root causes to rank
-higher than false positives.
+``how likely is a configuration
+option cause the execution differences?''.
+%\ourtool uses two heuristics: xxx.
+%These heuristics cause real root causes to rank
+%higher than false positives.
 
 
-\ourtool next determines why each different path
-gets executed. \ourtool associates each block
-with a set of root causes, More specifically,
-it uses thin slicing to identify a
-set of configuration options for each deviated
-execution path as the root causes.
+%\ourtool next determines why each different path
+%gets executed. \ourtool associates each block
+%with a set of root causes, More specifically,
+%it uses thin slicing to identify a
+%set of configuration options for each deviated
+%execution path as the root causes.
 
 
-\ourtool propagates configuration options xx to
-other locations in the program according to the
-dependencies introduced via data and control flow.
-Rather than tracking as a binary value, \ourtool
-associates a floating-point weight (between
-zero and one) with each configuration option
-as its effects propagates in the program.
-The weight represents the strength of the causual
-relationship between the configuration option
-and the execution path.
+To distinguish the likelihood of each configuration
+option being the root cause, \ourtool further analyzes
+the cascading effects of each configuration option.
+Specifically, \ourtool propagates the effect of
+a configuration option to other program statements
+according to the dependencies introduced via data and control flow.
+The more behaviorally-different predicate a
+configuration option can affect, the more likely it is
+the root cause.
 
-(using floating-point weight is necessary)
+To do so, \ourtool associates each configuration option
+with a floating-point weight as its effects propagates
+in the program.  The weight represents the strength of
+the causual relationship between the configuration option
+and the execution differences.
 
-Two configuration options are considered equal
-root causes even if one has a direct causal
-relationship to a location (e.g., the value
-in memory was read directly from the configuration value)
-and another has a nebulous relationship (e.g., 
-its effects is propagated along a long chain
-of conditional assignments).
+The detailed algorithm is shown in Figure~\ref{fig:diagalg}.
+\todo{need explanation}
 
-Data flow dependencies are treated to be more likely
-to lead to the root cause than control flow
-dependencies. Control flow dependencies are assumed
-to be more likely to the root cause if they occur
-later in the execution (i.e., closer to the
-deviated execution paths).
+\ourtool uses the number of executed instructions
+as a metric to characterize the effect.
 
-Assign control flow dependence only half the weight
-of the weight introduced by data flow dependencies.
-Further, each nested conditional branches reduces
-the weight by prior branch in the nest one half.
+%Two configuration options are considered equal
+%root causes even if one has a direct causal
+%relationship to a location (e.g., the value
+%in memory was read directly from the configuration value)
+%and another has a nebulous relationship (e.g., 
+%its effects is propagated along a long chain
+%of conditional assignments).
 
-\subsubsection{Difference Summarization}
+%Data flow dependencies are treated to be more likely
+%to lead to the root cause than control flow
+%dependencies. Control flow dependencies are assumed
+%to be more likely to the root cause if they occur
+%later in the execution (i.e., closer to the
+%deviated execution paths).
+
+%Assign control flow dependence only half the weight
+%of the weight introduced by data flow dependencies.
+%Further, each nested conditional branches reduces
+%the weight by prior branch in the nest one half.
+
+%what about 
+%if(a) \{
+%
+%    if(b) \{
+%        //should a and b equally important
+%     \}
+%    \}
+
 
 \input{diagalgorithm.tex}
 
 \todo{mention implementation details about recursive, avoid double count}
 
-\ourtool uses the number of instructions in a basic
-block as a metric to characterize the execution path.
-\todo{xxx}
 
-The block's execution depends on the value of
+%\ourtool also tracks implicit control flow dependencies.
+
+A predicate's execution depends on the value of
 the configuration option, and the associated weight
 indicates the strength of the dependency.
 
+%\ourtool assumes that control flow dependencies are more likely
+%to lead to the root cause if they
+%occur closer to the predicate being executed.
 
-\ourtool also tracks implicit control flow dependencies.
+%This represents the belief that the execution of
+%the basic block is affected by XXX.
+%Since these are two independent probabilities:
+%potentially changing either of the two options
+%might cause the basic block to not have been executed.
+%Thus, the weights of configuration options associated
+%with a basic block need not sum to one.
 
-It assumes that control flow dependencies are more likely
-to lead to the root cause if they
-occur closer to the basic block being executed.
+\ourtool determines the root cause of each behaviorally-different
+predicate.  It attributes the cost of the difference 
+to the associated configuration options.
+It calculates a cost for the difference by first summing
+the total number of instructions executed via this
+predicate. 
 
-This represents the belief that the execution of
-the basic block is affected by XXX.
-Since these are two independent probabilities:
-potentially changing either of the two options
-might cause the basic block to not have been executed.
-Thus, the weights of configuration options associated
-with a basic block need not sum to one.
-
-\ourtool determines the root cause of each divergence.
-It attributes the cost of the divergence (xxx executed
-basic block) to the associated configuration options.
-It calculates a cost for the divergence by first summing
-the costs of all basic blocks along the divergent
-path. It attributes the divergence
-to root cause configuration options by multiplying
-the cost of the divergence by the weights of the configuration
-options that are relevant to the divergence.
-the 
+%It attributes the divergence
+%to root cause configuration options by multiplying
+%the cost of the divergence by the weights of the configuration
+%options that are relevant to the divergence.
+%the 
 
 \todo{repeatedly applying thin slicing is different than full slicing.}
 
 
 \subsection{Discussion}
+
+We next discuss some design issues in \ourtool.
+
+\vspace{1mm}
 
 \noindent \textbf{\textit{Fixing configuration errors vs. Fixing software bugs.}}
 It appears that software configuration lies in the gray zone between
@@ -173,31 +261,26 @@ configure the system. Perhaps as a result, misconfigurations
 have been one of the dominant causes of system issues and
 is likely to continue so.
 
-This paper
+\todo{a few more tradeoffs can be discussed here.}
 
-\todo{test case passes, configuration option
-may not be thought of}
-
-\ourtool currently assumes that only one
+\vspace{1mm}
+\noindent \textbf{\textit{\ourtool's current limitations.}}
+There are three major limitations in the \ourtool technique.
+First, \ourtool currently assumes that only one
 configuration option has an incorrect value.
 If fixing a particular configuration error
 requires changing values of two configuration options,
 then \ourtool may not identify both of them.
-
-
-Deterministic, not multithreaded
-
-Exclude libraries
-
-\noindent \textbf{Cases that \ourtool may not work well.}
-Containing lots of redundant computation that have
-little effect to the output, and such redundant computation
-is not controlled by any configuration option.
-This is highly unlikely for realistic programs.
-
-\noindent \textbf{Why not use dynamic slicing?} The code
-omission problem. Some omitted code may lead to
-other code omitted.
-
-
-\todo{cite bugex for reproducing the error, ~\cite{Huang:2013:CRL}}
+Second, \ourtool assumes the different behaviors
+on two program versions can be demonstrated by users,
+and does not support diagnosing non-deterministic
+errors. For non-deterministic errors, \ourtool
+could potentially leverage a deterministic replay
+system~\cite{Huang:2013:CRL, Jin:2012:BRF} to faithfully reproduce the behaviors.
+Third, \ourtool focuses on identifying root cause
+configuration options that can change behaviors of
+the analyzed program rather than the underlying OS
+or runtime system. Configuration options, such
+as \CodeIn{-Xmx} used in launch a Java program for
+specifying JVM's heap size, are not supported
+in \ourtool.

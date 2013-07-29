@@ -57,6 +57,7 @@ values of certain configuration options.
 
 
 \subsection{Configuration Errors Caused by Software Evolution}
+\label{sec:evolerror}
 
 Continual change is a fact of life for software systems.
 Among software changes, configuration changes are prevalent.
@@ -192,7 +193,7 @@ finally reports a ranked list of suspcious options to the users.
 \end{itemize}
 
 Compared to existing error diagnosis
-techniques~\cite{}, \ourtool differs in three
+techniques~\cite{}, \ourtool differs in four
 key aspects:
 
 \begin{itemize}
@@ -230,6 +231,12 @@ of the unexpected behaviors
 based on their expertise and knowledge of the software.
 By contrast, \ourtool explicitly guides users to specific
 configuration options which may fix the error.
+
+\item \textbf{It requires no OS-level support}. \ourtool
+does not need alternations to the JVM, operating systems, or
+standard library. This makes \ourtool more portable, and
+distinguishes it from related techniques, such as
+OS-level configuration error diagnosis~\cite{}.
 
 \end{itemize}
 
