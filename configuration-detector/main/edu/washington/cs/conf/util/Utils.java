@@ -311,6 +311,18 @@ public class Utils {
 		return intersect;
 	}
 	
+	//set1 - set2
+	public static <T> Set<T> minus(Set<T> set1, Set<T> set2) {
+		Set<T> minus = new HashSet<T>();
+		for(T t : set1) {
+			checkNotNull(t);
+			if(!set2.contains(t)) {
+				minus.add(t);
+			}
+		}
+		return minus;
+	}
+	
 	public static <T> boolean includedIn(T target, T[] array) {
 		if(target == null) {
 			throw new RuntimeException("target can not be null.");
