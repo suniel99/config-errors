@@ -6,6 +6,7 @@ import edu.washington.cs.conf.analysis.evol.experimental.PredicateExecInfo;
 
 import junit.framework.TestCase;
 
+@Deprecated
 public class TestPredicateExecInfo extends TestCase {
 
 	
