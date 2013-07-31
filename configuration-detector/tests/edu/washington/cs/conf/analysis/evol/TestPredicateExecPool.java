@@ -10,6 +10,7 @@ import edu.washington.cs.conf.analysis.evol.experimental.PredicateExecPool;
 
 import junit.framework.TestCase;
 
+@Deprecated
 public class TestPredicateExecPool extends TestCase {
 
 	public void testRandoop() {

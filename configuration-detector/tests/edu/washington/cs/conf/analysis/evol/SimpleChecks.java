@@ -23,7 +23,7 @@ public class SimpleChecks {
 		}
 		return Utils.minus(oldMethods, newMethods);
 	}
-	
+
 	public static Set<String> getUnmatchedNewMethods(
 			Collection<PredicateExecInfo> oldSet,
 			Collection<PredicateExecInfo> newSet) {
