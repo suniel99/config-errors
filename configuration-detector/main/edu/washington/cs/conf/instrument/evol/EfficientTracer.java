@@ -26,6 +26,7 @@ public class EfficientTracer {
 	public static String EVAL = "EVAL:";
 	public static String NORMAL = "NOR:";
 	
+	
 	//use two large maps to keep track of the evaluation
 	//result of each predicate
 	
@@ -45,8 +46,12 @@ public class EfficientTracer {
 	private Map<String, Integer> predicateResult = new HashMap<String, Integer>();
 	private List<String> predicateExecHistory = new LinkedList<String>();
 	
+	private boolean traceHistory = true;
+	
 	public void tracePredicateFrequency(String predicateStr) {
-		predicateExecHistory.add(EXEC + predicateStr); //the full history
+		if(traceHistory) {
+		    predicateExecHistory.add(EXEC + predicateStr); //the full history
+		}
 		if(!predicateFrequency.containsKey(predicateStr)) {
 			predicateFrequency.put(predicateStr, 1);
 		} else {
@@ -56,11 +61,15 @@ public class EfficientTracer {
 	}
 	
 	public void traceNormalInstruction(String str) {
-		predicateExecHistory.add(NORMAL + str);
+		if(traceHistory) {
+		    predicateExecHistory.add(NORMAL + str);
+		}
 	}
 	
 	public void tracePredicateResult(String predicateStr) {
-		predicateExecHistory.add(EVAL + predicateStr); //the full history
+		if(traceHistory) {
+		    predicateExecHistory.add(EVAL + predicateStr); //the full history
+		}
 		if(!predicateResult.containsKey(predicateStr)) {
 			predicateResult.put(predicateStr, 1);
 		} else {
@@ -79,7 +88,8 @@ public class EfficientTracer {
 	        		return;
 	        	}
 	        	System.out.println("----------dumping traces to files-------");
-	            synchronized(predicateFrequency) {
+	        	synchronized(predicateExecHistory){
+	              synchronized(predicateFrequency) {
 	            	synchronized(predicateResult) {
 	            		//record the evaluation results
 	            		StringBuilder sb = new StringBuilder();
@@ -118,7 +128,7 @@ public class EfficientTracer {
 	        				e.printStackTrace();
 	        			}
 	            	}
-	            }
+	            }}
 	        }
 		};
 		

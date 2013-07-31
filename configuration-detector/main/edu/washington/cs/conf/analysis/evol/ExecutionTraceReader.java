@@ -69,6 +69,38 @@ public class ExecutionTraceReader {
 		return list;
 	}
 
+	//read predicate exec info using the sigmap
+	//in the predicate trace file, it records:
+	//  21938==3:2
+	//in the sigmap, it records:
+	//  full_instruction_signature##16=>21938 (the predicate id)
+	public static Collection<PredicateExecInfo>
+	    createPredicateExecInfoList(String traceFileName, String mapFileName) {
+		Map<Integer, String> sigMap = TraceParser.parseSigNumMapping(mapFileName);
+		//then parse the trace file
+		Collection<PredicateExecInfo> predicates = new LinkedList<PredicateExecInfo>();
+		List<String> fileContent = Files.readWholeNoExp(traceFileName);
+		for(String line : fileContent) {
+//			System.out.println(".");
+			if(line.trim().isEmpty()) {
+				continue;
+			}
+			String[] splits = line.split(EfficientTracer.PRED_SEP);
+			Utils.checkTrue(splits.length == 2);
+			Integer instrIndex = Integer.parseInt(splits[0]);
+			String instruction = sigMap.get(instrIndex);
+			if(instruction == null) {
+				System.err.println("Error: " + line);
+				Utils.fail("Error: " + line);
+				continue;
+			}
+			String newLine = instruction + EfficientTracer.PRED_SEP + splits[1];
+			PredicateExecInfo pred = createPredicateExecInfo(newLine);
+			predicates.add(pred);
+		}
+		return predicates;
+	}
+	
 	//a sample line:
 	//randoop.util.Reflection.isVisible(Ljava/lang/Class;)Z##11==1:0
 	public static PredicateExecInfo createPredicateExecInfo(String line) {

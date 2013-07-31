@@ -49,6 +49,12 @@ public class ErrorDiagnoser {
 	
 	//a ranked list of suspicious configuration options
 	//TODO the main entry
+	//1. take the predicate execution delta into account
+	//   predicate p1, execute 10 times, in which 3 times evaluate to true
+	//   compute a value from this and multiple with the cost
+	//2. for a predicate only executed in the old version, inform users that
+	//   it may not take effect any more.
+	//3. consider nested branches?
 	public List<ConfEntity> diagnoseRootCauses() {
 		
 		Set<PredicateExecution> oldPredicates
@@ -58,16 +64,19 @@ public class ErrorDiagnoser {
 		Set<PredicateExecution> diffPredicates
 		    = this.comparator.getPredicateWithDifferentBehaviors();
 		
+		//storing the options and their weights
 		Map<ConfEntity, Float> oldOptions = new LinkedHashMap<ConfEntity, Float>();
 		Map<ConfEntity, Float> newOptions = new LinkedHashMap<ConfEntity, Float>();
 		
 		//FIXME here
-		Set<SSAInstruction> executedDiffSSAs
-		    = this.computeDiffInstructions(this.oldCoder, this.oldTrace, oldPredicates);
+		//here, WRONG, the executedSSAs should be all ssas executed, but within
+		//behaviorally-different branches
+		Set<SSAInstruction> executedSSAs
+		    = this.computeExecutedInstructionsInPredicates(this.oldCoder, this.oldTrace, oldPredicates);
 		for(PredicateExecution oldPredicate : oldPredicates) {
 			SSAInstruction ssa = oldPredicate.getInstruction(this.oldCoder);
 			CGNode node = oldPredicate.getNode(this.oldCoder);
-			int affectedCost = this.oldSlicer.compute_cost_by_slice(node, ssa, executedDiffSSAs);
+			int affectedCost = this.oldSlicer.compute_cost_by_slice(node, ssa, executedSSAs);
 			Set<ConfEntity> entities = this.getAffectingOptions(this.oldCoder, node, ssa);
 			for(ConfEntity conf : entities) {
 				if(!oldOptions.containsKey(conf)) {
@@ -79,12 +88,12 @@ public class ErrorDiagnoser {
 		}
 		
 		//FIXME
-		executedDiffSSAs
-		    = this.computeDiffInstructions(this.newCoder, this.newTrace, newPredicates);
+		executedSSAs
+		    = this.computeExecutedInstructionsInPredicates(this.newCoder, this.newTrace, newPredicates);
 		for(PredicateExecution newPredicate : newPredicates) {
 			SSAInstruction ssa = newPredicate.getInstruction(this.newCoder);
 			CGNode node = newPredicate.getNode(this.newCoder);
-			int affectedCost = this.newSlicer.compute_cost_by_slice(node, ssa, executedDiffSSAs);
+			int affectedCost = this.newSlicer.compute_cost_by_slice(node, ssa, executedSSAs);
 			Set<ConfEntity> entities = this.getAffectingOptions(this.newCoder, node, ssa);
 			for(ConfEntity conf : entities) {
 				if(!newOptions.containsKey(conf)) {
@@ -97,12 +106,12 @@ public class ErrorDiagnoser {
 		
 		//FIXME, the code is redundant below, but I keep the redundancy now, since
 		//it may need to tweak the cost here.
-		executedDiffSSAs
-		    = this.computeDiffInstructions(this.newCoder, this.newTrace, newPredicates);
+		executedSSAs
+		    = this.computeExecutedInstructionsInPredicates(this.newCoder, this.newTrace, diffPredicates);
 		for(PredicateExecution diffPredicate : diffPredicates) {
 			SSAInstruction ssa = diffPredicate.getInstruction(this.newCoder);
 			CGNode node = diffPredicate.getNode(this.newCoder);
-			int affectedCost = this.newSlicer.compute_cost_by_slice(node, ssa, executedDiffSSAs);
+			int affectedCost = this.newSlicer.compute_cost_by_slice(node, ssa, executedSSAs);
 			Set<ConfEntity> entities = this.getAffectingOptions(this.newCoder, node, ssa);
 			for(ConfEntity conf : entities) {
 				if(!newOptions.containsKey(conf)) {
@@ -132,7 +141,7 @@ public class ErrorDiagnoser {
 		return options;
 	}
 	
-	Set<SSAInstruction> computeDiffInstructions(CodeAnalyzer coder,
+	Set<SSAInstruction> computeExecutedInstructionsInPredicates(CodeAnalyzer coder,
 			ExecutionTrace trace, Set<PredicateExecution> predSet) {
 		Set<SSAInstruction> ssaSet = new LinkedHashSet<SSAInstruction>();
 		for(PredicateExecution exec : predSet) {
@@ -156,6 +165,7 @@ public class ErrorDiagnoser {
 		return ssaSet;
 	}
 	
+	//TODO
 	Set<ConfEntity> getAffectingOptions(CodeAnalyzer coder, CGNode node, SSAInstruction ssa) {
 		throw new Error();
 	}

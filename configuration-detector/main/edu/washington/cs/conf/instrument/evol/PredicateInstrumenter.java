@@ -1,6 +1,7 @@
 package edu.washington.cs.conf.instrument.evol;
 
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
@@ -64,6 +65,10 @@ public class PredicateInstrumenter extends AbstractInstrumenter {
 	private boolean useSigMapping = false;
 	private Map<String, Integer> sigMap = new HashMap<String, Integer>();
 	private int sigCount = 0;
+	
+	private boolean instrumentEveryStmt = true;
+	private boolean instrumentEveryMethod = true;
+	private boolean instrumentEveryPredicate = true;
 
 	public PredicateInstrumenter() {
 		this(Collections.<String> emptyList(), Collections.<String> emptyList());
@@ -82,6 +87,18 @@ public class PredicateInstrumenter extends AbstractInstrumenter {
 		this.schema = schema;
 	}
 	
+	public void setEveryStmt(boolean instrumentEvery) {
+		this.instrumentEveryStmt = instrumentEvery;
+	}
+	
+	public void setEveryMethod(boolean instrumentMethod) {
+		this.instrumentEveryMethod = instrumentMethod;
+	}
+	
+	public void setEveryPredicate(boolean instrumentPredicate) {
+		this.instrumentEveryPredicate = instrumentPredicate;
+	}
+	
 	public void setUseSigMap(boolean useSigMap) {
 		this.useSigMapping = useSigMap;
 	}
@@ -97,6 +114,8 @@ public class PredicateInstrumenter extends AbstractInstrumenter {
 			w.flush();
 			return;
 		}
+		
+		boolean changed = false;
 		
 		for (int m = 0; m < ci.getReader().getMethodCount(); m++) {
 			MethodData d = ci.visitMethod(m);
@@ -115,7 +134,10 @@ public class PredicateInstrumenter extends AbstractInstrumenter {
 				final String methodSig = WALAUtils.getMethodSignature(d);
 				
 				//instrument the beginning and end of a method
-				this.instrumentMethod(me, methodSig);
+				if(this.instrumentEveryMethod) {
+					changed = true;
+				    this.instrumentMethod(me, methodSig);
+				}
 				
 				// profiling the predicates
 				int length = me.getInstructions().length;
@@ -131,10 +153,12 @@ public class PredicateInstrumenter extends AbstractInstrumenter {
 					IInstruction inst = me.getInstructions()[i];
 //					final String stmtSig = methodSig + EfficientTracer.SEP + i;
 					final String stmtSig = this.constructStmtSig(methodSig, i);
-					if (this.isPredicate(inst)) { /**instrument the predicate**/
+					if (this.isPredicate(inst) && this.instrumentEveryPredicate) {
+						   /**instrument the predicate**/
 //						   System.out.println("instr: " + inst);
 							// methodSig is not a uniquely-identifiable,
 							// so plus the instruction index before evaluation
+						    changed = true;
 							InstrumentStats.addInstrumentedPositions(stmtSig);
 							me.insertBefore(i, new MethodEditor.Patch() {
 								@Override
@@ -156,21 +180,26 @@ public class PredicateInstrumenter extends AbstractInstrumenter {
 							});
 					} else {/**instrument other instructions */
 						//FIXME insert before?
-						me.insertBefore(i, new MethodEditor.Patch() {
-							@Override
-							public void emitTo(MethodEditor.Output w) {
-								w.emit(getTracer);
-								w.emit(ConstantInstruction.makeString(stmtSig));
-								w.emit(normalInstrTrace);
-								InstrumentStats.addInsertedInstructions(1);
-							}
-						});
-						InstrumentStats.addNormalInsertations(1);
+						if(this.instrumentEveryStmt) {
+							changed = true;
+						    me.insertBefore(i, new MethodEditor.Patch() {
+							    @Override
+							    public void emitTo(MethodEditor.Output w) {
+								    w.emit(getTracer);
+								    w.emit(ConstantInstruction.makeString(stmtSig));
+								    w.emit(normalInstrTrace);
+								    InstrumentStats.addInsertedInstructions(1);
+							    }
+						    });
+						    InstrumentStats.addNormalInsertations(1);
+						}
 					}
 				}
 
 				// this updates the data d
-				me.applyPatches();
+				if(changed) {
+				    me.applyPatches();
+				}
 				if (disasm) {
 					w.write("Final ShrikeBT code:\n");
 					(new Disassembler(d)).disassembleTo(w);
@@ -241,7 +270,11 @@ public class PredicateInstrumenter extends AbstractInstrumenter {
 		}
 		if (verify) {
 			Verifier v = new Verifier(d);
-			v.verify();
+			try {
+			    v.verify();
+			} catch (Throwable e) {
+				System.err.println("Error in: " + d.getSignature());
+			}
 		}
 	}
 	
@@ -270,8 +303,17 @@ public class PredicateInstrumenter extends AbstractInstrumenter {
 			throw new Error(e);
 		}
 	}
+	
+	public void saveSigMappingsNoExp(String fileName) {
+		try {
+			this.saveSigMappings(fileName);
+		} catch (IOException e) {
+			throw new Error(e);
+		}
+	}
+	
 	public void saveSigMappings(String fileName) throws IOException {
-		System.out.println("Write sig mapping...");
+		System.out.println("Write sig mapping to: " + new File(fileName).getAbsolutePath());
 		Utils.checkTrue(this.useSigMapping);
 		Files.deleteFile(fileName);
 		Files.createIfNotExist(fileName);

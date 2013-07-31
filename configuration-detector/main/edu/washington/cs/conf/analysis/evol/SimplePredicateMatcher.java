@@ -13,6 +13,7 @@ import edu.washington.cs.conf.util.WALAUtils;
  * */
 public class SimplePredicateMatcher {
 	
+
 	public final CallGraph oldGraph;
 	public final CallGraph newGraph;
 	public final AnalysisScope scope;
@@ -67,7 +68,6 @@ public class SimplePredicateMatcher {
 		}
 		
 		//FIXME did not consider other matched info yet
-		
 		return null;
 	}
 	

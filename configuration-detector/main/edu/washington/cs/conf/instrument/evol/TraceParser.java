@@ -9,6 +9,7 @@ import edu.washington.cs.conf.util.Utils;
 public class TraceParser {
 	
 	//Parse the sig mapping files
+	//from the integer to the instruction signature
 	public static Map<Integer, String> parseSigNumMapping(String fileName) {
 		Utils.checkNotNull(fileName);
 		Map<Integer, String> sigMap = new LinkedHashMap<Integer, String>();
