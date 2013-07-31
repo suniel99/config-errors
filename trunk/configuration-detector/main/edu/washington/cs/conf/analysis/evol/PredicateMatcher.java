@@ -56,17 +56,17 @@ public class PredicateMatcher {
 		Utils.checkNotNull(bb);
 		
 		//get succ
-		List<ISSABasicBlock> succBBList = WALAUtils.getSuccBasicBlocks(oldNode, bb);
-		Utils.checkTrue(succBBList.size() == 2);
+		List<ISSABasicBlock> oldSuccBBList = WALAUtils.getSuccBasicBlocks(oldNode, bb);
+		Utils.checkTrue(oldSuccBBList.size() == 2);
 		if(debug) {
-		    System.out.println("succ bblist: " + succBBList);
+		    System.out.println("succ bblist: " + oldSuccBBList);
 		}
 		
 		//get the incoming basic block
-		List<ISSABasicBlock> predBBList = WALAUtils.getPredBasicBlocks(oldNode, bb);
-		Utils.checkTrue(!predBBList.isEmpty());
+		List<ISSABasicBlock> oldPredBBList = WALAUtils.getPredBasicBlocks(oldNode, bb);
+		Utils.checkTrue(!oldPredBBList.isEmpty());
 		if(debug) {
-		    System.out.println("pred bblist: " + predBBList);
+		    System.out.println("pred bblist: " + oldPredBBList);
 		}
 		
 		//look at the predicate in the new graph node
@@ -91,8 +91,8 @@ public class PredicateMatcher {
 			//get the succ
 			List<ISSABasicBlock> newSuccBlocks = WALAUtils.getSuccBasicBlocks(newNode, b);
 			List<ISSABasicBlock> newPredBlocks = WALAUtils.getPredBasicBlocks(newNode, b);
-			if(this.containBasicBlocks(succBBList, newSuccBlocks)
-					&& this.containBasicBlocks(predBBList, newPredBlocks)) {
+			if(this.containBasicBlocks(oldSuccBBList, newSuccBlocks)
+					&& this.containBasicBlocks(oldPredBBList, newPredBlocks)) {
 				//for debugging purpose:
 				//its containing basic block
 				if(debug) {

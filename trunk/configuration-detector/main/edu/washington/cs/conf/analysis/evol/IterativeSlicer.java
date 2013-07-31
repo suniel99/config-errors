@@ -8,16 +8,12 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
-import com.ibm.wala.classLoader.IMethod;
 import com.ibm.wala.ipa.callgraph.CGNode;
 import com.ibm.wala.ipa.slicer.NormalStatement;
 import com.ibm.wala.ipa.slicer.Statement;
 import com.ibm.wala.ssa.ISSABasicBlock;
-import com.ibm.wala.ssa.SSACFG;
 import com.ibm.wala.ssa.SSAInstruction;
 import com.ibm.wala.ssa.SSAConditionalBranchInstruction;
-import com.ibm.wala.ssa.SSAInvokeInstruction;
-import com.ibm.wala.ssa.SSANewInstruction;
 
 import edu.washington.cs.conf.util.Utils;
 import edu.washington.cs.conf.util.WALAUtils;
@@ -46,6 +42,8 @@ public class IterativeSlicer {
 	 * The seed must be a conditional branch instruction.
 	 * Collecting the affected statements
 	 * */
+	//the executed diff ssa should be all ssas that reveals differences
+	//rather than just the newly executed, or disappeared ssas
 	public Collection<NormalStatement> iterate_slice(CGNode node, SSAInstruction seed,
 			Set<SSAInstruction> executedDiffSSAs) {
 		Utils.checkTrue(seed instanceof SSAConditionalBranchInstruction);
@@ -53,10 +51,6 @@ public class IterativeSlicer {
 		Utils.checkTrue(seedIndex > -1);
 		
 		debugln(seed + ", index: " + seedIndex);
-		
-		//the return statement
-		Collection<NormalStatement> stmtColl = new LinkedHashSet<NormalStatement>();
-		Collection<SSAInstruction> visitedSliceSeedSet = new HashSet<SSAInstruction>(); 
 		
 		//the branch been analyzed
 		Collection<SSAInstruction> analyzedBranchSet = new HashSet<SSAInstruction>();
@@ -69,12 +63,16 @@ public class IterativeSlicer {
 		Set<ISSABasicBlock> executedBlocks = PostDominatorFinder.findAllBasicBlocksBetween(node, seedBlock);
 		
 		debugln("Executed blocks: " + WALAUtils.getAllBasicBlockIDList(executedBlocks));
-		
+
+		//the return statement collection
+		Collection<NormalStatement> stmtColl = new LinkedHashSet<NormalStatement>();
 		//check if an ssa has been executed or not
 		for(ISSABasicBlock bb : executedBlocks) {
 			Iterator<SSAInstruction> iter = bb.iterator();
 			while(iter.hasNext()) {
 				SSAInstruction ssa = iter.next();
+				//the static analysis may return both branches, only need to
+				//retain the executed ssa
 				if(executedDiffSSAs.contains(ssa)) {
 					int ssaIndex = WALAUtils.getInstructionIndex(node, ssa);
 					if(ssaIndex != -1) {
@@ -101,6 +99,7 @@ public class IterativeSlicer {
 		}
 		
 		List<Statement> seedList = new LinkedList<Statement>(seedStmts);
+		Collection<SSAInstruction> visitedSliceSeedSet = new HashSet<SSAInstruction>(); 
 		while(!seedList.isEmpty()) {
 			debugln("Seedlist size: " + seedList.size());
 			
@@ -157,9 +156,9 @@ public class IterativeSlicer {
 					int stmtIndex = WALAUtils.getInstructionIndex(stmtNode, stmtSSA);
 					
 					//add the executed SSAs between seedBlock and postdomBlock
-					Set<ISSABasicBlock> stmtExecutedBlocks = PostDominatorFinder.findAllBasicBlocksBetween(stmtNode, stmtBlock);
+					Set<ISSABasicBlock> codeBasicBlocks = PostDominatorFinder.findAllBasicBlocksBetween(stmtNode, stmtBlock);
 					//check if an ssa has been executed or not
-					for(ISSABasicBlock bb : stmtExecutedBlocks) {
+					for(ISSABasicBlock bb : codeBasicBlocks) {
 						Iterator<SSAInstruction> iter = bb.iterator();
 						while(iter.hasNext()) {
 							SSAInstruction ssa = iter.next();
@@ -195,7 +194,6 @@ public class IterativeSlicer {
 	 * */
 	private Collection<Statement> filterStringRelatedStatements(Collection<Statement> stmts) {
 		Collection<Statement> filteredStmts = new LinkedHashSet<Statement>();
-		
 		for(Statement stmt : stmts) {
 			if(stmt instanceof NormalStatement) {
 				SSAInstruction ssa = ((NormalStatement)stmt).getInstruction();
@@ -205,7 +203,6 @@ public class IterativeSlicer {
 			}
 			filteredStmts.add(stmt);
 		}
-		
 		return filteredStmts;
 	}
 	
