@@ -13,11 +13,12 @@ import edu.washington.cs.conf.util.Files;
 import edu.washington.cs.conf.util.Utils;
 import edu.washington.cs.conf.util.WALAUtils;
 
-@Deprecated
+//@Deprecated
+//this is for a single predicate
 public class PredicateExecInfo {
 
 	public final String context; //the outside method
-	public final String predicate; //the predicate itself
+	public final String predicate; //the predicate index
 	public final int evalFreqCount;
 	public final int evalResultCount;
 	
@@ -30,6 +31,10 @@ public class PredicateExecInfo {
 		this.predicate = predicate;
 		this.evalFreqCount = freq;
 		this.evalResultCount = result;
+	}
+	
+	public String getPredicateSig() {
+		return this.context + "#" + this.predicate;
 	}
 	
 	public String getMethodSig() {
