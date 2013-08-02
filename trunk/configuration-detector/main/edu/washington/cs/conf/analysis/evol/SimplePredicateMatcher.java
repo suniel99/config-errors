@@ -32,7 +32,7 @@ public class SimplePredicateMatcher {
 	}
 	
 	//get the corresponding predicate
-	public PredicateExecution getMatchedPredicateInNewVersion(PredicateExecution oldPredicate) {
+	public PredicateBehaviorAcrossVersions getMatchedPredicateInNewVersion(PredicateBehaviorAcrossVersions oldPredicate) {
 		CGNode oldNode = WALAUtils.lookupMatchedCGNode(this.oldGraph, oldPredicate.methodSig);
 		Utils.checkNotNull(oldNode);
 		SSAInstruction oldSSA = WALAUtils.getInstruction(oldNode, oldPredicate.index);
@@ -45,7 +45,7 @@ public class SimplePredicateMatcher {
 		//check if the CG node has been changed or not?
 		if(this.areIdenticalNodes(oldNode, newNode)) {
 			//return the same index
-			return new PredicateExecution(oldPredicate.methodSig, oldPredicate.index);
+			return new PredicateBehaviorAcrossVersions(oldPredicate.methodSig, oldPredicate.index);
 		}
 		//FIXME did not consider other matched info yet
 		//re-use the fine-grained matcher?
@@ -53,7 +53,7 @@ public class SimplePredicateMatcher {
 		return null;
 	}
 	
-	public PredicateExecution getMatchedPredicateInOldVersion(PredicateExecution newPredicate) {
+	public PredicateBehaviorAcrossVersions getMatchedPredicateInOldVersion(PredicateBehaviorAcrossVersions newPredicate) {
 		CGNode newNode = WALAUtils.lookupMatchedCGNode(this.newGraph, newPredicate.methodSig);
 		Utils.checkNotNull(newNode);
 		SSAInstruction newSSA = WALAUtils.getInstruction(newNode, newPredicate.index);
@@ -64,7 +64,7 @@ public class SimplePredicateMatcher {
 		}
 		//check if two nodes are identical
 		if(this.areIdenticalNodes(newNode, oldNode)) {
-			return new PredicateExecution(newPredicate.methodSig, newPredicate.index);
+			return new PredicateBehaviorAcrossVersions(newPredicate.methodSig, newPredicate.index);
 		}
 		
 		//FIXME did not consider other matched info yet

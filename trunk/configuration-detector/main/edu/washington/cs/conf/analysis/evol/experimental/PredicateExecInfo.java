@@ -18,7 +18,7 @@ import edu.washington.cs.conf.util.WALAUtils;
 public class PredicateExecInfo {
 
 	public final String context; //the outside method
-	public final String predicate; //the predicate index
+	public final String predicateIndex; //the predicate index
 	public final int evalFreqCount;
 	public final int evalResultCount;
 	
@@ -28,13 +28,13 @@ public class PredicateExecInfo {
 		Utils.checkTrue(freq > 0);
 		Utils.checkTrue(result >= 0);
 		this.context = context;
-		this.predicate = predicate;
+		this.predicateIndex = predicate;
 		this.evalFreqCount = freq;
 		this.evalResultCount = result;
 	}
 	
 	public String getPredicateSig() {
-		return this.context + "#" + this.predicate;
+		return this.context + "#" + this.predicateIndex;
 	}
 	
 	public String getMethodSig() {
@@ -42,7 +42,7 @@ public class PredicateExecInfo {
 	}
 	
 	public int getIndex() {
-		return Integer.parseInt(this.predicate);
+		return Integer.parseInt(this.predicateIndex);
 	}	
 	
 	@Override
@@ -51,19 +51,19 @@ public class PredicateExecInfo {
 			return false;
 		}
 		PredicateExecInfo info = (PredicateExecInfo)o;
-		return this.context.equals(info.context) && this.predicate.equals(info.predicate)
+		return this.context.equals(info.context) && this.predicateIndex.equals(info.predicateIndex)
 		    && this.evalFreqCount == info.evalFreqCount && this.evalResultCount == info.evalResultCount;
 	}
 	
 	@Override
 	public int hashCode() {
 		return this.evalFreqCount + 7*this.evalResultCount + 17*this.context.hashCode()
-		    + 29*this.predicate.hashCode();
+		    + 29*this.predicateIndex.hashCode();
 	}
 	
 	@Override
 	public String toString() {
-		return predicate + "@" + context + " -> " + evalFreqCount + ":" + evalResultCount;
+		return predicateIndex + "@" + context + " -> " + evalFreqCount + ":" + evalResultCount;
 	}
 	
     /**

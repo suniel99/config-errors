@@ -7,7 +7,7 @@ import edu.washington.cs.conf.util.Utils;
 import edu.washington.cs.conf.util.WALAUtils;
 
 //FIXME the class name is not perfect, maybe i should use: PredicateEntity?
-public class PredicateExecution {
+public class PredicateBehaviorAcrossVersions {
 
 	/**
 	 * If the predicate is executed on both versions, use
@@ -28,10 +28,11 @@ public class PredicateExecution {
 	private int execFreqInNew = -1;
 	private int evalResultInNew = -1;
 	
+	//XXX what do these two fields used for?
 	private int monitoredExec = -1;
 	private int monitoredEval = -1;
 	
-	public PredicateExecution(String methodSig, int index) {
+	public PredicateBehaviorAcrossVersions(String methodSig, int index) {
 		Utils.checkNotNull(methodSig);
 		Utils.checkTrue(index >= 0);
 		this.methodSig = methodSig;

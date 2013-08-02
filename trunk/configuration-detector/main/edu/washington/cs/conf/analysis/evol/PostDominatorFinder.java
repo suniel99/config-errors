@@ -143,6 +143,8 @@ public class PostDominatorFinder {
 	
 	/**
 	 * We need to skip the phi and other instruction that is not in the node
+	 * Note that the return instruction can be null, since it may represent the
+	 * end of a method.
 	 * */
 	public static SSAInstruction getImmediatePostDominatorInstruction(CGNode node, SSAInstruction ssa) {
 		ISSABasicBlock bb = node.getIR().getBasicBlockForInstruction(ssa);
@@ -150,7 +152,24 @@ public class PostDominatorFinder {
 	}
 	
 	public static SSAInstruction getImmediatePostDominatorInstruction(CGNode node, ISSABasicBlock block) {
-		Iterator<SSAInstruction> iter = block.iterator();
+		ISSABasicBlock postBlock = computeImmediatePostDominator(node, block);
+		
+		if(postBlock.isExitBlock()) {
+			return null;
+		}
+		
+		int size = WALAUtils.getBasicBlockSize(postBlock);
+		//error checking
+		if(size == 0) {
+			WALAUtils.printCFG(node);
+			System.out.println("block id: " + block.getNumber());
+			System.out.println("post block id: " + postBlock.getNumber() + ", is exit? : " + postBlock.isExitBlock());
+			Utils.fail("");
+ 		}
+//		Utils.checkTrue(size > 0, "bb size: " + size + ", id: " + postBlock.getNumber() +
+//				", in method: " + node.getMethod().getSignature());
+		
+		Iterator<SSAInstruction> iter = postBlock.iterator();
 		while(iter.hasNext()) {
 			SSAInstruction ssa = iter.next();
 			if(ssa instanceof SSAPhiInstruction) {
@@ -161,11 +180,34 @@ public class PostDominatorFinder {
 				return ssa;
 			}
 		}
-		Utils.checkTrue(false, "The basic block is wrong, why all phi instructions");
-		return null;
+		
+		//here, all instructions in the postBlock are phis, we need to look at the succ one
+		List<ISSABasicBlock> succList = WALAUtils.getSuccBasicBlocks(node, postBlock);
+		if(succList.size() == 1) {
+			ISSABasicBlock succBB = succList.get(0);
+			iter = succBB.iterator();
+			while(iter.hasNext()) {
+				SSAInstruction ssa = iter.next();
+				if(ssa instanceof SSAPhiInstruction) {
+					continue;
+				}
+				int index = WALAUtils.getInstructionIndex(node, ssa);
+				if(index != -1) {
+					return ssa;
+				}
+			}
+		}
+		
+		WALAUtils.printCFG(node);
+		System.out.println("block id: " + block.getNumber());
+		System.out.println("post block id: " + postBlock.getNumber() + ", is exit? : " + postBlock.isExitBlock());
+		WALAUtils.printBasicBlock(postBlock);
+		System.out.println("Number of succ nodes: " + succList.size());
+		throw new Error("should not be here.");
 	}
 	
 	//it includes the start and end basic blocks
+	@Deprecated
 	public static Set<ISSABasicBlock> findAllBasicBlocksBetween(CGNode node, ISSABasicBlock block) {
 		ISSABasicBlock startBlock = block;
 		ISSABasicBlock endBlock = computeImmediatePostDominator(node, startBlock);
