@@ -7,7 +7,6 @@ import java.util.Map;
 
 import edu.washington.cs.conf.analysis.evol.experimental.PredicateExecInfo;
 import edu.washington.cs.conf.instrument.evol.EfficientTracer;
-import edu.washington.cs.conf.instrument.evol.TraceParser;
 import edu.washington.cs.conf.util.Files;
 import edu.washington.cs.conf.util.Utils;
 
@@ -36,21 +35,40 @@ public class ExecutionTraceReader {
 		return execInfo;
 	}
 	
-	public static List<InstructionExecInfo> createInstructionExecInfoList(String traceFileName,
+	//line looks like:
+	//NORMAL:randoop.util.Reflection.isVisible(Ljava/lang/Class;)Z##11
+	public static boolean checkInstruction(String line, String methodSig, int index) {
+		String instrSig = methodSig + EfficientTracer.SEP + index;
+		return line.trim().endsWith(instrSig);
+	}
+	
+	public static List<InstructionExecInfo> createPredicateExecInfoInTrace(String traceFileName,
 			String mapFileName) {
-		Map<Integer, String> sigMap = TraceParser.parseSigNumMapping(mapFileName);
+		Map<Integer, String> sigMap = SigMapParser.parseSigNumMapping(mapFileName);
 		List<InstructionExecInfo> list = new LinkedList<InstructionExecInfo>();
 		List<String> fileContent = Files.readWholeNoExp(traceFileName);
 		for(String line : fileContent) {
 			if(line.trim().isEmpty()) {
 				continue;
 			}
+			if(line.equals("null")) { //not sure why there is a null in trace file
+				continue;
+			}
+			//just create predicate
+			if(line.startsWith(EfficientTracer.NORMAL)) {
+				continue;
+			}
+			String[] splits = line.split(EfficientTracer.EVAL_SEP);
+			Utils.checkTrue(splits.length == 2, "line is: " + line);
+			
 			//convert the line into the real instruction
-			Integer num = Integer.parseInt(line);
+			Integer num = Integer.parseInt(splits[1]);
 			String instrStr = sigMap.get(num);
 			Utils.checkNotNull(instrStr);
+			
+			String newLine = splits[0] + EfficientTracer.EVAL_SEP + instrStr;
 			//the above code snippet is the only difference from the below method
-			InstructionExecInfo execInfo = createInstructionExecInfo(instrStr);
+			InstructionExecInfo execInfo = createInstructionExecInfo(newLine);
 			list.add(execInfo);
 		}
 		return list;
@@ -75,11 +93,11 @@ public class ExecutionTraceReader {
 	//in the sigmap, it records:
 	//  full_instruction_signature##16=>21938 (the predicate id)
 	public static Collection<PredicateExecInfo>
-	    createPredicateExecInfoList(String traceFileName, String mapFileName) {
-		Map<Integer, String> sigMap = TraceParser.parseSigNumMapping(mapFileName);
+	    createPredicateExecInfoList(String predicateFileName, String mapFileName) {
+		Map<Integer, String> sigMap = SigMapParser.parseSigNumMapping(mapFileName);
 		//then parse the trace file
 		Collection<PredicateExecInfo> predicates = new LinkedList<PredicateExecInfo>();
-		List<String> fileContent = Files.readWholeNoExp(traceFileName);
+		List<String> fileContent = Files.readWholeNoExp(predicateFileName);
 		for(String line : fileContent) {
 //			System.out.println(".");
 			if(line.trim().isEmpty()) {

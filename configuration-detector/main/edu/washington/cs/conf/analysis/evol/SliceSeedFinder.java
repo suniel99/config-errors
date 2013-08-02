@@ -52,6 +52,8 @@ public class SliceSeedFinder {
 		
 		SSAInstruction postDomInstr = PostDominatorFinder.getImmediatePostDominatorInstruction(node, postDomBlock);
 		
+		Utils.checkNotNull(postDomInstr, "fix the code, the instruction might be null.");
+		
 		System.out.println(postDomBlock);
 //		WALAUtils.printBasicBlock(postDomBlock);
 		System.out.println(postDomInstr);

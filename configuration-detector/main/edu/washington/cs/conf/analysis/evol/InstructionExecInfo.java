@@ -30,6 +30,10 @@ public class InstructionExecInfo {
 		this.index = index;
 	}
 	
+	public static InstructionExecInfo createMethodEndExec(String methodSig) {
+		return new InstructionExecInfo(methodSig, endIndex);
+	}
+	
 	public SSAInstruction getInstruction(CGNode node) {
 		if(this.ssa != null) {
 			return this.ssa;
@@ -40,6 +44,10 @@ public class InstructionExecInfo {
 		return this.ssa;
 	}
 	
+	public void setSSAInstruction(SSAInstruction ssa) {
+		this.ssa = ssa;
+	}
+	
 	public CGNode getNode(CodeAnalyzer coder) {
 		if(this.node != null) {
 			return this.node;
@@ -47,6 +55,10 @@ public class InstructionExecInfo {
 		String methodSig = this.getMethodSig();
 		this.node = WALAUtils.lookupMatchedCGNode(coder.getCallGraph(), methodSig);
 		return this.node;
+	}
+	
+	public void setCGNode(CGNode node) {
+		this.node = node;
 	}
 	
 	public boolean isStart() {
@@ -76,6 +88,11 @@ public class InstructionExecInfo {
 	public boolean evaluateToTrue() {
 		throw new Error("Cannot invoke on this class, not a branch instruction.");
 	}
+//	
+//	@Override
+//	public boolean equals(Object obj) {
+//		if(obj instanceof InstructionExecInfo)
+//	}
 	
 	@Override
 	public String toString() {

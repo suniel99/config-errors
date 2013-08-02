@@ -57,11 +57,11 @@ public class ErrorDiagnoser {
 	//3. consider nested branches?
 	public List<ConfEntity> diagnoseRootCauses() {
 		
-		Set<PredicateExecution> oldPredicates
+		Set<PredicateBehaviorAcrossVersions> oldPredicates
 		    = this.comparator.getPredicateOnlyExecutedInOldVersion();
-		Set<PredicateExecution> newPredicates
+		Set<PredicateBehaviorAcrossVersions> newPredicates
 		    = this.comparator.getPredicateOnlyExecutedInNewVersion();
-		Set<PredicateExecution> diffPredicates
+		Set<PredicateBehaviorAcrossVersions> diffPredicates
 		    = this.comparator.getPredicateWithDifferentBehaviors();
 		
 		//storing the options and their weights
@@ -73,7 +73,7 @@ public class ErrorDiagnoser {
 		//behaviorally-different branches
 		Set<SSAInstruction> executedSSAs
 		    = this.computeExecutedInstructionsInPredicates(this.oldCoder, this.oldTrace, oldPredicates);
-		for(PredicateExecution oldPredicate : oldPredicates) {
+		for(PredicateBehaviorAcrossVersions oldPredicate : oldPredicates) {
 			SSAInstruction ssa = oldPredicate.getInstruction(this.oldCoder);
 			CGNode node = oldPredicate.getNode(this.oldCoder);
 			int affectedCost = this.oldSlicer.compute_cost_by_slice(node, ssa, executedSSAs);
@@ -90,7 +90,7 @@ public class ErrorDiagnoser {
 		//FIXME
 		executedSSAs
 		    = this.computeExecutedInstructionsInPredicates(this.newCoder, this.newTrace, newPredicates);
-		for(PredicateExecution newPredicate : newPredicates) {
+		for(PredicateBehaviorAcrossVersions newPredicate : newPredicates) {
 			SSAInstruction ssa = newPredicate.getInstruction(this.newCoder);
 			CGNode node = newPredicate.getNode(this.newCoder);
 			int affectedCost = this.newSlicer.compute_cost_by_slice(node, ssa, executedSSAs);
@@ -108,7 +108,7 @@ public class ErrorDiagnoser {
 		//it may need to tweak the cost here.
 		executedSSAs
 		    = this.computeExecutedInstructionsInPredicates(this.newCoder, this.newTrace, diffPredicates);
-		for(PredicateExecution diffPredicate : diffPredicates) {
+		for(PredicateBehaviorAcrossVersions diffPredicate : diffPredicates) {
 			SSAInstruction ssa = diffPredicate.getInstruction(this.newCoder);
 			CGNode node = diffPredicate.getNode(this.newCoder);
 			int affectedCost = this.newSlicer.compute_cost_by_slice(node, ssa, executedSSAs);
@@ -142,9 +142,9 @@ public class ErrorDiagnoser {
 	}
 	
 	Set<SSAInstruction> computeExecutedInstructionsInPredicates(CodeAnalyzer coder,
-			ExecutionTrace trace, Set<PredicateExecution> predSet) {
+			ExecutionTrace trace, Set<PredicateBehaviorAcrossVersions> predSet) {
 		Set<SSAInstruction> ssaSet = new LinkedHashSet<SSAInstruction>();
-		for(PredicateExecution exec : predSet) {
+		for(PredicateBehaviorAcrossVersions exec : predSet) {
 			CGNode node = exec.getNode(coder);
 			SSAInstruction ssa = exec.getInstruction(coder);
 			SSAInstruction postSSA

@@ -22,9 +22,9 @@ public class EfficientTracer {
 	public static String PRED_SEP = "==";
 	public static String EVAL_SEP = ":";
 	
-	public static String EXEC = "EXEC:";
-	public static String EVAL = "EVAL:";
-	public static String NORMAL = "NOR:";
+	public static String EXEC = "EXEC" + EVAL_SEP;
+	public static String EVAL = "EVAL" + EVAL_SEP;
+	public static String NORMAL = "NOR" + EVAL_SEP;
 	
 	
 	//use two large maps to keep track of the evaluation

@@ -6,6 +6,7 @@ import java.util.Set;
 
 import com.ibm.wala.ssa.SSAInstruction;
 
+import edu.washington.cs.conf.analysis.evol.experimental.PredicateExecInfo;
 import edu.washington.cs.conf.util.Utils;
 
 /**
@@ -34,74 +35,77 @@ public class TraceComparator {
 				scope, cache);
 	}
 	
-	public Set<PredicateExecution> getPredicateOnlyExecutedInOldVersion() {
-		Set<PredicateExecution> oldPredicates = this.getOldExecutedPredicates();
-		Set<PredicateExecution> newPredicates = this.getNewExecutedPredicates();
-		
-        //create the old execution entities from the execution traces
-		Set<PredicateExecution> oldExecutions = new LinkedHashSet<PredicateExecution>();
-		for(PredicateExecution oldPred : oldPredicates) {
-			//the matched predicate in the new program version
-			PredicateExecution matchedPred = this.getMatchedPredicateInNewVersion(oldPred);
-			//the predicate executed in the new version
-			PredicateExecution newPred = this.getIncludePredicate(matchedPred, newPredicates);
-			//if there is no match, or the matched predicate is not executed
-			if(matchedPred == null || newPred == null) {
-				PredicateExecution exec = new PredicateExecution(oldPred.methodSig, oldPred.index);
-				exec.setOldExecutionInfo(oldPred.getMonitorFreq(), oldPred.getMonitorEval());
-				oldExecutions.add(exec);
-			}
-		}
-		
-		return oldExecutions;
+	public Set<PredicateBehaviorAcrossVersions> getPredicateOnlyExecutedInOldVersion() {
+//		Set<PredicateExecution> oldPredicates = this.getOldExecutedPredicates();
+//		Set<PredicateExecution> newPredicates = this.getNewExecutedPredicates();
+//		
+//        //create the old execution entities from the execution traces
+//		Set<PredicateExecution> oldExecutions = new LinkedHashSet<PredicateExecution>();
+//		for(PredicateExecution oldPred : oldPredicates) {
+//			//the matched predicate in the new program version
+//			PredicateExecution matchedPred = this.getMatchedPredicateInNewVersion(oldPred);
+//			//the predicate executed in the new version
+//			PredicateExecution newPred = this.getIncludePredicate(matchedPred, newPredicates);
+//			//if there is no match, or the matched predicate is not executed
+//			if(matchedPred == null || newPred == null) {
+//				PredicateExecution exec = new PredicateExecution(oldPred.methodSig, oldPred.index);
+//				exec.setOldExecutionInfo(oldPred.getMonitorFreq(), oldPred.getMonitorEval());
+//				oldExecutions.add(exec);
+//			}
+//		}
+//		
+//		return oldExecutions;
+		throw new Error();
 	}
 	
-	public Set<PredicateExecution> getPredicateOnlyExecutedInNewVersion() {
-		Set<PredicateExecution> oldPredicates = this.getOldExecutedPredicates();
-		Set<PredicateExecution> newPredicates = this.getNewExecutedPredicates();
-		
-		Set<PredicateExecution> newExecutions = new LinkedHashSet<PredicateExecution>();
-		
-		for(PredicateExecution newPred : newPredicates) {
-			PredicateExecution matchedPred = this.getMatchedPredicateInOldVersion(newPred);
-			PredicateExecution oldPred = this.getIncludePredicate(matchedPred, oldPredicates);
-			//if the predicate is not matched, or the matched in not executed
-			if(matchedPred == null || oldPred == null) {
-				PredicateExecution exec = new PredicateExecution(newPred.methodSig, newPred.index);
-				exec.setNewExecutionInfo(newPred.getMonitorFreq(), newPred.getMonitorEval());
-				newExecutions.add(exec);
-			}
-		}
-		
-		return newExecutions;
+	public Set<PredicateBehaviorAcrossVersions> getPredicateOnlyExecutedInNewVersion() {
+//		Set<PredicateExecution> oldPredicates = this.getOldExecutedPredicates();
+//		Set<PredicateExecution> newPredicates = this.getNewExecutedPredicates();
+//		
+//		Set<PredicateExecution> newExecutions = new LinkedHashSet<PredicateExecution>();
+//		
+//		for(PredicateExecution newPred : newPredicates) {
+//			PredicateExecution matchedPred = this.getMatchedPredicateInOldVersion(newPred);
+//			PredicateExecution oldPred = this.getIncludePredicate(matchedPred, oldPredicates);
+//			//if the predicate is not matched, or the matched in not executed
+//			if(matchedPred == null || oldPred == null) {
+//				PredicateExecution exec = new PredicateExecution(newPred.methodSig, newPred.index);
+//				exec.setNewExecutionInfo(newPred.getMonitorFreq(), newPred.getMonitorEval());
+//				newExecutions.add(exec);
+//			}
+//		}
+//		
+//		return newExecutions;
+		throw new Error();
 	}
 	
-	public Set<PredicateExecution> getPredicateExecutedInBothVersions() {
-		Set<PredicateExecution> oldPredicates = this.getOldExecutedPredicates();
-		Set<PredicateExecution> newPredicates = this.getNewExecutedPredicates();
-		
-		Set<PredicateExecution> bothExecutions = new LinkedHashSet<PredicateExecution>();
-		
-		for(PredicateExecution oldPred : oldPredicates) {
-			PredicateExecution matchedPred = this.getMatchedPredicateInNewVersion(oldPred);
-			PredicateExecution newPred = this.getIncludePredicate(matchedPred, newPredicates);
-			//there is a matched predicate, and that predicate has been executed
-			if(matchedPred != null || newPred != null) {
-				//here, use the new predicate's method signature and its index num
-				PredicateExecution exec = new PredicateExecution(newPred.methodSig, newPred.index);
-				exec.setOldExecutionInfo(oldPred.getMonitorFreq(), oldPred.getMonitorEval());
-				exec.setNewExecutionInfo(newPred.getMonitorFreq(), newPred.getMonitorEval());
-				bothExecutions.add(exec);
-			}
-		}
-		
-		return bothExecutions;
+	public Set<PredicateBehaviorAcrossVersions> getPredicateExecutedInBothVersions() {
+//		Set<PredicateExecution> oldPredicates = this.getOldExecutedPredicates();
+//		Set<PredicateExecution> newPredicates = this.getNewExecutedPredicates();
+//		
+//		Set<PredicateExecution> bothExecutions = new LinkedHashSet<PredicateExecution>();
+//		
+//		for(PredicateExecution oldPred : oldPredicates) {
+//			PredicateExecution matchedPred = this.getMatchedPredicateInNewVersion(oldPred);
+//			PredicateExecution newPred = this.getIncludePredicate(matchedPred, newPredicates);
+//			//there is a matched predicate, and that predicate has been executed
+//			if(matchedPred != null || newPred != null) {
+//				//here, use the new predicate's method signature and its index num
+//				PredicateExecution exec = new PredicateExecution(newPred.methodSig, newPred.index);
+//				exec.setOldExecutionInfo(oldPred.getMonitorFreq(), oldPred.getMonitorEval());
+//				exec.setNewExecutionInfo(newPred.getMonitorFreq(), newPred.getMonitorEval());
+//				bothExecutions.add(exec);
+//			}
+//		}
+//		
+//		return bothExecutions;
+		throw new Error();
 	}
 	
 	//this is a subset of the above predicates executed in both versions
-	public Set<PredicateExecution> getPredicateWithDifferentBehaviors() {
-		Set<PredicateExecution> diffPreds = new LinkedHashSet<PredicateExecution>();
-		for(PredicateExecution predExec : this.getPredicateExecutedInBothVersions()) {
+	public Set<PredicateBehaviorAcrossVersions> getPredicateWithDifferentBehaviors() {
+		Set<PredicateBehaviorAcrossVersions> diffPreds = new LinkedHashSet<PredicateBehaviorAcrossVersions>();
+		for(PredicateBehaviorAcrossVersions predExec : this.getPredicateExecutedInBothVersions()) {
 			if(predExec.isBehaviorChanged()) {
 				diffPreds.add(predExec);
 			}
@@ -109,19 +113,19 @@ public class TraceComparator {
 		return diffPreds;
 	}
 	
-	private PredicateExecution getMatchedPredicateInOldVersion(PredicateExecution newPredExec) {
+	private PredicateBehaviorAcrossVersions getMatchedPredicateInOldVersion(PredicateBehaviorAcrossVersions newPredExec) {
 		//call the predicate matching logic
 		return this.matcher.getMatchedPredicateInOldVersion(newPredExec);
 	}
 	
-	private PredicateExecution getMatchedPredicateInNewVersion(PredicateExecution oldPredExec) {
+	private PredicateBehaviorAcrossVersions getMatchedPredicateInNewVersion(PredicateBehaviorAcrossVersions oldPredExec) {
 		//this method should call the predicate matching logic
 		return this.matcher.getMatchedPredicateInNewVersion(oldPredExec);
 	}
 	
 	//find a predicate execution in the set having the same signature...
-	private PredicateExecution getIncludePredicate(PredicateExecution pred, Set<PredicateExecution> set) {
-		for(PredicateExecution exec : set) {
+	private PredicateBehaviorAcrossVersions getIncludePredicate(PredicateBehaviorAcrossVersions pred, Set<PredicateBehaviorAcrossVersions> set) {
+		for(PredicateBehaviorAcrossVersions exec : set) {
 			if(pred.methodSig.equals(exec.methodSig) && pred.index == exec.index) {
 				return exec;
 			}
@@ -130,15 +134,15 @@ public class TraceComparator {
 	}
 	
 	//the cached results
-	private Set<PredicateExecution> oldPredicates = null;
-	private Set<PredicateExecution> getOldExecutedPredicates() {
+	private Set<PredicateExecInfo> oldPredicates = null;
+	private Set<PredicateExecInfo> getOldExecutedPredicates() {
 		if(oldPredicates == null) {
 			oldPredicates = this.oldTrace.getExecutedPredicates();
 		}
 		return oldPredicates;
 	}
-	private Set<PredicateExecution> newPredicates = null;
-	private Set<PredicateExecution> getNewExecutedPredicates() {
+	private Set<PredicateExecInfo> newPredicates = null;
+	private Set<PredicateExecInfo> getNewExecutedPredicates() {
 		if(newPredicates == null) {
 			newPredicates = this.newTrace.getExecutedPredicates();
 		}
