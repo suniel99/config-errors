@@ -75,6 +75,14 @@ public class ExecutionTrace {
 //		Utils.checkNotNull(node.getIR(), "node sig: " + node.getMethod().getSignature()
 //				+ ", is abstract method? " + node.getMethod().isAbstract());
 		SSAInstruction ssa = WALAUtils.getInstruction(node, index);
+		Utils.checkNotNull(ssa);
+//		if(ssa == null) {
+//			//weird case!
+//			System.err.println("SSA is null for node: " + node + ", index: " + index);
+////			WALAUtils.printAllIRs(node);
+////			Utils.fail("");
+//			return null;
+//		}
 		SSAInstruction domSSA = PostDominatorFinder.getImmediatePostDominatorInstruction(node, ssa);
 		
 		//represent at the end of a method
