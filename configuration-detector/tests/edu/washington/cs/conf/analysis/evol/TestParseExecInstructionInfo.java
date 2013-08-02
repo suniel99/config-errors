@@ -1,6 +1,7 @@
 package edu.washington.cs.conf.analysis.evol;
 
 import java.util.Collection;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
@@ -87,7 +88,7 @@ public class TestParseExecInstructionInfo extends TestCase {
 			System.out.println("     post dom: " + postDomExec);
 		}
 	}
-	
+
 	//---------------------------
 	
 	public void testParseSynoptic_predicate() {
@@ -270,5 +271,65 @@ public class TestParseExecInstructionInfo extends TestCase {
 		System.out.println("old instruction num: " + oldInstructions.size());
 		System.out.println("new instruction num: " + newInstructions.size());
 		
+	}
+	
+	public void testCheckJMeter_predicate_in_old_trace() {
+		CodeAnalyzer oldCoder = CodeAnalyzerRepository.getJMeterOldAnalyzer();
+		oldCoder.buildAnalysis();
+		
+		//old trace
+		ExecutionTrace oldTrace = new ExecutionTrace(TraceRepository.jmeterOldHistoryDump, 
+				TraceRepository.jmeterOldSig, TraceRepository.jmeterOldPredicateDump);
+		Set<PredicateExecInfo> predSet = oldTrace.getExecutedPredicates();
+		System.out.println("Num of executed predicates in old trace: " + predSet.size());
+		//for each predicate, get its immediate post-dominator
+		List<String> missingSSAs = new LinkedList<String>();
+		for(PredicateExecInfo pred : predSet) {
+			InstructionExecInfo postDomExec = oldTrace.getImmediatePostDominator(oldCoder, pred);
+			if(postDomExec == null) {
+				missingSSAs.add(pred.toString());
+				continue;
+			}
+			if(pred.getIndex() == postDomExec.getIndex()) {
+				System.out.println("The pred dom: " + pred + ", post dom: " + postDomExec);
+				Utils.fail("");
+			}
+			System.out.println("Pred: " + pred);
+			System.out.println("     post dom: " + postDomExec);
+		}
+		System.out.println("------------");
+		System.out.println("The missiing predicate number: " + missingSSAs.size());
+		System.out.println("They are: ");
+		Utils.dumpCollection(missingSSAs, System.out);
+	}
+	
+	public void testCheckJMeter_predicate_in_new_trace() {
+		CodeAnalyzer newCoder = CodeAnalyzerRepository.getJMeterNewAnalyzer();
+		newCoder.buildAnalysis();
+		
+		//old trace
+		ExecutionTrace newTrace = new ExecutionTrace(TraceRepository.jmeterNewHistoryDump, 
+				TraceRepository.jmeterNewSig, TraceRepository.jmeterNewPredicateDump);
+		Set<PredicateExecInfo> predSet = newTrace.getExecutedPredicates();
+		System.out.println("Num of executed predicates in new trace: " + predSet.size());
+		//for each predicate, get its immediate post-dominator
+		List<String> missingSSAs = new LinkedList<String>();
+		for(PredicateExecInfo pred : predSet) {
+			InstructionExecInfo postDomExec = newTrace.getImmediatePostDominator(newCoder, pred);
+			if(postDomExec == null) {
+				missingSSAs.add(pred.toString());
+				continue;
+			}
+			if(pred.getIndex() == postDomExec.getIndex()) {
+				System.out.println("The pred dom: " + pred + ", post dom: " + postDomExec);
+				Utils.fail("");
+			}
+			System.out.println("Pred: " + pred);
+			System.out.println("     post dom: " + postDomExec);
+		}
+		System.out.println("------------");
+		System.out.println("The missiing predicate number: " + missingSSAs.size());
+		System.out.println("They are: ");
+		Utils.dumpCollection(missingSSAs, System.out);
 	}
 }
