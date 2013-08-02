@@ -47,7 +47,7 @@ public class TraceRepository {
 	public static String wekaDir = "D:\\research\\confevol\\subject-programs\\weka\\tmp-output-folder\\";
 	public static String wekaOldHistoryDump = wekaDir + "old_" + history_dump;
 	public static String wekaOldPredicateDump = wekaDir + "old_" + predicate_dump;
-	public static String weakNewHistoryDump = wekaDir + "new_" + history_dump;
+	public static String wekaNewHistoryDump = wekaDir + "new_" + history_dump;
 	public static String wekaNewPredicateDump = wekaDir + "new_" + predicate_dump;
 	
 	public static String randoopOldSig = TestInstrumentPrograms.randoop_121_sigmap;
