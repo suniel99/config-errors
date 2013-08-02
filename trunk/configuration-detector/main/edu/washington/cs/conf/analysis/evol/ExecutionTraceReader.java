@@ -1,6 +1,7 @@
 package edu.washington.cs.conf.analysis.evol;
 
 import java.util.Collection;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -12,9 +13,22 @@ import edu.washington.cs.conf.util.Utils;
 
 public class ExecutionTraceReader {
 	
+	static Map<String, InstructionExecInfo> cachedExec = new LinkedHashMap<String, InstructionExecInfo>();
+	
 	//a sample line
 	//NORMAL:randoop.util.Reflection.isVisible(Ljava/lang/Class;)Z##11
 	public static InstructionExecInfo createInstructionExecInfo(String line) {
+		if(cachedExec.containsKey(line)) {
+			return cachedExec.get(line);
+		} else {
+			InstructionExecInfo exec = createInstructionExecInfo_internal(line);
+			cachedExec.put(line, exec);
+			return exec;
+		}
+		
+	}
+	
+	private static InstructionExecInfo createInstructionExecInfo_internal(String line) {
 		InstructionExecInfo execInfo = null;
 		String[] splits = line.split(EfficientTracer.SEP);
 		Utils.checkTrue(splits.length == 2);
@@ -42,8 +56,18 @@ public class ExecutionTraceReader {
 		return line.trim().endsWith(instrSig);
 	}
 	
+	public static List<InstructionExecInfo> createInstructionExecInfo(String traceFileName,
+			String mapFileName) {
+		return createPredicateExecInfoInTrace_internal(traceFileName, mapFileName, false);
+	}
+	
 	public static List<InstructionExecInfo> createPredicateExecInfoInTrace(String traceFileName,
 			String mapFileName) {
+		return createPredicateExecInfoInTrace_internal(traceFileName, mapFileName, true);
+	}
+	
+	private static List<InstructionExecInfo> createPredicateExecInfoInTrace_internal(String traceFileName,
+			String mapFileName, boolean onlyPredicate) {
 		Map<Integer, String> sigMap = SigMapParser.parseSigNumMapping(mapFileName);
 		List<InstructionExecInfo> list = new LinkedList<InstructionExecInfo>();
 		List<String> fileContent = Files.readWholeNoExp(traceFileName);
@@ -55,8 +79,10 @@ public class ExecutionTraceReader {
 				continue;
 			}
 			//just create predicate
-			if(line.startsWith(EfficientTracer.NORMAL)) {
-				continue;
+			if(onlyPredicate) {
+			    if(line.startsWith(EfficientTracer.NORMAL)) {
+				    continue;
+			    }
 			}
 			String[] splits = line.split(EfficientTracer.EVAL_SEP);
 			Utils.checkTrue(splits.length == 2, "line is: " + line);
