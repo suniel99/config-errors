@@ -2,6 +2,7 @@ package edu.washington.cs.conf.analysis;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
@@ -13,6 +14,10 @@ import edu.washington.cs.conf.util.Utils;
 public class ConfEntityRepository {
 
 	public final Collection<ConfEntity> entities = new LinkedHashSet<ConfEntity>();
+	
+	public ConfEntityRepository(ConfEntity[] entities) {
+		this(Arrays.asList(entities));
+	}
 	
 	public ConfEntityRepository(Collection<ConfEntity> entities) {
 		this.entities.addAll(entities);
