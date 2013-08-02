@@ -154,7 +154,7 @@ public class ErrorDiagnoser {
 			int startIndex = WALAUtils.getInstructionIndex(node, ssa);
 			int endIndex = WALAUtils.getInstructionIndex(node, postSSA);
 			Set<InstructionExecInfo> execSSAs
-			    = trace.getExecutedInstructions(startMethodSig, startIndex, endMethodSig, endIndex);
+			    = trace.getExecutedInstructionsBetween(startMethodSig, startIndex, endMethodSig, endIndex);
 			for(InstructionExecInfo execSSA : execSSAs) {
 				CGNode ssaNode = execSSA.getNode(coder);
 				SSAInstruction executedSSA = execSSA.getInstruction(ssaNode);
