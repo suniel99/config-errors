@@ -148,6 +148,10 @@ public class PostDominatorFinder {
 	 * */
 	public static SSAInstruction getImmediatePostDominatorInstruction(CGNode node, SSAInstruction ssa) {
 		ISSABasicBlock bb = node.getIR().getBasicBlockForInstruction(ssa);
+		if(bb == null) {
+			WALAUtils.printCFG(node);
+			Utils.fail("cannot be null, ssa is: " + ssa);
+		}
 		return getImmediatePostDominatorInstruction(node, bb);
 	}
 	
@@ -161,10 +165,22 @@ public class PostDominatorFinder {
 		int size = WALAUtils.getBasicBlockSize(postBlock);
 		//error checking
 		if(size == 0) {
-			WALAUtils.printCFG(node);
-			System.out.println("block id: " + block.getNumber());
-			System.out.println("post block id: " + postBlock.getNumber() + ", is exit? : " + postBlock.isExitBlock());
-			Utils.fail("");
+			//for such weird cases, WALA produces some empty basic blocks
+			List<ISSABasicBlock> succList = WALAUtils.getSuccBasicBlocks(node, postBlock);
+			if(succList.size() == 1) {
+				ISSABasicBlock succBB = succList.get(0);
+				SSAInstruction succSSA = getFirstNonPhiSSA(succBB, node);
+				if(succSSA != null) {
+					return succSSA;
+				} else {
+					System.out.println("The index is -1?");
+				}
+			} else {
+			    WALAUtils.printCFG(node);
+			    System.out.println("block id: " + block.getNumber());
+			    System.out.println("post block id: " + postBlock.getNumber() + ", is exit? : " + postBlock.isExitBlock());
+			    Utils.fail("");
+			}
  		}
 //		Utils.checkTrue(size > 0, "bb size: " + size + ", id: " + postBlock.getNumber() +
 //				", in method: " + node.getMethod().getSignature());
@@ -185,16 +201,11 @@ public class PostDominatorFinder {
 		List<ISSABasicBlock> succList = WALAUtils.getSuccBasicBlocks(node, postBlock);
 		if(succList.size() == 1) {
 			ISSABasicBlock succBB = succList.get(0);
-			iter = succBB.iterator();
-			while(iter.hasNext()) {
-				SSAInstruction ssa = iter.next();
-				if(ssa instanceof SSAPhiInstruction) {
-					continue;
-				}
-				int index = WALAUtils.getInstructionIndex(node, ssa);
-				if(index != -1) {
-					return ssa;
-				}
+			SSAInstruction succSSA = getFirstNonPhiSSA(succBB, node);
+			if(succSSA != null) {
+				return succSSA;
+			} else {
+				System.out.println("The index is -1?");
 			}
 		}
 		
@@ -204,6 +215,21 @@ public class PostDominatorFinder {
 		WALAUtils.printBasicBlock(postBlock);
 		System.out.println("Number of succ nodes: " + succList.size());
 		throw new Error("should not be here.");
+	}
+	
+	private static SSAInstruction getFirstNonPhiSSA(ISSABasicBlock bb, CGNode node) {
+		Iterator<SSAInstruction> iter = bb.iterator();
+		while(iter.hasNext()) {
+			SSAInstruction ssa = iter.next();
+			if(ssa instanceof SSAPhiInstruction) {
+				continue;
+			}
+			int index = WALAUtils.getInstructionIndex(node, ssa);
+			if(index != -1) {
+				return ssa;
+			}
+		}
+		return null;
 	}
 	
 	//it includes the start and end basic blocks
