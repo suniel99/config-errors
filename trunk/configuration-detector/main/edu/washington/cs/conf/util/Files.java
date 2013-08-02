@@ -1,5 +1,6 @@
 package edu.washington.cs.conf.util;
 
+import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -40,6 +41,36 @@ public final class Files {
 	  }
 	  return f.exists();
   }
+  
+  public static int countLinesFast(String filename) {
+	  InputStream is = null;
+	    try {
+	    	is = new BufferedInputStream(new FileInputStream(filename));
+	        byte[] c = new byte[1024];
+	        int count = 0;
+	        int readChars = 0;
+	        boolean empty = true;
+	        while ((readChars = is.read(c)) != -1) {
+	            empty = false;
+	            for (int i = 0; i < readChars; ++i) {
+	                if (c[i] == '\n') {
+	                    ++count;
+	                }
+	            }
+	        }
+	        return (count == 0 && !empty) ? 1 : count;
+	    } catch (Throwable e) {
+	    	throw new Error(e);
+	    } finally {
+	    	try {
+	    		if(is != null) {
+	                is.close();
+	    		}
+	    	} catch (Throwable ee) {
+	    		throw new Error(ee);
+	    	}
+	    }
+	}
   
   public static boolean createIfNotExist(String path) throws IOException {
 	  return createIfNotExist(new File(path));
