@@ -30,7 +30,7 @@ public class TestExecutionTrace extends TestCase {
 		int startIndex = 2;
 		String endMethodSig = "signature-exit";
 		int endIndex = 2;
-		Set<InstructionExecInfo> set = trace.getExecutedInstructions(startMethodSig, startIndex, endMethodSig, endIndex);
+		Set<InstructionExecInfo> set = trace.getExecutedInstructionsBetween(startMethodSig, startIndex, endMethodSig, endIndex);
 		System.out.println("Size: " + set.size());
 		assertEquals(4, set.size());
 		
@@ -38,7 +38,7 @@ public class TestExecutionTrace extends TestCase {
 		startIndex = 3;
 		endMethodSig = "signature-exit";
 		endIndex = 3;
-		set = trace.getExecutedInstructions(startMethodSig, startIndex, endMethodSig, endIndex);
+		set = trace.getExecutedInstructionsBetween(startMethodSig, startIndex, endMethodSig, endIndex);
 		System.out.println("Size: " + set.size());
 		assertEquals(1, set.size());
 	}

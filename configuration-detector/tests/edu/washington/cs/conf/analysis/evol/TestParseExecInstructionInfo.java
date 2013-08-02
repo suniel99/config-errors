@@ -35,7 +35,7 @@ public class TestParseExecInstructionInfo extends TestCase {
 		System.out.println("Number of matched preds: " + matchedPreds.size());
 	}
 	
-	public void testParseRandoop_trace() {
+	public void testParseRandoop_predicate_in_trace() {
 		List<InstructionExecInfo> oldInstructions
 		    = ExecutionTraceReader.createPredicateExecInfoInTrace(TraceRepository.randoopOldHistoryDump,
 		    		TraceRepository.randoopOldSig);
@@ -88,7 +88,7 @@ public class TestParseExecInstructionInfo extends TestCase {
 			System.out.println("     post dom: " + postDomExec);
 		}
 	}
-
+	
 	//---------------------------
 	
 	public void testParseSynoptic_predicate() {
@@ -114,7 +114,7 @@ public class TestParseExecInstructionInfo extends TestCase {
 		System.out.println("Number of matched preds: " + matchedPreds.size());
 	}
 	
-	public void testParseSynoptic_trace() {
+	public void testParseSynoptic_predicate_in_trace() {
 		List<InstructionExecInfo> oldInstructions
 		    = ExecutionTraceReader.createPredicateExecInfoInTrace(TraceRepository.synopticOldHistoryDump,
 		    		TraceRepository.synopticOldSig);
@@ -129,6 +129,7 @@ public class TestParseExecInstructionInfo extends TestCase {
 		CodeAnalyzer oldCoder = CodeAnalyzerRepository.getSynopticOldAnalyzer();
 		oldCoder.buildAnalysis();
 		
+		ExecutionTrace.enable_cache_trace = false;
 		//old trace
 		ExecutionTrace oldTrace = new ExecutionTrace(TraceRepository.synopticOldHistoryDump, 
 				TraceRepository.synopticOldSig, TraceRepository.synopticOldPredicateDump);
@@ -140,6 +141,12 @@ public class TestParseExecInstructionInfo extends TestCase {
 			Utils.checkTrue(pred.getIndex() != postDomExec.getIndex());
 			System.out.println("Pred: " + pred);
 			System.out.println("     post dom: " + postDomExec);
+			
+			//see the executed instructions
+			Set<InstructionExecInfo> set =
+				oldTrace.getExecutedInstructionsBetween(pred.getMethodSig(), pred.getIndex(),
+						postDomExec.getMethodSig(), postDomExec.getIndex());
+			System.out.println("     Number of instructions: " + set.size());
 		}
 	}
 	
@@ -158,6 +165,12 @@ public class TestParseExecInstructionInfo extends TestCase {
 			Utils.checkTrue(pred.getIndex() != postDomExec.getIndex());
 			System.out.println("Pred: " + pred);
 			System.out.println("     post dom: " + postDomExec);
+			
+			//see the executed instructions
+			Set<InstructionExecInfo> set =
+				newTrace.getExecutedInstructionsBetween(pred.getMethodSig(), pred.getIndex(),
+						postDomExec.getMethodSig(), postDomExec.getIndex());
+			System.out.println("     Number of instructions: " + set.size());
 		}
 	}
 	
@@ -187,7 +200,7 @@ public class TestParseExecInstructionInfo extends TestCase {
 		System.out.println("Number of matched preds: " + matchedPreds.size());
 	}
 	
-	public void testParseWeka_trace() {
+	public void testParseWeka_predicate_in_trace() {
 		List<InstructionExecInfo> oldInstructions
 		    = ExecutionTraceReader.createPredicateExecInfoInTrace(TraceRepository.wekaOldHistoryDump,
 		    		TraceRepository.wekaOldSig);
@@ -213,6 +226,12 @@ public class TestParseExecInstructionInfo extends TestCase {
 			Utils.checkTrue(pred.getIndex() != postDomExec.getIndex());
 			System.out.println("Pred: " + pred);
 			System.out.println("     post dom: " + postDomExec);
+			
+			//find all instructions between
+			Set<InstructionExecInfo> set =
+				oldTrace.getExecutedInstructionsBetween(pred.getMethodSig(), pred.getIndex(),
+						postDomExec.getMethodSig(), postDomExec.getIndex());
+			System.out.println("     Number of instructions: " + set.size());
 		}
 	}
 	
@@ -231,6 +250,12 @@ public class TestParseExecInstructionInfo extends TestCase {
 			Utils.checkTrue(pred.getIndex() != postDomExec.getIndex());
 			System.out.println("Pred: " + pred);
 			System.out.println("     post dom: " + postDomExec);
+			
+			//find all instructions between
+			Set<InstructionExecInfo> set =
+				newTrace.getExecutedInstructionsBetween(pred.getMethodSig(), pred.getIndex(),
+						postDomExec.getMethodSig(), postDomExec.getIndex());
+			System.out.println("     Number of instructions: " + set.size());
 		}
 	}
 	
@@ -261,7 +286,7 @@ public class TestParseExecInstructionInfo extends TestCase {
 		System.out.println("Number of matched preds: " + matchedPreds.size());
 	}
 	
-	public void testParseJMeter_trace() {
+	public void testParseJMeter_predicate_in_trace() {
 		List<InstructionExecInfo> oldInstructions
 		    = ExecutionTraceReader.createPredicateExecInfoInTrace(TraceRepository.jmeterOldHistoryDump,
 		    		TraceRepository.jmeterOldSig);
@@ -296,6 +321,12 @@ public class TestParseExecInstructionInfo extends TestCase {
 			}
 			System.out.println("Pred: " + pred);
 			System.out.println("     post dom: " + postDomExec);
+			
+			//find all instructions between
+			Set<InstructionExecInfo> set =
+				oldTrace.getExecutedInstructionsBetween(pred.getMethodSig(), pred.getIndex(),
+						postDomExec.getMethodSig(), postDomExec.getIndex());
+			System.out.println("     Number of instructions: " + set.size());
 		}
 		System.out.println("------------");
 		System.out.println("The missiing predicate number: " + missingSSAs.size());
@@ -326,10 +357,35 @@ public class TestParseExecInstructionInfo extends TestCase {
 			}
 			System.out.println("Pred: " + pred);
 			System.out.println("     post dom: " + postDomExec);
+			
+			Set<InstructionExecInfo> set =
+				newTrace.getExecutedInstructionsBetween(pred.getMethodSig(), pred.getIndex(),
+						postDomExec.getMethodSig(), postDomExec.getIndex());
+			System.out.println("     Number of instructions: " + set.size());
 		}
 		System.out.println("------------");
 		System.out.println("The missiing predicate number: " + missingSSAs.size());
 		System.out.println("They are: ");
 		Utils.dumpCollection(missingSSAs, System.out);
+	}
+	
+	//----------------see file size
+	public void testFileSize_for_experiment() {
+		new ExecutionTrace(TraceRepository.randoopOldHistoryDump,
+				TraceRepository.randoopOldSig, TraceRepository.randoopOldPredicateDump);
+		new ExecutionTrace(TraceRepository.randoopNewHistoryDump,
+				TraceRepository.randoopNewSig, TraceRepository.randoopNewPredicateDump);
+		new ExecutionTrace(TraceRepository.synopticOldHistoryDump,
+				TraceRepository.synopticOldSig, TraceRepository.synopticOldPredicateDump);
+		new ExecutionTrace(TraceRepository.synopticNewHistoryDump,
+				TraceRepository.synopticNewSig, TraceRepository.synopticNewPredicateDump);
+		new ExecutionTrace(TraceRepository.wekaOldHistoryDump,
+				TraceRepository.wekaOldSig, TraceRepository.wekaOldPredicateDump);
+		new ExecutionTrace(TraceRepository.wekaNewHistoryDump,
+				TraceRepository.wekaNewSig, TraceRepository.wekaNewPredicateDump);
+		new ExecutionTrace(TraceRepository.jmeterOldHistoryDump,
+				TraceRepository.jmeterOldSig, TraceRepository.jmeterOldPredicateDump);
+		new ExecutionTrace(TraceRepository.jmeterNewHistoryDump,
+				TraceRepository.jmeterNewSig, TraceRepository.jmeterNewPredicateDump);
 	}
 }
