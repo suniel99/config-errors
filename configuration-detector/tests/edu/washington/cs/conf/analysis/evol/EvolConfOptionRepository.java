@@ -1,39 +1,60 @@
 package edu.washington.cs.conf.analysis.evol;
 
+import java.util.Collection;
+
 import edu.washington.cs.conf.analysis.ConfEntity;
+import edu.washington.cs.conf.analysis.ConfEntityRepository;
 
 public class EvolConfOptionRepository {
+	
+	private static final String optionDir = "./tests/edu/washington/cs/conf/analysis/evol/experiments/";
 
-	public static ConfEntity[] randoopOldConfs() {
-		return new ConfEntity[]{};
+	public static final String randoopOldOptionFile = optionDir + "randoop-old-options.txt";
+	public static ConfEntityRepository randoopOldConfs() {
+		Collection<ConfEntity> entities = ConfEntity.readConfigOptionsFromFile(randoopOldOptionFile);
+		return new ConfEntityRepository(entities);
 	}
 	
-	public static ConfEntity[] randoopNewConfs() {
-	   return new ConfEntity[]{};	
+	public static final String randoopNewOptionFile = optionDir + "randoop-new-options.txt";
+	public static ConfEntityRepository randoopNewConfs() {
+		Collection<ConfEntity> entities = ConfEntity.readConfigOptionsFromFile(randoopNewOptionFile);
+		return new ConfEntityRepository(entities);
 	}
 	
-	public static ConfEntity[] wekaOldConfs() {
-		return new ConfEntity[]{};	
+	public static final String wekaOldOptionFile = optionDir + "weka-old-options.txt";
+	public static ConfEntityRepository wekaOldConfs() {
+		Collection<ConfEntity> entities = ConfEntity.readConfigOptionsFromFile(wekaOldOptionFile);
+		return new ConfEntityRepository(entities);
 	}
 	
-	public static ConfEntity[] wekaNewConfs() {
-		return new ConfEntity[]{};	
+	public static final String wekaNewOptionFile = optionDir + "weka-new-options.txt";
+	public static ConfEntityRepository wekaNewConfs() {
+		Collection<ConfEntity> entities = ConfEntity.readConfigOptionsFromFile(wekaNewOptionFile);
+		return new ConfEntityRepository(entities);
 	}
 	
-	public static ConfEntity[] synopticOldConfs() {
-		return new ConfEntity[]{};	
+	public static final String synopticOldOptionFile = optionDir + "synoptic-old-options.txt";
+	public static ConfEntityRepository synopticOldConfs() {
+		Collection<ConfEntity> entities = ConfEntity.readConfigOptionsFromFile(synopticOldOptionFile);
+		return new ConfEntityRepository(entities);
 	}
 	
-	public static ConfEntity[] synopticNewConfs() {
-		return new ConfEntity[]{};	
+	public static final String synopticNewOptionFile = optionDir + "synoptic-new-options.txt";
+	public static ConfEntityRepository synopticNewConfs() {
+		Collection<ConfEntity> entities = ConfEntity.readConfigOptionsFromFile(synopticNewOptionFile);
+		return new ConfEntityRepository(entities);
 	}
 	
-	public static ConfEntity[] jmeterOldConfs() {
-		return new ConfEntity[]{};	
+	public static final String jmeterOldOptionFile = optionDir + "jmeter-old-options.txt";
+	public static ConfEntityRepository jmeterOldConfs() {
+		Collection<ConfEntity> entities = ConfEntity.readConfigOptionsFromFile(jmeterOldOptionFile);
+		return new ConfEntityRepository(entities);
 	}
 	
-	public static ConfEntity[] jmeterNewConfs() {
-		return new ConfEntity[]{};	
+	public static final String jmeterNewOptionFile = optionDir + "jmeter-new-options.txt";
+	public static ConfEntityRepository jmeterNewConfs() {
+		Collection<ConfEntity> entities = ConfEntity.readConfigOptionsFromFile(jmeterNewOptionFile);
+		return new ConfEntityRepository(entities);
 	}
 	
 	public static ConfEntity[] jchordOldConfs() {
