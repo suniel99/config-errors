@@ -25,6 +25,7 @@ import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 import java.util.Map.Entry;
+import java.util.Vector;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -601,5 +602,49 @@ public class Utils {
 		} catch (ClassNotFoundException e) {
 		}
 		return null;
+	}
+	
+	@Deprecated
+	public static Collection<Class<?>> getAllLoadedClasses(String classPath) {
+		// Create a File object on the root of the directory containing the class file
+		String[] paths = classPath.split(Globals.pathSep);
+		File[] files = new File[paths.length];
+		for(int i = 0; i < paths.length; i++) {
+			files[i] = new File(paths[i]);
+		}
+
+		try {
+		    // Convert File to a URL
+			URL[] urls = new URL[files.length];
+			for(int i = 0; i < files.length; i++) {
+				urls[i] = files[i].toURL();
+			}
+
+		    // Create a new class loader with the directory
+		    ClassLoader cl = new URLClassLoader(urls);
+
+		    //a hacky way
+		    Collection<Class<?>> allClasses = new LinkedHashSet<Class<?>>();
+		    
+		    Field f = ClassLoader.class.getDeclaredField("classes");
+		    f.setAccessible(true);
+		    Vector<Class<?>> classes =  (Vector<Class<?>>) f.get(cl);
+//		    System.out.println("size: " + classes.size());
+		    for(Class<?> c : classes) {
+		    	allClasses.add(c);
+		    }
+		    
+		    return allClasses;
+		} catch (MalformedURLException e) {
+			throw new Error(e);
+		} catch (IllegalArgumentException e) {
+			throw new Error(e);
+		} catch (IllegalAccessException e) {
+			throw new Error(e);
+		} catch (SecurityException e) {
+			throw new Error(e);
+		} catch (NoSuchFieldException e) {
+			throw new Error(e);
+		}
 	}
 }
