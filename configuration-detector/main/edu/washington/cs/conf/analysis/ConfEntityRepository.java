@@ -63,4 +63,11 @@ public class ConfEntityRepository {
 			entity.setType(f.getType().getName());
 		}
 	}
+	
+	public void showAll() {
+		System.out.println(this.size() + " options:");
+		for(ConfEntity entity : this.getConfEntityList()) {
+			System.out.println("  " + entity.toString());
+		}
+	}
 }
