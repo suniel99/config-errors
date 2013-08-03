@@ -10,10 +10,8 @@ import edu.washington.cs.conf.util.WALAUtils;
 public class CodeAnalyzerRepository {
 
 	//for the randoop case
-	
+	public static final String randoop121Path = "D:\\research\\confevol\\subject-programs\\randoop\\randoop-1.2.1\\randoop-1.2.1.jar";
 	public static CodeAnalyzer getRandoop121Analyzer() {
-		String randoop121Path = "D:\\research\\confevol\\subject-programs\\randoop\\randoop-1.2.1\\randoop-1.2.1.jar";
-		
 		String randoopMain = "Lrandoop/main/Main";
 		
 		CodeAnalyzer coder121 = new CodeAnalyzer(randoop121Path, randoopMain);
@@ -23,11 +21,10 @@ public class CodeAnalyzerRepository {
 		return coder121;
 	}
 	
+	public static final String randoop132Path = "D:\\research\\confevol\\subject-programs\\randoop\\randoop-1.3.2\\randoop-1.3.2.jar"
+		+ Globals.pathSep + "D:\\research\\confevol\\subject-programs\\randoop\\randoop-1.3.2\\lib\\plume.jar"
+		+ Globals.pathSep + "D:\\research\\confevol\\subject-programs\\randoop\\randoop-1.3.2\\lib\\jakarta-oro-2.0.8.jar";
 	public static CodeAnalyzer getRandoop132Analyzer() {
-		String randoop132Path = "D:\\research\\confevol\\subject-programs\\randoop\\randoop-1.3.2\\randoop-1.3.2.jar"
-			+ Globals.pathSep + "D:\\research\\confevol\\subject-programs\\randoop\\randoop-1.3.2\\lib\\plume.jar"
-			+ Globals.pathSep + "D:\\research\\confevol\\subject-programs\\randoop\\randoop-1.3.2\\lib\\jakarta-oro-2.0.8.jar";
-		
 		String randoopMain = "Lrandoop/main/Main";
 		
 		CodeAnalyzer coder132 = new CodeAnalyzer(randoop132Path, randoopMain);
@@ -38,11 +35,11 @@ public class CodeAnalyzerRepository {
 	}
 	
 	static String synopticMainClass = "Lsynoptic/main/Main";
+	public static final String oldSynopticPath = "D:\\research\\confevol\\subject-programs\\synoptic\\synoptic-0.0.5\\synoptic.jar"
+		+ Globals.pathSep + "D:\\research\\confevol\\subject-programs\\synoptic\\synoptic-0.0.5\\lib\\plume.jar"
+		+ Globals.pathSep + "D:\\research\\confevol\\subject-programs\\synoptic\\synoptic-0.0.5\\lib\\junit-4.9b2.jar";
+	
 	public static CodeAnalyzer getSynopticOldAnalyzer() {
-		String oldSynopticPath = "D:\\research\\confevol\\subject-programs\\synoptic\\synoptic-0.0.5\\synoptic.jar"
-			+ Globals.pathSep + "D:\\research\\confevol\\subject-programs\\synoptic\\synoptic-0.0.5\\lib\\plume.jar"
-			+ Globals.pathSep + "D:\\research\\confevol\\subject-programs\\synoptic\\synoptic-0.0.5\\lib\\junit-4.9b2.jar";
-		
 		CodeAnalyzer oldCoder = new CodeAnalyzer(oldSynopticPath, synopticMainClass);
 		oldCoder.slicer.setExclusionFile("JavaAllExclusions.txt");
 		oldCoder.slicer.setCGType(CG.ZeroCFA);
@@ -50,11 +47,10 @@ public class CodeAnalyzerRepository {
 		return oldCoder;
 	}
 	
+	public static final String newSynopticPath = "D:\\research\\confevol\\subject-programs\\synoptic\\synoptic-0.1\\lib\\synoptic.jar"
+		+ Globals.pathSep + "D:\\research\\confevol\\subject-programs\\synoptic\\synoptic-0.1\\lib\\plume.jar"
+		+ Globals.pathSep + "D:\\research\\confevol\\subject-programs\\synoptic\\synoptic-0.1\\lib\\junit-4.9b2.jar";
 	public static CodeAnalyzer getSynopticNewAnalyzer() {
-		String newSynopticPath = "D:\\research\\confevol\\subject-programs\\synoptic\\synoptic-0.1\\lib\\synoptic.jar"
-			+ Globals.pathSep + "D:\\research\\confevol\\subject-programs\\synoptic\\synoptic-0.1\\lib\\plume.jar"
-			+ Globals.pathSep + "D:\\research\\confevol\\subject-programs\\synoptic\\synoptic-0.1\\lib\\junit-4.9b2.jar";
-		
 		CodeAnalyzer newCoder = new CodeAnalyzer(newSynopticPath, synopticMainClass);
 		newCoder.slicer.setExclusionFile("JavaAllExclusions.txt");
 		newCoder.slicer.setCGType(CG.ZeroCFA);
@@ -63,19 +59,16 @@ public class CodeAnalyzerRepository {
 	}
 	
 	static String wekaMainClass = "Lweka/classifiers/trees/J48";
+	public final static String oldWekaPath = "D:\\research\\confevol\\subject-programs\\weka\\weka-3-6-1\\weka-3-6-1\\weka.jar";
 	public static CodeAnalyzer getWekaOldAnalyzer() {
-		String oldWekaPath = "D:\\research\\confevol\\subject-programs\\weka\\weka-3-6-1\\weka-3-6-1\\weka.jar";
-		
 		CodeAnalyzer oldCoder = new CodeAnalyzer(oldWekaPath, wekaMainClass);
 		oldCoder.slicer.setExclusionFile("JavaAllExclusions.txt");
 		oldCoder.slicer.setCGType(CG.ZeroCFA);
-		
 		return oldCoder;
 	}
 	
+	public final static String newWekaPath = "D:\\research\\confevol\\subject-programs\\weka\\weka-3-6-2\\weka-3-6-2\\weka.jar";
 	public static CodeAnalyzer getWekaNewAnalyzer() {
-		String newWekaPath = "D:\\research\\confevol\\subject-programs\\weka\\weka-3-6-2\\weka-3-6-2\\weka.jar";
-		
 		CodeAnalyzer newCoder = new CodeAnalyzer(newWekaPath, wekaMainClass);
 		newCoder.slicer.setExclusionFile("JavaAllExclusions.txt");
 		newCoder.slicer.setCGType(CG.ZeroCFA);
@@ -139,7 +132,7 @@ public class CodeAnalyzerRepository {
 	}
 	
 	//the long classpath for JMeter
-	static String getOldJMeterPath() {
+	public static String getOldJMeterPath() {
 		String startJar = "D:\\research\\confevol\\subject-programs\\jmeter\\apache-jmeter-2.8\\bin\\ApacheJMeter.jar";
 		
 		String allJars = 
@@ -208,7 +201,7 @@ public class CodeAnalyzerRepository {
 		
 		return allJars + Globals.pathSep + startJar;
 	}
-	static String getNewJMeterPath() {
+	public static String getNewJMeterPath() {
 		String allJars =
 			"D:\\research\\confevol\\subject-programs\\jmeter\\apache-jmeter-2.9\\lib\\activation-1.1.1.jar" + Globals.pathSep +
 			"D:\\research\\confevol\\subject-programs\\jmeter\\apache-jmeter-2.9\\lib\\avalon-framework-4.1.4.jar" + Globals.pathSep +
