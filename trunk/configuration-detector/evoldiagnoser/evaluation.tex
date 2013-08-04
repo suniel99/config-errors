@@ -21,8 +21,34 @@ an alternative approach based on \todo{describe it} (Section~\ref{sec:alternativ
 
 \end{enumerate}
 
-\subsection{Subject Programs and Configuration Errors}
+\subsection{Subject Programs}
 
+We evaluated \ourtool on the \subjnum Java programs
+described in our empirical study (Table~\ref{tab:subjects}).
+
+\subsubsection{Configuration Errors Across Versions}
+
+\input{program-table}
+
+For each subject program, we manually examinated all
+configuration-related changes listed in Table~\ref{tab:options},
+and wrote a test driver that revealed different
+behaviors on two corresponding versions for each configuration change.
+
+We collected \errornum configuration errors caused by
+software evolution. \todo{reasons of relatively few
+errors}. First, we excluded option additions, since
+those options are not available in the old version.
+Second, we excluded option changes that are backward
+compatible. Third, for such option changes, if the
+new program version already identifies the potential
+configuration errors by dumping explicit error messages,
+we excluded them. No tool support is even needed
+for this case.
+
+We evaluated all configuration errors that we can reproduce;
+we did not select only errors that \ourtool works well.
+Table~\ref{tab:errors} lists all errors.
 
 \subsection{Evaluation Procedure}
 
@@ -33,6 +59,51 @@ an alternative approach based on \todo{describe it} (Section~\ref{sec:alternativ
 
 \subsubsection{Performance of \ourtool}
 \label{sec:timecost}
+
+We measured \ourtool's performance in two ways:
+the time cost of diagnosing an error and
+the overhead introduced by instrumentation
+in reproducing an error.
+
+Table~\ref{tab:performance} shows the results.
+
+\begin{table}[t]
+\vspace{1mm}
+\centering
+\small{
+\setlength{\tabcolsep}{.80\tabcolsep}
+\begin{tabular}{|l||c|c|c|c|}
+\hline
+ Configuration & \multicolumn{2}{|c|}{Run-time Slowdown ($\times$)} & \ourtool time\\
+ \cline{2-3}
+ Error ID& Old Version & New Version & (seconds)\\
+ %&  Options &  Options&  Options \\
+ \hline
+ \hline
+ 1 &  &  &  \\
+ 2 &  &  &  \\
+ 3 &  &  &  \\
+ 4 &  &  &  \\
+ 5 &  &  &  \\
+ 6 &  &  &  \\
+ 7 &  &  &  \\
+\hline
+\hline
+ Mean & & & \\
+\hline
+\end{tabular}
+}
+\vspace{-2mm}
+\Caption{{\label{tab:performance} \ourtool's
+performance. The ``Run-time slow down'' column
+shows the cost of reproducing the error in
+an \ourtool-instrumented version of the subject program.
+The ``\ourtool time (seconds)'' column shows
+the time took by \ourtool to diagnose configuration errors.
+For both columns, the mean is the geometric mean. 
+}
+}
+\end{table}
 
 \subsubsection{Comparison with Existing Approaches}
 \label{sec:existing}
@@ -49,5 +120,7 @@ an alternative approach based on \todo{describe it} (Section~\ref{sec:alternativ
 \noindent \textbf{\textit{Threats to validity.}}
 
 \vspace{1mm}
+The use case for reproducing differences may not reflect
+users.
 
 \noindent \textbf{\textit{Experimental conclusions.}}

@@ -1,58 +1,73 @@
 \begin{figure}[t]
 \textbf{Input}: two versions of the software: $\mathit{V_{old}}$ and $V_{new}$
 
-\quad two traces on the two software versions: $\mathit{T_{old}}$ and $T_{new}$\\
-\textbf{Output}: a ranked list of configuration options\\
+\quad two execution traces on the two versions: $\mathit{T_{old}}$ and $T_{new}$\\
+\textbf{Output}: a ranked list of suspicious configuration options\\
 \vspace{-4mm}%
 diagnoseConfigurationErrors($\mathit{V_{old}}$, $\mathit{V_{new}}$, $\mathit{T_{old}}$, $\mathit{T_{new}}$)\\
 \begin{algorithmic}[1]
-\STATE $\mathit{weights}$ = new Map$\langle$Option, Float$\rangle$
-\STATE $\mathit{basicBlocks_{+}}$ $\leftarrow$ fetchNewCoveredBasicBlocks($T_{old}$, $T_{new}$)
-\STATE $\mathit{basicBlocks_{-}}$ $\leftarrow$ fetchUncoveredBasicBlocks($T_{old}$, $T_{new}$)
-\STATE $\mathit{basicBlocks_{\delta}}$ $\leftarrow$ fetchChangedBasicBlocks($T_{old}$, $T_{new}$)
-\STATE $\mathit{blocks_{diff}}$ $\leftarrow$ $\mathit{basicBlocks_{+}}$ $\cup$ $\mathit{basicBlocks_{-}}$ $\cup$ $\mathit{basicBlocks_{\delta}}$
-\STATE computeWeights($\mathit{weights}$, $\mathit{basicBlocks_{+}}$, $\mathit{V_{new}}$, $\mathit{T_{new}}$, $\mathit{blocks_{diff}}$)
-\STATE computeWeights($\mathit{weights}$, $\mathit{basicBlocks_{-}}$, $\mathit{V_{old}}$, $\mathit{T_{old}}$, $\mathit{blocks_{diff}}$)
-\STATE computeWeights($\mathit{weights}$, $\mathit{basicBlocks_{\delta}}$, $\mathit{V_{new}}$, $\mathit{T_{new}}$, $\mathit{blocks_{diff}}$)
+\STATE $\mathit{weights}$ = new Map$\langle$Option, Float$\rangle$\\
+\COMMENT{Get predicates only executed in the new version}
+\STATE $\mathit{preds_{+}}$ $\leftarrow$ newPredicates($T_{old}$, $T_{new}$)\\
+\COMMENT{Get predicates only executed in the old version}
+\STATE $\mathit{preds_{-}}$ $\leftarrow$ removedPredicates($T_{old}$, $T_{new}$)\\
+\COMMENT{Get predicates with different behaviors in two versions}
+\STATE $\mathit{preds_{\delta}}$ $\leftarrow$ differentPredicates($T_{old}$, $T_{new}$)
+\STATE $\mathit{preds_{diff}}$ $\leftarrow$ $\mathit{preds_{+}}$ $\cup$ $\mathit{preds_{-}}$ $\cup$ $\mathit{preds_{\delta}}$
+\STATE updateWeights($\mathit{weights}$, $\mathit{preds_{+}}$, $\mathit{V_{new}}$, $\mathit{T_{new}}$, $\mathit{preds_{diff}}$)
+\STATE updateWeights($\mathit{weights}$, $\mathit{preds_{-}}$, $\mathit{V_{old}}$, $\mathit{T_{old}}$, $\mathit{preds_{diff}}$)
+\STATE updateWeights($\mathit{predsweights}$, $\mathit{preds_{\delta}}$, $\mathit{V_{new}}$, $\mathit{T_{new}}$, $\mathit{preds_{diff}}$)
 \RETURN $\mathit{weightMap}$.sortedKeys()
 \end{algorithmic}
+\caption{Algorithm for diagnosing configuration errors. The
+procedure \CodeIn{updateWeights} is defined in Figure~\ref{fig:update}.
+\label{fig:diagalg}
+}
+\end{figure}
 
-\vspace{2mm}
 
+\begin{figure}[t]
 \textbf{Input}: a software version: $\mathit{V}$, an execute trace: $\mathit{T}$, 
 
-\quad a set of basic blocks: $\mathit{basicBlocks}$, 
+\quad a set of analyzed predicates: $\mathit{predicates}$, 
 
-\quad a set of different blocks: $\mathit{blocks_{diff}}$, and
+\quad a set of behaviorally-different predicates: $\mathit{preds_{diff}}$, and
 
 \quad a weight map: $\mathit{weightMap}$\\
-\textbf{Output}: None. The algorithm mutates the weight map: $\mathit{weightMap}$\\
+\textbf{Output}: None. The algorithm updates the weight map: $\mathit{weightMap}$\\
 \vspace{-4mm}%
-computeWeights($\mathit{V}$, $\mathit{T}$, $\mathit{blocks_{diff}}$, $\mathit{weightMap}$)\\
+updateWeights($\mathit{weightMap}$, $\mathit{predicates}$, $\mathit{V}$, $\mathit{T}$, $\mathit{preds_{diff}}$)\\
 \begin{algorithmic}[1]
-\STATE $\mathit{worklist}$ $\leftarrow$ new Queue$\langle$BasicBlock$\rangle$
-\STATE $\mathit{worklist}$.enqueueAll($\mathit{basicBlocks}$)
+\STATE $\mathit{worklist}$ $\leftarrow$ new Queue$\langle$Predicate$\rangle$
+\STATE $\mathit{worklist}$.enqueueAll($\mathit{predicates}$)
+\STATE $\mathit{visited}$ $\leftarrow$ new Set$\langle$Predicate$\rangle$
 \WHILE{$\mathit{worklist}$ is not empty}
-\STATE $\mathit{basicBlock}$ $\leftarrow$ $\mathit{worklist}$.dequeue()
-\STATE $\mathit{options}$ $\leftarrow$ getAffectingOptions($\mathit{basicBlock}$, $\mathit{V}$)
-\STATE $\mathit{cost}$ $\leftarrow$ getCost($\mathit{basicBlock}$, $\mathit{T}$, $\mathit{V}$)
+\STATE $\mathit{pred}$ $\leftarrow$ $\mathit{worklist}$.dequeue()
+\IF{$\mathit{visited}$.contains($\mathit{pred}$)}
+\STATE \textbf{continue}
+\ENDIF
+\STATE $\mathit{visited}$.add($\mathit{pred}$)
+\STATE $\mathit{options}$ $\leftarrow$ getAffectingOptions($\mathit{pred}$, $\mathit{V}$)\\
+\COMMENT{\todo{the cost part needs elaboration}}
+\STATE $\mathit{cost}$ $\leftarrow$ getCost($\mathit{pred}$, $\mathit{T}$, $\mathit{V}$)
 \FOR{each $\mathit{option}$ in $\mathit{options}$}
 \STATE $\mathit{weightMap}$[$\mathit{options}$] $\leftarrow$ $\mathit{weightMap}$[$\mathit{options}$] + $\mathit{cost}$
-\ENDFOR
-\STATE $\mathit{updatedVars}$ $\leftarrow$ new List$\langle$Variable$\rangle$
-\IF{$\mathit{basicBlock}$ is new covered}
-\STATE $\mathit{updatedVars}$ $\leftarrow$ getUpdatedVars($\mathit{basicBlock}$)
-\ENDIF
-\FOR{each $\mathit{var}$ in $\mathit{updatedVars}$}
-\IF{$\mathit{var}$ escapes $\mathit{basicBlock}$}
-\STATE $\mathit{succBasicBlocks}$ $\leftarrow$ getAffectingBasicBlocks($\mathit{var}$)
-\STATE $\mathit{worklist}$.enqueueAll($\mathit{succBasicBlocks}$ $\cap$ $\mathit{blocks_{diff}}$)
+\ENDFOR\\
+\COMMENT{Get the basic block $\mathit{pred}$ controls}
+\STATE $\mathit{basicBlock}$ $\leftarrow$ getBasicBlock($\mathit{pred}$)\\
+\COMMENT{Variables updated and esecaped from the basic block}
+\STATE $\mathit{updatedVars}$ $\leftarrow$ getUpdatedVars($\mathit{basicBlock}$)\\
+\COMMENT{Use thin slicing}
+\STATE $\mathit{affectedPreds}$ $\leftarrow$ getAffectingPredicates($\mathit{var}$)
+\FOR{each $\mathit{affectedPred}$ in $\mathit{affectedPreds}$}
+\IF{{$\mathit{pred_\delta}$}.contains($\mathit{affectedPred}$)}
+\STATE $\mathit{worklist}$.enqueue($\mathit{affectedPred}$)
 \ENDIF
 \ENDFOR
 \ENDWHILE
 \vspace{-2mm}
 \end{algorithmic}
-\caption{Algorithm for diagnosing configuration errors.
-\label{fig:diagalg}
+\caption{Algorithm for updating weights
+\label{fig:update}
 }
 \end{figure}
