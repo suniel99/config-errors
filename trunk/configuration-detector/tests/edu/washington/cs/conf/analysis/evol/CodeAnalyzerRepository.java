@@ -9,11 +9,10 @@ import edu.washington.cs.conf.util.WALAUtils;
 
 public class CodeAnalyzerRepository {
 
+	public static final String randoopMain = "Lrandoop/main/Main";
 	//for the randoop case
 	public static final String randoop121Path = "D:\\research\\confevol\\subject-programs\\randoop\\randoop-1.2.1\\randoop-1.2.1.jar";
 	public static CodeAnalyzer getRandoop121Analyzer() {
-		String randoopMain = "Lrandoop/main/Main";
-		
 		CodeAnalyzer coder121 = new CodeAnalyzer(randoop121Path, randoopMain);
 		coder121.slicer.setExclusionFile("JavaAllExclusions.txt");
 		coder121.slicer.setCGType(CG.ZeroCFA);
@@ -25,8 +24,6 @@ public class CodeAnalyzerRepository {
 		+ Globals.pathSep + "D:\\research\\confevol\\subject-programs\\randoop\\randoop-1.3.2\\lib\\plume.jar"
 		+ Globals.pathSep + "D:\\research\\confevol\\subject-programs\\randoop\\randoop-1.3.2\\lib\\jakarta-oro-2.0.8.jar";
 	public static CodeAnalyzer getRandoop132Analyzer() {
-		String randoopMain = "Lrandoop/main/Main";
-		
 		CodeAnalyzer coder132 = new CodeAnalyzer(randoop132Path, randoopMain);
 		coder132.slicer.setExclusionFile("JavaAllExclusions.txt");
 		coder132.slicer.setCGType(CG.ZeroCFA);
@@ -34,7 +31,7 @@ public class CodeAnalyzerRepository {
 		return coder132;
 	}
 	
-	static String synopticMainClass = "Lsynoptic/main/Main";
+	public static String synopticMainClass = "Lsynoptic/main/Main";
 	public static final String oldSynopticPath = "D:\\research\\confevol\\subject-programs\\synoptic\\synoptic-0.0.5\\synoptic.jar"
 		+ Globals.pathSep + "D:\\research\\confevol\\subject-programs\\synoptic\\synoptic-0.0.5\\lib\\plume.jar"
 		+ Globals.pathSep + "D:\\research\\confevol\\subject-programs\\synoptic\\synoptic-0.0.5\\lib\\junit-4.9b2.jar";
@@ -58,7 +55,7 @@ public class CodeAnalyzerRepository {
 		return newCoder;
 	}
 	
-	static String wekaMainClass = "Lweka/classifiers/trees/J48";
+	public static String wekaMainClass = "Lweka/classifiers/trees/J48";
 	public final static String oldWekaPath = "D:\\research\\confevol\\subject-programs\\weka\\weka-3-6-1\\weka-3-6-1\\weka.jar";
 	public static CodeAnalyzer getWekaOldAnalyzer() {
 		CodeAnalyzer oldCoder = new CodeAnalyzer(oldWekaPath, wekaMainClass);
@@ -87,6 +84,8 @@ public class CodeAnalyzerRepository {
 		CodeAnalyzer oldAnalyzer = new CodeAnalyzer(classPath, jmeterMainClassSig);
 		oldAnalyzer.slicer.setExclusionFile("JavaAllExclusions.txt");
 		oldAnalyzer.slicer.setCGType(CG.RTA);
+//		oldAnalyzer.slicer.setCGType(CG.ZeroCFA);
+//		oldAnalyzer.slicer.setCGType(CG.OneCFA);
 		
 		//must customize the entry points
 		oldAnalyzer.slicer.buildClassHierarchy();
