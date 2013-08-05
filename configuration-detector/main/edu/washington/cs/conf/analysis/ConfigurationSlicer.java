@@ -233,6 +233,7 @@ public class ConfigurationSlicer {
 			}
 		} catch (Throwable e) {
 			throw new RuntimeException(e);
+//			return new LinkedList<Statement>();
 		}
 	}
 	
@@ -318,6 +319,7 @@ public class ConfigurationSlicer {
 		//SSAPutInstruction.class;
 		
 		Log.logln("target method name: " + targetMethod);
+//		System.out.println(targetMethod);
 		
 		for(CGNode node : cg) {
 			String fullMethodName = WALAUtils.getFullMethodName(node.getMethod());

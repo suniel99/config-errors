@@ -58,7 +58,7 @@ public class ConfEntityRepository {
 			Utils.checkNotNull(f);
 			
 			boolean isFieldStatic = Modifier.isStatic(f.getModifiers());
-			Utils.checkTrue(isStatic == isFieldStatic);
+			Utils.checkTrue(isStatic == isFieldStatic, "f is: " + f);
 			
 			entity.setType(f.getType().getName());
 		}
