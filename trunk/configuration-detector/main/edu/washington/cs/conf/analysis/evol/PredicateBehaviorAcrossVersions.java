@@ -120,18 +120,46 @@ public class PredicateBehaviorAcrossVersions {
 	}
 	
 	private boolean isBehaviorSame() {
-		return this.execFreqInOld == this.execFreqInNew 
-		    & this.evalResultInOld == this.evalResultInNew;
+		if(this.execFreqInOld == this.execFreqInNew 
+			    & this.evalResultInOld == this.evalResultInNew) {
+		    return true;
+		} else if(this.evalResultInNew == this.evalResultInOld
+					&& this.evalResultInOld == 0) {
+				return true;
+		} else {
+			//check the ratio
+			if(this.execFreqInNew != 0 && this.execFreqInOld != 0) {
+				return Math.abs(((float)this.evalResultInOld/(float)this.execFreqInOld)
+						- ((float)this.evalResultInNew/(float)this.execFreqInNew)) < 0.05;
+			}
+		}
+		return false;
 	}
 	
 	private float delta = 0.1f;
 	public void setDelta(float d) {
 		this.delta = d;
 	}
-	private float compareBehaviors() {
+	
+	public float getDifferenceDegree() {
+		if(this.execFreqInNew != 0 && this.evalResultInNew != 0
+				&& this.execFreqInOld != 0 && this.evalResultInOld != 0) {
+				return this.compareBehaviors();
+		}
+		//either in new or old trace, the evaluation result is ZERO
+		else if(this.execFreqInNew !=0 && this.execFreqInOld != 0) {
+			return Math.abs(
+				((float)this.evalResultInNew/(float)this.execFreqInNew) - 
+			    ((float)this.evalResultInOld/(float)this.execFreqInOld)
+			    ); //XXX fix me
+		}
+		return 0.0f; //XXX NOTE
+	}
+	
+	public float compareBehaviors() {
 		//check the exec freq
-		float oldValue = 1 / ((1/this.execFreqInOld) + (1/(this.evalResultInOld/this.execFreqInOld)));
-		float newValue = 1 / ((1/this.execFreqInNew) + (1/(this.evalResultInNew/this.execFreqInNew)));
+		float oldValue = 1 / ((1/(float)this.execFreqInOld) + (1/((float)this.evalResultInOld/(float)this.execFreqInOld)));
+		float newValue = 1 / ((1/(float)this.execFreqInNew) + (1/((float)this.evalResultInNew/(float)this.execFreqInNew)));
 		float d = Math.abs(oldValue - newValue);
 		return d;
 	}
@@ -139,5 +167,12 @@ public class PredicateBehaviorAcrossVersions {
 	private boolean isValid() {
 		return this.execFreqInOld >= 0 && this.evalResultInOld >= 0
 		    && this.execFreqInNew >= 0 && this.evalResultInNew >= 0;
+	}
+	
+	@Override
+	public String toString() {
+		return this.methodSig + "@" + this.index +
+		    "\n      in old: " + this.evalResultInOld + "/" + this.execFreqInOld
+		    + "\n      in new: " + this.evalResultInNew + "/" + this.execFreqInNew;
 	}
 }
