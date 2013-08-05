@@ -3,33 +3,35 @@
 
 Many modern software systems are configurable. They
 have a large number of configuration options for users
-to customize their behaviors. This flexibility has a cost:
+to customize their behavior. This flexibility has a cost:
 a small configuration error might lead to hard-to-diagnose
 behaviors.
 %when something goes wrong, diagnosing a configuration
 %error can be both time-consuming and furstrating.
 
 Software configuration errors are errors in which
-the application code is correct, but the software is
-configured incorrectly so that it does not behave
-as desired. Such errors may lead software to crash,
+the application code and the input is correct, but the software is
+configured so that it does not behave
+as desired by the end-user. Such errors may lead software to crash,
 produce erroneous output, or simply perform poorly.
 In practice, software configuration
 errors are \textit{prevalent}, \textit{severe}, and
-\textit{hard to debug}, but they are
-\textit{actionable} for users
-to fix.
+\textit{hard to debug}, but they are \textit{actionable} for users to fix.
 
-\todo{perhaps mention differences between inputs and configuration above}
 
-In deployed software systems, configuration errors have been
-the dominant cause of problems~\cite{}.
+%In many modern software systems, configuration errors have been
+%the dominant cause of problems~\cite{}.
 A recent analysis of Yahoo's mission-critical Zookeeper service
 showed that software misconfigurations accounted for
-the majority of all exhibited bugs~\cite{bft}. Another
+the majority of all user-visible failrues~\cite{bft}. Another
 recent study analyzed reported problems of a commercial
 storage company, and found configuration-related issues
-caused about 31\% of all failures~\cite{Yin:2011:ESC}.
+caused about 31\% of all user-visible failures~\cite{Yin:2011:ESC}.
+Further, as described in a recent article about system deployment experience
+in Google, the vast majority of production failures (in Google)
+arise not due to bugs in the software, but bugs in the
+configuration settings (i.e., configuration errors)
+that control the software~\cite{googleconf}.
 Not only are configuration errors prevalent, they
 can have high, sometimes disastrous impacts. For example,
 an outage in Facebook, due to
@@ -38,12 +40,7 @@ inaccessible for about 2 hours~\cite{fbout}.
 The entire .se domain of country Sweden was unavailable
 for about 1 hour, due to a DNS misconfiguration problem~\cite{sedown}.
 Such incidents affected millions of users. Furthermore, configuration
-errors are difficult to diagnose.
-As described in a recent article about system deployment experience
-in Google, the vast majority of production failures (in Google)
-arise not due to bugs in the software, but bugs in the
-configuration settings (i.e., configuration errors)
-that control the software. Diagnosing
+errors are difficult to diagnose. Diagnosing
 configuration errors has become a difficult problem; 
 techniques helping escape from the ``configuration hell''
 are highly demanded~\cite{googleconf}.
@@ -53,7 +50,7 @@ which can only be fixed by experienced software developers, fixing a software
 configuration error is more \textit{actionable} for software end-users
 or system administrators. These users are not the software developers,
 and do not have the right expertise to understand (or even access to)
-the source code;  but they can simplify fix a configuration error by changing
+the source code;  but they can fix a configuration error by simply changing
 values of certain configuration options.
 
 
