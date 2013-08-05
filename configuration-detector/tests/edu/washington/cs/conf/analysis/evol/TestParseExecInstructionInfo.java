@@ -112,6 +112,14 @@ public class TestParseExecInstructionInfo extends TestCase {
 		
 		Set<PredicateBehaviorAcrossVersions> matchedPreds = SimpleChecks.getMatchedPredicateExecutions(oldPredExecs, newPredExecs);
 		System.out.println("Number of matched preds: " + matchedPreds.size());
+		for(PredicateBehaviorAcrossVersions pred : matchedPreds) {
+			if(pred.isBehaviorChanged()) {
+				System.out.println("  " + pred);
+				System.out.println("       " + pred.compareBehaviors());
+				System.out.println("        behavior diff: " + pred.getDifferenceDegree());
+				System.out.println();
+			}
+		}
 	}
 	
 	public void testParseSynoptic_predicate_in_trace() {
