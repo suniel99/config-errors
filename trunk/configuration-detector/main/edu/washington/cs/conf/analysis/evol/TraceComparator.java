@@ -1,7 +1,11 @@
 package edu.washington.cs.conf.analysis.evol;
 
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import com.ibm.wala.ssa.SSAInstruction;
@@ -103,35 +107,35 @@ public class TraceComparator {
 	}
 	
 	//this is a subset of the above predicates executed in both versions
-	public Set<PredicateBehaviorAcrossVersions> getPredicateWithDifferentBehaviors() {
-		Set<PredicateBehaviorAcrossVersions> diffPreds = new LinkedHashSet<PredicateBehaviorAcrossVersions>();
-		for(PredicateBehaviorAcrossVersions predExec : this.getPredicateExecutedInBothVersions()) {
-			if(predExec.isBehaviorChanged()) {
-				diffPreds.add(predExec);
-			}
-		}
-		return diffPreds;
-	}
+//	public Set<PredicateBehaviorAcrossVersions> getPredicateWithDifferentBehaviors() {
+//		Set<PredicateBehaviorAcrossVersions> diffPreds = new LinkedHashSet<PredicateBehaviorAcrossVersions>();
+//		for(PredicateBehaviorAcrossVersions predExec : this.getPredicateExecutedInBothVersions()) {
+//			if(predExec.isBehaviorChanged()) {
+//				diffPreds.add(predExec);
+//			}
+//		}
+//		return diffPreds;
+//	}
 	
-	private PredicateBehaviorAcrossVersions getMatchedPredicateInOldVersion(PredicateBehaviorAcrossVersions newPredExec) {
-		//call the predicate matching logic
-		return this.matcher.getMatchedPredicateInOldVersion(newPredExec);
-	}
-	
-	private PredicateBehaviorAcrossVersions getMatchedPredicateInNewVersion(PredicateBehaviorAcrossVersions oldPredExec) {
-		//this method should call the predicate matching logic
-		return this.matcher.getMatchedPredicateInNewVersion(oldPredExec);
-	}
+//	private PredicateBehaviorAcrossVersions getMatchedPredicateInOldVersion(PredicateBehaviorAcrossVersions newPredExec) {
+//		//call the predicate matching logic
+//		return this.matcher.getMatchedPredicateInOldVersion(newPredExec);
+//	}
+//	
+//	private PredicateBehaviorAcrossVersions getMatchedPredicateInNewVersion(PredicateBehaviorAcrossVersions oldPredExec) {
+//		//this method should call the predicate matching logic
+//		return this.matcher.getMatchedPredicateInNewVersion(oldPredExec);
+//	}
 	
 	//find a predicate execution in the set having the same signature...
-	private PredicateBehaviorAcrossVersions getIncludePredicate(PredicateBehaviorAcrossVersions pred, Set<PredicateBehaviorAcrossVersions> set) {
-		for(PredicateBehaviorAcrossVersions exec : set) {
-			if(pred.methodSig.equals(exec.methodSig) && pred.index == exec.index) {
-				return exec;
-			}
-		}
-		return null;
-	}
+//	private PredicateBehaviorAcrossVersions getIncludePredicate(PredicateBehaviorAcrossVersions pred, Set<PredicateBehaviorAcrossVersions> set) {
+//		for(PredicateBehaviorAcrossVersions exec : set) {
+//			if(pred.methodSig.equals(exec.methodSig) && pred.index == exec.index) {
+//				return exec;
+//			}
+//		}
+//		return null;
+//	}
 	
 	//the cached results
 	private Set<PredicateExecInfo> oldPredicates = null;
@@ -169,4 +173,47 @@ public class TraceComparator {
 		this.cache = cache;
 	}
 	
+	/**
+	 * Some static method
+	 * return set1 - set2
+	 * */
+	public static Set<PredicateExecInfo> mins(
+			Collection<PredicateExecInfo> set1,
+			Collection<PredicateExecInfo> set2
+	    ) {
+		Set<String> strSet1 = predicateToSigString(set1);
+		Set<String> strSet2 = predicateToSigString(set2);
+		Set<String> deltaSet = Utils.minus(strSet1, strSet2);
+		Set<PredicateExecInfo> set = new LinkedHashSet<PredicateExecInfo>();
+		for(PredicateExecInfo execInfo : set1) {
+			if(deltaSet.contains(execInfo.getPredicateSig())) {
+				set.add(execInfo);
+			}
+		}
+		return set;
+	}
+	
+	public static Set<String> predicateToSigString(Collection<PredicateExecInfo> coll) {
+		Set<String> set = new HashSet<String>();
+		for(PredicateExecInfo execInfo : coll) {
+			set.add(execInfo.getPredicateSig());
+		}
+		return set;
+	}
+	
+	public static Map<String, PredicateExecInfo> buildPredicateSigMap(Collection<PredicateExecInfo> coll) {
+		Map<String, PredicateExecInfo> map = new HashMap<String, PredicateExecInfo>();
+		for(PredicateExecInfo pred : coll) {
+			map.put(pred.getPredicateSig(), pred);
+		}
+		return map;
+	}
+	
+	public static Set<String> getExecutedMethods(Collection<PredicateExecInfo> set) {
+		Set<String> methodSigs = new HashSet<String>();
+		for(PredicateExecInfo pred : set) {
+			methodSigs.add(pred.getMethodSig());
+		}
+		return methodSigs;
+	}
 }

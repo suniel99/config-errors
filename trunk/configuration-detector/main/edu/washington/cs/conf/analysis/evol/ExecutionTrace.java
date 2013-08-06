@@ -184,6 +184,9 @@ public class ExecutionTrace {
 			String line = null; 
 		    while ((line = br.readLine()) != null) {  
 		       line = line.trim();
+		       if(line.equals("null")) {
+		    	   continue;
+		       }
 		       String[] splits = line.split(EfficientTracer.EVAL_SEP);
 		       Utils.checkTrue(splits.length == 2, "error: " + line);
 		       String instrSig = sigMap.get(Integer.parseInt(splits[1]));
@@ -240,8 +243,8 @@ public class ExecutionTrace {
 //				}
 			} else if (methodSig.equals(endMethodSig) && index == endIndex) {
 				if(startNum <= 0) {
-					System.err.println("Starting index: " + startMethodSig + ", index: "
-							+ startIndex);
+//					System.err.println("Starting index: " + startMethodSig + ", index: "
+//							+ startIndex);
 //					Utils.fail("Error: did not start yet. For: " + endMethodSig
 //							+ ", with index: " + endIndex);
 				} else {
