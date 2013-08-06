@@ -36,6 +36,9 @@ public class TestOptionsAndSlicing extends TestCase {
 		for(ConfPropOutput output : outputs) {
 			System.out.println(output.getConfEntity());
 			System.out.println("   number of statements: " + output.statements.size());
+			if(output.conf.getConfName().equals("m_numFolds")) {
+				System.err.println(output.toString()); //XXX in
+			}
 		}
 		
 	}
@@ -64,6 +67,10 @@ public class TestOptionsAndSlicing extends TestCase {
 		for(ConfPropOutput output : outputs) {
 			System.out.println(output.getConfEntity());
 			System.out.println("   number of statements: " + output.statements.size());
+			if(output.conf.getConfName().equals("usethreads")) {
+				System.err.println(output.toString());
+				//contains the
+			}
 		}
 	}
 	
@@ -90,6 +97,12 @@ public class TestOptionsAndSlicing extends TestCase {
 		for(ConfPropOutput output : outputs) {
 			System.out.println(output.getConfEntity());
 			System.out.println("   number of statements: " + output.statements.size());
+			if(output.conf.getConfName().equals("dumpInitialGraphDotFile")) {
+				System.err.println(output);
+			}
+			if(output.conf.getConfName().equals("dumpInitialGraphPngFile")) {
+				System.err.println(output);
+			}
 		}
 	}
 	

@@ -5,10 +5,14 @@ package edu.washington.cs.conf.analysis.evol.experiments;
  * */
 public class RootCauses {
 	
-	public static String synopticMethod = "synoptic.main.Main.createInitialPartitionGraph()Lsynoptic/model/PartitionGraph;";
-	public static int synopticIndexOld = 233;
-	private static String matchedSynopticMethod = synopticMethod; //for checking
-	public static int matchedSynopticIndex = 174;
+	public static String synopticMethod1 = "synoptic.main.Main.createInitialPartitionGraph()Lsynoptic/model/PartitionGraph;";
+	public static int synopticIndexOld1 = 89;
+	public static int matchedSynopticIndex1 = 72;
+	public static String synopticMethod2 = "synoptic.main.Main.exportInitialGraph(Ljava/lang/String;Lsynoptic/model/interfaces/IGraph;)V";
+	public static int synopticIndexOld2 = 6;
+	public static int matchedSynopticIndex2 = 6;
+	
+	//=========
 	
 	public static String randoopMethod = "randoop.util.ReflectionExecutor.executeReflectionCode(Lrandoop/util/ReflectionCode;Ljava/io/PrintStream;)Ljava/lang/Throwable;";
 	public static int randoopIndexOld = 2;

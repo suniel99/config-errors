@@ -3,15 +3,21 @@ package edu.washington.cs.conf.analysis.evol;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.ibm.wala.ipa.callgraph.CGNode;
+import com.ibm.wala.ssa.SSAInstruction;
+
 import edu.washington.cs.conf.analysis.evol.experimental.PredicateExecInfo;
 import edu.washington.cs.conf.util.Utils;
+import edu.washington.cs.conf.util.WALAUtils;
 
 //just for experiment purpose
 public class SimpleChecks {
-
+	
+	
 	public static Set<String> getUnmatchedOldMethods(
 			Collection<PredicateExecInfo> oldSet,
 			Collection<PredicateExecInfo> newSet) {
@@ -70,32 +76,96 @@ public class SimpleChecks {
 		return Utils.minus(newPredicates, oldPredicates);
 	}
 	
+	public static Set<PredicateBehaviorAcrossVersions> rankByBehaviorChanges(
+			Collection<PredicateBehaviorAcrossVersions> coll) {
+		Map<PredicateBehaviorAcrossVersions, Float> map = new LinkedHashMap<PredicateBehaviorAcrossVersions, Float>();
+		for(PredicateBehaviorAcrossVersions p : coll) {
+			map.put(p, p.getDifferenceDegree());
+		}
+		map = Utils.sortByValue(map, false);
+		return map.keySet();
+	}
+	
 	//get behaviorally changed predicates
 	public static Set<PredicateBehaviorAcrossVersions> getMatchedPredicateExecutions(
 			Collection<PredicateExecInfo> oldSet,
-			Collection<PredicateExecInfo> newSet
+			Collection<PredicateExecInfo> newSet,
+			CodeAnalyzer oldCoder, CodeAnalyzer newCoder
 			) {
 		
-		Map<String, PredicateExecInfo> oldPredMap = new LinkedHashMap<String, PredicateExecInfo>();
-		for(PredicateExecInfo oldPred : oldSet) {
-			oldPredMap.put(oldPred.getPredicateSig(), oldPred);
+		PredicateMatcher matcher = null;
+		SimplePredicateMatcher simpleMatcher = null;
+		if(oldCoder != null && newCoder != null) {
+		    matcher = new PredicateMatcher(oldCoder.getCallGraph(), newCoder.getCallGraph());
+		    simpleMatcher = new SimplePredicateMatcher(oldCoder.getCallGraph(), newCoder.getCallGraph());
 		}
 		
-		Map<String, PredicateExecInfo> newPredMap = new LinkedHashMap<String, PredicateExecInfo>();
-		for(PredicateExecInfo newPred : newSet) {
-			newPredMap.put(newPred.getPredicateSig(), newPred);
-		}
+		Map<String, PredicateExecInfo> oldPredMap = TraceComparator.buildPredicateSigMap(oldSet);
+		Map<String, PredicateExecInfo> newPredMap = TraceComparator.buildPredicateSigMap(newSet);
+		
+		Set<String> oldMethodSet = TraceComparator.getExecutedMethods(oldSet);
+		Set<String> newMethodSet = TraceComparator.getExecutedMethods(newSet);
 		
 		Set<PredicateBehaviorAcrossVersions> predSet = new HashSet<PredicateBehaviorAcrossVersions>();
 		for(String oldPredSig : oldPredMap.keySet()) {
+			PredicateExecInfo oldPred = oldPredMap.get(oldPredSig);
+			
+			//get the corresponding newNode
+			SSAInstruction strictMatchedSSA = null;
+			if(simpleMatcher != null) {
+				strictMatchedSSA = simpleMatcher.getMatchedSSA(oldPred.getMethodSig(), oldPred.getIndex());
+			}
+			
 			if(newPredMap.containsKey(oldPredSig)) {
-				PredicateExecInfo oldExecInfo = oldPredMap.get(oldPredSig);
 				PredicateExecInfo newExecInfo = newPredMap.get(oldPredSig);
 				//create a predicate execution object
-				PredicateBehaviorAcrossVersions execObj = new PredicateBehaviorAcrossVersions(oldExecInfo.getMethodSig(), oldExecInfo.getIndex());
-				execObj.setOldExecutionInfo(oldExecInfo.evalFreqCount, oldExecInfo.evalResultCount);
+				PredicateBehaviorAcrossVersions execObj
+				    = new PredicateBehaviorAcrossVersions(oldPred.getMethodSig(), oldPred.getIndex(), newExecInfo.getMethodSig(), newExecInfo.getIndex());
+				execObj.setOldExecutionInfo(oldPred.evalFreqCount, oldPred.evalResultCount);
 				execObj.setNewExecutionInfo(newExecInfo.evalFreqCount, newExecInfo.evalResultCount);
 				predSet.add(execObj);
+			} else if(strictMatchedSSA != null) {
+				//the same instruction exists, but not executed
+				PredicateBehaviorAcrossVersions execObj
+			        = new PredicateBehaviorAcrossVersions(oldPred.getMethodSig(), oldPred.getIndex(), null, -1);
+			    execObj.setOldExecutionInfo(oldPred.evalFreqCount, oldPred.evalResultCount);
+			    execObj.setNewExecutionInfo(0, 0);
+			    predSet.add(execObj);
+			} else {
+				//if the new pred map does not contain old predicate signature
+				//look at the matched predicate
+				String oldMethodSig = oldPred.getMethodSig();
+				if(newMethodSet.contains(oldMethodSig)) {
+					if(newCoder != null) {
+						CGNode oldNode = WALAUtils.lookupMatchedCGNode(oldCoder.getCallGraph(), oldPred.getMethodSig());
+						SSAInstruction oldSSA = WALAUtils.getInstruction(oldNode, oldPred.getIndex());
+						CGNode newNode = WALAUtils.lookupMatchedCGNode(newCoder.getCallGraph(), oldPred.getMethodSig());
+						//matching instruction by instruction using a JDiff-like algorithm
+						List<SSAInstruction> ssalist = matcher.matchPredicateInNewCG(oldNode, newNode, oldSSA);
+						if(ssalist.size() == 1) {
+							SSAInstruction matchedSSA = ssalist.get(0);
+							int matchedIndex = WALAUtils.getInstructionIndex(newNode, matchedSSA);
+							
+							String matchedPredSig = PredicateExecInfo.createPredicateSig(oldMethodSig, matchedIndex);
+							PredicateExecInfo newPredExec = newPredMap.get(matchedPredSig);
+							
+							if(newPredExec != null) {
+								PredicateBehaviorAcrossVersions execObj
+								    = new PredicateBehaviorAcrossVersions(oldPred.getMethodSig(), oldPred.getIndex(),
+								    		newPredExec.getMethodSig(), newPredExec.getIndex());
+								execObj.setOldExecutionInfo(oldPred.evalFreqCount, oldPred.evalResultCount);
+								execObj.setNewExecutionInfo(newPredExec.evalFreqCount, newPredExec.evalResultCount);
+								predSet.add(execObj); //XXX the matched part
+								System.err.println("new matched: \n" + execObj);
+							} else {
+								System.out.println("  ==> not executed: " + matchedPredSig);
+							}
+							
+						} else {
+							System.out.println(" --> more than 1 item: " + ssalist);
+						}
+					}
+				}
 			}
 		}
 		

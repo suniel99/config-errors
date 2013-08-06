@@ -5,8 +5,11 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
+import com.ibm.wala.ipa.callgraph.CGNode;
+
 import edu.washington.cs.conf.analysis.evol.experimental.PredicateExecInfo;
 import edu.washington.cs.conf.util.Utils;
+import edu.washington.cs.conf.util.WALAUtils;
 
 import junit.framework.TestCase;
 
@@ -31,8 +34,56 @@ public class TestParseExecInstructionInfo extends TestCase {
 		System.out.println("Number of unmatched old predicates: " + oldUnmatchedPredicates.size());
 		System.out.println("Number of unmatched new predicates: " + newUnmatchedPredicates.size());
 		
-		Set<PredicateBehaviorAcrossVersions> matchedPreds = SimpleChecks.getMatchedPredicateExecutions(oldPredExecs, newPredExecs);
+	    //XXX for each unmatched predicate, find its corresponding one in the new
+		//version
+		Set<PredicateExecInfo> onlyInOldPredicates = TraceComparator.mins(oldPredExecs, newPredExecs);
+		System.out.println("=====================");
+		System.out.println("== total num in old: " + onlyInOldPredicates.size());
+		Set<PredicateExecInfo> onlyInNewPredicates = TraceComparator.mins(newPredExecs, oldPredExecs);
+		System.out.println("== total num in new: " + onlyInNewPredicates.size());
+		
+        //the matched predicates
+		CodeAnalyzer oldCoder = CodeAnalyzerRepository.getRandoop121Analyzer();
+		oldCoder.buildAnalysis();
+		CodeAnalyzer newCoder = CodeAnalyzerRepository.getRandoop132Analyzer();
+		newCoder.buildAnalysis();
+		Set<PredicateBehaviorAcrossVersions> matchedPreds
+		    = SimpleChecks.getMatchedPredicateExecutions(oldPredExecs, newPredExecs, oldCoder, newCoder);
 		System.out.println("Number of matched preds: " + matchedPreds.size());
+		
+		//check the change degrees
+		System.out.println("-------------");
+		//check the trace
+		ExecutionTrace oldTrace = new ExecutionTrace(TraceRepository.randoopOldHistoryDump, 
+				TraceRepository.randoopOldSig, TraceRepository.randoopOldPredicateDump);
+		
+		ExecutionTrace newTrace = new ExecutionTrace(TraceRepository.randoopNewHistoryDump, 
+				TraceRepository.randoopNewSig, TraceRepository.randoopNewPredicateDump);
+		
+		matchedPreds = SimpleChecks.rankByBehaviorChanges(matchedPreds);
+		for(PredicateBehaviorAcrossVersions predBehavior : matchedPreds) {
+			float degree = predBehavior.getDifferenceDegree();
+			if(degree < 0.1f) {
+				continue;
+			}
+			System.out.println(predBehavior);
+			System.out.println("      diff: " + degree);
+			if(predBehavior.isExecutedOnOldVersion()) {
+				Set<InstructionExecInfo> set = oldTrace.getExecutedInstructionsInsidePredicate(oldCoder, predBehavior.createOldPredicateExecInfo());
+				System.out.println("     executed: " + set.size());
+			} else {
+				System.out.println("     not executed on old version.");
+			}
+			
+			if(predBehavior.isExecutedOnNewVersion()) {
+				Set<InstructionExecInfo> set = newTrace.getExecutedInstructionsInsidePredicate(newCoder, predBehavior.createNewPredicateExecInfo());
+				System.out.println("    executed: " + set.size());
+			} else {
+				System.out.println("     not executed on new version");
+			}
+			
+			System.out.println();
+		}
 	}
 	
 	public void testParseRandoop_predicate_in_trace() {
@@ -110,16 +161,53 @@ public class TestParseExecInstructionInfo extends TestCase {
 		System.out.println("Number of unmatched old predicates: " + oldUnmatchedPredicates.size());
 		System.out.println("Number of unmatched new predicates: " + newUnmatchedPredicates.size());
 		
-		Set<PredicateBehaviorAcrossVersions> matchedPreds = SimpleChecks.getMatchedPredicateExecutions(oldPredExecs, newPredExecs);
+		CodeAnalyzer oldCoder = CodeAnalyzerRepository.getSynopticOldAnalyzer();
+		CodeAnalyzer newCoder = CodeAnalyzerRepository.getSynopticNewAnalyzer();
+		oldCoder.buildAnalysis();
+		newCoder.buildAnalysis();
+		
+		Set<PredicateBehaviorAcrossVersions> matchedPreds = SimpleChecks.getMatchedPredicateExecutions(oldPredExecs, newPredExecs,
+				oldCoder, newCoder);
+		
 		System.out.println("Number of matched preds: " + matchedPreds.size());
+		matchedPreds = SimpleChecks.rankByBehaviorChanges(matchedPreds);
+		
+		//check the trace
+		ExecutionTrace oldTrace = new ExecutionTrace(TraceRepository.synopticOldHistoryDump, 
+				TraceRepository.synopticOldSig, TraceRepository.synopticOldPredicateDump);
+		
+		ExecutionTrace newTrace = new ExecutionTrace(TraceRepository.synopticNewHistoryDump, 
+				TraceRepository.synopticNewSig, TraceRepository.synopticNewPredicateDump);
+		
 		for(PredicateBehaviorAcrossVersions pred : matchedPreds) {
 			if(pred.isBehaviorChanged()) {
+//				if(pred.getDifferenceDegree() < 0.1f) {
+//					continue;
+//				}
 				System.out.println("  " + pred);
-				System.out.println("       " + pred.compareBehaviors());
+//				System.out.println("       " + pred.compareBehaviors());
 				System.out.println("        behavior diff: " + pred.getDifferenceDegree());
+				
+				if(pred.isExecutedOnOldVersion()) {
+					Set<InstructionExecInfo> set = oldTrace.getExecutedInstructionsInsidePredicate(oldCoder, pred.createOldPredicateExecInfo());
+					System.out.println("     executed: " + set.size());
+				} else {
+					System.out.println("     not executed on old version.");
+				}
+				
+				if(pred.isExecutedOnNewVersion()) {
+					Set<InstructionExecInfo> set = newTrace.getExecutedInstructionsInsidePredicate(newCoder, pred.createNewPredicateExecInfo());
+					System.out.println("    executed: " + set.size());
+				} else {
+					System.out.println("     not executed on new version");
+				}
+				
 				System.out.println();
 			}
 		}
+		
+		
+		
 	}
 	
 	public void testParseSynoptic_predicate_in_trace() {
@@ -204,8 +292,19 @@ public class TestParseExecInstructionInfo extends TestCase {
 		System.out.println("Number of unmatched old predicates: " + oldUnmatchedPredicates.size());
 		System.out.println("Number of unmatched new predicates: " + newUnmatchedPredicates.size());
 		
-		Set<PredicateBehaviorAcrossVersions> matchedPreds = SimpleChecks.getMatchedPredicateExecutions(oldPredExecs, newPredExecs);
+		Set<PredicateBehaviorAcrossVersions> matchedPreds = SimpleChecks.getMatchedPredicateExecutions(oldPredExecs, newPredExecs, null, null);
 		System.out.println("Number of matched preds: " + matchedPreds.size());
+		
+		//see all behaviorally different
+		int num = 0;
+		for(PredicateBehaviorAcrossVersions pred : matchedPreds) {
+			if(pred.isBehaviorChanged()) {
+				System.out.println("   " + pred);
+				System.out.println();
+				num++;
+			}
+		}
+		assertEquals(num, 1);
 	}
 	
 	public void testParseWeka_predicate_in_trace() {
@@ -290,7 +389,7 @@ public class TestParseExecInstructionInfo extends TestCase {
 		System.out.println("Number of unmatched new predicates: " + newUnmatchedPredicates.size());
 		
 
-		Set<PredicateBehaviorAcrossVersions> matchedPreds = SimpleChecks.getMatchedPredicateExecutions(oldPredExecs, newPredExecs);
+		Set<PredicateBehaviorAcrossVersions> matchedPreds = SimpleChecks.getMatchedPredicateExecutions(oldPredExecs, newPredExecs, null, null);
 		System.out.println("Number of matched preds: " + matchedPreds.size());
 	}
 	
