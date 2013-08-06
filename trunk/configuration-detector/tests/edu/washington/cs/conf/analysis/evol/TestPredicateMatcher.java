@@ -20,28 +20,46 @@ public class TestPredicateMatcher extends TestCase {
 		CodeAnalyzer newCoder = CodeAnalyzerRepository.getSynopticNewAnalyzer();
 		newCoder.buildAnalysis();
 		
-		CGNode oldNode = WALAUtils.lookupMatchedCGNode(oldCoder.getCallGraph(), RootCauses.synopticMethod);
-		CGNode newNode = WALAUtils.lookupMatchedCGNode(newCoder.getCallGraph(), RootCauses.synopticMethod);
-		Utils.checkNotNull(oldNode);
-		Utils.checkNotNull(newNode);
+		CGNode oldNode1 = WALAUtils.lookupMatchedCGNode(oldCoder.getCallGraph(), RootCauses.synopticMethod1);
+		CGNode newNode1 = WALAUtils.lookupMatchedCGNode(newCoder.getCallGraph(), RootCauses.synopticMethod1);
+		Utils.checkNotNull(oldNode1);
+		Utils.checkNotNull(newNode1);
 		
-//		WALAUtils.printCFG(oldNode);
+//		WALAUtils.printCFG(oldNode1);
 //		System.out.println("========");
-		WALAUtils.printCFG(newNode);
-		System.out.println("");
+//		WALAUtils.printCFG(newNode1);
+//		System.out.println("");
+		System.out.println(WALAUtils.getInstruction(oldNode1, RootCauses.synopticIndexOld1));
+		System.out.println(WALAUtils.getInstruction(newNode1, RootCauses.matchedSynopticIndex1));
 		
-		System.out.println(oldNode.getIR().getInstructions()[RootCauses.synopticIndexOld]);
-		System.out.println(newNode.getIR().getInstructions()[RootCauses.matchedSynopticIndex]);
 		
-		PredicateMatcher matcher = new PredicateMatcher(oldCoder.getCallGraph(), newCoder.getCallGraph());
-		SSAInstruction oldSSA = WALAUtils.getInstruction(oldNode, RootCauses.synopticIndexOld);
-		Utils.checkNotNull(oldSSA);
+		CGNode oldNode2 = WALAUtils.lookupMatchedCGNode(oldCoder.getCallGraph(), RootCauses.synopticMethod2);
+		CGNode newNode2 = WALAUtils.lookupMatchedCGNode(newCoder.getCallGraph(), RootCauses.synopticMethod2);
+		Utils.checkNotNull(oldNode2);
+		Utils.checkNotNull(newNode2);
 		
-		List<SSAInstruction> ssas = matcher.matchPredicateInNewCG(oldNode, newNode, oldSSA);
-		System.out.println("SSA list size: " + ssas.size());
-		for(SSAInstruction ssa : ssas) {
-			System.out.println("   " + ssa + ", index: " + WALAUtils.getInstructionIndex(newNode, ssa));
-		}
+		System.out.println(WALAUtils.getInstruction(oldNode2, RootCauses.synopticIndexOld2));
+		System.out.println(WALAUtils.getInstruction(oldNode2, RootCauses.matchedSynopticIndex2));
+		
+//		WALAUtils.printCFG(oldNode2);
+//		System.out.println("=======");
+//		WALAUtils.printCFG(newNode2);
+		
+//		
+//		System.out.println(oldNode.getIR().getInstructions()[RootCauses.synopticIndexOld]);
+//		System.out.println(newNode.getIR().getInstructions()[RootCauses.matchedSynopticIndex]);
+//		
+//		PredicateMatcher matcher = new PredicateMatcher(oldCoder.getCallGraph(), newCoder.getCallGraph());
+//		SSAInstruction oldSSA = WALAUtils.getInstruction(oldNode, RootCauses.synopticIndexOld);
+//		Utils.checkNotNull(oldSSA);
+//		
+//		List<SSAInstruction> ssas = matcher.matchPredicateInNewCG(oldNode, newNode, oldSSA);
+//		System.out.println("SSA list size: " + ssas.size());
+//		for(SSAInstruction ssa : ssas) {
+//			System.out.println("   " + ssa + ", index: " + WALAUtils.getInstructionIndex(newNode, ssa));
+//		}
+//		
+//		assertEquals(1, ssas.size());
 	}
 	
 	public void testMatchWekaPredicate() {
@@ -59,7 +77,7 @@ public class TestPredicateMatcher extends TestCase {
 		System.out.println(oldNode.getIR().getInstructions()[RootCauses.wekaIndexOld]);
 		System.out.println(newNode.getIR().getInstructions()[RootCauses.matchedWekaIndex]);
 		
-		//no need for matching
+		assertEquals(RootCauses.wekaIndexOld, RootCauses.matchedWekaIndex);
 	}
 	
 	public void testMatchRandoopPredicate() {
