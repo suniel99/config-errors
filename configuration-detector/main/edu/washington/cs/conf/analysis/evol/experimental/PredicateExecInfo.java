@@ -34,7 +34,11 @@ public class PredicateExecInfo {
 	}
 	
 	public String getPredicateSig() {
-		return this.context + "#" + this.predicateIndex;
+		return createPredicateSig(this.context, this.getIndex());
+	}
+	
+	public static String createPredicateSig(String method, int index) {
+		return method + "#" + index;
 	}
 	
 	public String getMethodSig() {

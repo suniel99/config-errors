@@ -57,113 +57,115 @@ public class ErrorDiagnoser {
 	//3. consider nested branches?
 	public List<ConfEntity> diagnoseRootCauses() {
 		
-		Set<PredicateBehaviorAcrossVersions> oldPredicates
-		    = this.comparator.getPredicateOnlyExecutedInOldVersion();
-		Set<PredicateBehaviorAcrossVersions> newPredicates
-		    = this.comparator.getPredicateOnlyExecutedInNewVersion();
-		Set<PredicateBehaviorAcrossVersions> diffPredicates
-		    = this.comparator.getPredicateWithDifferentBehaviors();
+//		Set<PredicateBehaviorAcrossVersions> oldPredicates
+//		    = this.comparator.getPredicateOnlyExecutedInOldVersion();
+//		Set<PredicateBehaviorAcrossVersions> newPredicates
+//		    = this.comparator.getPredicateOnlyExecutedInNewVersion();
+//		Set<PredicateBehaviorAcrossVersions> diffPredicates
+//		    = this.comparator.getPredicateWithDifferentBehaviors();
+//		
+//		//storing the options and their weights
+//		Map<ConfEntity, Float> oldOptions = new LinkedHashMap<ConfEntity, Float>();
+//		Map<ConfEntity, Float> newOptions = new LinkedHashMap<ConfEntity, Float>();
+//		
+//		//FIXME here
+//		//here, WRONG, the executedSSAs should be all ssas executed, but within
+//		//behaviorally-different branches
+//		Set<SSAInstruction> executedSSAs
+//		    = this.computeExecutedInstructionsInPredicates(this.oldCoder, this.oldTrace, oldPredicates);
+//		for(PredicateBehaviorAcrossVersions oldPredicate : oldPredicates) {
+//			SSAInstruction ssa = oldPredicate.getInstruction(this.oldCoder);
+//			CGNode node = oldPredicate.getNode(this.oldCoder);
+//			int affectedCost = this.oldSlicer.compute_cost_by_slice(node, ssa, executedSSAs);
+//			Set<ConfEntity> entities = this.getAffectingOptions(this.oldCoder, node, ssa);
+//			for(ConfEntity conf : entities) {
+//				if(!oldOptions.containsKey(conf)) {
+//					oldOptions.put(conf, (float)affectedCost);
+//				} else {
+//					oldOptions.put(conf, (float)affectedCost + oldOptions.get(conf));
+//				}
+//			}
+//		}
+//		
+//		//FIXME
+//		executedSSAs
+//		    = this.computeExecutedInstructionsInPredicates(this.newCoder, this.newTrace, newPredicates);
+//		for(PredicateBehaviorAcrossVersions newPredicate : newPredicates) {
+//			SSAInstruction ssa = newPredicate.getInstruction(this.newCoder);
+//			CGNode node = newPredicate.getNode(this.newCoder);
+//			int affectedCost = this.newSlicer.compute_cost_by_slice(node, ssa, executedSSAs);
+//			Set<ConfEntity> entities = this.getAffectingOptions(this.newCoder, node, ssa);
+//			for(ConfEntity conf : entities) {
+//				if(!newOptions.containsKey(conf)) {
+//					newOptions.put(conf, (float)affectedCost);
+//				} else {
+//					newOptions.put(conf, (float)affectedCost + newOptions.get(conf));
+//				}
+//			}
+//		}
+//		
+//		//FIXME, the code is redundant below, but I keep the redundancy now, since
+//		//it may need to tweak the cost here.
+//		executedSSAs
+//		    = this.computeExecutedInstructionsInPredicates(this.newCoder, this.newTrace, diffPredicates);
+//		for(PredicateBehaviorAcrossVersions diffPredicate : diffPredicates) {
+//			SSAInstruction ssa = diffPredicate.getInstruction(this.newCoder);
+//			CGNode node = diffPredicate.getNode(this.newCoder);
+//			int affectedCost = this.newSlicer.compute_cost_by_slice(node, ssa, executedSSAs);
+//			Set<ConfEntity> entities = this.getAffectingOptions(this.newCoder, node, ssa);
+//			for(ConfEntity conf : entities) {
+//				if(!newOptions.containsKey(conf)) {
+//					newOptions.put(conf, (float)affectedCost);
+//				} else {
+//					newOptions.put(conf, (float)affectedCost + newOptions.get(conf));
+//				}
+//			}
+//		}
+//		
+//		Map<ConfEntity, Float> summary = new LinkedHashMap<ConfEntity, Float>();
+//		for(ConfEntity conf : oldOptions.keySet()) {
+//			summary.put(conf, oldOptions.get(conf));
+//		}
+//		for(ConfEntity conf : newOptions.keySet()) {
+//			if(!summary.containsKey(conf)) {
+//				summary.put(conf, newOptions.get(conf));
+//			} else {
+//				summary.put(conf, summary.get(conf) + newOptions.get(conf));
+//			}
+//		}
+//		
+//		
+//		summary = Utils.sortByValue(summary, false);
+//		List<ConfEntity> options = new LinkedList<ConfEntity>(summary.keySet());
+//		
+//		return options;
 		
-		//storing the options and their weights
-		Map<ConfEntity, Float> oldOptions = new LinkedHashMap<ConfEntity, Float>();
-		Map<ConfEntity, Float> newOptions = new LinkedHashMap<ConfEntity, Float>();
-		
-		//FIXME here
-		//here, WRONG, the executedSSAs should be all ssas executed, but within
-		//behaviorally-different branches
-		Set<SSAInstruction> executedSSAs
-		    = this.computeExecutedInstructionsInPredicates(this.oldCoder, this.oldTrace, oldPredicates);
-		for(PredicateBehaviorAcrossVersions oldPredicate : oldPredicates) {
-			SSAInstruction ssa = oldPredicate.getInstruction(this.oldCoder);
-			CGNode node = oldPredicate.getNode(this.oldCoder);
-			int affectedCost = this.oldSlicer.compute_cost_by_slice(node, ssa, executedSSAs);
-			Set<ConfEntity> entities = this.getAffectingOptions(this.oldCoder, node, ssa);
-			for(ConfEntity conf : entities) {
-				if(!oldOptions.containsKey(conf)) {
-					oldOptions.put(conf, (float)affectedCost);
-				} else {
-					oldOptions.put(conf, (float)affectedCost + oldOptions.get(conf));
-				}
-			}
-		}
-		
-		//FIXME
-		executedSSAs
-		    = this.computeExecutedInstructionsInPredicates(this.newCoder, this.newTrace, newPredicates);
-		for(PredicateBehaviorAcrossVersions newPredicate : newPredicates) {
-			SSAInstruction ssa = newPredicate.getInstruction(this.newCoder);
-			CGNode node = newPredicate.getNode(this.newCoder);
-			int affectedCost = this.newSlicer.compute_cost_by_slice(node, ssa, executedSSAs);
-			Set<ConfEntity> entities = this.getAffectingOptions(this.newCoder, node, ssa);
-			for(ConfEntity conf : entities) {
-				if(!newOptions.containsKey(conf)) {
-					newOptions.put(conf, (float)affectedCost);
-				} else {
-					newOptions.put(conf, (float)affectedCost + newOptions.get(conf));
-				}
-			}
-		}
-		
-		//FIXME, the code is redundant below, but I keep the redundancy now, since
-		//it may need to tweak the cost here.
-		executedSSAs
-		    = this.computeExecutedInstructionsInPredicates(this.newCoder, this.newTrace, diffPredicates);
-		for(PredicateBehaviorAcrossVersions diffPredicate : diffPredicates) {
-			SSAInstruction ssa = diffPredicate.getInstruction(this.newCoder);
-			CGNode node = diffPredicate.getNode(this.newCoder);
-			int affectedCost = this.newSlicer.compute_cost_by_slice(node, ssa, executedSSAs);
-			Set<ConfEntity> entities = this.getAffectingOptions(this.newCoder, node, ssa);
-			for(ConfEntity conf : entities) {
-				if(!newOptions.containsKey(conf)) {
-					newOptions.put(conf, (float)affectedCost);
-				} else {
-					newOptions.put(conf, (float)affectedCost + newOptions.get(conf));
-				}
-			}
-		}
-		
-		Map<ConfEntity, Float> summary = new LinkedHashMap<ConfEntity, Float>();
-		for(ConfEntity conf : oldOptions.keySet()) {
-			summary.put(conf, oldOptions.get(conf));
-		}
-		for(ConfEntity conf : newOptions.keySet()) {
-			if(!summary.containsKey(conf)) {
-				summary.put(conf, newOptions.get(conf));
-			} else {
-				summary.put(conf, summary.get(conf) + newOptions.get(conf));
-			}
-		}
-		
-		
-		summary = Utils.sortByValue(summary, false);
-		List<ConfEntity> options = new LinkedList<ConfEntity>(summary.keySet());
-		
-		return options;
+		throw new Error();
 	}
 	
-	Set<SSAInstruction> computeExecutedInstructionsInPredicates(CodeAnalyzer coder,
-			ExecutionTrace trace, Set<PredicateBehaviorAcrossVersions> predSet) {
-		Set<SSAInstruction> ssaSet = new LinkedHashSet<SSAInstruction>();
-		for(PredicateBehaviorAcrossVersions exec : predSet) {
-			CGNode node = exec.getNode(coder);
-			SSAInstruction ssa = exec.getInstruction(coder);
-			SSAInstruction postSSA
-			    = PostDominatorFinder.getImmediatePostDominatorInstruction(node, ssa);
-			String startMethodSig = node.getMethod().getSignature();
-			String endMethodSig = startMethodSig;
-			int startIndex = WALAUtils.getInstructionIndex(node, ssa);
-			int endIndex = WALAUtils.getInstructionIndex(node, postSSA);
-			Set<InstructionExecInfo> execSSAs
-			    = trace.getExecutedInstructionsBetween(startMethodSig, startIndex, endMethodSig, endIndex);
-			for(InstructionExecInfo execSSA : execSSAs) {
-				CGNode ssaNode = execSSA.getNode(coder);
-				SSAInstruction executedSSA = execSSA.getInstruction(ssaNode);
-				ssaSet.add(executedSSA);
-			}
-		}
-		
-		return ssaSet;
-	}
+//	Set<SSAInstruction> computeExecutedInstructionsInPredicates(CodeAnalyzer coder,
+//			ExecutionTrace trace, Set<PredicateBehaviorAcrossVersions> predSet) {
+//		Set<SSAInstruction> ssaSet = new LinkedHashSet<SSAInstruction>();
+//		for(PredicateBehaviorAcrossVersions exec : predSet) {
+//			CGNode node = exec.getNode(coder);
+//			SSAInstruction ssa = exec.getInstruction(coder);
+//			SSAInstruction postSSA
+//			    = PostDominatorFinder.getImmediatePostDominatorInstruction(node, ssa);
+//			String startMethodSig = node.getMethod().getSignature();
+//			String endMethodSig = startMethodSig;
+//			int startIndex = WALAUtils.getInstructionIndex(node, ssa);
+//			int endIndex = WALAUtils.getInstructionIndex(node, postSSA);
+//			Set<InstructionExecInfo> execSSAs
+//			    = trace.getExecutedInstructionsBetween(startMethodSig, startIndex, endMethodSig, endIndex);
+//			for(InstructionExecInfo execSSA : execSSAs) {
+//				CGNode ssaNode = execSSA.getNode(coder);
+//				SSAInstruction executedSSA = execSSA.getInstruction(ssaNode);
+//				ssaSet.add(executedSSA);
+//			}
+//		}
+//		
+//		return ssaSet;
+//	}
 	
 	//TODO
 	Set<ConfEntity> getAffectingOptions(CodeAnalyzer coder, CGNode node, SSAInstruction ssa) {
