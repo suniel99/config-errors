@@ -1,4 +1,4 @@
-package edu.washington.cs.conf.analysis.evol;
+package edu.washington.cs.conf.analysis.evol.experimental;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -8,10 +8,16 @@ import plume.Pair;
 import com.ibm.wala.ipa.callgraph.CGNode;
 import com.ibm.wala.ssa.SSAInstruction;
 
+import edu.washington.cs.conf.analysis.evol.AnalysisCache;
+import edu.washington.cs.conf.analysis.evol.AnalysisScope;
+import edu.washington.cs.conf.analysis.evol.CodeAnalyzer;
+import edu.washington.cs.conf.analysis.evol.FineGrainedPredicateMatcher;
+import edu.washington.cs.conf.analysis.evol.PredicateMatcher;
 import edu.washington.cs.conf.util.Log;
 import edu.washington.cs.conf.util.Utils;
 import edu.washington.cs.conf.util.WALAUtils;
 
+@Deprecated
 public class PredicateMatchingLogics {
 	
 	public static boolean USE_FINE_GRAINED = true;

@@ -18,6 +18,7 @@ import com.ibm.wala.ssa.SSAConditionalBranchInstruction;
 import edu.washington.cs.conf.util.Utils;
 import edu.washington.cs.conf.util.WALAUtils;
 
+@Deprecated
 public class IterativeSlicer {
 	
 	public static boolean debug = true;

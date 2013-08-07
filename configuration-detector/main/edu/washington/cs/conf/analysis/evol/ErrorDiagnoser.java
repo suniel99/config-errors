@@ -13,6 +13,10 @@ import com.ibm.wala.ipa.slicer.Statement;
 import com.ibm.wala.ssa.SSAInstruction;
 
 import edu.washington.cs.conf.analysis.ConfEntity;
+import edu.washington.cs.conf.analysis.ConfEntityRepository;
+import edu.washington.cs.conf.analysis.ConfPropOutput;
+import edu.washington.cs.conf.analysis.evol.experimental.PredicateExecInfo;
+import edu.washington.cs.conf.experiments.CommonUtils;
 import edu.washington.cs.conf.util.Utils;
 import edu.washington.cs.conf.util.WALAUtils;
 
@@ -24,30 +28,43 @@ public class ErrorDiagnoser {
 	public final CodeAnalyzer oldCoder;
 	public final CodeAnalyzer newCoder;
 	
-	private final Set<ConfEntity> oldConfigs = new LinkedHashSet<ConfEntity>();
-	private final Set<ConfEntity> newConfigs = new LinkedHashSet<ConfEntity>();
+	private final ConfEntityRepository oldRep;
+	private final ConfEntityRepository newRep;
 	
-	public final IterativeSlicer oldSlicer;
-	public final IterativeSlicer newSlicer;
+	public final TracesWrapper traceWrapper;
 	
-	private final TraceComparator comparator;
+	private float pruneThreshold = 0.1f;
+	private boolean debug = true;
 	
-	public ErrorDiagnoser(ExecutionTrace oldTrace, ExecutionTrace newTrace,
-			CodeAnalyzer oldCoder, CodeAnalyzer newCoder) {
-		Utils.checkNotNull(oldTrace);
-		Utils.checkNotNull(newTrace);
+	private Collection<ConfPropOutput> oldSliceOutputs = null;
+	private Collection<ConfPropOutput> newSliceOutputs = null;
+	
+//	public final IterativeSlicer oldSlicer;
+//	public final IterativeSlicer newSlicer;
+//	private final TraceComparator comparator;
+	
+	public ErrorDiagnoser(ConfEntityRepository oldConfs, ConfEntityRepository newConfs,
+			CodeAnalyzer oldCoder, CodeAnalyzer newCoder, TracesWrapper wrapper) {
+		Utils.checkNotNull(oldConfs);
+		Utils.checkNotNull(newConfs);
 		Utils.checkNotNull(oldCoder);
+		Utils.checkNotNull(oldCoder.getCallGraph());
 		Utils.checkNotNull(newCoder);
-		this.oldTrace = oldTrace;
-		this.newTrace = newTrace;
+		Utils.checkNotNull(newCoder.getCallGraph());
+		Utils.checkNotNull(wrapper);
+		this.oldRep = oldConfs;
+		this.newRep = newConfs;
+		this.oldTrace = new ExecutionTrace(wrapper.oldHistoryFile, wrapper.oldSigFile, wrapper.oldPredicateFile);
+		this.newTrace = new ExecutionTrace(wrapper.newHistoryFile, wrapper.newSigFile, wrapper.newPredicateFile);
 		this.oldCoder = oldCoder;
 		this.newCoder = newCoder;
-		this.oldSlicer = new IterativeSlicer(this.oldCoder);
-		this.newSlicer = new IterativeSlicer(this.newCoder);
-		this.comparator = new TraceComparator(this.oldTrace, this.newTrace);
+		this.traceWrapper = wrapper;
+//		this.oldSlicer = new IterativeSlicer(this.oldCoder);
+//		this.newSlicer = new IterativeSlicer(this.newCoder);
+//		this.comparator = new TraceComparator(this.oldTrace, this.newTrace);
 	}
 	
-	//a ranked list of suspicious configuration options
+	/**a ranked list of suspicious configuration options
 	//TODO the main entry
 	//1. take the predicate execution delta into account
 	//   predicate p1, execute 10 times, in which 3 times evaluate to true
@@ -55,121 +72,118 @@ public class ErrorDiagnoser {
 	//2. for a predicate only executed in the old version, inform users that
 	//   it may not take effect any more.
 	//3. consider nested branches?
+	 * */
 	public List<ConfEntity> diagnoseRootCauses() {
+		//perform slicing
+		this.performThinSlicing();
 		
-//		Set<PredicateBehaviorAcrossVersions> oldPredicates
-//		    = this.comparator.getPredicateOnlyExecutedInOldVersion();
-//		Set<PredicateBehaviorAcrossVersions> newPredicates
-//		    = this.comparator.getPredicateOnlyExecutedInNewVersion();
-//		Set<PredicateBehaviorAcrossVersions> diffPredicates
-//		    = this.comparator.getPredicateWithDifferentBehaviors();
-//		
-//		//storing the options and their weights
-//		Map<ConfEntity, Float> oldOptions = new LinkedHashMap<ConfEntity, Float>();
-//		Map<ConfEntity, Float> newOptions = new LinkedHashMap<ConfEntity, Float>();
-//		
-//		//FIXME here
-//		//here, WRONG, the executedSSAs should be all ssas executed, but within
-//		//behaviorally-different branches
-//		Set<SSAInstruction> executedSSAs
-//		    = this.computeExecutedInstructionsInPredicates(this.oldCoder, this.oldTrace, oldPredicates);
-//		for(PredicateBehaviorAcrossVersions oldPredicate : oldPredicates) {
-//			SSAInstruction ssa = oldPredicate.getInstruction(this.oldCoder);
-//			CGNode node = oldPredicate.getNode(this.oldCoder);
-//			int affectedCost = this.oldSlicer.compute_cost_by_slice(node, ssa, executedSSAs);
-//			Set<ConfEntity> entities = this.getAffectingOptions(this.oldCoder, node, ssa);
-//			for(ConfEntity conf : entities) {
-//				if(!oldOptions.containsKey(conf)) {
-//					oldOptions.put(conf, (float)affectedCost);
-//				} else {
-//					oldOptions.put(conf, (float)affectedCost + oldOptions.get(conf));
-//				}
-//			}
-//		}
-//		
-//		//FIXME
-//		executedSSAs
-//		    = this.computeExecutedInstructionsInPredicates(this.newCoder, this.newTrace, newPredicates);
-//		for(PredicateBehaviorAcrossVersions newPredicate : newPredicates) {
-//			SSAInstruction ssa = newPredicate.getInstruction(this.newCoder);
-//			CGNode node = newPredicate.getNode(this.newCoder);
-//			int affectedCost = this.newSlicer.compute_cost_by_slice(node, ssa, executedSSAs);
-//			Set<ConfEntity> entities = this.getAffectingOptions(this.newCoder, node, ssa);
-//			for(ConfEntity conf : entities) {
-//				if(!newOptions.containsKey(conf)) {
-//					newOptions.put(conf, (float)affectedCost);
-//				} else {
-//					newOptions.put(conf, (float)affectedCost + newOptions.get(conf));
-//				}
-//			}
-//		}
-//		
-//		//FIXME, the code is redundant below, but I keep the redundancy now, since
-//		//it may need to tweak the cost here.
-//		executedSSAs
-//		    = this.computeExecutedInstructionsInPredicates(this.newCoder, this.newTrace, diffPredicates);
-//		for(PredicateBehaviorAcrossVersions diffPredicate : diffPredicates) {
-//			SSAInstruction ssa = diffPredicate.getInstruction(this.newCoder);
-//			CGNode node = diffPredicate.getNode(this.newCoder);
-//			int affectedCost = this.newSlicer.compute_cost_by_slice(node, ssa, executedSSAs);
-//			Set<ConfEntity> entities = this.getAffectingOptions(this.newCoder, node, ssa);
-//			for(ConfEntity conf : entities) {
-//				if(!newOptions.containsKey(conf)) {
-//					newOptions.put(conf, (float)affectedCost);
-//				} else {
-//					newOptions.put(conf, (float)affectedCost + newOptions.get(conf));
-//				}
-//			}
-//		}
-//		
-//		Map<ConfEntity, Float> summary = new LinkedHashMap<ConfEntity, Float>();
-//		for(ConfEntity conf : oldOptions.keySet()) {
-//			summary.put(conf, oldOptions.get(conf));
-//		}
-//		for(ConfEntity conf : newOptions.keySet()) {
-//			if(!summary.containsKey(conf)) {
-//				summary.put(conf, newOptions.get(conf));
-//			} else {
-//				summary.put(conf, summary.get(conf) + newOptions.get(conf));
-//			}
-//		}
-//		
-//		
-//		summary = Utils.sortByValue(summary, false);
-//		List<ConfEntity> options = new LinkedList<ConfEntity>(summary.keySet());
-//		
-//		return options;
+		//get predicates executed in the old version
+		Collection<PredicateExecInfo>  oldPredExecs
+            = ExecutionTraceReader.createPredicateExecInfoList(this.traceWrapper.oldPredicateFile,
+     		    this.traceWrapper.oldSigFile);
+	    Collection<PredicateExecInfo> newPredExecs
+	        = ExecutionTraceReader.createPredicateExecInfoList(this.traceWrapper.newPredicateFile,
+	    		this.traceWrapper.newSigFile);
+	    
+	    //the matched predicates
+	    Set<PredicateBehaviorAcrossVersions> matchedPreds
+	        = SimpleChecks.getMatchedPredicateExecutions(oldPredExecs, newPredExecs, this.oldCoder, this.newCoder);
+	    //rank by the behavior changes
+	    matchedPreds = SimpleChecks.rankByBehaviorChanges(matchedPreds);
+	    
+	    //store the likelihood of each configuration option in a map
+	    Map<ConfEntity, Float> oldConfMap = new LinkedHashMap<ConfEntity, Float>();
+	    Map<ConfEntity, Float> newConfMap = new LinkedHashMap<ConfEntity, Float>();
+	    
+		for(PredicateBehaviorAcrossVersions predBehavior : matchedPreds) {
+			float behaviorDiff = predBehavior.getDifferenceDegree();
+			if(behaviorDiff < pruneThreshold) {
+				continue;
+			}
+			int instrNumOnOldVersion = 0;
+			int instrNumOnNewVersion = 0;
+			if(predBehavior.isExecutedOnOldVersion()) {
+				Set<InstructionExecInfo> set = oldTrace.getExecutedInstructionsInsidePredicate(oldCoder, predBehavior.createOldPredicateExecInfo());
+				instrNumOnOldVersion = set.size();
+			}
+			if(predBehavior.isExecutedOnNewVersion()) {
+				Set<InstructionExecInfo> set = newTrace.getExecutedInstructionsInsidePredicate(newCoder, predBehavior.createNewPredicateExecInfo());
+				instrNumOnNewVersion = set.size();
+			}
+			
+			int instrDelta = Math.abs(instrNumOnNewVersion - instrNumOnOldVersion);
+			float behaviorDelta = instrDelta*behaviorDiff;
+			
+			Set<ConfEntity> oldConfs = this.getAffectingOptionsInOldVersion(predBehavior.oldMethodSig, predBehavior.oldIndex);
+			Set<ConfEntity> newConfs = this.getAffectingOptionsInNewVersion(predBehavior.newMethodSig, predBehavior.newIndex);
+
+			//update the likelihood
+			for(ConfEntity oldConf : oldConfs) {
+				if(!oldConfMap.containsKey(oldConf)) {
+					oldConfMap.put(oldConf, behaviorDelta);
+				} else {
+					oldConfMap.put(oldConf, oldConfMap.get(oldConf) + behaviorDelta);
+				}
+			}
+			for(ConfEntity newConf : newConfs) {
+				if(!newConfMap.containsKey(newConf)) {
+					newConfMap.put(newConf, behaviorDelta);
+				} else {
+					newConfMap.put(newConf, newConfMap.get(newConf) + behaviorDelta);
+				}
+			}
+			
+			
+			if(debug) {
+			    System.out.println(predBehavior);
+			    System.out.println("      diff: " + behaviorDiff);
+			    System.out.println("      executed ssa on old: " + instrNumOnOldVersion);
+			    System.out.println("      executed ssa on new: " + instrNumOnNewVersion);
+			    System.out.println("      behavior delta: " + behaviorDelta);
+			    System.out.println();
+			}
+		}
 		
-		throw new Error();
+		oldConfMap = Utils.sortByValue(oldConfMap, false);
+		newConfMap = Utils.sortByValue(newConfMap, false);
+		
+		System.out.println(" ========= Dump the results =========");
+		System.out.println(" ========= old version =========");
+		for(ConfEntity e : oldConfMap.keySet()) {
+			System.out.println(e.getConfName() + " => " + oldConfMap.get(e));
+		}
+		System.out.println(" ========= new version =========");
+		for(ConfEntity e : newConfMap.keySet()) {
+			System.out.println(e.getConfName() + " => " + oldConfMap.get(e));
+		}
+		
+		List<ConfEntity> list = new LinkedList<ConfEntity>();
+		return list;
+	}
+
+	private void performThinSlicing() {
+		this.oldSliceOutputs = CommonUtils.getConfPropOutputs(oldCoder.slicer, this.oldRep, false);	
+		this.newSliceOutputs = CommonUtils.getConfPropOutputs(newCoder.slicer, this.newRep, false);	
 	}
 	
-//	Set<SSAInstruction> computeExecutedInstructionsInPredicates(CodeAnalyzer coder,
-//			ExecutionTrace trace, Set<PredicateBehaviorAcrossVersions> predSet) {
-//		Set<SSAInstruction> ssaSet = new LinkedHashSet<SSAInstruction>();
-//		for(PredicateBehaviorAcrossVersions exec : predSet) {
-//			CGNode node = exec.getNode(coder);
-//			SSAInstruction ssa = exec.getInstruction(coder);
-//			SSAInstruction postSSA
-//			    = PostDominatorFinder.getImmediatePostDominatorInstruction(node, ssa);
-//			String startMethodSig = node.getMethod().getSignature();
-//			String endMethodSig = startMethodSig;
-//			int startIndex = WALAUtils.getInstructionIndex(node, ssa);
-//			int endIndex = WALAUtils.getInstructionIndex(node, postSSA);
-//			Set<InstructionExecInfo> execSSAs
-//			    = trace.getExecutedInstructionsBetween(startMethodSig, startIndex, endMethodSig, endIndex);
-//			for(InstructionExecInfo execSSA : execSSAs) {
-//				CGNode ssaNode = execSSA.getNode(coder);
-//				SSAInstruction executedSSA = execSSA.getInstruction(ssaNode);
-//				ssaSet.add(executedSSA);
-//			}
-//		}
-//		
-//		return ssaSet;
-//	}
+	private Set<ConfEntity> getAffectingOptionsInOldVersion(String methodSig, int instructionIndex) {
+		Set<ConfEntity> set = new LinkedHashSet<ConfEntity>();
+		for(ConfPropOutput oldOutput : this.oldSliceOutputs) {
+			if(oldOutput.containStatement(methodSig, instructionIndex)) {
+				set.add(oldOutput.conf);
+			}
+		}
+		return set;
+	}
 	
-	//TODO
-	Set<ConfEntity> getAffectingOptions(CodeAnalyzer coder, CGNode node, SSAInstruction ssa) {
-		throw new Error();
+	private Set<ConfEntity> getAffectingOptionsInNewVersion(String methodSig, int instructionIndex) {
+		Set<ConfEntity> set = new LinkedHashSet<ConfEntity>();
+		for(ConfPropOutput newOutput : this.newSliceOutputs) {
+			if(newOutput.containStatement(methodSig, instructionIndex)) {
+				set.add(newOutput.conf);
+			}
+		}
+		return set;
 	}
 }
 

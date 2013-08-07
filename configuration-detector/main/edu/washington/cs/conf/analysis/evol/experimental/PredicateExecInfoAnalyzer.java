@@ -14,7 +14,6 @@ import edu.washington.cs.conf.analysis.evol.AnalysisCache;
 import edu.washington.cs.conf.analysis.evol.AnalysisScope;
 import edu.washington.cs.conf.analysis.evol.CodeAnalyzer;
 import edu.washington.cs.conf.analysis.evol.ExecutionTraceReader;
-import edu.washington.cs.conf.analysis.evol.PredicateMatchingLogics;
 import edu.washington.cs.conf.analysis.evol.PredicateMetrics;
 import edu.washington.cs.conf.util.Log;
 import edu.washington.cs.conf.util.Utils;
