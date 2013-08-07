@@ -35,7 +35,9 @@ public class TraceRepository {
 	public static TracesWrapper getSynopticTraces() {
 		return new TracesWrapper(synopticOldSig, synopticNewSig, 
 				synopticOldPredicateDump, synopticNewPredicateDump,
-				synopticOldHistoryDump, synopticNewHistoryDump);
+				synopticOldHistoryDump, synopticNewHistoryDump,
+				EvolConfOptionRepository.synopticOldCacheFile,
+				EvolConfOptionRepository.synopticNewCacheFile);
 	}
 	
 	public static String jmeterOldSig = TestInstrumentPrograms.jmeter_28_sigmap;
@@ -57,7 +59,9 @@ public class TraceRepository {
 	public static TracesWrapper getWekaTraces() {
 		return new TracesWrapper(wekaOldSig, wekaNewSig, 
 				wekaOldPredicateDump, wekaNewPredicateDump,
-				wekaOldHistoryDump, wekaNewHistoryDump);
+				wekaOldHistoryDump, wekaNewHistoryDump,
+				EvolConfOptionRepository.wekaOldCacheFile,
+				EvolConfOptionRepository.wekaNewCacheFile);
 	}
 	
 	public static String randoopOldSig = TestInstrumentPrograms.randoop_121_sigmap;
@@ -71,6 +75,8 @@ public class TraceRepository {
 	public static TracesWrapper getRandoopTraces() {
 		return new TracesWrapper(randoopOldSig, randoopNewSig, 
 				randoopOldPredicateDump, randoopNewPredicateDump,
-				randoopOldHistoryDump, randoopNewHistoryDump);
+				randoopOldHistoryDump, randoopNewHistoryDump,
+				EvolConfOptionRepository.randoopOldCacheFile,
+				EvolConfOptionRepository.randoopNewCacheFile);
 	}
 }
