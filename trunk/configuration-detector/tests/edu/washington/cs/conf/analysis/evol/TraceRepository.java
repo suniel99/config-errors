@@ -32,6 +32,11 @@ public class TraceRepository {
 	public static String synopticOldPredicateDump = synopticOldDir + predicate_dump;
 	public static String synopticNewHistoryDump = synopticNewDir + history_dump;
 	public static String synopticNewPredicateDump = synopticNewDir + predicate_dump;
+	public static TracesWrapper getSynopticTraces() {
+		return new TracesWrapper(synopticOldSig, synopticNewSig, 
+				synopticOldPredicateDump, synopticNewPredicateDump,
+				synopticOldHistoryDump, synopticNewHistoryDump);
+	}
 	
 	public static String jmeterOldSig = TestInstrumentPrograms.jmeter_28_sigmap;
 	public static String jmeterNewSig = TestInstrumentPrograms.jmeter_29_sigmap;
@@ -49,6 +54,11 @@ public class TraceRepository {
 	public static String wekaOldPredicateDump = wekaDir + "old_" + predicate_dump;
 	public static String wekaNewHistoryDump = wekaDir + "new_" + history_dump;
 	public static String wekaNewPredicateDump = wekaDir + "new_" + predicate_dump;
+	public static TracesWrapper getWekaTraces() {
+		return new TracesWrapper(wekaOldSig, wekaNewSig, 
+				wekaOldPredicateDump, wekaNewPredicateDump,
+				wekaOldHistoryDump, wekaNewHistoryDump);
+	}
 	
 	public static String randoopOldSig = TestInstrumentPrograms.randoop_121_sigmap;
 	public static String randoopNewSig = TestInstrumentPrograms.randoop_132_sigmap;
@@ -58,4 +68,9 @@ public class TraceRepository {
 	public static String randoopOldPredicateDump = randoopOldDir + "old_" + predicate_dump;
 	public static String randoopNewHistoryDump = randoopNewDir + "new_" + history_dump;
 	public static String randoopNewPredicateDump = randoopNewDir + "new_" + predicate_dump;
+	public static TracesWrapper getRandoopTraces() {
+		return new TracesWrapper(randoopOldSig, randoopNewSig, 
+				randoopOldPredicateDump, randoopNewPredicateDump,
+				randoopOldHistoryDump, randoopNewHistoryDump);
+	}
 }
