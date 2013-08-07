@@ -1,6 +1,7 @@
 package edu.washington.cs.conf.analysis.evol;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
@@ -14,9 +15,11 @@ import com.ibm.wala.ssa.SSAInstruction;
 
 import edu.washington.cs.conf.analysis.ConfEntity;
 import edu.washington.cs.conf.analysis.ConfEntityRepository;
+import edu.washington.cs.conf.analysis.ConfOutputSerializer;
 import edu.washington.cs.conf.analysis.ConfPropOutput;
 import edu.washington.cs.conf.analysis.evol.experimental.PredicateExecInfo;
 import edu.washington.cs.conf.experiments.CommonUtils;
+import edu.washington.cs.conf.instrument.InstrumentSchema;
 import edu.washington.cs.conf.util.Utils;
 import edu.washington.cs.conf.util.WALAUtils;
 
@@ -36,8 +39,11 @@ public class ErrorDiagnoser {
 	private float pruneThreshold = 0.1f;
 	private boolean debug = true;
 	
-	private Collection<ConfPropOutput> oldSliceOutputs = null;
-	private Collection<ConfPropOutput> newSliceOutputs = null;
+	public final InstrumentSchema oldSliceOutput;
+	public final InstrumentSchema newSliceOutput;
+	
+//	private Collection<ConfPropOutput> oldSliceOutputs = Collections.EMPTY_SET;
+//	private Collection<ConfPropOutput> newSliceOutputs = Collections.EMPTY_SET;
 	
 //	public final IterativeSlicer oldSlicer;
 //	public final IterativeSlicer newSlicer;
@@ -59,9 +65,9 @@ public class ErrorDiagnoser {
 		this.oldCoder = oldCoder;
 		this.newCoder = newCoder;
 		this.traceWrapper = wrapper;
-//		this.oldSlicer = new IterativeSlicer(this.oldCoder);
-//		this.newSlicer = new IterativeSlicer(this.newCoder);
-//		this.comparator = new TraceComparator(this.oldTrace, this.newTrace);
+		//read the slice rsult back
+		this.oldSliceOutput = ConfOutputSerializer.deserializeAsSchema(wrapper.oldSliceCache);
+		this.newSliceOutput = ConfOutputSerializer.deserializeAsSchema(wrapper.newSliceCache);
 	}
 	
 	/**a ranked list of suspicious configuration options
@@ -74,8 +80,6 @@ public class ErrorDiagnoser {
 	//3. consider nested branches?
 	 * */
 	public List<ConfEntity> diagnoseRootCauses() {
-		//perform slicing
-		this.performThinSlicing();
 		
 		//get predicates executed in the old version
 		Collection<PredicateExecInfo>  oldPredExecs
@@ -160,29 +164,18 @@ public class ErrorDiagnoser {
 		List<ConfEntity> list = new LinkedList<ConfEntity>();
 		return list;
 	}
-
-	private void performThinSlicing() {
-		this.oldSliceOutputs = CommonUtils.getConfPropOutputs(oldCoder.slicer, this.oldRep, false);	
-		this.newSliceOutputs = CommonUtils.getConfPropOutputs(newCoder.slicer, this.newRep, false);	
-	}
 	
 	private Set<ConfEntity> getAffectingOptionsInOldVersion(String methodSig, int instructionIndex) {
 		Set<ConfEntity> set = new LinkedHashSet<ConfEntity>();
-		for(ConfPropOutput oldOutput : this.oldSliceOutputs) {
-			if(oldOutput.containStatement(methodSig, instructionIndex)) {
-				set.add(oldOutput.conf);
-			}
-		}
+		Collection<ConfEntity> coll = this.oldSliceOutput.getAffectingConfOptions(methodSig, instructionIndex);
+		set.addAll(coll);
 		return set;
 	}
 	
 	private Set<ConfEntity> getAffectingOptionsInNewVersion(String methodSig, int instructionIndex) {
 		Set<ConfEntity> set = new LinkedHashSet<ConfEntity>();
-		for(ConfPropOutput newOutput : this.newSliceOutputs) {
-			if(newOutput.containStatement(methodSig, instructionIndex)) {
-				set.add(newOutput.conf);
-			}
-		}
+		Collection<ConfEntity> coll = this.newSliceOutput.getAffectingConfOptions(methodSig, instructionIndex);
+		set.addAll(coll);
 		return set;
 	}
 }

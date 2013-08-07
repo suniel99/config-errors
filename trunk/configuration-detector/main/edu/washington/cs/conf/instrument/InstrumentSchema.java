@@ -1,6 +1,5 @@
 package edu.washington.cs.conf.instrument;
 
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -23,7 +22,7 @@ import edu.washington.cs.conf.util.Utils;
  * */
 public class InstrumentSchema {
 
-	public enum TYPE{PREDICATE, ALL, SOURCE_PREDICATE}
+	public enum TYPE{PREDICATE, ALL, SOURCE_PREDICATE, ALL_PRED_STMT}
 	
 	private final Map<ConfEntity, Collection<ShrikePoint>> locations
 	    = new LinkedHashMap<ConfEntity, Collection<ShrikePoint>>();
@@ -45,6 +44,8 @@ public class InstrumentSchema {
 				points = output.getNumberedShrikePoints();
 			} else if (type.equals(TYPE.SOURCE_PREDICATE)) {
 				points = output.getNumberedBranchShrikePointsInSource();
+			} else if (type.equals(TYPE.ALL_PRED_STMT)) {
+				points = output.getAllPredicateShrikePoints();
 			}
 			Utils.checkNotNull(points);
 			Utils.checkTrue(!locations.containsKey(entity));
@@ -87,6 +88,10 @@ public class InstrumentSchema {
 		return ret;
 	}
 	
+	public Map<ConfEntity, Collection<ShrikePoint>> getLocations() {
+		return this.locations;
+	}
+	
 	public void setSourceTextForAllInstrumentationPoints(String sourceDir) {
 		for(Collection<ShrikePoint> ls : this.locations.values()) {
 			for(ShrikePoint s : ls) {
@@ -96,6 +101,23 @@ public class InstrumentSchema {
 //				}
 			}
 		}
+	}
+	
+	public Collection<ConfEntity> getAffectingConfOptions(String methodSig, int instructionIndex) {
+		Collection<ConfEntity> coll = new LinkedHashSet<ConfEntity>();
+		for(ConfEntity e : this.locations.keySet()) {
+			boolean isIn = false;
+			for(ShrikePoint p : this.locations.get(e)) {
+				if(p.getMethodSig().equals(methodSig) && p.getInstructionIndex() == instructionIndex) {
+					isIn = true;
+					break;
+				}
+			}
+			if(isIn) {
+				coll.add(e);
+			}
+		}
+		return coll;
 	}
 	
 	//FIXME can use cache for speed up

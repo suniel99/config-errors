@@ -278,6 +278,11 @@ public class ConfPropOutput implements Serializable {
 		return this.getShrikePoints(this.statements);
 	}
 	
+	public Set<ShrikePoint> getAllPredicateShrikePoints() {
+		Set<IRStatement> preds = extractBranchStatements(this.statements);
+		return this.getShrikePoints(preds);
+	}
+	
 	private Set<ShrikePoint> getShrikePoints(Collection<IRStatement> stmts) {
 		Set<ShrikePoint> pts = new LinkedHashSet<ShrikePoint>();
 		for(IRStatement stmt : stmts) {
