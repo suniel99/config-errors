@@ -6,6 +6,7 @@ import java.util.Map;
 
 import com.ibm.wala.ipa.callgraph.CGNode;
 
+import edu.washington.cs.conf.analysis.evol.experimental.MethodMatchingLogics;
 import edu.washington.cs.conf.util.Utils;
 import edu.washington.cs.conf.util.WALAUtils;
 import junit.framework.TestCase;
