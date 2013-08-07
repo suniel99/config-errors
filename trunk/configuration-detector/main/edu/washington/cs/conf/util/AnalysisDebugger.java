@@ -13,7 +13,7 @@ import edu.washington.cs.conf.analysis.evol.AnalysisCache;
 import edu.washington.cs.conf.analysis.evol.AnalysisScope;
 import edu.washington.cs.conf.analysis.evol.CodeAnalyzer;
 import edu.washington.cs.conf.analysis.evol.FineGrainedPredicateMatcher;
-import edu.washington.cs.conf.analysis.evol.MethodMatchingLogics;
+import edu.washington.cs.conf.analysis.evol.experimental.MethodMatchingLogics;
 
 public class AnalysisDebugger {
 

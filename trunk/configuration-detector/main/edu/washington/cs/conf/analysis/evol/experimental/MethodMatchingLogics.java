@@ -1,4 +1,4 @@
-package edu.washington.cs.conf.analysis.evol;
+package edu.washington.cs.conf.analysis.evol.experimental;
 
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
@@ -7,10 +7,15 @@ import java.util.Map;
 
 import com.ibm.wala.ipa.callgraph.CGNode;
 
+import edu.washington.cs.conf.analysis.evol.AnalysisCache;
+import edu.washington.cs.conf.analysis.evol.AnalysisScope;
+import edu.washington.cs.conf.analysis.evol.CodeAnalyzer;
+import edu.washington.cs.conf.analysis.evol.MethodMatcher;
 import edu.washington.cs.conf.util.Utils;
 import edu.washington.cs.conf.util.WALAUtils;
 
 //the strategy taken to match methods
+@Deprecated
 public class MethodMatchingLogics {
 	
 	public static boolean USE_FUZZING_MATCHING = false;

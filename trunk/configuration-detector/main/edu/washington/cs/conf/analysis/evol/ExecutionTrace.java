@@ -83,7 +83,7 @@ public class ExecutionTrace {
 					(Runtime.getRuntime().totalMemory() - - Runtime.getRuntime().freeMemory()
 							- prevMem));
 		} else {
-			System.out.println("The trace file is too large: " + num);
+			System.out.println("The trace file is too large. wont read into memory all. " + num);
 		}
 	}
 	
