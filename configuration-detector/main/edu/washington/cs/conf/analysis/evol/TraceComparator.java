@@ -17,6 +17,7 @@ import edu.washington.cs.conf.util.Utils;
  * Given two execution traces, find the predicate
  * that have different behaviors
  * */
+@Deprecated
 public class TraceComparator {
 
 	public final ExecutionTrace oldTrace;
