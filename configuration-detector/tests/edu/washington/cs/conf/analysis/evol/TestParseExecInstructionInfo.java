@@ -367,7 +367,7 @@ public class TestParseExecInstructionInfo extends TestCase {
 	}
 	
 	//--------------------------------------
-	
+	//need to check which predicate behaves differently than exepcted
 	//need to analyze different behaviors of the predicate
 	public void testParseJMeter_predicate() {
 		Collection<PredicateExecInfo>  oldPredExecs
@@ -388,9 +388,48 @@ public class TestParseExecInstructionInfo extends TestCase {
 		System.out.println("Number of unmatched old predicates: " + oldUnmatchedPredicates.size());
 		System.out.println("Number of unmatched new predicates: " + newUnmatchedPredicates.size());
 		
+		//see the deviated behaviors
+		CodeAnalyzer oldCoder = null;
+		CodeAnalyzer newCoder = null;
+		
+		oldCoder = CodeAnalyzerRepository.getJMeterOldAnalyzer();
+		oldCoder.buildAnalysis();
+		newCoder = CodeAnalyzerRepository.getJMeterNewAnalyzer();
+		newCoder.buildAnalysis();
+		
+		ExecutionTrace oldTrace = new ExecutionTrace(TraceRepository.jmeterOldHistoryDump, 
+				TraceRepository.jmeterOldSig, TraceRepository.jmeterOldPredicateDump);
+		ExecutionTrace newTrace = new ExecutionTrace(TraceRepository.jmeterNewHistoryDump, 
+				TraceRepository.jmeterNewSig, TraceRepository.jmeterNewPredicateDump);
 
-		Set<PredicateBehaviorAcrossVersions> matchedPreds = SimpleChecks.getMatchedPredicateExecutions(oldPredExecs, newPredExecs, null, null);
+		Set<PredicateBehaviorAcrossVersions> matchedPreds
+		    = SimpleChecks.getMatchedPredicateExecutions(oldPredExecs, newPredExecs, oldCoder, newCoder);
 		System.out.println("Number of matched preds: " + matchedPreds.size());
+		
+		matchedPreds = SimpleChecks.rankByBehaviorChanges(matchedPreds);
+		for(PredicateBehaviorAcrossVersions predBehavior : matchedPreds) {
+			float degree = predBehavior.getDifferenceDegree();
+			if(degree < 0.1f) {
+				continue;
+			}
+			System.out.println(predBehavior);
+			System.out.println("      diff: " + degree);
+			if(predBehavior.isExecutedOnOldVersion()) {
+				Set<InstructionExecInfo> set = oldTrace.getExecutedInstructionsInsidePredicate(oldCoder, predBehavior.createOldPredicateExecInfo());
+				System.out.println("     executed: " + set.size());
+			} else {
+				System.out.println("     not executed on old version.");
+			}
+			
+			if(predBehavior.isExecutedOnNewVersion()) {
+				Set<InstructionExecInfo> set = newTrace.getExecutedInstructionsInsidePredicate(newCoder, predBehavior.createNewPredicateExecInfo());
+				System.out.println("    executed: " + set.size());
+			} else {
+				System.out.println("     not executed on new version");
+			}
+			
+			System.out.println();
+		}
 	}
 	
 	public void testParseJMeter_predicate_in_trace() {

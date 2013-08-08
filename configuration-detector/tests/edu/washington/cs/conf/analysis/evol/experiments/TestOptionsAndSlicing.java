@@ -1,12 +1,20 @@
 package edu.washington.cs.conf.analysis.evol.experiments;
 
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.Map;
+
+import com.ibm.wala.ipa.callgraph.CGNode;
+import com.ibm.wala.ipa.slicer.NormalStatement;
+import com.ibm.wala.ipa.slicer.Statement;
+import com.ibm.wala.ssa.SSAGetInstruction;
+import com.ibm.wala.ssa.SSAInstruction;
 
 import edu.washington.cs.conf.analysis.ConfEntity;
 import edu.washington.cs.conf.analysis.ConfEntityRepository;
 import edu.washington.cs.conf.analysis.ConfOutputSerializer;
 import edu.washington.cs.conf.analysis.ConfPropOutput;
+import edu.washington.cs.conf.analysis.IRStatement;
 import edu.washington.cs.conf.analysis.ShrikePoint;
 import edu.washington.cs.conf.analysis.evol.CodeAnalyzer;
 import edu.washington.cs.conf.analysis.evol.CodeAnalyzerRepository;
@@ -14,6 +22,7 @@ import edu.washington.cs.conf.analysis.evol.EvolConfOptionRepository;
 import edu.washington.cs.conf.experiments.CommonUtils;
 import edu.washington.cs.conf.instrument.InstrumentSchema;
 import edu.washington.cs.conf.instrument.InstrumentSchema.TYPE;
+import edu.washington.cs.conf.util.WALAUtils;
 import junit.framework.TestCase;
 
 public class TestOptionsAndSlicing extends TestCase {
@@ -136,19 +145,42 @@ public class TestOptionsAndSlicing extends TestCase {
 		
 		CodeAnalyzer oldCoder = CodeAnalyzerRepository.getJMeterOldAnalyzer();
 		oldCoder.buildAnalysis();
-		oldCoder.slicer.setContextSensitive(false);
+		//use additional seeds
+		oldCoder.slicer.setAddSliceSeedFromGet(true);
+		//memorize the output
 		Collection<ConfPropOutput> outputs = CommonUtils.getConfPropOutputs(oldCoder.slicer, rep, false);
 		for(ConfPropOutput output : outputs) {
 			System.out.println(output.getConfEntity());
 			System.out.println("   number of statements: " + output.statements.size());
 		}
+		
+		String saveFileName = EvolConfOptionRepository.jmeterOldCacheFile;
+		this.saveAndCheckSlicingResult(saveFileName, outputs);
 	}
 	
 	public void testJMeterNewOptions() {
 		ConfEntityRepository rep = EvolConfOptionRepository.jmeterNewConfs();
 		rep.initializeTypesInConfEntities(CodeAnalyzerRepository.getNewJMeterPath());
 		rep.showAll();
+		
+		CodeAnalyzer newCoder = CodeAnalyzerRepository.getJMeterNewAnalyzer();
+		newCoder.buildAnalysis();
+		//use additional seeds
+		newCoder.slicer.setAddSliceSeedFromGet(true);
+		//memorize the output
+		Collection<ConfPropOutput> outputs = CommonUtils.getConfPropOutputs(newCoder.slicer, rep, false);
+		for(ConfPropOutput output : outputs) {
+			System.out.println(output.getConfEntity());
+			System.out.println("   number of statements: " + output.statements.size());
+			for(IRStatement irs : output.statements) {
+			    System.out.println("   " + irs);
+			}
+		}
+		
+		String saveFileName = EvolConfOptionRepository.jmeterNewCacheFile;
+		this.saveAndCheckSlicingResult(saveFileName, outputs);
 	}
+	
 	private void saveAndCheckSlicingResult(String saveFileName, Collection<ConfPropOutput> outputs) {
 		InstrumentSchema schema = new InstrumentSchema();
 		schema.setType(TYPE.ALL_PRED_STMT);

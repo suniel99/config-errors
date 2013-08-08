@@ -48,6 +48,13 @@ public class TraceRepository {
 	public static String jmeterOldPredicateDump = jmeterOldDir + predicate_dump;
 	public static String jmeterNewHistoryDump = jmeterNewDir + history_dump;
 	public static String jmeterNewPredicateDump = jmeterNewDir + predicate_dump;
+	public static TracesWrapper getJMeterTraces() {
+		return new TracesWrapper(jmeterOldSig, jmeterNewSig, 
+				jmeterOldPredicateDump, jmeterNewPredicateDump,
+				jmeterOldHistoryDump, jmeterNewHistoryDump,
+				EvolConfOptionRepository.jmeterOldCacheFile,
+				EvolConfOptionRepository.jmeterNewCacheFile);
+	}
 	
 	public static String wekaOldSig = TestInstrumentPrograms.weka_361_sigmap;
 	public static String wekaNewSig = TestInstrumentPrograms.weka_362_sigmap;

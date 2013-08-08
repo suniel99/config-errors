@@ -5,7 +5,7 @@ org.apache.jmeter.samplers.SampleSaveConfiguration#_label#true
 org.apache.jmeter.samplers.SampleSaveConfiguration#_code#true 
 org.apache.jmeter.samplers.SampleSaveConfiguration#_message#true 
 org.apache.jmeter.samplers.SampleSaveConfiguration#_threadName#true 
-org.apache.jmeter.samplers.SampleSaveConfiguration#_xml#true
+org.apache.jmeter.samplers.SampleSaveConfiguration#xml#false
 org.apache.jmeter.samplers.SampleSaveConfiguration# _responseData#true
 org.apache.jmeter.samplers.SampleSaveConfiguration# _dataType#true
 org.apache.jmeter.samplers.SampleSaveConfiguration# _encoding#true
@@ -30,14 +30,10 @@ org.apache.jmeter.samplers.SampleSaveConfiguration# _sampleCount#true
 org.apache.jmeter.samplers.SampleSaveConfiguration# _formatter#true
 org.apache.jmeter.samplers.SampleSaveConfiguration# _delimiter#true
 org.apache.jmeter.samplers.SampleSaveConfiguration# _idleTime#true
-org.apache.jmeter.engine.RemoteJMeterEngineImpl#createServer#true
 org.apache.jmeter.engine.StandardJMeterEngine#exitAfterTest#true
 org.apache.jmeter.engine.StandardJMeterEngine#startListenersLater#true
 org.apache.jmeter.engine.StandardJMeterEngine#REMOTE_SYSTEM_EXIT#true
 org.apache.jmeter.engine.StandardJMeterEngine#SYSTEM_EXIT_ON_STOP_FAIL#true
-org.apache.jmeter.gui.MainFrame#DISPLAY_LOGGER_PANEL#true
-org.apache.jmeter.gui.MainFrame#DISPLAY_ERROR_FATAL_COUNTER#true
-org.apache.jmeter.gui.MainFrame#DISPLAY_TOOLBAR#true
 org.apache.jmeter.gui.action.Load#expandTree#true
 org.apache.jmeter.gui.action.Remove#SKIP_CONFIRM#true
 org.apache.jmeter.reporters.Summariser#TOLOG#true

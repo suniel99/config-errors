@@ -49,5 +49,18 @@ public class TestErrorDiagnoser extends TestCase {
 		ErrorDiagnoser diagnoser = new ErrorDiagnoser(oldConf, newConf, oldCoder, newCoder, wrapper);
 		diagnoser.diagnoseRootCauses();
 	}
+	
+	public void testJMeter() {
+		ConfEntityRepository oldConf = EvolConfOptionRepository.jmeterOldConfs();
+		ConfEntityRepository newConf = EvolConfOptionRepository.jmeterNewConfs();
+		CodeAnalyzer oldCoder = CodeAnalyzerRepository.getJMeterOldAnalyzer();
+		oldCoder.buildAnalysis();
+		CodeAnalyzer newCoder = CodeAnalyzerRepository.getJMeterNewAnalyzer();
+		newCoder.buildAnalysis();
+		TracesWrapper wrapper = TraceRepository.getJMeterTraces();
+		
+		ErrorDiagnoser diagnoser = new ErrorDiagnoser(oldConf, newConf, oldCoder, newCoder, wrapper);
+		diagnoser.diagnoseRootCauses();
+	}
 
 }
