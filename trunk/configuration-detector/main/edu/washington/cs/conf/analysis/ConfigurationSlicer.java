@@ -2,11 +2,15 @@ package edu.washington.cs.conf.analysis;
 
 import java.io.IOException;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 
+import com.ibm.wala.classLoader.IClass;
 import com.ibm.wala.classLoader.ShrikeBTMethod;
 import com.ibm.wala.core.tests.callGraph.CallGraphTestUtil;
 import com.ibm.wala.ipa.callgraph.AnalysisCache;
@@ -32,6 +36,7 @@ import com.ibm.wala.ipa.slicer.Statement.Kind;
 import com.ibm.wala.ipa.slicer.thin.CISlicer;
 import com.ibm.wala.ipa.slicer.StatementWithInstructionIndex;
 import com.ibm.wala.ssa.SSAAbstractInvokeInstruction;
+import com.ibm.wala.ssa.SSAGetInstruction;
 import com.ibm.wala.ssa.SSAInstruction;
 import com.ibm.wala.ssa.SSAInvokeInstruction;
 import com.ibm.wala.ssa.SSAPutInstruction;
@@ -57,6 +62,11 @@ public class ConfigurationSlicer {
 	private int cfaprecision = -1;
 	private String exclusionFile = CallGraphTestUtil.REGRESSION_EXCLUSIONS;
 	private boolean contextSensitive = true;
+	private boolean backward = false;
+	//if the default slice seed does not work, use
+	//the return statement from getters
+	private boolean addSliceSeeFromGet = false;
+	
 	private DataDependenceOptions dataOption = DataDependenceOptions.NO_BASE_PTRS;
 	private ControlDependenceOptions controlOption =ControlDependenceOptions.NONE;
 	//the CISlicer
@@ -82,8 +92,6 @@ public class ConfigurationSlicer {
 		this.controlOption = ControlDependenceOptions.FULL;
 	}
 	
-	
-	
 	public void buildAnalysis() {
 		try {
 		  System.out.println("Using exclusion file: " + this.exclusionFile);
@@ -98,6 +106,7 @@ public class ConfigurationSlicer {
 	          this.entrypoints = com.ibm.wala.ipa.callgraph.impl.Util.makeMainEntrypoints(scope, cha, mainClass);
 	      } else {
 	    	  System.err.println("Note, use customized entry points: " + this.entrypoints);
+	    	  System.err.println("Total num: " + Utils.countIterable(this.entrypoints));
 	      }
 	      this.options = CallGraphTestUtil.makeAnalysisOptions(scope, entrypoints);
 	      this.builder = chooseCallGraphBuilder(options, new AnalysisCache(), cha, scope);
@@ -136,6 +145,14 @@ public class ConfigurationSlicer {
 	
 	public void setContextSensitive(boolean cs) {
 		this.contextSensitive = cs;
+	}
+	
+	public void setBackward(boolean backward) {
+		this.backward = backward;
+	}
+	
+	public void setAddSliceSeedFromGet(boolean addSliceSeed) {
+		this.addSliceSeeFromGet = addSliceSeed;
 	}
 	
 	public void setDataDependenceOptions(DataDependenceOptions op) {
@@ -189,6 +206,11 @@ public class ConfigurationSlicer {
 	public ConfPropOutput outputSliceConfOption(ConfEntity entity) {
 		long startT = System.currentTimeMillis();
 		Collection<Statement> stmts = sliceConfOption(entity);
+		if(this.addSliceSeeFromGet) {
+			//compute more affected statement, and then add to stmts
+			Collection<Statement> moreStmts = sliceConfOptionFromGetter(entity);
+			stmts.addAll(moreStmts);
+		}
 		System.out.println("Time cost: " + (System.currentTimeMillis() - startT)/1000 + " s");
 		Collection<IRStatement> irs = convert(stmts);
 		ConfPropOutput output = new ConfPropOutput(entity, irs, this.targetPackageName);
@@ -217,8 +239,22 @@ public class ConfigurationSlicer {
 	public Collection<Statement> sliceConfOption(ConfEntity entity) {
 		checkCG();
 		Statement s = this.extractConfStatement(entity);
+		if(s == null) {
+			IClass clz = WALAUtils.lookupClass(this.getClassHierarchy(), entity.getClassName());
+			Utils.checkTrue(clz == null);
+		}
 		Utils.checkNotNull(s, "statement is null? " + entity);
 		//compute the slice
+		return this.performSlicing(s);
+	}
+	
+	public Collection<Statement> sliceConfOptionFromGetter(ConfEntity entity) {
+		this.checkCG();
+		Statement s = this.extractConfStatementFromGetter(entity);
+		if(s == null) {
+			return Collections.EMPTY_LIST;
+		}
+		System.out.println("Add additional seed: " + s + " to: " + entity.getConfName());
 		return this.performSlicing(s);
 	}
 	
@@ -226,6 +262,15 @@ public class ConfigurationSlicer {
 		this.checkCG();
 		Utils.checkNotNull(s);
 		try {
+			if(backward) {
+				System.err.println("!!! Now backward slicing -- experimental!, context: " + this.contextSensitive);
+				if(this.contextSensitive) {
+					return this.computeConetxtSensitiveSlice(s, true, this.dataOption, this.controlOption);
+				} else {
+					return this.computeConetxtInsensitiveThinSlice(s, true, this.dataOption, this.controlOption);
+				}
+			}
+			//the usually used one, forward
 			if(this.contextSensitive) {
 			    return computeContextSensitiveForwardSlice(s);
 			} else {
@@ -325,6 +370,7 @@ public class ConfigurationSlicer {
 			String fullMethodName = WALAUtils.getFullMethodName(node.getMethod());
 			//Log.logln("full method name: " + fullMethodName + ",  className: " + className);
 			if(fullMethodName.equals(className + "." + targetMethod)) {
+//				WALAUtils.printAllIRs(node);
 				Iterator<SSAInstruction> ssaIt = node.getIR().iterateAllInstructions();
 				while(ssaIt.hasNext()) {
 					SSAInstruction inst = ssaIt.next();
@@ -336,9 +382,48 @@ public class ConfigurationSlicer {
 							//Log.logln("put inst with same modifier: " + putInst);
 							if(putInst.toString().indexOf(confName) != -1) {
 								//find it
+//								System.out.println(" ==> " + putInst);
 								Statement s = new NormalStatement(node, WALAUtils.getInstructionIndex(node, inst));
 								return s;
 							}
+						}
+					}
+				}
+			}
+		}
+		
+		return null;
+	}
+	
+	public Statement extractConfStatementFromGetter(ConfEntity entity) {
+		String confClassName = entity.getClassName();
+		String confName = entity.getConfName();
+		boolean isStatic = entity.isStatic();
+		
+		Set<String> skippedMethods = new HashSet<String>();
+		skippedMethods.add("equals");
+		skippedMethods.add("hashCode");
+		skippedMethods.add("toString");
+		skippedMethods.add("<init>");
+		skippedMethods.add("<clinit>");
+		
+		for(CGNode node : cg) {
+			String fullClassName = WALAUtils.getJavaFullClassName(node.getMethod().getDeclaringClass());
+			if(fullClassName.equals(confClassName)) {
+				String methodName = node.getMethod().getName().toString();
+				if(skippedMethods.contains(methodName)) {
+					continue;
+				}
+				if(methodName.startsWith("set")) { //a heuristic
+					continue;
+				}
+				for(SSAInstruction ssa : WALAUtils.getAllIRs(node)) {
+					if(ssa instanceof SSAGetInstruction) {
+						SSAGetInstruction ssaGet = (SSAGetInstruction)ssa;
+						if(ssaGet.isStatic() == isStatic && ssaGet.toString().indexOf(confName) != -1) {
+							int index = WALAUtils.getInstructionIndex(node, ssa);
+							Statement s = new NormalStatement(node, index);
+							return s;
 						}
 					}
 				}

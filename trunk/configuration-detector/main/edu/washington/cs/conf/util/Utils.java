@@ -368,6 +368,17 @@ public class Utils {
 		return set;
 	}
 	
+	public static <T> Iterable<T> combine(Iterable<T> c1, Iterable<T> c2) {
+		Set<T> set = new LinkedHashSet<T>();
+		for(T t : c1) {
+			set.add(t);
+		}
+		for(T t : c2) {
+			set.add(t);
+		}
+		return set;
+	}
+	
 	//check if every element of its is included in all
 	public static <T> boolean includedIn(Iterable<T> its, Iterable<T> all) {
 		Collection<T> collection_its = iterableToCollection(its);
