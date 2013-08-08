@@ -198,6 +198,26 @@ public class WALAUtils {
 		  return names;
 	  }
 	  
+	  public static Iterable<Entrypoint> createEntrypointsFromAllMethods(String className, ClassHierarchy cha) {
+		  final HashSet<Entrypoint> result = HashSetFactory.make();
+          for(IClass c : cha) {
+                  if(c.getClassLoader().getReference().equals(ClassLoaderReference.Application)) {
+                          String fullClassName = WALAUtils.getJavaFullClassName(c);
+                          if(!fullClassName.equals(className)) {
+                        	  continue;
+                          }
+                          for(IMethod m : c.getDeclaredMethods()) {
+//                                  if(m.isPublic()) {
+                                          Entrypoint ep = new DefaultEntrypoint(m, cha);
+                                          result.add(ep);
+//                                  }
+                          }
+                  }
+          }
+          
+          return result;
+	  }
+	  
 	  //a.b.c,  methodName is a token
 	  public static Iterable<Entrypoint> createEntrypoints(String className, String methodName, ClassHierarchy cha) {
 		  final HashSet<Entrypoint> result = HashSetFactory.make();
