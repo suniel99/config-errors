@@ -2,9 +2,11 @@ package edu.washington.cs.conf.analysis.evol;
 
 import com.ibm.wala.ipa.callgraph.Entrypoint;
 import com.ibm.wala.ipa.cha.ClassHierarchy;
+import com.ibm.wala.ipa.slicer.Slicer.DataDependenceOptions;
 
 import edu.washington.cs.conf.analysis.ConfigurationSlicer.CG;
 import edu.washington.cs.conf.util.Globals;
+import edu.washington.cs.conf.util.Utils;
 import edu.washington.cs.conf.util.WALAUtils;
 
 public class CodeAnalyzerRepository {
@@ -77,12 +79,15 @@ public class CodeAnalyzerRepository {
 	static String jmeterMainClassSig = "Lorg/apache/jmeter/NewDriver";
 	static String jmeterStartMethod = "start";
 	
+	static String jmeterReportClass = "org.apache.jmeter.reporters.ResultCollector";
+	
 	//void start(String[] args)
 	public static CodeAnalyzer getJMeterOldAnalyzer() {
 		String classPath = getOldJMeterPath();
 		
 		CodeAnalyzer oldAnalyzer = new CodeAnalyzer(classPath, jmeterMainClassSig);
 		oldAnalyzer.slicer.setExclusionFile("JavaAllExclusions.txt");
+		oldAnalyzer.slicer.setExclusionFile("JMeterExclusions-new.txt");
 		oldAnalyzer.slicer.setCGType(CG.RTA);
 //		oldAnalyzer.slicer.setCGType(CG.ZeroCFA);
 //		oldAnalyzer.slicer.setCGType(CG.OneCFA);
@@ -90,24 +95,38 @@ public class CodeAnalyzerRepository {
 		//must customize the entry points
 		oldAnalyzer.slicer.buildClassHierarchy();
 		ClassHierarchy cha = oldAnalyzer.slicer.getClassHierarchy();
-		Iterable<Entrypoint> points = WALAUtils.createEntrypoints(jmeterStartClass, jmeterStartMethod, cha);
+		Iterable<Entrypoint> entryPoints = WALAUtils.createEntrypoints(jmeterStartClass, jmeterStartMethod, cha);
+		Iterable<Entrypoint> points = entryPoints;
+//		points = Utils.combine(entryPoints, publicPoints);
+		
 		oldAnalyzer.slicer.setEntrypoints(points);
+		//must explicitly set the data dependence
+		oldAnalyzer.slicer.setDataDependenceOptions(DataDependenceOptions.NO_BASE_NO_HEAP_NO_EXCEPTIONS);
 		
 		return oldAnalyzer;
 	}
 	
+	
 	public static CodeAnalyzer getJMeterNewAnalyzer() {
 		String classPath = getNewJMeterPath();
 		
+		//the main class will be overriden later by user-specified entry points
 		CodeAnalyzer newAnalyzer = new CodeAnalyzer(classPath, jmeterMainClassSig);
 		newAnalyzer.slicer.setExclusionFile("JavaAllExclusions.txt");
+		newAnalyzer.slicer.setExclusionFile("JMeterExclusions-new.txt");
 		newAnalyzer.slicer.setCGType(CG.RTA);
+//		newAnalyzer.slicer.setCGType(CG.ZeroCFA);
 		
 		//must customize the entry points
 		newAnalyzer.slicer.buildClassHierarchy();
 		ClassHierarchy cha = newAnalyzer.slicer.getClassHierarchy();
-		Iterable<Entrypoint> points = WALAUtils.createEntrypoints(jmeterStartClass, jmeterStartMethod, cha);
+		Iterable<Entrypoint> entryPoints = WALAUtils.createEntrypoints(jmeterStartClass, jmeterStartMethod, cha);
+		Iterable<Entrypoint> points = entryPoints;
+//	    points = Utils.combine(entryPoints, publicPoints);
+		
 		newAnalyzer.slicer.setEntrypoints(points);
+		//must explicitly set the data dependence
+		newAnalyzer.slicer.setDataDependenceOptions(DataDependenceOptions.NO_BASE_NO_HEAP_NO_EXCEPTIONS);
 		
 		return newAnalyzer;
 	}
