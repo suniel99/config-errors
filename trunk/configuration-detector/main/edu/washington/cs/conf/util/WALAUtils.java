@@ -534,6 +534,12 @@ public class WALAUtils {
 	    	}
 	    }
 	    
+	    public static void printBasicBlocks(Collection<ISSABasicBlock> bbs) {
+	    	for(ISSABasicBlock bb : bbs) {
+	    		printBasicBlock(bb);
+	    	}
+	    }
+	    
 	    public static void printBasicBlock(ISSABasicBlock bb) {
 	    	System.out.println(bb);
     		Iterator<SSAInstruction> iter_ssa = bb.iterator();
