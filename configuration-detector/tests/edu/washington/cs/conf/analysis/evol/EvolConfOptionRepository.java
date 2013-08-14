@@ -66,10 +66,16 @@ public class EvolConfOptionRepository {
 		return new ConfEntityRepository(entities);
 	}
 	
+	//TODO
+	public static final String jchordOldOptionFile = null;
+	public static final String jchordOldCacheFile = null;
 	public static ConfEntity[] jchordOldConfs() {
 		return new ConfEntity[]{};	
 	}
 	
+	//TODO
+	public static final String jchordNewOptionFile = null;
+	public static final String jchordNewCacheFile = null;
 	public static ConfEntity[] jchordNewConfs() {
 		return new ConfEntity[]{};
 	}

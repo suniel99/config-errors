@@ -62,5 +62,13 @@ public class TestErrorDiagnoser extends TestCase {
 		ErrorDiagnoser diagnoser = new ErrorDiagnoser(oldConf, newConf, oldCoder, newCoder, wrapper);
 		diagnoser.diagnoseRootCauses();
 	}
+	
+	public void testJChord1() {
+		
+	}
+	
+	public void testJChord2() {
+		
+	}
 
 }

@@ -181,6 +181,16 @@ public class TestOptionsAndSlicing extends TestCase {
 		this.saveAndCheckSlicingResult(saveFileName, outputs);
 	}
 	
+	//TODO
+	public void testJChordOldOptions() {
+		
+	}
+	
+	//TODO
+	public void testJChordNewOptions() {
+		
+	}
+	
 	private void saveAndCheckSlicingResult(String saveFileName, Collection<ConfPropOutput> outputs) {
 		InstrumentSchema schema = new InstrumentSchema();
 		schema.setType(TYPE.ALL_PRED_STMT);

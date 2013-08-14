@@ -1,13 +1,19 @@
 package edu.washington.cs.conf.analysis.evol;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import com.ibm.wala.ipa.callgraph.CGNode;
 
 import edu.washington.cs.conf.analysis.evol.experimental.PredicateExecInfo;
+import edu.washington.cs.conf.instrument.evol.CountingTracer;
+import edu.washington.cs.conf.instrument.evol.HardCodingPaths;
+import edu.washington.cs.conf.util.Files;
+import edu.washington.cs.conf.util.Globals;
 import edu.washington.cs.conf.util.Utils;
 import edu.washington.cs.conf.util.WALAUtils;
 
@@ -109,7 +115,7 @@ public class TestParseExecInstructionInfo extends TestCase {
 		System.out.println("Num of executed predicates in old trace: " + predSet.size());
 		//for each predicate, get its immediate post-dominator
 		for(PredicateExecInfo pred : predSet) {
-			InstructionExecInfo postDomExec = oldTrace.getImmediatePostDominator(oldCoder, pred);
+			InstructionExecInfo postDomExec = ExecutionTrace.getImmediatePostDominator(oldCoder, pred);
 			if(postDomExec == null) {
 				continue;
 			}
@@ -130,7 +136,7 @@ public class TestParseExecInstructionInfo extends TestCase {
 		System.out.println("Num of executed predicates in new trace: " + predSet.size());
 		//for each predicate, get its immediate post-dominator
 		for(PredicateExecInfo pred : predSet) {
-			InstructionExecInfo postDomExec = oldTrace.getImmediatePostDominator(newCoder, pred);
+			InstructionExecInfo postDomExec = ExecutionTrace.getImmediatePostDominator(newCoder, pred);
 			if(postDomExec == null) {
 				continue;
 			}
@@ -233,7 +239,7 @@ public class TestParseExecInstructionInfo extends TestCase {
 		System.out.println("Num of executed predicates in old trace: " + predSet.size());
 		//for each predicate, get its immediate post-dominator
 		for(PredicateExecInfo pred : predSet) {
-			InstructionExecInfo postDomExec = oldTrace.getImmediatePostDominator(oldCoder, pred);
+			InstructionExecInfo postDomExec = ExecutionTrace.getImmediatePostDominator(oldCoder, pred);
 			Utils.checkTrue(pred.getIndex() != postDomExec.getIndex());
 			System.out.println("Pred: " + pred);
 			System.out.println("     post dom: " + postDomExec);
@@ -257,7 +263,7 @@ public class TestParseExecInstructionInfo extends TestCase {
 		System.out.println("Num of executed predicates in old trace: " + predSet.size());
 		//for each predicate, get its immediate post-dominator
 		for(PredicateExecInfo pred : predSet) {
-			InstructionExecInfo postDomExec = newTrace.getImmediatePostDominator(newCoder, pred);
+			InstructionExecInfo postDomExec = ExecutionTrace.getImmediatePostDominator(newCoder, pred);
 			Utils.checkTrue(pred.getIndex() != postDomExec.getIndex());
 			System.out.println("Pred: " + pred);
 			System.out.println("     post dom: " + postDomExec);
@@ -329,7 +335,7 @@ public class TestParseExecInstructionInfo extends TestCase {
 		System.out.println("Num of executed predicates in old trace: " + predSet.size());
 		//for each predicate, get its immediate post-dominator
 		for(PredicateExecInfo pred : predSet) {
-			InstructionExecInfo postDomExec = oldTrace.getImmediatePostDominator(oldCoder, pred);
+			InstructionExecInfo postDomExec = ExecutionTrace.getImmediatePostDominator(oldCoder, pred);
 			Utils.checkTrue(pred.getIndex() != postDomExec.getIndex());
 			System.out.println("Pred: " + pred);
 			System.out.println("     post dom: " + postDomExec);
@@ -353,7 +359,7 @@ public class TestParseExecInstructionInfo extends TestCase {
 		System.out.println("Num of executed predicates in new trace: " + predSet.size());
 		//for each predicate, get its immediate post-dominator
 		for(PredicateExecInfo pred : predSet) {
-			InstructionExecInfo postDomExec = newTrace.getImmediatePostDominator(oldCoder, pred);
+			InstructionExecInfo postDomExec = ExecutionTrace.getImmediatePostDominator(oldCoder, pred);
 			Utils.checkTrue(pred.getIndex() != postDomExec.getIndex());
 			System.out.println("Pred: " + pred);
 			System.out.println("     post dom: " + postDomExec);
@@ -456,7 +462,7 @@ public class TestParseExecInstructionInfo extends TestCase {
 		//for each predicate, get its immediate post-dominator
 		List<String> missingSSAs = new LinkedList<String>();
 		for(PredicateExecInfo pred : predSet) {
-			InstructionExecInfo postDomExec = oldTrace.getImmediatePostDominator(oldCoder, pred);
+			InstructionExecInfo postDomExec = ExecutionTrace.getImmediatePostDominator(oldCoder, pred);
 			if(postDomExec == null) {
 				missingSSAs.add(pred.toString());
 				continue;
@@ -492,7 +498,7 @@ public class TestParseExecInstructionInfo extends TestCase {
 		//for each predicate, get its immediate post-dominator
 		List<String> missingSSAs = new LinkedList<String>();
 		for(PredicateExecInfo pred : predSet) {
-			InstructionExecInfo postDomExec = newTrace.getImmediatePostDominator(newCoder, pred);
+			InstructionExecInfo postDomExec = ExecutionTrace.getImmediatePostDominator(newCoder, pred);
 			if(postDomExec == null) {
 				missingSSAs.add(pred.toString());
 				continue;
@@ -513,6 +519,311 @@ public class TestParseExecInstructionInfo extends TestCase {
 		System.out.println("The missiing predicate number: " + missingSSAs.size());
 		System.out.println("They are: ");
 		Utils.dumpCollection(missingSSAs, System.out);
+	}
+	
+	//for JChord problem 1
+	public void testParseJChord_predicate_SSA() {
+		CodeAnalyzer oldCoder = CodeAnalyzerRepository.getJChordOldAnalyzer();
+		CodeAnalyzer newCoder = CodeAnalyzerRepository.getJChordNewAnalyzer();
+		oldCoder.buildAnalysis();
+		newCoder.buildAnalysis();
+		
+		//use uniqueness
+		SimpleChecks.unique_matching = true;
+		String[] pkgs = new String[]{"chord."};
+		Set<String> uniqueSet1 = CodeAnalysisUtils.findUniquelyInvokedMethods(oldCoder, pkgs);
+		Set<String> uniqueSet2 = CodeAnalysisUtils.findUniquelyInvokedMethods(newCoder, pkgs);
+		Set<String> uniqueIntersect = Utils.intersect(uniqueSet1, uniqueSet2);
+		SimpleChecks.uniqueMethods = uniqueIntersect;
+		
+		Collection<PredicateExecInfo>  oldPredExecs
+        = ExecutionTraceReader.createPredicateExecInfoList(TraceRepository.chordOldPredicateDump_SSA,
+     		TraceRepository.chordOldSig);
+	    Collection<PredicateExecInfo> newPredExecs
+	       = ExecutionTraceReader.createPredicateExecInfoList(TraceRepository.chordNewPredicateDump_SSA,
+	    		TraceRepository.chordNewSig);
+	    Set<String> oldUnmatchedMethods = SimpleChecks.getUnmatchedOldMethods(oldPredExecs, newPredExecs);
+	    Set<String> newUnmatchedMethods = SimpleChecks.getUnmatchedNewMethods(oldPredExecs, newPredExecs);
+	    System.out.println("Number of unmatched old methods: " + oldUnmatchedMethods.size());
+//	    System.out.println(oldUnmatchedMethods);
+	    System.out.println("Number of unmatched new methods: " + newUnmatchedMethods.size());
+//	    System.out.println(newUnmatchedMethods);
+	    
+	    Set<String> oldUnmatchedPredicates = SimpleChecks.getUnmatchedOldPredicates(oldPredExecs, newPredExecs);
+		Set<String> newUnmatchedPredicates = SimpleChecks.getUnmatchedNewPredicates(oldPredExecs, newPredExecs);
+		System.out.println("Number of unmatched old predicates: " + oldUnmatchedPredicates.size());
+		System.out.println("Number of unmatched new predicates: " + newUnmatchedPredicates.size());
+		
+		ExecutionTrace oldTrace = new ExecutionTrace(TraceRepository.counting_ssa_old);
+		ExecutionTrace newTrace = new ExecutionTrace(TraceRepository.counting_ssa_new);
+		
+		
+		Map<String, Float> outputMap = new HashMap<String, Float>();
+		
+		Set<PredicateBehaviorAcrossVersions> matchedPreds
+	        = SimpleChecks.getMatchedPredicateExecutions(oldPredExecs, newPredExecs, oldCoder, newCoder);
+	    System.out.println("Number of matched preds: " + matchedPreds.size());
+	    
+	    matchedPreds = SimpleChecks.rankByBehaviorChanges(matchedPreds);
+	    for(PredicateBehaviorAcrossVersions predBehavior : matchedPreds) {
+		    float degree = predBehavior.getDifferenceDegree();
+		    if(predBehavior.oldIndex == 8
+		    		&& predBehavior.oldMethodSig.indexOf("chord.program.Program.<init>") != -1) {
+		    	System.out.println(predBehavior);
+		    	System.out.println("Jump!");
+		    	return;
+		    }
+		    if(degree < 0.1f) {
+			    continue;
+		    }
+		    System.out.println(predBehavior);
+		    System.out.println("      diff: " + degree);
+		    
+		    String oldMethodSig = predBehavior.oldMethodSig;
+		    int oldIndex = predBehavior.oldIndex;
+		    String newMethodSig = predBehavior.newMethodSig;
+		    int newIndex = predBehavior.newIndex;
+		    
+		    int oldInstrNum = oldTrace.getExecutedInstructions(oldMethodSig, oldIndex);
+		    int newInstrNum = newTrace.getExecutedInstructions(newMethodSig, newIndex);
+		    int delta = Math.abs(oldInstrNum - newInstrNum);
+		    
+		    float diff = degree * (float)delta;
+		    
+		    System.out.println("      execution diff: " + diff);
+		    
+		    outputMap.put(predBehavior.toString(), diff);
+	    }
+	    
+	    outputMap = Utils.sortByValue(outputMap, false);
+	    System.out.println("---------results below -----------");
+	    for(String key : outputMap.keySet()) {
+	    	System.out.println(key + "\n     " + outputMap.get(key));
+	    }
+	    
+	    SimpleChecks.unique_matching = false;
+		SimpleChecks.uniqueMethods = null;
+	}
+	
+	//check the post-dominant instruction
+	public void testCheckJChord_predicate_in_old_trace_SSA() {
+		CodeAnalyzer oldCoder = CodeAnalyzerRepository.getJChordOldAnalyzer();
+		oldCoder.buildAnalysis();
+		
+		Collection<PredicateExecInfo>  predSet
+        = ExecutionTraceReader.createPredicateExecInfoList(TraceRepository.chordOldPredicateDump_SSA,
+     		TraceRepository.chordOldSig);
+		
+		StringBuilder sb = new StringBuilder();
+		for(PredicateExecInfo pred : predSet) {
+			InstructionExecInfo postDomExec = ExecutionTrace.getImmediatePostDominator(oldCoder, pred);
+			if(postDomExec == null) {
+				continue;
+			}
+			Utils.checkTrue(pred.getIndex() != postDomExec.getIndex());
+			System.out.println("Pred: " + pred);
+			System.out.println("     post dom: " + postDomExec);
+			
+			sb.append(pred.getPredicateSigInstr() + CountingTracer.COUNT_SEP + postDomExec.getPredicateSig() + Globals.lineSep);
+		}
+		
+		Files.writeToFileNoExp(sb.toString(), HardCodingPaths.traceFile);
+	}
+	
+	public void testCheckJChord_predicate_in_new_trace_SSA() {
+		CodeAnalyzer newCoder = CodeAnalyzerRepository.getJChordNewAnalyzer();
+		newCoder.buildAnalysis();
+		
+		Collection<PredicateExecInfo>  predSet
+        = ExecutionTraceReader.createPredicateExecInfoList(TraceRepository.chordNewPredicateDump_SSA,
+     		TraceRepository.chordNewSig);
+		
+		StringBuilder sb = new StringBuilder();
+		
+		for(PredicateExecInfo pred : predSet) {
+			InstructionExecInfo postDomExec = ExecutionTrace.getImmediatePostDominator(newCoder, pred);
+			if(postDomExec == null) {
+				continue;
+			}
+			Utils.checkTrue(pred.getIndex() != postDomExec.getIndex());
+			System.out.println("Pred: " + pred);
+			System.out.println("     post dom: " + postDomExec);
+			
+			sb.append(pred.getPredicateSigInstr() + CountingTracer.COUNT_SEP + postDomExec.getPredicateSig() + Globals.lineSep);
+		}
+		
+		Files.writeToFileNoExp(sb.toString(), HardCodingPaths.traceFile);
+	}
+	
+	//for JChord problem 2
+	//under this setting, it ranks first!
+    public void testParseJChord_predicate_Print() {
+    	Collection<PredicateExecInfo>  oldPredExecs
+            = ExecutionTraceReader.createPredicateExecInfoList(TraceRepository.chordOldPredicateDump_Print,
+     		    TraceRepository.chordOldSig);
+	    Collection<PredicateExecInfo> newPredExecs
+	       = ExecutionTraceReader.createPredicateExecInfoList(TraceRepository.chordNewPredicateDump_Print,
+	    		TraceRepository.chordNewSig);
+    	
+//    	for(PredicateExecInfo info : oldPredExecs) {
+//    		 if(info.getMethodSig().indexOf("chord.project.Main.run") != -1) {
+// 		    	System.out.println("--> " + info);
+// 		    }
+//    	}
+//    	if(true) {
+//    		return;
+//    	}
+	    
+	    Set<String> oldUnmatchedMethods = SimpleChecks.getUnmatchedOldMethods(oldPredExecs, newPredExecs);
+	    Set<String> newUnmatchedMethods = SimpleChecks.getUnmatchedNewMethods(oldPredExecs, newPredExecs);
+	    System.out.println("Number of unmatched old methods: " + oldUnmatchedMethods.size());
+//	    System.out.println(oldUnmatchedMethods);
+	    System.out.println("Number of unmatched new methods: " + newUnmatchedMethods.size());
+//	    System.out.println(newUnmatchedMethods);
+	    
+	    Set<String> oldUnmatchedPredicates = SimpleChecks.getUnmatchedOldPredicates(oldPredExecs, newPredExecs);
+		Set<String> newUnmatchedPredicates = SimpleChecks.getUnmatchedNewPredicates(oldPredExecs, newPredExecs);
+		System.out.println("Number of unmatched old predicates: " + oldUnmatchedPredicates.size());
+		System.out.println("Number of unmatched new predicates: " + newUnmatchedPredicates.size());
+		
+		ExecutionTrace oldTrace = new ExecutionTrace(TraceRepository.counting_print_old);
+		ExecutionTrace newTrace = new ExecutionTrace(TraceRepository.counting_print_new);
+		
+		CodeAnalyzer oldCoder = CodeAnalyzerRepository.getJChordOldAnalyzer();
+		CodeAnalyzer newCoder = CodeAnalyzerRepository.getJChordNewAnalyzer();
+		oldCoder.buildAnalysis();
+		newCoder.buildAnalysis();
+		
+		Set<PredicateBehaviorAcrossVersions> matchedPreds
+	        = SimpleChecks.getMatchedPredicateExecutions(oldPredExecs, newPredExecs, oldCoder, newCoder);
+	    System.out.println("Number of matched preds: " + matchedPreds.size());
+	
+	    Map<String, Float> outputMap = new HashMap<String, Float>();
+	
+	    matchedPreds = SimpleChecks.rankByBehaviorChanges(matchedPreds);
+	    for(PredicateBehaviorAcrossVersions predBehavior : matchedPreds) {
+		    float degree = predBehavior.getDifferenceDegree();
+
+//   		    if(predBehavior.oldMethodSig.indexOf("chord.project.Main.run") != -1
+//   		    		&& predBehavior.oldIndex == 75) {
+//		    	System.out.println("--> " + predBehavior);
+//		    	if(true) {
+//	   	        	System.out.println("Jump out!");
+//	   		        return;
+//	   	        }
+//		    }
+		    
+		    if(degree < 0.1f) {
+			    continue;
+		    }
+		    System.out.println(predBehavior);
+		    System.out.println("      diff: " + degree);
+		    
+		    String oldMethodSig = predBehavior.oldMethodSig;
+		    int oldIndex = predBehavior.oldIndex;
+		    String newMethodSig = predBehavior.newMethodSig;
+		    int newIndex = predBehavior.newIndex;
+		    
+//		    if(oldMethodSig.indexOf("chord.project.Main.run") != -1) {
+//		    	System.out.println("--> " + oldMethodSig + "#" + oldIndex);
+//		    }
+		    
+		    int oldInstrNum = oldTrace.getExecutedInstructions(oldMethodSig, oldIndex);
+		    int newInstrNum = newTrace.getExecutedInstructions(newMethodSig, newIndex);
+		    int delta = Math.abs(oldInstrNum - newInstrNum);
+		    
+		    float diff = degree * (float)delta;
+		    
+		    System.out.println("      execution diff: " + diff);
+		    System.out.println();
+		    
+		    outputMap.put(predBehavior.toString(), diff);
+	    }
+	    
+	    outputMap = Utils.sortByValue(outputMap, false);
+	    
+	    System.out.println("---------results below -----------");
+	    for(String key : outputMap.keySet()) {
+	    	System.out.println(key + "\n     " + outputMap.get(key));
+	    }
+	}
+	
+	public void testCheckJChord_predicate_in_old_trace_Print() {
+		CodeAnalyzer oldCoder = CodeAnalyzerRepository.getJChordOldAnalyzer();
+		oldCoder.buildAnalysis();
+		
+		Collection<PredicateExecInfo>  predSet
+        = ExecutionTraceReader.createPredicateExecInfoList(TraceRepository.chordOldPredicateDump_Print,
+     		TraceRepository.chordOldSig);
+		
+		StringBuilder sb = new StringBuilder();
+		for(PredicateExecInfo pred : predSet) {
+			InstructionExecInfo postDomExec = ExecutionTrace.getImmediatePostDominator(oldCoder, pred);
+			if(postDomExec == null) {
+				continue;
+			}
+			Utils.checkTrue(pred.getIndex() != postDomExec.getIndex());
+			System.out.println("Pred: " + pred);
+			System.out.println("     post dom: " + postDomExec);
+			
+			sb.append(pred.getPredicateSigInstr() + CountingTracer.COUNT_SEP + postDomExec.getPredicateSig() + Globals.lineSep);
+		}
+		
+		Files.writeToFileNoExp(sb.toString(), HardCodingPaths.traceFile);
+	}
+	
+	public void testCheckJChord_predicate_in_new_trace_Print() {
+		CodeAnalyzer newCoder = CodeAnalyzerRepository.getJChordNewAnalyzer();
+		newCoder.buildAnalysis();
+		
+		Collection<PredicateExecInfo>  predSet
+        = ExecutionTraceReader.createPredicateExecInfoList(TraceRepository.chordNewPredicateDump_Print,
+     		TraceRepository.chordNewSig);
+		
+		StringBuilder sb = new StringBuilder();
+		
+		for(PredicateExecInfo pred : predSet) {
+			InstructionExecInfo postDomExec = ExecutionTrace.getImmediatePostDominator(newCoder, pred);
+			if(postDomExec == null) {
+				continue;
+			}
+			Utils.checkTrue(pred.getIndex() != postDomExec.getIndex());
+			System.out.println("Pred: " + pred);
+			System.out.println("     post dom: " + postDomExec);
+			
+			sb.append(pred.getPredicateSigInstr() + CountingTracer.COUNT_SEP + postDomExec.getPredicateSig() + Globals.lineSep);
+		}
+		
+		Files.writeToFileNoExp(sb.toString(), HardCodingPaths.traceFile);
+	}
+	
+	//----------------parse counting files
+	public void testParseCountingFiles() {
+		
+		Map<String, Integer> map = new HashMap<String, Integer>();
+		map = ExecutionTraceReader.parseCountingFile(TraceRepository.counting_ssa_old);
+		map = Utils.sortByValue(map, false);
+		for(String key : map.keySet()) {
+			System.out.println(key + ", " + map.get(key));
+		}
+		
+		map = ExecutionTraceReader.parseCountingFile(TraceRepository.counting_ssa_new);
+		map = Utils.sortByValue(map, false);
+		for(String key : map.keySet()) {
+			System.out.println(key + ", " + map.get(key));
+		}
+		
+		map = ExecutionTraceReader.parseCountingFile(TraceRepository.counting_print_old);
+		map = Utils.sortByValue(map, false);
+		for(String key : map.keySet()) {
+			System.out.println(key + ", " + map.get(key));
+		}
+		
+		map = ExecutionTraceReader.parseCountingFile(TraceRepository.counting_print_new);
+		map = Utils.sortByValue(map, false);
+		for(String key : map.keySet()) {
+			System.out.println(key + ", " + map.get(key));
+		}
 	}
 	
 	//----------------see file size

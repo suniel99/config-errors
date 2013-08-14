@@ -17,6 +17,9 @@ import edu.washington.cs.conf.util.WALAUtils;
 //just for experiment purpose
 public class SimpleChecks {
 	
+	static boolean unique_matching = false;
+	
+	static Set<String> uniqueMethods = null;
 	
 	public static Set<String> getUnmatchedOldMethods(
 			Collection<PredicateExecInfo> oldSet,
@@ -116,7 +119,8 @@ public class SimpleChecks {
 				strictMatchedSSA = simpleMatcher.getMatchedSSA(oldPred.getMethodSig(), oldPred.getIndex());
 			}
 			
-			if(newPredMap.containsKey(oldPredSig)) {
+			if(newPredMap.containsKey(oldPredSig) && strictMatchedSSA != null
+					/* TODO FIXME this may violate existing matches	*/) {
 				PredicateExecInfo newExecInfo = newPredMap.get(oldPredSig);
 				//create a predicate execution object
 				PredicateBehaviorAcrossVersions execObj
@@ -135,13 +139,19 @@ public class SimpleChecks {
 				//if the new pred map does not contain old predicate signature
 				//look at the matched predicate
 				String oldMethodSig = oldPred.getMethodSig();
+				
 				if(newMethodSet.contains(oldMethodSig)) {
 					if(newCoder != null) {
 						CGNode oldNode = WALAUtils.lookupMatchedCGNode(oldCoder.getCallGraph(), oldPred.getMethodSig());
+						if(oldNode == null) { //likely not reached
+							System.err.println(oldPred.getMethodSig() + ", " + oldNode + ",  index: " + oldPred.getIndex());
+							continue;
+						}
 						SSAInstruction oldSSA = WALAUtils.getInstruction(oldNode, oldPred.getIndex());
 						CGNode newNode = WALAUtils.lookupMatchedCGNode(newCoder.getCallGraph(), oldPred.getMethodSig());
 						//matching instruction by instruction using a JDiff-like algorithm
 						List<SSAInstruction> ssalist = matcher.matchPredicateInNewCG(oldNode, newNode, oldSSA);
+
 						if(ssalist.size() == 1) {
 							SSAInstruction matchedSSA = ssalist.get(0);
 							int matchedIndex = WALAUtils.getInstructionIndex(newNode, matchedSSA);
@@ -161,9 +171,41 @@ public class SimpleChecks {
 								System.out.println("  ==> not executed: " + matchedPredSig);
 							}
 							
-						} else {
+						} else if(ssalist.isEmpty() && unique_matching && uniqueMethods != null) {
+							ssalist = matcher.matchPredicateInNewCG(oldNode, newNode, oldSSA, uniqueMethods);
+							System.out.println("use uniqueness: ");
+							System.out.println(ssalist);
+							if(ssalist.size() == 1) {
+								//XXX duplicate code
+								SSAInstruction matchedSSA = ssalist.get(0);
+								int matchedIndex = WALAUtils.getInstructionIndex(newNode, matchedSSA);
+								
+								String matchedPredSig = PredicateExecInfo.createPredicateSig(oldMethodSig, matchedIndex);
+								PredicateExecInfo newPredExec = newPredMap.get(matchedPredSig);
+								
+								if(newPredExec != null) {
+									PredicateBehaviorAcrossVersions execObj
+									    = new PredicateBehaviorAcrossVersions(oldPred.getMethodSig(), oldPred.getIndex(),
+									    		newPredExec.getMethodSig(), newPredExec.getIndex());
+									execObj.setOldExecutionInfo(oldPred.evalFreqCount, oldPred.evalResultCount);
+									execObj.setNewExecutionInfo(newPredExec.evalFreqCount, newPredExec.evalResultCount);
+									predSet.add(execObj); //XXX the matched part
+									System.err.println("new matched: \n" + execObj);
+								} else {
+									System.out.println("  ==> not executed in uniquenes: " + matchedPredSig);
+								}
+							} else {
+								System.out.println("more than 1 match.");
+							}
+						} else  {
 							System.out.println(" --> more than 1 item: " + ssalist);
 						}
+						
+						if(oldMethodSig.indexOf("chord.program.Program.<init>()") != - 1
+								&& oldPred.getIndex() == 8) {
+							throw new Error("list: " + ssalist);
+						}
+						
 					}
 				}
 			}
