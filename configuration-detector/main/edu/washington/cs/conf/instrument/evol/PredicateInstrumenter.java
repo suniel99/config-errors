@@ -37,6 +37,7 @@ import edu.washington.cs.conf.instrument.InstrumentSchema;
 import edu.washington.cs.conf.instrument.InstrumentStats;
 import edu.washington.cs.conf.util.Files;
 import edu.washington.cs.conf.util.Globals;
+import edu.washington.cs.conf.util.Log;
 import edu.washington.cs.conf.util.Utils;
 import edu.washington.cs.conf.util.WALAUtils;
 
@@ -57,9 +58,9 @@ public class PredicateInstrumenter extends AbstractInstrumenter {
 			new Class[] { String.class });
 
 	private String[] appPkgNames = null;
-	private Set<String> skipClassNames = new HashSet<String>();
+	private Set<String> skipClassPrefix = new HashSet<String>();
 	
-	private InstrumentSchema schema = null;
+//	private InstrumentSchema schema = null;
 	
 	//rather than recording the whole string, map a string to an integer
 	private boolean useSigMapping = false;
@@ -75,17 +76,17 @@ public class PredicateInstrumenter extends AbstractInstrumenter {
 	}
 
 	public PredicateInstrumenter(Collection<String> pkgNames,
-			Collection<String> skipClass) {
+			Collection<String> skipClassPrefix) {
 		if (!pkgNames.isEmpty()) {
 			this.appPkgNames = pkgNames.toArray(new String[0]);
 		}
-		skipClassNames.addAll(skipClass);
+		this.skipClassPrefix.addAll(skipClassPrefix);
 	}
 	
-	public void setInstrumentSchema(InstrumentSchema schema) {
-		Utils.checkNotNull(schema);
-		this.schema = schema;
-	}
+//	public void setInstrumentSchema(InstrumentSchema schema) {
+//		Utils.checkNotNull(schema);
+//		this.schema = schema;
+//	}
 	
 	public void setEveryStmt(boolean instrumentEvery) {
 		this.instrumentEveryStmt = instrumentEvery;
@@ -133,6 +134,8 @@ public class PredicateInstrumenter extends AbstractInstrumenter {
 
 				final String methodSig = WALAUtils.getMethodSignature(d);
 				
+				Log.logln("Instrument: " + methodSig);
+				
 				//instrument the beginning and end of a method
 				if(this.instrumentEveryMethod) {
 					changed = true;
@@ -144,11 +147,11 @@ public class PredicateInstrumenter extends AbstractInstrumenter {
 				for (int i = 0; i < length; i++) {
 					
 					//check whether this instruction should be instrumented
-					if(this.schema != null) {
-						if(this.shouldSkip(methodSig, i, this.schema)) {
-							continue;
-						}
-					}
+//					if(this.schema != null) {
+//						if(this.shouldSkip(methodSig, i, this.schema)) {
+//							continue;
+//						}
+//					}
 					
 					IInstruction inst = me.getInstructions()[i];
 //					final String stmtSig = methodSig + EfficientTracer.SEP + i;
@@ -348,7 +351,7 @@ public class PredicateInstrumenter extends AbstractInstrumenter {
 		return false;
 	}
 	
-	private boolean shouldSkip(String methodSig, int instructionIndex, InstrumentSchema schema) {
-		return !schema.hasInstrumentationPredicates(methodSig, instructionIndex);
-	}
+//	private boolean shouldSkip(String methodSig, int instructionIndex, InstrumentSchema schema) {
+//		return !schema.hasInstrumentationPredicates(methodSig, instructionIndex);
+//	}
 }

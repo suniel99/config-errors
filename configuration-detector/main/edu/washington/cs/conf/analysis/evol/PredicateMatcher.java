@@ -1,13 +1,16 @@
 package edu.washington.cs.conf.analysis.evol;
 
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 import com.ibm.wala.ipa.callgraph.CGNode;
 import com.ibm.wala.ipa.callgraph.CallGraph;
 import com.ibm.wala.ssa.ISSABasicBlock;
 import com.ibm.wala.ssa.SSAConditionalBranchInstruction;
 import com.ibm.wala.ssa.SSAInstruction;
+import com.ibm.wala.ssa.SSAInvokeInstruction;
 
 import edu.washington.cs.conf.util.Utils;
 import edu.washington.cs.conf.util.WALAUtils;
@@ -45,6 +48,66 @@ public class PredicateMatcher {
 	
 	public CGNode getMethodInOldCG(String methodSig) {
 		return WALAUtils.lookupMatchedCGNode(cgOld, methodSig);
+	}
+	
+	public List<SSAInstruction> matchPredicateInNewCG(CGNode oldNode, CGNode newNode, SSAInstruction oldSsa,
+			Set<String> uniqueMethods /**of both versions*/) {
+		ISSABasicBlock bb = WALAUtils.getHostBasicBlock(oldNode, oldSsa);
+		Utils.checkNotNull(bb);
+		//get succ
+		List<ISSABasicBlock> oldSuccBBList = WALAUtils.getSuccBasicBlocks(oldNode, bb);
+		Utils.checkTrue(oldSuccBBList.size() == 2);
+		if(debug) {
+		    System.out.println("succ bblist: " + oldSuccBBList);
+		}
+		Set<String> mSet = new HashSet<String>();
+		for(ISSABasicBlock oldSucc : oldSuccBBList) {
+			for(SSAInstruction ssa : WALAUtils.getAllIRs(oldSucc)) {
+				if(ssa instanceof SSAInvokeInstruction) {
+					String methodName = CodeAnalysisUtils.invokeSSAToStr((SSAInvokeInstruction)ssa);
+					if(uniqueMethods.contains(methodName)) {
+						mSet.add(methodName);
+					}
+				}
+			}
+		}
+		
+		//the delcared instructions
+		List<SSAInstruction> matchedInstructions = new LinkedList<SSAInstruction>();
+		
+		//go through each basic block
+		List<ISSABasicBlock> allBasicBlocks = WALAUtils.getAllBasicBlocks(newNode);
+		for(ISSABasicBlock block : allBasicBlocks) {
+			List<SSAInstruction> allInstr = WALAUtils.getAllIRs(block);
+			//exclude the entry / exit block
+			if(allInstr.isEmpty()) {
+				continue;
+			}
+			//the last one should be Branch Instruction
+			if(!(allInstr.get(allInstr.size() - 1) instanceof SSAConditionalBranchInstruction)) {
+				continue;
+			}
+			
+			//get the succ
+			List<ISSABasicBlock> newSuccBlocks = WALAUtils.getSuccBasicBlocks(newNode, block);
+			Set<String> uniqueMs = new HashSet<String>();
+			for(ISSABasicBlock aBlock : newSuccBlocks) {
+				for(SSAInstruction ssa : WALAUtils.getAllIRs(aBlock)) {
+					if(ssa instanceof SSAInvokeInstruction) {
+						String methodName = CodeAnalysisUtils.invokeSSAToStr((SSAInvokeInstruction)ssa);
+						if(uniqueMethods.contains(methodName)) {
+							uniqueMs.add(methodName);
+						}
+					}
+				}
+			}
+			if(uniqueMs.equals(mSet)) {
+				matchedInstructions.add(allInstr.get(allInstr.size() - 1));
+			}
+			System.out.println(mSet);
+		}
+		
+		return matchedInstructions;
 	}
 	
 	//
@@ -87,12 +150,31 @@ public class PredicateMatcher {
 			if(!(allInstr.get(allInstr.size() - 1) instanceof SSAConditionalBranchInstruction)) {
 				continue;
 			}
-//			System.out.println("check: " + allInstr);
+			
 			//get the succ
 			List<ISSABasicBlock> newSuccBlocks = WALAUtils.getSuccBasicBlocks(newNode, b);
 			List<ISSABasicBlock> newPredBlocks = WALAUtils.getPredBasicBlocks(newNode, b);
-			if(this.containBasicBlocks(oldSuccBBList, newSuccBlocks)
-					&& this.containBasicBlocks(oldPredBBList, newPredBlocks)) {
+			
+
+			if(debug) {
+			    System.out.println("\n\n\n==> check: " + allInstr + ", last index: "
+			    		+ WALAUtils.getInstructionIndex(newNode, allInstr.get(allInstr.size() - 1)));
+			    System.out.println("------old succ blocks: " + oldSuccBBList);
+			    WALAUtils.printBasicBlocks(oldSuccBBList);
+			    System.out.println("------ old pred blocks: " + oldPredBBList);
+			    WALAUtils.printBasicBlocks(oldPredBBList);
+			    System.out.println("------ new succ blocks: " + newSuccBlocks);
+			    WALAUtils.printBasicBlocks(newSuccBlocks);
+			    System.out.println("------ new pred blocks: " + newPredBlocks);
+			    WALAUtils.printBasicBlocks(newPredBlocks);
+			}
+			
+			boolean containSucc = this.containBasicBlocks(oldSuccBBList, newSuccBlocks);
+			boolean containPred = this.containBasicBlocks(oldPredBBList, newPredBlocks);
+			
+			System.out.println("    contain succ: " + containSucc + ",  contain pred: " + containPred);
+			
+			if(containSucc && containPred) {
 				//for debugging purpose:
 				//its containing basic block
 				if(debug) {
@@ -106,7 +188,7 @@ public class PredicateMatcher {
 		return matchedInstructions;
 	}
 	
-	//FIXME wrong implementation
+	//FIXME need to improve implementation
 	//check if the new basic block list contains all old basic blocks
 	private boolean containBasicBlocks(List<ISSABasicBlock> oldBBs, List<ISSABasicBlock> newBBs) {
 		//the number of new basic block must >=  the number of new basic block 

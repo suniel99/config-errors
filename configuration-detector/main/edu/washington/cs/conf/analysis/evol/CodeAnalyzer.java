@@ -38,6 +38,7 @@ import com.ibm.wala.ssa.SSAThrowInstruction;
 import com.ibm.wala.ssa.SymbolTable;
 
 import edu.washington.cs.conf.analysis.ConfigurationSlicer;
+import edu.washington.cs.conf.analysis.evol.experimental.IterativeSlicer;
 import edu.washington.cs.conf.util.Utils;
 import edu.washington.cs.conf.util.WALAUtils;
 

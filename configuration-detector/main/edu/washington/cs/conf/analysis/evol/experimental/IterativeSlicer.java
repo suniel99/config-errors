@@ -1,4 +1,4 @@
-package edu.washington.cs.conf.analysis.evol;
+package edu.washington.cs.conf.analysis.evol.experimental;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -15,6 +15,10 @@ import com.ibm.wala.ssa.ISSABasicBlock;
 import com.ibm.wala.ssa.SSAInstruction;
 import com.ibm.wala.ssa.SSAConditionalBranchInstruction;
 
+import edu.washington.cs.conf.analysis.evol.CodeAnalyzer;
+import edu.washington.cs.conf.analysis.evol.PostDominatorFinder;
+import edu.washington.cs.conf.analysis.evol.SSAFilter;
+import edu.washington.cs.conf.analysis.evol.SliceSeedFinder;
 import edu.washington.cs.conf.util.Utils;
 import edu.washington.cs.conf.util.WALAUtils;
 

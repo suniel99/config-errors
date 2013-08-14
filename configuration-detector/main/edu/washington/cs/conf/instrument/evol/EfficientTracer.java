@@ -37,20 +37,35 @@ public class EfficientTracer {
 		}
 		return tracer;
 	}
+	
+	private CountingTracer countTracer = null;
+	
 	private EfficientTracer() {
 		//be private on purpose
 		Runtime.getRuntime().addShutdownHook(this.createShutdownThread());
+		if(this.traceCounting) {
+			try {
+				this.countTracer = new CountingTracer(HardCodingPaths.expTraceFile);
+			} catch (Throwable e) {
+				throw new Error(e);
+			}
+		}
 	}
 	
 	private Map<String, Integer> predicateFrequency = new HashMap<String, Integer>();
 	private Map<String, Integer> predicateResult = new HashMap<String, Integer>();
 	private List<String> predicateExecHistory = new LinkedList<String>();
 	
-	private boolean traceHistory = true;
+	private boolean traceHistory = false;
+	private long countInstr = 0;
+	
+	private boolean traceCounting = true;
 	
 	public void tracePredicateFrequency(String predicateStr) {
 		if(traceHistory) {
 		    predicateExecHistory.add(EXEC + predicateStr); //the full history
+		} else {
+			countInstr++;
 		}
 		if(!predicateFrequency.containsKey(predicateStr)) {
 			predicateFrequency.put(predicateStr, 1);
@@ -58,17 +73,29 @@ public class EfficientTracer {
 			predicateFrequency.put(predicateStr, predicateFrequency.get(predicateStr) + 1);
 		}
 //		System.out.println("freq: " + predicateStr);
+//		if(countInstr != 0 && countInstr % 100000 == 0) {
+//		    System.out.println("Size of map: " + predicateFrequency.size()
+//		    		+ ", history size: " + predicateExecHistory.size()
+//		    		+ ", instr count: " + countInstr);
+//		}
 	}
 	
 	public void traceNormalInstruction(String str) {
 		if(traceHistory) {
 		    predicateExecHistory.add(NORMAL + str);
+		} else {
+			countInstr ++;
+		}
+		if(this.traceCounting) {
+			this.countTracer.traceNormalInstruction(str);
 		}
 	}
 	
 	public void tracePredicateResult(String predicateStr) {
 		if(traceHistory) {
 		    predicateExecHistory.add(EVAL + predicateStr); //the full history
+		} else {
+			countInstr ++;
 		}
 		if(!predicateResult.containsKey(predicateStr)) {
 			predicateResult.put(predicateStr, 1);
@@ -76,6 +103,9 @@ public class EfficientTracer {
 			predicateResult.put(predicateStr, predicateResult.get(predicateStr) + 1);
 		}
 //		System.out.println("result: " + predicateStr);
+		if(this.traceCounting) {
+			this.countTracer.tracePredicateResult(predicateStr);
+		}
 	}
 	
 	private Thread createShutdownThread() {
@@ -83,11 +113,21 @@ public class EfficientTracer {
 		return new  Thread() {
 	        @Override
 	        public void run() {
-	        	if(predicateFrequency.isEmpty()) {
+	        	if(predicateFrequency.isEmpty() && predicateExecHistory.isEmpty()) {
 	        		System.out.println("----------no traces recorded-------");
 	        		return;
 	        	}
+	        	if(traceCounting) {
+	        		try {
+						countTracer.writeCountsToFile("./instr_counting.txt");
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+	        	}
 	        	System.out.println("----------dumping traces to files-------");
+	        	System.out.println("--size of history: " + predicateExecHistory.size());
+	        	System.out.println("--if traceHisotry is turned off, the size: " + countInstr);
+	        	System.out.println("--size of predicate freq: " + predicateFrequency.size());
 	        	synchronized(predicateExecHistory){
 	              synchronized(predicateFrequency) {
 	            	synchronized(predicateResult) {
@@ -148,7 +188,7 @@ public class EfficientTracer {
 
    private static final String lineSep = System.getProperty("line.separator");
 	
-   private static <T> void directWriteToFile(Collection<T> coll, File file) throws IOException {
+   static <T> void directWriteToFile(Collection<T> coll, File file) throws IOException {
 	   if(file.exists()) {
 		   file.delete();
 		   System.err.println("Delete existing file: " + file.getAbsolutePath());

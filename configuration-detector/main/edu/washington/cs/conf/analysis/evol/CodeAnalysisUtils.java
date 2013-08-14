@@ -145,7 +145,7 @@ public class CodeAnalysisUtils {
 		Set<String> uniqueIntersect = Utils.intersect(uniqueSet1, uniqueSet2);
 		return uniqueIntersect;
 	}
-	
+
 	//just return method names without descriptor
 	//uniquely invoked means: only invoked in one method
 	public static Set<String> findUniquelyInvokedMethods(CodeAnalyzer coder, String[] pkgs) {

@@ -40,6 +40,10 @@ public class ExecutionTrace {
 	private final String sigmapFileName;
 	private final String predicateFileName;
 	
+	//if a trace is too big, just count the instruction num
+	private final String countingFileName;
+	private ExecutionTraceCounter traceCounter = null;
+	
 	public ExecutionTrace(String traceFile, String sigmapFile, String predicateFile) {
 		Utils.checkFileExistence(traceFile);
 		Utils.checkFileExistence(sigmapFile);
@@ -47,10 +51,20 @@ public class ExecutionTrace {
 		this.traceFileName = traceFile;
 		this.sigmapFileName = sigmapFile;
 		this.predicateFileName = predicateFile;
+		this.countingFileName = null;
 		//check whether to read into memory
 		if(enable_cache_trace) {
 		    this.checkOrRead();
 		}
+	}
+	
+	public ExecutionTrace(String countingFile) {
+		Utils.checkFileExistence(countingFile);
+		this.countingFileName = countingFile;
+		this.traceCounter = new ExecutionTraceCounter(this.countingFileName);
+		this.traceFileName = null;
+		this.sigmapFileName = null;
+		this.predicateFileName = null;
 	}
 	
 	/**
@@ -63,6 +77,7 @@ public class ExecutionTrace {
 		this.traceFileName = null;
 		this.sigmapFileName = null;
 		this.predicateFileName = null;
+		this.countingFileName = null;
 	}
 	
 	//check to see whether the trace is small enough to read into the memory
@@ -93,7 +108,7 @@ public class ExecutionTrace {
 		return predSet;
 	}
 	
-	public InstructionExecInfo getImmediatePostDominator(CodeAnalyzer coder, PredicateExecInfo pred) {
+	public static InstructionExecInfo getImmediatePostDominator(CodeAnalyzer coder, PredicateExecInfo pred) {
 		String methodSig = pred.getMethodSig();
 		int index = pred.getIndex();
 		CGNode node = WALAUtils.lookupMatchedCGNode(coder.getCallGraph(), methodSig);
@@ -124,11 +139,22 @@ public class ExecutionTrace {
 	}
 	
 	public Set<InstructionExecInfo> getExecutedInstructionsInsidePredicate(CodeAnalyzer coder, PredicateExecInfo pred) {
-		InstructionExecInfo postDom = this.getImmediatePostDominator(coder, pred);
+		InstructionExecInfo postDom = getImmediatePostDominator(coder, pred);
 		return this.getExecutedInstructionsBetween(pred.getMethodSig(), pred.getIndex(),
 				postDom.getMethodSig(), postDom.getIndex());
 	}
 	
+	public int getExecutedInstructions(String methodSig, int index) {
+		Utils.checkNotNull(this.traceCounter);
+		if(!this.traceCounter.hasPredicate(methodSig, index)) {
+			return 0;
+		}
+		return this.traceCounter.getCount(methodSig, index);
+	}
+	
+	public boolean useCountFile() {
+		return this.traceCounter != null;
+	}
 	
 	//FIXME
 	//given an execute predicate, and its execution frequency.
