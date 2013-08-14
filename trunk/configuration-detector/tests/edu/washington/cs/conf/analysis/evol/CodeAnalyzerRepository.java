@@ -134,7 +134,7 @@ public class CodeAnalyzerRepository {
 	static String chordMainClass = "Lchord/project/Main";
 	static String chordExclusions = "ChordExclusions.txt";
 	public static CodeAnalyzer getJChordOldAnalyzer() {
-		String oldChordPath = "D:\\research\\confevol\\subject-programs\\jchord\\chord-bin-2.0\\chord.jar";
+		String oldChordPath = "D:\\research\\configurations\\workspace\\chord-2.0\\chord.jar";
 		CodeAnalyzer oldCoder = new CodeAnalyzer(oldChordPath, chordMainClass);
 		oldCoder.slicer.setExclusionFile(chordExclusions);
 		oldCoder.slicer.setCGType(CG.ZeroCFA);
@@ -142,7 +142,7 @@ public class CodeAnalyzerRepository {
 	}
 	
 	public static CodeAnalyzer getJChordNewAnalyzer() {
-		String newChordPath = "D:\\research\\confevol\\subject-programs\\jchord\\chord-bin-2.1\\chord.jar";
+		String newChordPath = "D:\\research\\configurations\\workspace\\chord-2.1\\chord.jar";
 		CodeAnalyzer newCoder = new CodeAnalyzer(newChordPath, chordMainClass);
 		newCoder.slicer.setExclusionFile(chordExclusions);
 		newCoder.slicer.setCGType(CG.ZeroCFA);

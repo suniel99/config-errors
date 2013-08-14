@@ -1,10 +1,13 @@
 package edu.washington.cs.conf.analysis.evol;
 
+import java.util.Set;
+
 import com.ibm.wala.ipa.callgraph.CGNode;
 import com.ibm.wala.ssa.SSAInstruction;
 
 import edu.washington.cs.conf.analysis.ConfigurationSlicer.CG;
 import edu.washington.cs.conf.util.Globals;
+import edu.washington.cs.conf.util.Utils;
 import edu.washington.cs.conf.util.WALAUtils;
 
 import junit.framework.TestCase;
@@ -69,6 +72,7 @@ public class TestCodeAnalyzer extends TestCase {
 		coder.buildAnalysis();
 	}
 	
+	//around 4556 node, 2336 nodes
 	public void testJChordCoder() {
 		CodeAnalyzer coder = null;
 		
@@ -88,4 +92,24 @@ public class TestCodeAnalyzer extends TestCase {
 		coder = CodeAnalyzerRepository.getJMeterNewAnalyzer();
 		coder.buildAnalysis();
 	}
+	
+	public void testFindUniqueMethodsJChord() {
+        CodeAnalyzer coder = null;
+		coder = CodeAnalyzerRepository.getJChordOldAnalyzer();
+		coder.buildAnalysis();
+		Set<String> set1 = CodeAnalysisUtils.findUniquelyInvokedMethods(coder, new String[]{"chord."});
+		System.out.println("size: " + set1.size());
+		System.out.println(set1);
+		
+		coder = CodeAnalyzerRepository.getJChordNewAnalyzer();
+		coder.buildAnalysis();
+		Set<String> set2 = CodeAnalysisUtils.findUniquelyInvokedMethods(coder, new String[]{"chord."});
+		System.out.println("size: " + set2.size());
+		System.out.println(set2);
+		
+		Set<String> intersect = Utils.intersect(set1, set2);
+		System.out.println("size: " + intersect.size());
+		System.out.println(intersect);
+	}
+	
 }

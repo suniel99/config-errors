@@ -1,6 +1,7 @@
 package edu.washington.cs.conf.analysis.evol;
 
 import java.util.List;
+import java.util.Set;
 
 import com.ibm.wala.ipa.callgraph.CGNode;
 import com.ibm.wala.ssa.SSAInstruction;
@@ -108,5 +109,82 @@ public class TestPredicateMatcher extends TestCase {
 		int matchedIndex = WALAUtils.getInstructionIndex(newNode, ssalist.get(0));
 		System.out.println(matchedIndex);
 		assertEquals(RootCauses.matchedRandoopIndex, matchedIndex);
+	}
+	
+	public void testMatchJChordPredicate_SSA() {
+		CodeAnalyzer oldCoder = CodeAnalyzerRepository.getJChordOldAnalyzer();
+		oldCoder.buildAnalysis();
+		CodeAnalyzer newCoder = CodeAnalyzerRepository.getJChordNewAnalyzer();
+		newCoder.buildAnalysis();
+		
+		PredicateMatcher matcher = new PredicateMatcher(oldCoder.getCallGraph(),
+				newCoder.getCallGraph());
+		
+		String methodSig = RootCauses.chordMethod_SSA;
+		int index = RootCauses.chordOldIndex_SSA;
+		CGNode oldNode = matcher.getMethodInOldCG(methodSig);
+		System.out.println(oldNode);
+		
+		SSAInstruction oldSSA = WALAUtils.getInstruction(oldNode, index);
+		
+        CGNode newNode = WALAUtils.lookupMatchedCGNode(newCoder.getCallGraph(),
+        		oldNode.getMethod().getSignature());
+		System.out.println(newNode);
+		
+		List<SSAInstruction> ssalist = matcher.matchPredicateInNewCG(oldNode, newNode, oldSSA);
+		
+		System.out.println("Number of matched instructions: " + ssalist.size());
+		System.out.println(ssalist);
+		
+		SSAInstruction newSSA = WALAUtils.getInstruction(newNode, RootCauses.chordMatchedIndex_SSA);
+		System.out.println(RootCauses.chordMatchedIndex_SSA + newSSA.toString());
+		
+		//use the unique method matching
+		String[] pkgs = new String[]{"chord."};
+		Set<String> uniqueSet1 = CodeAnalysisUtils.findUniquelyInvokedMethods(oldCoder, pkgs);
+		Set<String> uniqueSet2 = CodeAnalysisUtils.findUniquelyInvokedMethods(newCoder, pkgs);
+		Set<String> uniqueIntersect = Utils.intersect(uniqueSet1, uniqueSet2);
+		
+		ssalist = matcher.matchPredicateInNewCG(oldNode, newNode, oldSSA, uniqueIntersect);
+		System.out.println("use uniqueness: ");
+		System.out.println(ssalist);
+		
+		assertEquals(1, ssalist.size());
+		assertEquals(RootCauses.chordMatchedIndex_SSA, WALAUtils.getInstructionIndex(newNode, ssalist.get(0)));
+		assertEquals("conditional branch(eq) 14,11", ssalist.get(0));
+	}
+	
+	public void testMatchJChordPredicate_Print() {
+		CodeAnalyzer oldCoder = CodeAnalyzerRepository.getJChordOldAnalyzer();
+		oldCoder.buildAnalysis();
+		
+		CodeAnalyzer newCoder = CodeAnalyzerRepository.getJChordNewAnalyzer();
+		newCoder.buildAnalysis();
+		
+		PredicateMatcher matcher = new PredicateMatcher(oldCoder.getCallGraph(),
+				newCoder.getCallGraph());
+		
+		String methodSig = RootCauses.chordMethod_Print;
+		int index = RootCauses.chordOldIndex_Print;
+		CGNode oldNode = matcher.getMethodInOldCG(methodSig);
+		System.out.println(oldNode);
+		
+		SSAInstruction oldSSA = WALAUtils.getInstruction(oldNode, index);
+		
+        CGNode newNode = WALAUtils.lookupMatchedCGNode(newCoder.getCallGraph(),
+        		oldNode.getMethod().getSignature());
+		System.out.println(newNode);
+		
+		List<SSAInstruction> ssalist = matcher.matchPredicateInNewCG(oldNode, newNode, oldSSA);
+		System.out.println(ssalist);
+		
+		for(SSAInstruction ssa : ssalist) {
+			System.out.println(ssa + "@" + WALAUtils.getInstructionIndex(newNode, ssa));
+		}
+		
+		assertEquals(0, ssalist.size());
+		
+//		SSAInstruction newSSA = WALAUtils.getInstruction(newNode, RootCauses.chordMatchedIndex_Print);
+//		System.out.println(RootCauses.chordMatchedIndex_Print + newSSA.toString());
 	}
 }

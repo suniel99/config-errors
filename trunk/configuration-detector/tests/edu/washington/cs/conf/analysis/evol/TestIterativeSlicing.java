@@ -13,6 +13,7 @@ import com.ibm.wala.ssa.ISSABasicBlock;
 import com.ibm.wala.ssa.SSAInstruction;
 
 import edu.washington.cs.conf.analysis.ConfEntity;
+import edu.washington.cs.conf.analysis.evol.experimental.IterativeSlicer;
 import edu.washington.cs.conf.util.Utils;
 import edu.washington.cs.conf.util.WALAUtils;
 import junit.framework.TestCase;

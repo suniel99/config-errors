@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.Collections;
 
 import edu.washington.cs.conf.instrument.InstrumentStats;
+import edu.washington.cs.conf.util.Log;
 import junit.framework.TestCase;
 
 public class TestInstrumentPrograms extends TestCase {
@@ -72,26 +73,38 @@ public class TestInstrumentPrograms extends TestCase {
 	
 	public static String chord_20_sigmap = "chord-2.0-sigmap.txt";
 	public void testJChord2_0() {
+		chord_20_sigmap = null;
+		Log.logConfig("./log.txt");
 		String inputJar = "D:\\research\\configurations\\workspace\\chord-2.0\\chord.jar";
 		String outputJar = "D:\\research\\configurations\\workspace\\chord-2.0\\chord-instrumented.jar";
 		this.doInstrumentation(inputJar, outputJar, Arrays.asList("chord."),
-				false, chord_20_sigmap, false /*stmt*/, false /*method*/, true /*predicate*/);
+				false, chord_20_sigmap, true /*stmt*/, true /*method*/, true /*predicate*/);
+		Log.removeLogging();
 	}
 	
+	/**
+	 * NOTE:
+	 * for ssa problem, should instrument joeq.* package, remember
+	 * to replace the corresponding sig map and the trace file
+	 * */
 	public static String chord_21_sigmap = "chord-2.1-sigmap.txt";
     public void testJChord2_1() {
+    	chord_21_sigmap = null;
+    	Log.logConfig("./log.txt");
     	String inputJar = "D:\\research\\configurations\\workspace\\chord-2.1\\chord.jar";
 		String outputJar = "D:\\research\\configurations\\workspace\\chord-2.1\\chord-instrumented.jar";
-		this.doInstrumentation(inputJar, outputJar, Arrays.asList("chord."),
-				false, chord_21_sigmap, false /*stmt*/, false /*method*/, false /*predicate*/);
+		this.doInstrumentation(inputJar, outputJar, Arrays.asList("chord."/*, "joeq."*/),
+				false, chord_21_sigmap, true /*stmt*/, true /*method*/, true /*predicate*/);
+		Log.removeLogging();
 	}
     
-    public void testJChord_trunk() {
-    	String inputJar = "D:\\research\\configurations\\workspace\\chord-trunk\\chord.jar";
-		String outputJar = "D:\\research\\configurations\\workspace\\chord-trunk\\chord-instrumented.jar";
-		this.doInstrumentation(inputJar, outputJar, Arrays.asList("chord."),
-				false, null, false /*stmt*/, false /*method*/, false /*predicate*/);
-	}
+//    @Deprecated
+//    public void testJChord_trunk() {
+//    	String inputJar = "D:\\research\\configurations\\workspace\\chord-trunk\\chord.jar";
+//		String outputJar = "D:\\research\\configurations\\workspace\\chord-trunk\\chord-instrumented.jar";
+//		this.doInstrumentation(inputJar, outputJar, Arrays.asList("chord."),
+//				false, null, false /*stmt*/, false /*method*/, false /*predicate*/);
+//	}
 
     private void doInstrumentation(String input, String output, Collection<String> appPkgs,
     		boolean disasm, String sigMapFileName, boolean instrumentEveryStmt,

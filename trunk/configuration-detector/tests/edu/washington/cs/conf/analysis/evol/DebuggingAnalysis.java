@@ -8,6 +8,7 @@ import plume.Pair;
 import com.ibm.wala.ipa.callgraph.CGNode;
 import com.ibm.wala.ssa.SSAInstruction;
 
+import edu.washington.cs.conf.analysis.evol.experiments.RootCauses;
 import edu.washington.cs.conf.util.AnalysisDebugger;
 import edu.washington.cs.conf.util.WALAUtils;
 import junit.framework.TestCase;
@@ -46,4 +47,11 @@ public class DebuggingAnalysis extends TestCase {
 		WALAUtils.printCFG(newNode);
 	}
 	
+	public void testSSAMethodInChord() {
+		CodeAnalyzer coder = CodeAnalyzerRepository.getJChordNewAnalyzer();
+		coder.buildAnalysis();
+		CGNode node = WALAUtils.lookupMatchedCGNode(coder.getCallGraph(), RootCauses.chordMethod_Print);
+		WALAUtils.printAllIRsWithIndices(node);
+//		System.out.println(WALAUtils.getInstruction(node, RootCauses.chordMatchedIndex_SSA));
+	}
 }

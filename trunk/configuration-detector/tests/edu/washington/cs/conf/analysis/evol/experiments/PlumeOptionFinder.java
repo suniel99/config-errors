@@ -101,4 +101,12 @@ public class PlumeOptionFinder extends TestCase {
 				"synoptic.main.SynopticOptions"
 		});
 	}
+	
+	public static void main(String[] args) {
+		System.out.println(System.getProperty("test.colon"));
+		String[] splits = System.getProperty("test.colon").split(" |,|:|;");
+		for(String split : splits) {
+			System.out.println(split);
+		}
+	}
 }

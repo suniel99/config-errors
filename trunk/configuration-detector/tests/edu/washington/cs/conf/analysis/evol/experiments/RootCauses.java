@@ -24,4 +24,22 @@ public class RootCauses {
 	private static String matchedWekaMethod = wekaMethod;
 	public static int matchedWekaIndex = wekaIndexOld;
 	
+	
+	//====
+	//option chord.ssa
+	//chord.program.Program<init>
+	public static String chordMethod_SSA = "chord.program.Program.<init>()V";
+	public static int chordOldIndex_SSA = 8;
+	public static int chordMatchedIndex_SSA = 12;  //disappear?
+	//seems 20 is more reasonable?
+	/**
+	 * 
+	 * */
+	
+	//static main.run
+	//option print.methods
+	public static String chordMethod_Print = "chord.project.Main.run()V";
+	public static int chordOldIndex_Print = 75;
+	public static int chordMatchedIndex_Print = -1; //disappear in the new version
+	//it will output 46
 }
