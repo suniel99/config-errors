@@ -1,12 +1,14 @@
 package edu.washington.cs.conf.analysis.evol;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
 import edu.washington.cs.conf.analysis.evol.experimental.PredicateExecInfo;
+import edu.washington.cs.conf.instrument.evol.CountingTracer;
 import edu.washington.cs.conf.instrument.evol.EfficientTracer;
 import edu.washington.cs.conf.util.Files;
 import edu.washington.cs.conf.util.Utils;
@@ -173,4 +175,16 @@ public class ExecutionTraceReader {
 		return coll;
 	}
 	
+	//a sample execution line: chord.bddbddb.Rel.initialize()V##69==>0
+	public static Map<String, Integer> parseCountingFile(String fileName) {
+		Map<String, Integer> countingMap = new HashMap<String, Integer>();
+		List<String> lines = Files.readWholeNoExp(fileName);
+		for(String line : lines) {
+			String[] splits = line.split(CountingTracer.COUNT_SEP);
+			Utils.checkTrue(splits.length == 2);
+			Utils.checkTrue(!countingMap.containsKey(splits[0]));
+			countingMap.put(splits[0], Integer.parseInt(splits[1]));
+		}
+		return countingMap;
+	}
 }

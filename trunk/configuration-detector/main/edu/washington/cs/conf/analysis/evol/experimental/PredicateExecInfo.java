@@ -37,6 +37,11 @@ public class PredicateExecInfo {
 		return createPredicateSig(this.context, this.getIndex());
 	}
 	
+	//Ugly, just do not want to break existing code
+	public String getPredicateSigInstr() {
+		return this.context + EfficientTracer.SEP + this.getIndex();
+	}
+	
 	public static String createPredicateSig(String method, int index) {
 		return method + "#" + index;
 	}

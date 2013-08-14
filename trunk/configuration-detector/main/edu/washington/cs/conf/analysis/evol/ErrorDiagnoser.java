@@ -107,12 +107,14 @@ public class ErrorDiagnoser {
 			int instrNumOnOldVersion = 0;
 			int instrNumOnNewVersion = 0;
 			if(predBehavior.isExecutedOnOldVersion()) {
-				Set<InstructionExecInfo> set = oldTrace.getExecutedInstructionsInsidePredicate(oldCoder, predBehavior.createOldPredicateExecInfo());
-				instrNumOnOldVersion = set.size();
+				instrNumOnOldVersion = this.getExecutedInstructionNumInOldVersion(predBehavior.createOldPredicateExecInfo());
+//				Set<InstructionExecInfo> set = oldTrace.getExecutedInstructionsInsidePredicate(oldCoder, predBehavior.createOldPredicateExecInfo());
+//				instrNumOnOldVersion = set.size();
 			}
 			if(predBehavior.isExecutedOnNewVersion()) {
-				Set<InstructionExecInfo> set = newTrace.getExecutedInstructionsInsidePredicate(newCoder, predBehavior.createNewPredicateExecInfo());
-				instrNumOnNewVersion = set.size();
+				instrNumOnNewVersion = this.getExecutedInstructionNumInNewVersion(predBehavior.createNewPredicateExecInfo());
+//				Set<InstructionExecInfo> set = newTrace.getExecutedInstructionsInsidePredicate(newCoder, predBehavior.createNewPredicateExecInfo());
+//				instrNumOnNewVersion = set.size();
 			}
 			
 			int instrDelta = Math.abs(instrNumOnNewVersion - instrNumOnOldVersion);
@@ -163,6 +165,26 @@ public class ErrorDiagnoser {
 		
 		List<ConfEntity> list = new LinkedList<ConfEntity>();
 		return list;
+	}
+	
+	private int getExecutedInstructionNumInOldVersion(PredicateExecInfo pred) {
+		String methodSig = pred.getMethodSig();
+		int index = pred.getIndex();
+		if(oldTrace.useCountFile()) {
+			return oldTrace.getExecutedInstructions(methodSig, index);
+		}
+		Set<InstructionExecInfo> set = oldTrace.getExecutedInstructionsInsidePredicate(oldCoder, pred);
+		return set.size();
+	}
+	
+	private int getExecutedInstructionNumInNewVersion(PredicateExecInfo pred) {
+		String methodSig = pred.getMethodSig();
+		int index = pred.getIndex();
+		if(newTrace.useCountFile()) {
+			return newTrace.getExecutedInstructions(methodSig, index);
+		}
+		Set<InstructionExecInfo> set = newTrace.getExecutedInstructionsInsidePredicate(newCoder, pred);
+		return set.size();
 	}
 	
 	private Set<ConfEntity> getAffectingOptionsInOldVersion(String methodSig, int instructionIndex) {
