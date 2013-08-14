@@ -2,6 +2,7 @@ package edu.washington.cs.conf.analysis.evol;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -22,6 +23,7 @@ import com.ibm.wala.ssa.SSAFieldAccessInstruction;
 import com.ibm.wala.ssa.SSAGetCaughtExceptionInstruction;
 import com.ibm.wala.ssa.SSAInstanceofInstruction;
 import com.ibm.wala.ssa.SSAInstruction;
+import com.ibm.wala.ssa.SSAInvokeInstruction;
 import com.ibm.wala.ssa.SSAMonitorInstruction;
 import com.ibm.wala.ssa.SSANewInstruction;
 import com.ibm.wala.ssa.SSAReturnInstruction;
@@ -134,5 +136,59 @@ public class CodeAnalysisUtils {
 			    && ret1.returnsVoid() == ret2.returnsVoid();
 		}
 		return true; //for other cases
+	}
+	
+	public static Set<String> findUniqueMethods(CodeAnalyzer oldCoder,
+			CodeAnalyzer newCoder, String[] pkgs) {
+		Set<String> uniqueSet1 = CodeAnalysisUtils.findUniquelyInvokedMethods(oldCoder, pkgs);
+		Set<String> uniqueSet2 = CodeAnalysisUtils.findUniquelyInvokedMethods(newCoder, pkgs);
+		Set<String> uniqueIntersect = Utils.intersect(uniqueSet1, uniqueSet2);
+		return uniqueIntersect;
+	}
+	
+	//just return method names without descriptor
+	//uniquely invoked means: only invoked in one method
+	public static Set<String> findUniquelyInvokedMethods(CodeAnalyzer coder, String[] pkgs) {
+		Map<String, Integer> map = new HashMap<String, Integer>();
+		for(CGNode node : coder.getCallGraph()) {
+			Map<String, Integer> mapPerMethod = new HashMap<String, Integer>();
+			String fullMethodName = WALAUtils.getFullMethodName(node.getMethod());
+			if(!Utils.startWith(fullMethodName, pkgs)) {
+				continue;
+			}
+			Iterator<SSAInstruction> iter = node.getIR().iterateAllInstructions();
+			while(iter.hasNext()) {
+				SSAInstruction ssa = iter.next();
+				if(ssa instanceof SSAInvokeInstruction) {
+					SSAInvokeInstruction invokeSSA = (SSAInvokeInstruction)ssa;
+					String methodName = invokeSSAToStr(invokeSSA);
+					mapPerMethod.put(methodName, 1);
+				}
+			}
+			for(String methodName : mapPerMethod.keySet()) {
+				if(map.containsKey(methodName)) {
+					map.put(methodName, mapPerMethod.get(methodName) + map.get(methodName));
+				} else {
+					map.put(methodName, mapPerMethod.get(methodName));
+				}
+			}
+		}
+		Set<String> uniqueMethods = new HashSet<String>();
+		for(String methodName : map.keySet()) {
+			if(methodName.startsWith("java.") || methodName.startsWith("javax.")) {
+				continue;
+			}
+			if(map.get(methodName) == 1) {
+				uniqueMethods.add(methodName);
+			}
+		}
+		return uniqueMethods;
+	}
+	
+	public static String invokeSSAToStr(SSAInvokeInstruction invokeSSA) {
+		String methodName =
+			invokeSSA.getDeclaredTarget().getDeclaringClass().getName().toString().substring(1).replace('/', '.') + "." +
+			invokeSSA.getCallSite().getDeclaredTarget().getName().toString();
+		return methodName;
 	}
 }
