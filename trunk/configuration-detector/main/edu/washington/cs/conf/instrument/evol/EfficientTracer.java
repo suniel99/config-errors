@@ -26,6 +26,8 @@ public class EfficientTracer {
 	public static String EVAL = "EVAL" + EVAL_SEP;
 	public static String NORMAL = "NOR" + EVAL_SEP;
 	
+	public static String PREDICATE_DUMP_FILE = "predicate_dump_";
+	public static String HISTORY_DUMP_FILE = "history_dump_";
 	
 	//use two large maps to keep track of the evaluation
 	//result of each predicate
@@ -153,13 +155,13 @@ public class EfficientTracer {
 	                		}
 	                		
 	                		long time = System.currentTimeMillis();
-	                		String predicateFileName = dir + "/predicate_dump_" + time + ".txt";
+	                		String predicateFileName = dir + "/" + PREDICATE_DUMP_FILE + time + ".txt";
 	                		File predicateFile = new File(predicateFileName);
 	                		System.out.println("write predicate behaviors to file: " + predicateFile.getAbsolutePath());
 	        				EfficientTracer.writeToFile(sb.toString(), predicateFile, false);
 	        				
 	        				//due to the large volume the history must be written directly
-	                		String historyFileName = "./tmp-output-folder/history_dump_" + time + ".txt";
+	                		String historyFileName = "./tmp-output-folder/" + HISTORY_DUMP_FILE + time + ".txt";
 	                		File hf = new File(historyFileName);
 	                		System.out.println("write full history to file: " + hf.getAbsolutePath());
 	                		EfficientTracer.directWriteToFile(predicateExecHistory, hf);
