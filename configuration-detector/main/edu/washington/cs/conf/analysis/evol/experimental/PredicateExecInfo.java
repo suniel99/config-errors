@@ -16,6 +16,8 @@ import edu.washington.cs.conf.util.WALAUtils;
 //@Deprecated
 //this is for a single predicate
 public class PredicateExecInfo {
+	
+	public static String SEP = "#";
 
 	public final String context; //the outside method
 	public final String predicateIndex; //the predicate index
@@ -27,6 +29,7 @@ public class PredicateExecInfo {
 		Utils.checkNotNull(predicate);
 		Utils.checkTrue(freq > 0);
 		Utils.checkTrue(result >= 0);
+		Utils.checkTrue(freq >= result);
 		this.context = context;
 		this.predicateIndex = predicate;
 		this.evalFreqCount = freq;
@@ -43,7 +46,21 @@ public class PredicateExecInfo {
 	}
 	
 	public static String createPredicateSig(String method, int index) {
-		return method + "#" + index;
+		return method + SEP + index;
+	}
+	
+	public static String[] parsePredicateSig(String sig) {
+		String[] splits = sig.split(SEP);
+		Utils.checkTrue(splits.length == 2);
+		return splits;
+	}
+	
+	public static String paseMethodSig(String predSig) {
+		return parsePredicateSig(predSig)[0];
+	}
+	
+	public static Integer parseInstructionIndex(String predSig) {
+		return Integer.parseInt(parsePredicateSig(predSig)[1]);
 	}
 	
 	public String getMethodSig() {

@@ -114,6 +114,47 @@ public class ExecutionTraceReader {
 		}
 		return list;
 	}
+	
+	//merge predicate exec info from multiple files
+	public static Collection<PredicateExecInfo>
+	   createPredicateExecInfoList(Collection<String> predicateFileNames, String mapFileName) {
+		
+		Map<String, Integer> frequency = new HashMap<String, Integer>();
+		Map<String, Integer> evaluation = new HashMap<String, Integer>();
+		
+		for(String predicateFileName : predicateFileNames) {
+			Collection<PredicateExecInfo> coll = createPredicateExecInfoList(predicateFileName, mapFileName);
+			for(PredicateExecInfo predExec : coll) {
+				String sig = predExec.getPredicateSig();
+				//update the frequency map
+				if(!frequency.containsKey(sig)) {
+					frequency.put(sig, predExec.evalFreqCount);
+				} else {
+					frequency.put(sig, predExec.evalFreqCount + frequency.get(sig));
+				}
+				//update the evaluation map
+				if(!evaluation.containsKey(sig)) {
+					evaluation.put(sig, predExec.evalResultCount);
+				} else {
+					evaluation.put(sig, predExec.evalResultCount + evaluation.get(sig));
+				}
+			}
+			coll.clear(); //reclaim memory
+		}
+		Collection<PredicateExecInfo> retPreds = new LinkedList<PredicateExecInfo>();
+		//create the predicate exec info
+		for(String predSig : frequency.keySet()) {
+			Utils.checkTrue(evaluation.containsKey(predSig));
+			String methodSig = PredicateExecInfo.paseMethodSig(predSig);
+			Integer index = PredicateExecInfo.parseInstructionIndex(predSig);
+			int freqNum = frequency.get(predSig);
+			int evalNum = evaluation.get(predSig);
+			PredicateExecInfo exec = new PredicateExecInfo(methodSig, index.toString(), freqNum, evalNum);
+			retPreds.add(exec);
+		}
+		return retPreds;
+	}
+	
 
 	//read predicate exec info using the sigmap
 	//in the predicate trace file, it records:

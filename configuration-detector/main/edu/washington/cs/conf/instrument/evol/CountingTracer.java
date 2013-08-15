@@ -29,7 +29,7 @@ public class CountingTracer {
 	
 	public CountingTracer(String filePath) throws IOException {
 		File f = new File(filePath);
-		System.out.println("Reading file: " + f.getAbsolutePath());
+//		System.out.println("Reading file: " + f.getAbsolutePath());
 		Set<String> allPreds = new HashSet<String>();
 		BufferedReader reader = new BufferedReader(new FileReader(f));
 	    String line= reader.readLine();
