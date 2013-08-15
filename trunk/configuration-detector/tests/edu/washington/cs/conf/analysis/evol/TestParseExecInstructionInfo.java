@@ -2,12 +2,14 @@ package edu.washington.cs.conf.analysis.evol;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import com.ibm.wala.ipa.callgraph.CGNode;
+import com.ibm.wala.ssa.SSAInstruction;
 
 import edu.washington.cs.conf.analysis.evol.experimental.PredicateExecInfo;
 import edu.washington.cs.conf.instrument.evol.CountingTracer;
@@ -824,6 +826,110 @@ public class TestParseExecInstructionInfo extends TestCase {
 		for(String key : map.keySet()) {
 			System.out.println(key + ", " + map.get(key));
 		}
+	}
+	
+	//for the Javalanche
+	public void testParseTracesForJavaLanche() {
+//		SimpleChecks.useStrictMatching = false;
+		Collection<PredicateExecInfo> oldPreds = ExecutionTraceReader.createPredicateExecInfoList(TraceRepository.getJavalancheOldPredicateFiles(),
+				TraceRepository.javalancheOldSig);
+		Collection<PredicateExecInfo> newPreds = ExecutionTraceReader.createPredicateExecInfoList(TraceRepository.getJavalancheNewPredicateFiles(),
+				TraceRepository.javalancheNewSig);
+		System.out.println("Number in old: " + oldPreds.size());
+		System.out.println("Number in new: " + newPreds.size());
+		
+		Set<String> oldUnmatchedPredicates = SimpleChecks.getUnmatchedOldPredicates(oldPreds, newPreds);
+		Set<String> newUnmatchedPredicates = SimpleChecks.getUnmatchedNewPredicates(oldPreds, newPreds);
+		System.out.println("Number of unmatched old predicates: " + oldUnmatchedPredicates.size());
+		System.out.println("Number of unmatched new predicates: " + newUnmatchedPredicates.size());
+		
+		CodeAnalyzer oldCoder = CodeAnalyzerRepository.getJavalancheOldAnalyzer();
+		oldCoder.buildAnalysis();
+		CodeAnalyzer newCoder = CodeAnalyzerRepository.getJavalancheNewAnalyzer();
+		newCoder.buildAnalysis();
+		
+		Set<PredicateBehaviorAcrossVersions> matchedPreds
+	        = SimpleChecks.getMatchedPredicateExecutions(oldPreds, newPreds, oldCoder, newCoder);
+	    System.out.println("Number of matched preds: " + matchedPreds.size());
+	    
+	    matchedPreds = SimpleChecks.rankByBehaviorChanges(matchedPreds);
+		for(PredicateBehaviorAcrossVersions predBehavior : matchedPreds) {
+			float degree = predBehavior.getDifferenceDegree();
+			if(degree < 0.1f) {
+				continue;
+			}
+			System.out.println(predBehavior);
+			System.out.println("      diff: " + degree);
+			System.out.println();
+		}
+	}
+	
+	public void testCheckJavalanche_old_version() {
+		Collection<PredicateExecInfo> oldPreds = ExecutionTraceReader.createPredicateExecInfoList(TraceRepository.getJavalancheOldPredicateFiles(),
+				TraceRepository.javalancheOldSig);
+		CodeAnalyzer coder = CodeAnalyzerRepository.getJavalancheOldAnalyzer();
+		coder.buildAnalysis();
+		int count = 0;
+		int matchedCount = 0;
+		Set<String> nodes = new HashSet<String>();
+		for(PredicateExecInfo pred : oldPreds) {
+			SSAInstruction ssa = coder.getInstruction(pred.getMethodSig(), pred.getIndex());
+			if(ssa == null) {
+				count++;
+//				System.err.println(pred);
+			}
+			CGNode node = WALAUtils.lookupMatchedCGNode(coder.getCallGraph(), pred.getMethodSig());
+			if(node == null) {
+				nodes.add(pred.getMethodSig());
+//				System.out.println(node);
+			}
+			if(pred.getMethodSig().indexOf("TestMessage") != -1
+					|| pred.getMethodSig().indexOf("SingleTestResult") != -1
+					|| pred.getMethodSig().indexOf("MutationTestDriver") != -1
+					|| pred.getMethodSig().indexOf("TestSuiteUtil") != -1) {
+				System.err.println(ssa);
+				System.err.println("    " + pred);
+				matchedCount++;
+			}
+		}
+		System.out.println("The missing number: " + count);
+		System.out.println("The missing methods: " + nodes.size());
+		System.out.println("Matched count: " + matchedCount);
+		assertEquals(56, matchedCount);
+	}
+	
+	public void testCheckJavalanche_new_version() {
+		Collection<PredicateExecInfo> oldPreds = ExecutionTraceReader.createPredicateExecInfoList(TraceRepository.getJavalancheNewPredicateFiles(),
+				TraceRepository.javalancheNewSig);
+		CodeAnalyzer coder = CodeAnalyzerRepository.getJavalancheNewAnalyzer();
+		coder.buildAnalysis();
+		int count = 0;
+		int matchedCount = 0;
+		Set<String> nodes = new HashSet<String>();
+		for(PredicateExecInfo pred : oldPreds) {
+			SSAInstruction ssa = coder.getInstruction(pred.getMethodSig(), pred.getIndex());
+			if(ssa == null) {
+				count++;
+//				System.err.println(pred);
+			}
+			CGNode node = WALAUtils.lookupMatchedCGNode(coder.getCallGraph(), pred.getMethodSig());
+			if(node == null) {
+				nodes.add(pred.getMethodSig());
+//				System.out.println(node);
+			}
+			if(pred.getMethodSig().indexOf("TestMessage") != -1
+					|| pred.getMethodSig().indexOf("SingleTestResult") != -1
+					|| pred.getMethodSig().indexOf("MutationTestDriver") != -1
+					|| pred.getMethodSig().indexOf("TestSuiteUtil") != -1) {
+				System.err.println(ssa);
+				System.err.println("    " + pred);
+				matchedCount++;
+			}
+		}
+		System.out.println("The missing number: " + count);
+		System.out.println("The missing methods: " + nodes.size());
+		System.out.println("Matched count: " + matchedCount);
+		assertEquals(68, matchedCount);
 	}
 	
 	//----------------see file size

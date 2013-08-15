@@ -89,6 +89,8 @@ public class SimpleChecks {
 		return map.keySet();
 	}
 	
+	public static boolean useStrictMatching = true;
+	
 	//get behaviorally changed predicates
 	public static Set<PredicateBehaviorAcrossVersions> getMatchedPredicateExecutions(
 			Collection<PredicateExecInfo> oldSet,
@@ -119,7 +121,8 @@ public class SimpleChecks {
 				strictMatchedSSA = simpleMatcher.getMatchedSSA(oldPred.getMethodSig(), oldPred.getIndex());
 			}
 			
-			if(newPredMap.containsKey(oldPredSig) && strictMatchedSSA != null
+			if(newPredMap.containsKey(oldPredSig)
+					&& (strictMatchedSSA != null || !useStrictMatching)
 					/* TODO FIXME this may violate existing matches	*/) {
 				PredicateExecInfo newExecInfo = newPredMap.get(oldPredSig);
 				//create a predicate execution object
@@ -149,6 +152,10 @@ public class SimpleChecks {
 						}
 						SSAInstruction oldSSA = WALAUtils.getInstruction(oldNode, oldPred.getIndex());
 						CGNode newNode = WALAUtils.lookupMatchedCGNode(newCoder.getCallGraph(), oldPred.getMethodSig());
+						if(newNode == null) {
+							System.err.println("The static call graph is not complete...");
+							continue;
+						}
 						//matching instruction by instruction using a JDiff-like algorithm
 						List<SSAInstruction> ssalist = matcher.matchPredicateInNewCG(oldNode, newNode, oldSSA);
 

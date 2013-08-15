@@ -93,6 +93,16 @@ public class TestCodeAnalyzer extends TestCase {
 		coder.buildAnalysis();
 	}
 	
+	public void testJavalanche() {
+		CodeAnalyzer coder = null;
+		
+		coder = CodeAnalyzerRepository.getJavalancheOldAnalyzer();
+		coder.buildAnalysis();
+		
+		coder = CodeAnalyzerRepository.getJavalancheNewAnalyzer();
+		coder.buildAnalysis();
+	}
+	
 	public void testFindUniqueMethodsJChord() {
         CodeAnalyzer coder = null;
 		coder = CodeAnalyzerRepository.getJChordOldAnalyzer();

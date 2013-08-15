@@ -1,10 +1,14 @@
 package edu.washington.cs.conf.analysis.evol;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+
 import com.ibm.wala.ipa.callgraph.Entrypoint;
 import com.ibm.wala.ipa.cha.ClassHierarchy;
 import com.ibm.wala.ipa.slicer.Slicer.DataDependenceOptions;
 
 import edu.washington.cs.conf.analysis.ConfigurationSlicer.CG;
+import edu.washington.cs.conf.util.Files;
 import edu.washington.cs.conf.util.Globals;
 import edu.washington.cs.conf.util.Utils;
 import edu.washington.cs.conf.util.WALAUtils;
@@ -149,6 +153,26 @@ public class CodeAnalyzerRepository {
 		return newCoder;
 	}
 	
+//	static String javalancheOldPath = null;
+	static String javalancheMainClass = "Lde/unisb/cs/st/javalanche/mutation/analyze/AnalyzeMain";
+	public static CodeAnalyzer getJavalancheOldAnalyzer() {
+		CodeAnalyzer oldCoder = new CodeAnalyzer(getJavalancheOldPath(), javalancheMainClass);
+		oldCoder.slicer.setExclusionFile("JavalancheExclusions.txt");
+//		oldCoder.slicer.setCGType(CG.ZeroCFA);
+		oldCoder.slicer.setCGType(CG.RTA);
+		return oldCoder;
+	}
+	
+//	static String javalancheNewPath = null;
+	public static CodeAnalyzer getJavalancheNewAnalyzer() {
+		CodeAnalyzer newCoder = new CodeAnalyzer(getJavalancheNewPath(), javalancheMainClass);
+		newCoder.slicer.setExclusionFile("JavalancheExclusions.txt");
+//		newCoder.slicer.setCGType(CG.ZeroCFA);
+		newCoder.slicer.setCGType(CG.RTA);
+		return newCoder;
+	}
+	
+	
 	//the long classpath for JMeter
 	public static String getOldJMeterPath() {
 		String startJar = "D:\\research\\confevol\\subject-programs\\jmeter\\apache-jmeter-2.8\\bin\\ApacheJMeter.jar";
@@ -289,5 +313,107 @@ public class CodeAnalyzerRepository {
 			"D:\\research\\confevol\\subject-programs\\jmeter\\apache-jmeter-2.9\\lib\\xstream-1.4.2.jar";
 
 		return allJars;
+	}
+	
+	public static String getJavalancheOldPath() {
+		String dir = "D:\\research\\confevol\\subject-programs\\javalanche\\versions\\javalanche\\javalanche-0.3.6-bin\\lib\\";
+		String allJars = 
+			dir + "original\\javalanche-mutation-0.3.6.jar" + Globals.pathSep +
+			dir + "adabu2-core-0.4-SNAPSHOT.jar" +Globals.pathSep +
+			dir + "adabu2-hoare-0.4-SNAPSHOT.jar" +Globals.pathSep +
+			dir + "adabu2-tracer-0.4-modified.jar" +Globals.pathSep +
+			dir + "antlr-2.7.6.jar" + Globals.pathSep +
+			dir + "asm-3.0.jar" + Globals.pathSep +
+			dir + "asm-all-3.1.jar" + Globals.pathSep +
+			dir + "asm-commons-3.1.jar" + Globals.pathSep +
+			dir + "asm-tree-3.1.jar" +Globals.pathSep +
+			dir + "asm-util-3.1.jar" +Globals.pathSep +
+			dir + "bytecodeTransformer-0.1.jar" +Globals.pathSep +
+			dir + "c3p0-0.9.1.2.jar" +Globals.pathSep +
+			dir + "cglib-2.1_3.jar" +Globals.pathSep +
+			dir + "commons-collections-3.2.1.jar" +Globals.pathSep +
+			dir + "commons-io-1.4.jar" +Globals.pathSep +
+			dir + "commons-lang-2.3.jar" +Globals.pathSep +
+			dir + "commons-logging-1.0.4.jar" +Globals.pathSep +
+			dir + "daikon-local.jar" +Globals.pathSep +
+			dir + "dom4j-1.6.1.jar" +Globals.pathSep +
+			dir + "ds-util-transformed.jar" +Globals.pathSep +
+			dir + "easymock-2.3.jar" +Globals.pathSep +
+			dir + "ehcache-1.2.3.jar" +Globals.pathSep +
+			dir + "evoltracer.jar" +Globals.pathSep +
+			dir + "freemarker-2.3.4.jar" +Globals.pathSep +
+			dir + "google-collect-snapshot-20080530.jar" +Globals.pathSep +
+			dir + "hamcrest-all-1.1.jar" +Globals.pathSep +
+			dir + "hibernate-3.2.0.ga.jar" +Globals.pathSep +
+			dir + "hibernate-annotations-3.2.0.ga.jar" +Globals.pathSep +
+			dir + "hibernate-commons-annotations-3.3.0.ga.jar" +Globals.pathSep +
+			dir + "hibernate-tools-3.2.0.beta9a.jar" +Globals.pathSep +
+			dir + "hsqldb.jar" +Globals.pathSep +
+			dir + "invariants-0.1.jar" +Globals.pathSep +
+			dir + "j2h-1.3.1.jar" +Globals.pathSep +
+			dir + "jarjar-1.2.jar" +Globals.pathSep +
+			dir + "javaagent.jar" +Globals.pathSep +
+			dir + "jgrapht-jdk1.5-0.7.3.jar" +Globals.pathSep +
+			dir + "jta-1.0.1B.jar" +Globals.pathSep +
+			dir + "jtidy-r8-20060801.jar" +Globals.pathSep +
+			dir + "junit-4.7.jar" +Globals.pathSep +
+			dir + "log4j-1.2.14.jar" +Globals.pathSep +
+			dir + "mysql-connector-java-5.0.4.jar" +Globals.pathSep +
+			dir + "persistence-api-1.0.jar" +Globals.pathSep +
+			dir + "prefuse-beta-20060220.jar" +Globals.pathSep +
+			dir + "sibrelib-local.jar" +Globals.pathSep +
+			dir + "util-0.1.jar" +Globals.pathSep +
+			dir + "xpp3_min-1.1.3.4.O.jar" +Globals.pathSep +
+			dir + "xstream-transformed.jar";
+		return allJars;
+	}
+	
+	public static String getJavalancheNewPath() {
+	  String dir = "D:\\research\\confevol\\subject-programs\\javalanche\\versions\\javalanche\\javalanche-0.4.0-bin\\lib\\";
+	  String allJars = dir + "original\\javalanche-0.4.jar" + Globals.pathSep +
+	    dir + "antlr-2.7.6.jar" +Globals.pathSep +
+		dir + "asm-debug-all-3.3.1.jar" +Globals.pathSep +
+		dir + "bsh-2.0b4.jar" +Globals.pathSep +
+		dir + "c3p0-0.9.1.2.jar" +Globals.pathSep +
+		dir + "cglib-nodep-2.1_3.jar" +Globals.pathSep +
+		dir + "commons-collections-2.1.1.jar" +Globals.pathSep +
+		dir + "commons-io-2.0.1.jar" +Globals.pathSep +
+		dir + "commons-lang-2.6.jar" +Globals.pathSep +
+		dir + "commons-logging-1.0.4.jar" +Globals.pathSep +
+		dir + "dom4j-1.6.1.jar" +Globals.pathSep +
+		dir + "ds-util-0.3.2.1.jar" +Globals.pathSep +
+		dir + "ehcache-1.2.3.jar" +Globals.pathSep +
+		dir + "evoltracer.jar" +Globals.pathSep +
+		dir + "freemarker-2.3.8.jar" +Globals.pathSep +
+		dir + "guava-r09.jar" +Globals.pathSep +
+		dir + "hamcrest-core-1.3.RC2.jar" +Globals.pathSep +
+		dir + "hamcrest-integration-1.3.RC2.jar" +Globals.pathSep +
+		dir + "hamcrest-library-1.3.RC2.jar" +Globals.pathSep +
+		dir + "hibernate-3.2.7.ga.jar" +Globals.pathSep +
+		dir + "hibernate-annotations-3.3.0.ga.jar" +Globals.pathSep +
+		dir + "hibernate-commons-annotations-3.3.0.ga.jar" +Globals.pathSep +
+		dir + "hibernate-tools-3.2.3.GA.jar" +Globals.pathSep +
+		dir + "hsqldb-1.8.0.10.jar" +Globals.pathSep +
+		dir + "jgrapht-jdk1.5-0.7.3.jar" +Globals.pathSep +
+		dir + "jta-1.0.1B.jar" +Globals.pathSep +
+		dir + "jtidy-r8-20060801.jar" +Globals.pathSep +
+		dir + "junit-dep-4.8.2.jar" +Globals.pathSep +
+		dir + "log4j-1.2.16.jar" +Globals.pathSep +
+		dir + "mysql-connector-java-5.1.17.jar" +Globals.pathSep +
+		dir + "opencsv-2.3.jar" +Globals.pathSep +
+		dir + "persistence-api-1.0.jar" +Globals.pathSep +
+		dir + "xmlpull-1.1.3.1.jar" +Globals.pathSep +
+		dir + "xpp3_min-1.1.4c.jar" +Globals.pathSep +
+		dir + "xstream-1.4.1.jar";
+		return allJars;
+	}
+	
+	public static void main(String[] args) throws FileNotFoundException {
+		String dir = "D:\\research\\confevol\\subject-programs\\javalanche\\versions\\javalanche\\javalanche-0.3.6-bin\\lib\\";
+		for(File f : Files.getFileListing(new File(dir))) {
+			if(f.getName().endsWith(".jar")) {
+			    System.out.println(f.getName());
+			}
+		}
 	}
 }

@@ -1,6 +1,14 @@
 package edu.washington.cs.conf.analysis.evol;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+
+import edu.washington.cs.conf.instrument.evol.EfficientTracer;
 import edu.washington.cs.conf.instrument.evol.TestInstrumentPrograms;
+import edu.washington.cs.conf.util.Files;
 
 public class TraceRepository {
 	@Deprecated
@@ -101,12 +109,14 @@ public class TraceRepository {
 	public static String chordOldSig = TestInstrumentPrograms.chord_20_sigmap;
 	public static String chordNewSig = TestInstrumentPrograms.chord_21_sigmap;
 	
-	//TODO
 	static final String chordDir = "D:\\research\\confevol\\subject-programs\\jchord\\trace-files-icse2014\\";
+	@Deprecated
 	public static String chordOldHistoryDump_SSA = null;
+	@Deprecated
 	public static String chordNewHistoryDump_SSA = null;
 	public static String chordOldPredicateDump_SSA = chordDir + "predicate_dump_SSA-chord-2.0.txt";
 	public static String chordNewPredicateDump_SSA = chordDir + "predicate_dump_SSA-chord-2.1.txt";
+	@Deprecated
 	public static TracesWrapper getChordTraces_P1() {
 		return new TracesWrapper(chordOldSig, chordNewSig,
 				chordOldPredicateDump_SSA, chordNewPredicateDump_SSA,
@@ -115,11 +125,13 @@ public class TraceRepository {
 				EvolConfOptionRepository.jchordNewCacheFile);
 	}
 	
-	//TODO
+	@Deprecated
 	public static String chordOldHistoryDump_Print = null;
+	@Deprecated
 	public static String chordNewHistoryDump_Print = null;
 	public static String chordOldPredicateDump_Print = chordDir + "predicate_dump_print-chord-2.0.txt";
 	public static String chordNewPredicateDump_Print = chordDir + "predicate_dump_print-chord-2.1.txt";
+	@Deprecated
 	public static TracesWrapper getChordTraces_Print() {
 		return new TracesWrapper(chordOldSig, chordNewSig,
 				chordOldPredicateDump_Print, chordNewPredicateDump_Print,
@@ -127,10 +139,38 @@ public class TraceRepository {
 				EvolConfOptionRepository.jchordOldCacheFile,
 				EvolConfOptionRepository.jchordNewCacheFile);
 	}
-	
 	private static String countingTraceDir = "D:\\research\\configurations\\";
 	public static String counting_ssa_new = countingTraceDir + "instr_counting-new-ssa.txt";
 	public static String counting_ssa_old = countingTraceDir + "instr_counting-old-ssa.txt";
 	public static String counting_print_new = countingTraceDir + "instr_counting-new-print.txt";
 	public static String counting_print_old = countingTraceDir + "instr_counting-old-print.txt";
+	
+	//the trace files below is for Javalanche
+	static String traceDir = "D:\\research\\confevol\\subject-programs\\javalanche\\traces\\";
+	public static String traceDir36 = traceDir + "0.36";
+	public static String traceDir40 = traceDir + "0.40";
+	public static String javalancheOldSig = TestInstrumentPrograms.javalanche_36;
+	public static String javalancheNewSig = TestInstrumentPrograms.javalanche_40;
+	public static Collection<String> getJavalancheOldPredicateFiles() {
+		return getPredicateFiles(traceDir36);
+	}
+	
+    public static Collection<String> getJavalancheNewPredicateFiles() {
+    	return getPredicateFiles(traceDir40);
+	}
+    
+    static Collection<String> getPredicateFiles(String dir) {
+		try {
+			List<File> files = Files.getFileListing(new File(dir));
+			Collection<String> predicates = new HashSet<String>();
+			for(File f : files) {
+				if(f.getName().startsWith(EfficientTracer.PREDICATE_DUMP_FILE)) {
+					predicates.add(f.getAbsolutePath());
+				}
+			}
+			return predicates; 
+		} catch (FileNotFoundException e) {
+			throw new Error(e);
+		}
+	}
 }

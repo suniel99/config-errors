@@ -105,6 +105,22 @@ public class TestInstrumentPrograms extends TestCase {
 //		this.doInstrumentation(inputJar, outputJar, Arrays.asList("chord."),
 //				false, null, false /*stmt*/, false /*method*/, false /*predicate*/);
 //	}
+    
+    public static String javalanche_36 = "javalanche-0.3.6-sigmap.txt";
+    static String[] javalanche_pkgs = new String[]{"de.unisb.cs.st.javalanche."};
+    public void testJavalanche036() {
+    	String inputJarFile = "D:\\research\\confevol\\subject-programs\\javalanche\\versions\\javalanche\\javalanche-0.3.6-bin\\lib\\original\\javalanche-mutation-0.3.6.jar";
+    	String outputJarFile = "D:\\research\\confevol\\subject-programs\\javalanche\\versions\\javalanche\\javalanche-0.3.6-bin\\lib\\javalanche-mutation-0.3.6-instrumented.jar";
+    	this.doInstrumentation(inputJarFile, outputJarFile, Arrays.asList(javalanche_pkgs), false, javalanche_36);
+    }
+    
+    public static String javalanche_40 = "javalanche-0.4.0-sigmap.txt";
+    public void testJavalanche040() {
+    	String inputJarFile = "D:\\research\\confevol\\subject-programs\\javalanche\\versions\\javalanche\\javalanche-0.4.0-bin\\lib\\original\\javalanche-0.4.jar";
+    	String outputJarFile = "D:\\research\\confevol\\subject-programs\\javalanche\\versions\\javalanche\\javalanche-0.4.0-bin\\lib\\javalanche-0.4-instrumented.jar";
+    	this.doInstrumentation(inputJarFile, outputJarFile, Arrays.asList(javalanche_pkgs), false, javalanche_40);
+    }
+    
 
     private void doInstrumentation(String input, String output, Collection<String> appPkgs,
     		boolean disasm, String sigMapFileName, boolean instrumentEveryStmt,
