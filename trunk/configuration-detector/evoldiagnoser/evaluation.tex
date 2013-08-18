@@ -26,7 +26,63 @@ an alternative approach based on \todo{describe it} (Section~\ref{sec:alternativ
 We evaluated \ourtool on the \subjnum Java programs
 described in our empirical study (Table~\ref{tab:subjects}).
 
+
+\begin{table}[t]
+\vspace{1mm}
+\centering
+\small{
+\setlength{\tabcolsep}{.80\tabcolsep}
+\begin{tabular}{|l||c|c|c|c|c|}
+\hline
+ Program & Old Version & New Version & $\Delta$LOC & \#Options \\
+ \hline
+ \hline
+ 1 &  &  &&   \\
+ 2 &  & & &  \\
+ 3 &  & & &  \\
+ 4 &  & & &  \\
+ 5 &  & & &  \\
+ 6 &  & & &  \\
+ 7 &  & & &  \\
+\hline
+\hline
+\end{tabular}
+}
+\vspace{-2mm}
+\Caption{{\label{tab:experiment-sub} All subject .... 
+}
+}
+\end{table}
+
 \subsubsection{Configuration Errors Across Versions}
+
+\begin{table}[t]
+\vspace{1mm}
+\centering
+\small{
+\setlength{\tabcolsep}{.80\tabcolsep}
+\begin{tabular}{|l||c|c|}
+\hline
+ Error ID& Program & Description\\
+ \hline
+ \hline
+ 1 &  &  \\
+ 2 &  &  \\
+ 3 &  &  \\
+ 4 &  &  \\
+ 5 &  &  \\
+ 6 &  &  \\
+ 7 &  &  \\
+ 8 &  &  \\
+\hline
+\hline
+\end{tabular}
+}
+\vspace{-2mm}
+\Caption{{\label{tab:errorlist} All errors ...
+}
+}
+\end{table}
 
 \input{program-table}
 
@@ -67,29 +123,31 @@ in reproducing an error.
 
 Table~\ref{tab:performance} shows the results.
 
+\todo{to reduce the overhead, only instrument
+every block}
+
 \begin{table}[t]
 \vspace{1mm}
 \centering
 \small{
 \setlength{\tabcolsep}{.80\tabcolsep}
-\begin{tabular}{|l||c|c|c|c|}
+\begin{tabular}{|l||c|c||c|c|}
 \hline
- Configuration & \multicolumn{2}{|c|}{Run-time Slowdown ($\times$)} & \ourtool time\\
- \cline{2-3}
- Error ID& Old Version & New Version & (seconds)\\
- %&  Options &  Options&  Options \\
+ Configuration & \multicolumn{2}{|c||}{Run-time Slowdown ($\times$)} & \multicolumn{2}{|c|}{\ourtool time (s)}\\
+ \cline{2-5}
+ Error ID& Old Version & New Version & Slicing & Suggestion\\
  \hline
  \hline
- 1 &  &  &  \\
- 2 &  &  &  \\
- 3 &  &  &  \\
- 4 &  &  &  \\
- 5 &  &  &  \\
- 6 &  &  &  \\
- 7 &  &  &  \\
+ 1 &  &  & &  \\
+ 2 &  &  & & \\
+ 3 &  &  &  &\\
+ 4 &  &  & & \\
+ 5 &  &  & & \\
+ 6 &  &  & & \\
+ 7 &  &  & & \\
 \hline
 \hline
- Mean & & & \\
+ Mean & & & & \\
 \hline
 \end{tabular}
 }
@@ -114,6 +172,8 @@ For both columns, the mean is the geometric mean.
 \label{sec:alternative}
 
 \todo{use ConfDiagnoser's ranking, full slicing, no iterative slicing}
+
+\todo{just identified changed cases...}
 
 \subsection{Discussion}
 
