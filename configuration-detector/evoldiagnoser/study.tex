@@ -1,4 +1,4 @@
-\section{Configuration Changes in\\ Software Evolution}
+\section{Real-World Configuration Changes}
 \label{sec:study}
 
 This section describes a preliminary study to investigate whether
@@ -208,15 +208,14 @@ changes to the core logic code would also
  lead to reconfigure the software\todo{rephrase above}
 
 
-\subsection{Configuration Changes}
+\subsection{Findings}
 
 Tables~\ref{tab:options} and~\ref{tab:categories}
 summarize the study results.
 
 
-\vspace{1mm}
-\noindent\textbf{Characteristics}
 
+\subsubsection{Characteristics}
 
 We further classify configuration changes into
 four categories (Table~\ref{tab:conftypes}) based
@@ -246,23 +245,11 @@ software's normal behaviors. For example,
 %\noindent\textbf{Examples}
 
 
-\vspace{1mm}
-\noindent\textbf{Caveats}
-Our study is limited by the open-source
-software systems we chose, which may not reflect
-the characteristics of other software systems.
-We only examined software change logs to identify
-changed configurations, which is a biased
-subset; there may be (many) other configuration
-options are affected by code changes. A similar
-study that leverages the recent advance in
-change impact analysis~\cite{} may be needed
-to identify a more complete set of
-configuration changes.
 
 \input{overview}
 
-\subsection{Summary}
+%\subsection{Summary}
+\subsubsection{Implications}
 
 Our study has three chief findings:
 \textbf{(1)} configuration
@@ -282,3 +269,16 @@ Our study also indicates that configuration errors
 can be frequent... \todo{xxx}
 %\textbf{Implications.} If a user ignore the changes, even if the tests
 %all pass. User-driven
+
+\subsection{Threat to Validity}
+Our study is limited by the open-source
+software systems we chose, which may not reflect
+the characteristics of other software systems.
+We only examined software change logs to identify
+changed configurations, which is a biased
+subset; there may be (many) other configuration
+options are affected by code changes. A similar
+study that leverages the recent advance in
+change impact analysis~\cite{} may be needed
+to identify a more complete set of
+configuration changes.

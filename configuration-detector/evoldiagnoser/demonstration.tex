@@ -1,0 +1,51 @@
+\ourtool first instruments both the old and new versions
+of the target program offline to monitor
+the program  execution at runtime. \ourtool's instrumentation
+consists of two parts:
+
+\vspace{-2mm}
+
+\begin{itemize}
+\item For each program predicate, \ourtool inserts one
+statement before and one statement after the predicate
+to monitor how frequent the predicate is executed, and
+how often the predicate evaluates to true. In our
+context, a predicate is a Boolean expression in a
+conditional or loop statement,
+whose evaluation result affects the program
+control flow by determining whether to execute the
+following statement or not.
+
+
+\item For each of the other statements, \ourtool inserts
+one statement before it to monitor whether the statement
+gets executed or not at runtime.
+\end{itemize}
+
+
+\vspace{-1mm}
+
+Then, \ourtool asks the user to demonstrate the different
+behaviors on the two instrumented program versions, by using
+the same input and configuration. Demonstration is
+one of the simplest ways for an end-user to describe her problem;
+and it is easier than writing specifications or scripts of any form.
+
+Executing the instrumented program produces an execution trace,
+which consists of a sequence of executed statements as well
+as the evaluation results of each predicate.
+The captured execution trace by \ourtool is by no means complete
+in recording the full execution trace;  it only
+captures the control flows a program is taking. As demonstrated
+in our experiments, such control flow information is
+crucial to determine which parts of the program are
+responsible for the behavioral difference and why.
+
+
+%predicates and their
+%evaluation results. Such captured predicate behaviors are by
+%no means complete in recording the full execution trace. However,
+%they capture control flows a program is taking. Thus, using the
+%recorded predicate execution result, \ourtool could faithfully
+%derive the full execution path. 
+

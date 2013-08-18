@@ -1,23 +1,23 @@
-\section{Tool Implementation}
+\section{Implementation}
 \label{sec:implementation}
 
 We implemented \ourtool using the WALA
-framework~\cite{}. \ourtool uses WALA
+framework~\cite{wala}. \ourtool uses WALA to perform offline
+byte-code instrumentation. The instrumentation
+monitors the execution of every statement and the evaluation
+result of each predicate, and records the runtime behavior
+in a file. \ourtool also uses WALA
 to analyze Java bytecode statically to
-compute the affected predicates for each
-configuration option. \todo{other parts}.
-\ourtool also uses WALA to perform offline
-instrumentation. The offline instrumentation
-monitors the execution of every statement,
-and records the runtime behavior in a file.
+identify the affecting configuration options
+for each predicate that behaves differently across versions.
 
 Like other existing configuration error
-diagnosis tools~\cite{}, \ourtool does not 
-instrument the standard JDK library and
+diagnosis tools~\cite{Rabkin:2011:PPC, Zhang:2013:ADS}, \ourtool does not 
+analyze or instrument the standard JDK library and
 all the dependent libraries. This approximation
 is due to the fact that a configuration
 option set on the client software usually
 does not affect the behaviors of its dependent libraries.
 
-\todo{to reduce the overhead, only instrument
-every block}
+The \ourtool implementation is publicly available at
+\url{http://config-errors.googlecode.com}.

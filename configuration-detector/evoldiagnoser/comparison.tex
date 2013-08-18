@@ -1,0 +1,108 @@
+\input{matchalgorithm}
+
+In this step, \ourtool compares two execution traces
+produced by two program versions, and identifies the
+control flow differences. To do so, \ourtool
+first matches each predicate recorded in the old
+execution trace in the new version (Section~\ref{sec:match_predicate}),
+and then identify all predicates recorded in both execution traces that
+behave differently (Section~\ref{sec:identify_diff}).
+
+
+\subsubsection{Matching Predicates across Versions}
+\label{sec:match_predicate}
+
+For each predicate recorded in the old execution trace,
+\ourtool matches it in the new program version.
+To match a predicate, \ourtool first matches its declaring method,
+by using two strategies. \ourtool uses
+the first strategy that succeeds.
+
+%, and then
+%identifies its runtime behaviors in the undesired execution profile.
+
+
+\begin{enumerate}
+\item \textbf{Identical method name.} Return a method with the identical
+fully-qualified name in the new version.
+\item \textbf{Similar method content.} Return the method with
+the most similar content in the new version. Given
+a method in the old program version, \ourtool
+uses the algorithm shown in Figure~\ref{fig:matching} (discussed
+in detail below) to \textit{every} instruction in it to
+\textit{each} method in the new program version, and then
+chooses the method with the most matched matched instructions
+(in the new program version).
+\end{enumerate}
+
+The algorithm in Figure~\ref{fig:matching} is inspired by
+a well-established program differencing algorithm, called
+JDiff~\cite{}. \todo{describe JDiff and the difference here.}
+
+If there is no matched method in the new program
+version, \ourtool concludes that the predicate cannot be
+matched. Otherwise, \ourtool uses the following two strategies
+to find the corresponding predicate.
+
+\begin{enumerate}
+\item If the declaring method is matched by using the first
+``Identical method name'' heuristic, \ourtool runs the algorithm
+in Figure~\ref{fig:matching} to establish the mapping between
+each instruction, and returns the matched instruction of the
+predicate.
+\item If the declaring method is matched by using the second
+``similar method content'' heuristic,  \ourtool
+uses the result of the algorithm in Figure~\ref{fig:matching}
+by returning the matched instruction of the given predicate.
+\end{enumerate}
+
+%For both cases, if the matching algorithm fails to identified
+
+
+\begin{figure}[t]
+\textbf{Input}: two versions of the software: $\mathit{V_{old}}$ and $V_{new}$
+
+\quad two execution traces on the two versions: $\mathit{T_{old}}$ and $T_{new}$\\
+\textbf{Output}: a ranked list of suspicious configuration options\\
+\vspace{-4mm}%
+diagnoseConfigurationErrors($\mathit{V_{old}}$, $\mathit{V_{new}}$, $\mathit{T_{old}}$, $\mathit{T_{new}}$)\\
+\begin{algorithmic}[1]
+\STATE 
+\RETURN $\mathit{weightMap}$.sortedKeys()
+\end{algorithmic}
+\caption{Algorithm for diagnosing configuration errors. The
+procedure \CodeIn{updateWeights} is defined in Figure~\ref{fig:update}.
+\label{fig:identify}
+}
+\end{figure}
+
+
+\subsubsection{Identify Execution Differences}
+\label{sec:identify_diff}
+
+With the predicate matching information, \ourtool further
+identifies predicates that behave differently
+between two versions. 
+
+The algorithm is shown in Figure~\ref{fig:identify}. \ourtool
+\todo{describe the algorithm ..}
+
+\ourtool outputs three categories of predicates:
+(1) predicates that are only executed in the
+old version, (2) predicates that are only executed
+in the new version, and (3) predicates that
+are executed in both versions but exhibit different
+behaviors. For each category, \ourtool sorts the
+predicates based on their deviation scores in the
+descreasing order.
+
+
+Differences in predicate behaviors indicate different executed paths
+between two versions. Such differences provide evidence of
+which part of the program might be behaving unexpectedly and why.
+
+%is any path not taken by the actual
+%program execution that starts at a conditional
+%branch instruction for which the branch condition
+%is affected by one or more configuration options.
+

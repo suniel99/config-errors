@@ -1,30 +1,3 @@
-\begin{figure}[t]
-\textbf{Input}: two versions of the software: $\mathit{V_{old}}$ and $V_{new}$
-
-\quad two execution traces on the two versions: $\mathit{T_{old}}$ and $T_{new}$\\
-\textbf{Output}: a ranked list of suspicious configuration options\\
-\vspace{-4mm}%
-diagnoseConfigurationErrors($\mathit{V_{old}}$, $\mathit{V_{new}}$, $\mathit{T_{old}}$, $\mathit{T_{new}}$)\\
-\begin{algorithmic}[1]
-\STATE $\mathit{weights}$ = new Map$\langle$Option, Float$\rangle$\\
-\COMMENT{Get predicates only executed in the new version}
-\STATE $\mathit{preds_{+}}$ $\leftarrow$ newPredicates($T_{old}$, $T_{new}$)\\
-\COMMENT{Get predicates only executed in the old version}
-\STATE $\mathit{preds_{-}}$ $\leftarrow$ removedPredicates($T_{old}$, $T_{new}$)\\
-\COMMENT{Get predicates with different behaviors in two versions}
-\STATE $\mathit{preds_{\delta}}$ $\leftarrow$ differentPredicates($T_{old}$, $T_{new}$)
-\STATE $\mathit{preds_{diff}}$ $\leftarrow$ $\mathit{preds_{+}}$ $\cup$ $\mathit{preds_{-}}$ $\cup$ $\mathit{preds_{\delta}}$
-\STATE updateWeights($\mathit{weights}$, $\mathit{preds_{+}}$, $\mathit{V_{new}}$, $\mathit{T_{new}}$, $\mathit{preds_{diff}}$)
-\STATE updateWeights($\mathit{weights}$, $\mathit{preds_{-}}$, $\mathit{V_{old}}$, $\mathit{T_{old}}$, $\mathit{preds_{diff}}$)
-\STATE updateWeights($\mathit{predsweights}$, $\mathit{preds_{\delta}}$, $\mathit{V_{new}}$, $\mathit{T_{new}}$, $\mathit{preds_{diff}}$)
-\RETURN $\mathit{weightMap}$.sortedKeys()
-\end{algorithmic}
-\caption{Algorithm for diagnosing configuration errors. The
-procedure \CodeIn{updateWeights} is defined in Figure~\ref{fig:update}.
-\label{fig:diagalg}
-}
-\end{figure}
-
 
 \begin{figure}[t]
 \textbf{Input}: a software version: $\mathit{V}$, an execute trace: $\mathit{T}$, 
@@ -68,6 +41,6 @@ updateWeights($\mathit{weightMap}$, $\mathit{predicates}$, $\mathit{V}$, $\mathi
 \vspace{-2mm}
 \end{algorithmic}
 \caption{Algorithm for updating weights
-\label{fig:update}
+\label{fig:recommend}
 }
 \end{figure}
