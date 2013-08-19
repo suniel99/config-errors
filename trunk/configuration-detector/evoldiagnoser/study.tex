@@ -1,26 +1,29 @@
 \section{Real-World Configuration Changes}
 \label{sec:study}
 
-This section describes a preliminary study to investigate whether
-and how configuration changes arise during software evolution.
+In the software engineering literature, desipte a rich body of
+software change analysis work~\cite{}, 
+software configuration changes across multiple
+versions are less studied. To understand whether configuration
+changes arise during software evolution in practice,
+this section describes a preliminary study of
+\studysubjnum  real-world configurable systems.
+% to investigate whether
+%and how configuration changes arise during software evolution.
 %\todo{say the object is whether such changes
 %often exist in practice?}
-\todo{perphas the study purpose should be toned down a bit. donot
-claim too much. just say whether configuration changes are frequent or not.}
+%\todo{perphas the study purpose should be toned down a bit. donot
+%claim too much. just say whether configuration changes are frequent or not.}
 
-In the software engineering literature, desipte a rich body of
-software change analysis work, 
-software configuration changes across multiple
-versions are less studied.
-Knowing whether and how configuration options evolve in practice
-can be beneficial for both software developers
-and tool designers. For example, knowing what types
-of configuration changes are common in practice
-can help developers improve the current designs and
-implementations to create better systems or documentations
-; for tool builders, so that they can improve their tools
-to match reality (e.g., by knowing the types of configuration
-changes that occur most frequently).
+%Knowing whether and how configuration options evolve in practice
+%can be beneficial for both software developers
+%and tool designers. For example, knowing what types
+%of configuration changes are common in practice
+%can help developers improve the current designs and
+%implementations to create better systems or documentations
+%; for tool builders, so that they can improve their tools
+%to match reality (e.g., by knowing the types of configuration
+%changes that occur most frequently).
 
 
 \begin{table}[t]
@@ -152,9 +155,10 @@ each type (Table~\ref{tab:conftypes}).}}
 
 \subsection{Subject Programs and Study Methodology}
 
-We investigate how software configuration evolves in
-\studysubjnum open-source configurable systems, as listed
-in Table~\ref{tab:subjects}. The \studysubjnum contains
+
+Table~\ref{tab:subjects} lists
+\studysubjnum open-source configurable systems used in our
+study. The \studysubjnum subjects contains
 three C/C++ software and six Java software.
 MySQL~\cite{}  is a popular relational database management
 system. Apache~\cite{} is a HTTP server which has acquired
@@ -169,76 +173,77 @@ finite state machine model representation of a system from
 logs. JMeter~\cite{} is a tool to load test functional
 behavior and measure performance.
 Each program is highly configurable, and has evolved over
-a long period of time (\todo{xx--xx} years).
+a considerable amount of time (\todo{xx--xx} years).
 
 
 In comparison to software bugs that have well-maintained
 bug databases and have benefits from many
 software bug characteristic studies~\cite{},
 a configuration evolution study is much harder, mainly
-because historical misconfigurations (due
-to configuration changes) usually have not been
-recorded rigorously in database. Usually, when
-regression tests pass, developers may treat the
-software behaviors have been validated. Therefore,
+because configuration changes usually have not been
+documented rigorously~\cite{}. Sometimes, after a
+session of code changes, when
+regression tests pass, developers may simply treat the
+software behaviors have been validated. Further,
 the description of software misconfigurations is user-driven,
 the ``fixes'' may be recorded simply as pointers
 to manuals and best-practice documents.
 
 In our study, rather than searching bug repositories,
-we manually examine the revision history of the subject programs
-in the past XXX years, and searched for the related
-keywords such as ``Added/Removed/Updated option'' in
-in commit messages and in the change logs,
+we manually examine the revision history of each subject program,
+and searched for related keywords, such as ``Add option'',
+``Delete option'', ``Rename option'', etc,
+in commit messages as well as in the change logs,
 which records developers' activities
 during software evolution. For each match,
 we read the description of the change,
 and the ``diff'' of the original file and the
 changed file. This information indicated
-to us whether the change affects how the
-software should be configured to produce
-the original behavior. We identifies the
-changed code and its affected configuration options
-manually.
+to us whether the change is related to how the
+software should be configured.
 
-The identified configuration changes by our methodology is certainly not complete.
-Our methodology only studies changes that are directly made to options \todo{xxx}.
-However, it is entirely possible that other
-changes to the core logic code would also
- lead to reconfigure the software\todo{rephrase above}
+%We identifies the
+%changed code and its affected configuration options
+%manually.
+
 
 
 \subsection{Findings}
 
-Tables~\ref{tab:options} and~\ref{tab:categories}
-summarize the study results.
+Table~\ref{tab:options} summarizes the identified
+configuration changes for each subject program.
+Table~\ref{tab:categories} further classifies all
+configuration changes into four categories shown
+in Table~\ref{tab:conftypes} (each change belongs to a single category).
 
 
+As shown in Table~\ref{tab:options}, configuration changes occur
+in the evolution of every subject program. In fact, they occur in
+every revision of each subject program (not shown in Table~\ref{tab:options},
+due to space limit). 
 
-\subsubsection{Characteristics}
-
-We further classify configuration changes into
-four categories (Table~\ref{tab:conftypes}) based
-on the change purpose. Each change belongs to a single category.
 Table~\ref{tab:categories} shows the number of
 configuration change types for each subject program.
 Feature related changes are the largest group across
 all subject programs. These changes include
-adding new configuration options to control \todo{xx}.
-\todo{normal examples}
+adding new configuration options to customize a program's
+functionality. Other three categories of canges occur as well, although
+with less frequency.
 
-The following are options obsolete and have been removed in
-MySQL 5.5. Where alternatives are shown, applications should
-be updated to use them
-\todo{need rephrase}
+Many of such configuration changes listed in Table~\ref{tab:options},
+perhaps except for changes to fix a reported bug, can affect
+a software's behavior. As described in Section~\ref{sec:evaluation},
+we produced XXX configuration errors for all 5 Java programs.
+Such XXX configuration errors include both crashing and non-crashing errors.
 
-Other three categories of canges occur as well, although
-with less frequency than the feature-related changes.
-Except for changes to fix a reported, changes to rename
-a configuration option and changes to improve
-software reliability would also affect a
-software's normal behaviors. For example,
-\todo{example}
+
+%\todo{normal examples}
+%The following are options obsolete and have been removed in
+%MySQL 5.5. Where alternatives are shown, applications should
+%be updated to use them
+%\todo{need rephrase}
+
+%\todo{example}
 
 
 %\vspace{1mm}
@@ -249,36 +254,47 @@ software's normal behaviors. For example,
 \input{overview}
 
 %\subsection{Summary}
-\subsubsection{Implications}
+%\subsubsection{Implications}
 
-Our study has three chief findings:
-\textbf{(1)} configuration
-changes arise frequently during software evolution: for
-all subject programs we have studied, every version
-includes configuration changes. \textbf{(2)} most configuration
-changes fall into a small number of types, among
-which \todo{most of them are feature related.}
-and \textbf{(3)} a large number of
-configuration changes may affect a program's
-behaviors. Users must properly reconfigure a
-program in order to maintain its original behavior.
-\todo{rephrase above. the purpose is to
-illustrate configuration change is prevalent}
+%Our study has three chief findings:
+%\textbf{(1)} configuration
+%changes arise frequently during software evolution: for
+%all subject programs we have studied, every version
+%includes configuration changes. \textbf{(2)} most configuration
+%changes fall into a small number of types, among
+%which \todo{most of them are feature related.}
+%and \textbf{(3)} a large number of
+%configuration changes may affect a program's
+%behaviors. Users must properly reconfigure a
+%program in order to maintain its original behavior.
+%\todo{rephrase above. the purpose is to
+%illustrate configuration change is prevalent}
 
-Our study also indicates that configuration errors
-can be frequent... \todo{xxx}
+%Our study also indicates that configuration errors
+%can be frequent... \todo{xxx}
 %\textbf{Implications.} If a user ignore the changes, even if the tests
 %all pass. User-driven
 
-\subsection{Threat to Validity}
-Our study is limited by the open-source
-software systems we chose, which may not reflect
-the characteristics of other software systems.
-We only examined software change logs to identify
-changed configurations, which is a biased
-subset; there may be (many) other configuration
-options are affected by code changes. A similar
-study that leverages the recent advance in
-change impact analysis~\cite{} may be needed
-to identify a more complete set of
-configuration changes.
+\subsection{Threats to Validity}
+
+Our findings apply in the context of our subject programs and methodology;
+they may not apply to arbitrary programs.
+
+The identified configuration changes by our methodology is certainly not complete.
+Our methodology only studies changes that are directly made to a
+software configuration option. We may miss certain
+code or environment changes would indirectly affect the software behavior,
+and consequently require reconfiguration to the new software version.
+
+%We only examined software change logs to identify changed configurations, which is a biased
+%subset; there may be (many) other configuration
+%options are affected by code changes. 
+
+%A similar study that leverages the recent advance in
+%change impact analysis~\cite{} may be needed
+%to identify a more complete set of configuration changes.
+
+
+%Our study is limited by the open-source
+%software systems we chose, which may not reflect
+%the characteristics of other software systems.

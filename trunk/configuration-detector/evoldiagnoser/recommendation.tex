@@ -5,26 +5,28 @@
 
 \input{diagalgorithm.tex}
 
-In this step, \ourtool links the execution differences
+In this step, \ourtool links the control flow differences
 to one or more root cause configuration options.
 The key idea is to identify configuration options that
-may affect the behaviorally-deviated predicates, and rank
-such options by the degree of how they may cause
-the execution differences.
+may affect the behaviorally-deviated predicates, and then rank
+these options by the degree of how they may cause
+the differences.
 
 %\subsubsection{Attributing Trace Differences to Configuration Options}
 
 To identify the configuration options that can affect
-a predicat, a straightforward way is to use program slicing~\cite{}
+a predicate, a straightforward way is to use program slicing~\cite{}
 to compute a forward slice from the initialization statement
-of a configuration option. Unfortunately, traditional
-full slicing~\cite{} can not be directly applied due
+of a configuration option, and then check whether the predicate is
+in the slice. Unfortunately, traditional
+full slicing~\cite{} is infeasible due
 to its conservatism, such as the need of handling pointers
 and the need of following both data and control dependences.
-As been experimentally demonstrated in our
-previous work~\cite{}, traditional full slicing includes
-too much of the program, and can significantly affect an analysis's
-accuracy. \todo{an example}
+%As been experimentally demonstrated in our
+%previous work~\cite{}, traditional full slicing includes
+%too much of the program, and can significantly affect an analysis's
+%accuracy. 
+\todo{an example}
 
 
 To address this limitation, \ourtool uses thin slicing~\cite{}
@@ -36,46 +38,59 @@ configuration option), and ignores control flow dependencies
 as well as uses of base pointers. This property separates
 pointer computations from the flow of configuration option
 values and naturally connects a configuration option with its
-directly affected statements. \todo{an example}. Section~\ref{}
-empirically demonstrates that thin slicing is a better
-choice than the traditional full slicing.
+directly affected statements. \todo{an example}. Section~\ref{sec:alternative}
+empirically demonstrates that traditional full slicing includes
+too much of the program, and can significantly affect an analysis's
+accuracy; while thin slicing is a better
+choice.
 
 
 To distinguish the likelihood of each configuration
 option being the root cause, \ourtool associates each
-configuration option with a weight, which is the number
-of affected statements, as its effects propagates
-in the program.  The weight represents the strength of
+configuration option with a weight, which represents the strength of
 the causual relationship between the configuration option
-and the execution differences. If a configuration option
-potentially affects more statements that are decided
-by a behaviorally-different predicate, it is more likely
+and the execution differences.
+A larger weight value indicates that a configuration option
+can potentially affect more statements wihthin the control
+flow differences as its value propagates in the program, and thus
+the configuration option is more likely
 to be the root cause.
+%which is the number
+%of affected statements, as its effects propagates
+%in the program.  The weight. 
+%If a configuration option
+%potentially affects more statements that are decided
+%by a behaviorally-different predicate, it is more likely
+%to be the root cause.
 
+\todo{explain with the pseduo code}
 Figure~\ref{fig:recommend} sketches the configuration option
 recommendation algorithm.
 For each predicate with different behaviors between two
-versions, it attributes the cost of the difference 
-to its affecting configuration options. Specifically,
-It calculates a cost for each predicate by computing
+versions, \ourtool first attributes the control flow difference 
+to its affecting configuration options. Then,
+\ourtool calculates a cost for each predicate by computing
 the number of statements whose execution are determined
-by the predicate. To do so, the algorithm computes the
-immediate post-dominant statement of a predicate, and analyzes
-the execution trace to count the number of statements that
-are executed between the predicate and the post-dominant
-statement. Then, the algorithm multiples and deviation
-degree of the predicate by the number of affected statements,
-and attributes the divergence to the affecting options.
+by the predicate's evaluation result. Specifically,
+\ourtool statically exams the source code to compute
+the immediate post-dominant statement of a predicate, and then
+analyzes the execution trace to count the number of statements that
+are executed between the predicate and its post-dominant
+statement. After that, the algorithm multiples the predicate's deviation
+degree (computed by \todo{xx}) by the number of executed statements,
+and updates the weight of all affecting options.
+%attributes the divergence to the affecting options.
 
-As the output, \ourtool produces a ranked list of
+\ourtool outputs a ranked list of
 configuration options that might be responsible for the
-behavior differences. In the list, if an option only appears
-in the old version, it indicates that option may not
-take any affect in the new version (i.e., the option has
-been renamed), and the user should change to use another option.
+behavior differences. In the output list, if an option only appears
+in the old program version, it indicates that option may not
+take any effect in the new version (e.g., the option has
+been renamed), and the user should switch to a different option.
 If an option only appears in the new version or in both
-versions, it indicates that
-the default value of that option should be changed.
+versions, it indicates that the user should change its
+existing value.
+\todo{rephrase the above to avoid confusion.}
 
 %Finally, the algorithm sums
 %first summing

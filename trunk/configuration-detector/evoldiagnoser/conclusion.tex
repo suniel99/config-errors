@@ -2,33 +2,69 @@
 \label{sec:conclusion}
 
 Software evolution often causes software sytems to
-reveal undesired behaviors.
-When they do, diagnosing the cause of failure
-can be challenging, especially when the software's
+exhibit undesired behaviors.
+When they do, identifying the root causes
+can be challenging, especially when a software's
 behavior depends on a wide range of configuration options.
 
-This paper describes \ourtool, a technique for
-automating the diagnosis of configurations errors
-caused by a state change.  \ourtool
-represents a novel synthesis of \todo{} steps:
-records \todo{} and collects \todo{}.
-\ourtool uses \todo{} to attribute .. to
-suspicious configuration options that should
-be re-setted. Our results show that \ourtool
+This paper describes \ourtool, a technique to recommend
+configuration options whose values can be changed to
+produce desired behavior on the new software version.
+%\ourtool represents a novel synthesis of \todo{} steps:
+%records \todo{} and collects \todo{}.
+%\ourtool uses \todo{} to attribute .. to
+%suspicious configuration options that should
+%be re-setted. 
+Our experimental results show that \ourtool
 can accurately identify the root causes of
-XXX configuration problems in real-world software.
+\errornum configuration problems in \subjnum real-world software systems.
 The source code of \ourtool is publicly available
 at: \url{http://config-errors.googlecode.com}.
 
 We consider \ourtool as one step towards improving
 the diagnosability of configurable software systems.
-As future work, we plan a user study to evaluate
+Our future work focuses on the following directions:
+
+\vspace{-2mm}
+
+\begin{itemize}
+\item \textbf{User study.} We plan a user study to evaluate
 \ourtool's usefulness to end-users. A challenge
 will be finding study participants who are familiar
-with our subject programs. We are also interested
-in developing new problem reporting mechanisms to
-make configuration problems more diagnosable.
-Yet another direction of work will be studying
-test-suite augmentation techniques to automatically
-create new tests that can reveal potential configuration
-problems, as software evolves.
+with our subject programs.
+
+\item \textbf{Formulating guidance of error diagnosis.}
+An important question that is not answered in \ourtool
+is that how to distinguish bugs from 
+configuration errors, when a software system exhibits
+undesired behaviors. We plan to formulate guidance
+regarding when the user should give up on \ourtool
+and assume the error is not related to a configuration option.
+
+\item \textbf{Improving configuration error reporting and fixing.}
+Unlike a software bug, a configuration error is mostly
+user-driven. Reporting it must combine the software use
+scenario with the error-revealing software state.
+Further, there is no obviously ``correct'' way to
+build configuration logic; also, unlike fixing a bug once,
+every software user has to be informed on the right way to
+configure the system.  Perhaps as a result, misconfigurations
+have been one of the dominant causes of system issues and
+is likely to continue so. To address these related problems,
+we plan to explore the existing software configuration error
+to summarize error patterns, and then use machine learning
+techniques to synthesize good-quality error reports and fixes.
+
+%; \todo{evolve} the end-user should imbibe the
+%knowledge and manage cross-version configurations.
+
+
+\end{itemize}
+
+%As future work,  We are also interested
+%in developing new problem reporting mechanisms to
+%make configuration problems more diagnosable.
+%Yet another direction of work will be studying
+%test-suite augmentation techniques to automatically
+%create new tests that can reveal potential configuration
+%problems, as software evolves.

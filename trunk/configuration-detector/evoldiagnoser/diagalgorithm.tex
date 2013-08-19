@@ -14,33 +14,9 @@ updateWeights($\mathit{weightMap}$, $\mathit{predicates}$, $\mathit{V}$, $\mathi
 \STATE $\mathit{worklist}$ $\leftarrow$ new Queue$\langle$Predicate$\rangle$
 \STATE $\mathit{worklist}$.enqueueAll($\mathit{predicates}$)
 \STATE $\mathit{visited}$ $\leftarrow$ new Set$\langle$Predicate$\rangle$
-\WHILE{$\mathit{worklist}$ is not empty}
-\STATE $\mathit{pred}$ $\leftarrow$ $\mathit{worklist}$.dequeue()
-\IF{$\mathit{visited}$.contains($\mathit{pred}$)}
-\STATE \textbf{continue}
-\ENDIF
-\STATE $\mathit{visited}$.add($\mathit{pred}$)
-\STATE $\mathit{options}$ $\leftarrow$ getAffectingOptions($\mathit{pred}$, $\mathit{V}$)\\
-\COMMENT{\todo{the cost part needs elaboration}}
-\STATE $\mathit{cost}$ $\leftarrow$ getCost($\mathit{pred}$, $\mathit{T}$, $\mathit{V}$)
-\FOR{each $\mathit{option}$ in $\mathit{options}$}
-\STATE $\mathit{weightMap}$[$\mathit{options}$] $\leftarrow$ $\mathit{weightMap}$[$\mathit{options}$] + $\mathit{cost}$
-\ENDFOR\\
-\COMMENT{Get the basic block $\mathit{pred}$ controls}
-\STATE $\mathit{basicBlock}$ $\leftarrow$ getBasicBlock($\mathit{pred}$)\\
-\COMMENT{Variables updated and esecaped from the basic block}
-\STATE $\mathit{updatedVars}$ $\leftarrow$ getUpdatedVars($\mathit{basicBlock}$)\\
-\COMMENT{Use thin slicing}
-\STATE $\mathit{affectedPreds}$ $\leftarrow$ getAffectingPredicates($\mathit{var}$)
-\FOR{each $\mathit{affectedPred}$ in $\mathit{affectedPreds}$}
-\IF{{$\mathit{pred_\delta}$}.contains($\mathit{affectedPred}$)}
-\STATE $\mathit{worklist}$.enqueue($\mathit{affectedPred}$)
-\ENDIF
-\ENDFOR
-\ENDWHILE
 \vspace{-2mm}
 \end{algorithmic}
-\caption{Algorithm for updating weights
+\caption{Algorithm for recommending configuration options.
 \label{fig:recommend}
 }
 \end{figure}

@@ -1,0 +1,16 @@
+\begin{figure}[t]
+\textbf{Input}: two versions of the software: $\mathit{V_{old}}$ and $V_{new}$
+
+\quad two execution traces on the two versions: $\mathit{T_{old}}$ and $T_{new}$\\
+\textbf{Output}: a ranked list of suspicious configuration options\\
+\vspace{-4mm}%
+diagnoseConfigurationErrors($\mathit{V_{old}}$, $\mathit{V_{new}}$, $\mathit{T_{old}}$, $\mathit{T_{new}}$)\\
+\begin{algorithmic}[1]
+\STATE 
+\RETURN $\mathit{weightMap}$.sortedKeys()
+\end{algorithmic}
+\caption{Algorithm for diagnosing configuration errors. The
+procedure \CodeIn{updateWeights} is defined in Figure~\ref{fig:update}.
+\label{fig:identify}
+}
+\end{figure}
