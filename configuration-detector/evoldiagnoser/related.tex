@@ -11,82 +11,107 @@ and (3) configuration-aware software analysis techniques.
 \subsection{Supporting Software Evolution}
 
 As software evolves, its behavior must be validated.
-Regression test selection and prioritization~\cite{}
-indicate which tests need to be executed for a changed
-program.  Program differencing techniques~\cite{Giroux:2006:DIF, Xing:2005:UAO, Thummalapenta:2010:ESM, Kim:2013, Jin:2012:BRF,Nguyen:2010:RBF,Dig:2006:ADR, Kamiya:2002:CMT}
-\todo{semdiff}
-try to identify changes between two program versions,
+Regression test selection~\cite{regression}
+indicates which tests need to be executed for a changed
+program.  Program differencing techniques~\cite{Giroux:2006:DIF, Xing:2005:UAO, Thummalapenta:2010:ESM, Kim:2013, Jin:2012:BRF,Nguyen:2010:RBF,Dig:2006:ADR, Kamiya:2002:CMT, Dagenais:2008}
+identify changes between two program versions,
 and present the change list to developers for inspection.
-Related, change impact analysis techniques~\cite{}, which
+Related, change impact analysis techniques~\cite{STVR:STVR1475}, which
 are often built on top of program differencing
 techniques, identify not only the changes, but also
-which code fragments are affcted by which changes. 
-%For example, a recent work~\cite{} uses symbolic
-%execution to accurately capture behavioral differences
-%between program versions.
-Different than \ourtool, these techniques can identify possible
-software regressions, but are not applicable to
-identifying the root-cause of a given software regression.
-\todo{discuss the matching algorithm here}
-\todo{check recent MSR papers on differential analysis}
+code fragments that are affcted by the changes. 
+Different than \ourtool's predicate matching
+algorithm (Section~\ref{sec:match_predicate}),
+existing program differencing techniques primarily focus on matching
+program elements at the method level~\cite{},
+or matching program statements on the source code based on
+textual similarity~\cite{}.
+By contrast, \ourtool's matching algorithm, inspried by
+the JDiff algorithm~\cite{}, is specifically designed 
+to identify the evolved predicate in the new program version.
+(See Section~\ref{sec:match_predicate} for a detailed
+comparison with JDiff.)
+The algorithm directly works on the bytecode of two program
+versions without any additional information from users,
+such as a software revision history~\cite{}.
 
-Zhang et al.~\cite{} developed a technique to match entire
-execution histories of two program versions running with
-the same input~\cite{}. The execution history contains control
-flow taken, values produced, addresses referenced and
-data dependences. Significantly different than \ourtool, their
+%these techniques can identify possible
+%software regressions, but are not applicable to
+%identifying the root-cause of a given software regression.
+%\todo{discuss the matching algorithm here}
+%\todo{check recent MSR papers on differential analysis}
+
+Zhang et al.~\cite{Zhang:2005:MEH} developed a technique to match
+control flows of two program versions running with
+the same input. Significantly different than \ourtool, their
 work assumes semantically equivalent versions (e.g. optimized
-and unoptimized) while \ourtool compares different version of
-a program that can include functional changes. 
-\todo{missing above the work of semantic trace analysis,
-some of tao wang's work}
+and unoptimized), while \ourtool compares two different versions
+of the same program that can include functional changes. 
+%\todo{missing above the work of semantic trace analysis,
+%some of tao wang's work}
 
-When a regression error occurs, developers need
-to understand its root cause~\cite{Banerjee:2010:GID, r2fix}. To address this
-problem, many techniques to localize error-inducing
-changes are developed for evolving
-software. For example, Delta Debugging aims to find a minimal
-subset of changes that still makes the test fail~\cite{}.
-Test minimization techniques~\cite{} simplify the failed
-test to ease comprehension for developers. Recently,
-Qi et al.~\cite{} proposed a symbolic execution-based
-error diagnosis approach to synthesize new inputs that
-differ marginally from the failing input in their
-control flow behavior, then compare the execution traces
-of the failing input and the new inputs to obtain critical
-clues to the root-cause of the failure. \ourtool
-is significantly different from these approaches.
-First, \ourtool targets software configuration errors
-casued by evolution rather than a regression bug.
-As we discussed in introduction, configuration errors are
-often user driven and do not indicate problems in the source
+When a regression failure occurs, developers need
+to understand its root cause. To localize the
+failure, many techniques are developed to identify the
+failure-inducing changes for evolving
+software~\cite{Banerjee:2010:GID, r2fix, Qi:2009:DAD, Hoffman:2009:STA}.
+For example, Delta Debugging aims to find a minimal
+subset of changes that still makes the test fail~\cite{dd}.
+Test minimization techniques~\cite{Hoffman:2009:STA, Zhang:2013:PST}
+simplify the failed
+test to ease comprehension for developers. 
+%Recently, Qi et al.~\cite{} proposed a symbolic execution-based
+%error diagnosis approach to synthesize new inputs that
+%differ marginally from the failing input in their
+%control flow behavior, then compare the execution traces
+%of the failing input and the new inputs to obtain critical
+%clues to the root-cause of the failure. 
+\ourtool is significantly different from these techniques.
+First, existing techniques focus on helping software developers
+localize a software bug, while \ourtool targets software
+configuration errors that are fixable by software end-users.
+As we have discussed in Section~\ref{sec:tech_discuss},
+configuration errors fundmanetally different than software bugs.
+They are mostly user driven and do not indicate problems in the source
 code. Second, most of the existing techniques identify
-\textit{what} causes the regression error but leave
-the more challenging question of \textit{how} to
+\textit{what} (e.g., a snippet of code) causes the
+regression bug, but leave
+the more challenging question of \textit{how} (e.g., which
+configuration option should a user change?) to
 fix the error unanswered. By contrast, \ourtool
-explicitly guides users to suspicious configuration options.
-Third, most of the regression error diagnosis techniques
-require users to provide a testing oracle, while \ourtool
-eliminates this assumption. \todo{need a few sentences to explain}
+explicitly guides users to suspicious configuration options,
+as the first step towards fixing the undesired behaviors.
+Third, most of the regression failure localization
+techniques~\cite{dd} require users to provide
+a testing oracle for automated correctness checking. However,
+such oracles are often absent in practice. A typical
+software end user should not be expected, to invest
+the substantial time and effort to create an oracle.
+By contrast, \ourtool eliminates this assumption. It 
+approximates the software behavioral difference as the control
+flow differences, and directly guides end-users to the
+responsible options.
 
-\todo{check related work of using history for
-bug predication~\cite{Nagappan:2006:UHI}
-and evolution~\cite{Bhattacharya:2012:GAP, Nguyen:2010:GAA}}
-todo{discuss papers~\cite{Grechanik:2009:MEG, Fischer:2005:SET, Mostafa:2009:TPA,
-publication-8111}}
+
+%\todo{check related work of using history for
+%bug predication~\cite{Nagappan:2006:UHI}
+%and evolution~\cite{Bhattacharya:2012:GAP, Nguyen:2010:GAA}}
+%5todo{discuss papers~\cite{Grechanik:2009:MEG, Fischer:2005:SET, Mostafa:2009:TPA,
+%publication-8111}}
 
 
 \subsection{Software Configuration Error Diagnosis}
 
-Software configuration problems are time-consuming
+Software configuration errors are time-consuming
 and frustrating to diagnose. To reduce the time and human
 effort needed to troubleshoot software misconfigurations,
 several prior research efforts have applied different techniques
 to the problem of configuration error diagnosis~\cite{Attariyan:2008:UCD, 
 Whitaker:2004:CDS, Wang:2004:AMT, rangefix,
 Attariyan:2010:ACT, Rabkin:2011:PPC, keller:conferr}.
-Chronus~\cite{Whitaker:2004:CDS} relies on a user-provided
-testing oracle to check the behavior of the system, and uses
+For example, Chronus~\cite{Whitaker:2004:CDS} relies
+on a user-provided testing oracle to check the behavior
+of the system, and uses
 virtual machine checkpoint and binary search to find the
 point in time where the program behavior
 switched from correct to incorrect. AutoBash~\cite{Su:2007:AIC}
@@ -98,84 +123,84 @@ uses statistical methods to compare
 configuration states in the Windows Registry on different machines.
 When a registry entry value on a machine exhibiting erroneous behavior differs
 from the value usually chosen by other machines, PeerPressure
-flags the value as a potential error. More recently, ConfAid~\cite{Attariyan:2010:ACT}
-uses dynamic taint analysis to diagnose configuration problems 
+flags the value as a potential error. More recently, 
+ConfAid~\cite{Attariyan:2010:ACT} and X-Ray~\cite{xray}
+use dynamic taint analysis to diagnose configuration errors
 by monitoring causality within the program binary as it executes.
-\todo{discuss X-ray~\cite{xray} here}
 ConfAnalyzer~\cite{Rabkin:2011:PPC} uses dynamic information flow analysis to precompute
 possible configuration error diagnoses for every possible crashing point
 in a program. 
 
-Our technique is significantly different from the other approaches.
+\ourtool is significantly different from the other approaches.
 First, most previous approaches focus exclusively on a single software
 version and diagnose configuration errors that lead to a crash or
 assertion failure~\cite{Attariyan:2008:UCD, Whitaker:2004:CDS, 
-Attariyan:2010:ACT, Rabkin:2011:PPC}.
-\todo{multiple versions}
+Attariyan:2010:ACT, Rabkin:2011:PPC}. By contrast, \ourtool focuses
+on configuration errors introduced by software evolution between
+two software versions. Further, it supports diagnosing both
+crashing and non-crashing errors.
 Second, several approaches~\cite{Attariyan:2010:ACT, Whitaker:2004:CDS}
 assume the existence of a testing oracle that can 
-check whether the software functions correctly. However,
-such oracles are often
-absent in practice or may not apply to the specific configuration problem.
-A typical software user should not be expected, to invest the substantial
-time and effort to create an oracle.
+check whether the software functions correctly. However, as we discussed
+before, a testing oracle is often not availabe, and it
+is infeasible to expert end-users to provide it in practice.
 By contrast, our technique eliminates this assumption by
-\todo{comparing traces} Third, approaches like
-PeerPressure~\cite{Wang:2004:AMT} and RangeFixer~\cite{} benefit from
-the known schema of the Windows Registry and
-\todo{xx}, but cannot detect configuration errors
+comparing two execution traces to reason about the control flow differences
+between them. 
+Third, several techniques~\cite{} requires alternations
+to the underlying operating system or runtime environment
+in order to diagnose a configuration error. Compared with
+the platform-independent offline instrumentation used
+in \ourtool, this requirement may be
+impractical for many ordinary end-users.
+Fourth, approaches like
+PeerPressure~\cite{Wang:2004:AMT} and RangeFixer~\cite{rangefix}
+benefit from the known schema of the Windows Registry and
+feature models, but cannot help diagnose configuration errors
 that lie outside these specific domains. Our technique
 of analyzing the execution traces is more general.
-
-In our previous work~\cite{}, we proposed \prevtool, an automated
-software configuration error diagnosis tool. Besides working
-on two different versions, \ourtool differs from \prevtool in
-two additional key aspects. First, unlike \prevtool, \ourtool
-does not require users to collect a set of correct execution traces
-for comparison. Second, 
-First, \todo{versions ...}. Second, \todo{assume hot spot}.
-\todo{may refer to experiment results here}
-\todo{missing above, discuss slicing-based techniques, dual slicing;
-why it cannot work, since needs a slicing point}
-\todo{discuss existing debugging techniques like tarantula~\cite{Jones:2002}
-cannot work.}
 
 
 
 
 \subsection{Configuration-Aware Software Analysis}
 
-Empirical studies show that configuration errors are pervasive, costly,
-and time-consuming to diagnose~\cite{Yin:2011:ESC, Hubaux:2012}.
-\todo{say the empirical study results of this paper.}
-To alleviate this problem, researchers have designed various
-software analysis techniques to improve configuration
-management~\cite{Garvin:2011} and understand and test
-the behavior of a configurable software
-system~\cite{Garvin:2011, Qu:2008:CRT}.
-For example, Garvin et al.~\cite{Garvin:2011} show how to
-use historical data to avoid system failures during reconfiguration.
-However, their work aims to reduce the burden of
-configuration management and prevent certain errors from happening,
-while our technique is designed to diagnose an exhibited problem.
-Qu et al.~\cite{Qu:2008:CRT} proposed a combinatorial interaction
-testing technique to model and generate configuration samples for
-use in regression testing. Compared to \ourtool, those techniques
-can be used to find new errors in
-a configurable software system earlier, but cannot
-identify the root cause of a revealed configuration error.
-\todo{differences} By contrast, our technique is designed
-to diagnose an exhibited error.
-\todo{none of them aim to find regression}
-
 Software configuration management is a central component
-of software product lines. In the literature of software
-product line research, techniques for analyzing
-software product lines~\cite{Bodden:2013:SLS, Kang:2005:FRL, Mende:2008:SGM, Kruger:2005:SAE}, reducing configuration
-combinatoric~\cite{fse-splat, Apel:2009:FLA, Shang:2013:ADB, Staats:2011:PTO}, modelling
-configurations~\cite{Denaro:Self-Test:TACOS:2003, Acher:2012:SCF}
-managing configurations~\cite{Rabiser:2012:QSU, Cooray:2010:RRD, Barreiros:2009:MRC, TerBeek:2011:GCE},
-and selecting good configurations~\cite{reconfig}
-have been developed. However, none of the existing techniques
-can be directly applied to localize root causes of a configuration error.
-\todo{more discussion above}
+of software product lines.
+Many configuration-aware software analysis techniques
+have been developed to analyze configurable software
+systems~\cite{Bodden:2013:SLS, Kang:2005:FRL, Mende:2008:SGM,
+Kruger:2005:SAE}, improve software configuration
+management~\cite{Garvin:2011, Rabiser:2012:QSU, Cooray:2010:RRD,
+Barreiros:2009:MRC, TerBeek:2011:GCE}, and understand and test
+the behavior of a configurable software
+system~\cite{Qu:2008:CRT, SPLAT, Apel:2009:FLA, Shang:2013:ADB,
+Staats:2011:PTO}.
+
+Compared to \ourtool, existing techniques have rather different
+goals. They primarily focus on reducing the burden of
+configuration management and preventing certain errors from
+happening, or creating test suites to find new errors in
+a configurable software system earlier, but cannot
+diagnose an exhibit configuration error. Our \ourtool technique
+links the behavioral differences to a small number
+of configuration options, and explicitly guides software end-users
+how to fix a configuration error.
+
+
+
+%Empirical studies show that configuration errors are pervasive, costly,
+%and time-consuming to diagnose~\cite{Yin:2011:ESC, Hubaux:2012}.
+%Qu et al.~\cite{Qu:2008:CRT} proposed a combinatorial interaction
+%testing technique to model and generate configuration samples for
+%use in regression testing. 
+
+%identify the root cause of a revealed configuration error.
+%\todo{differences} By contrast, our technique is designed
+%to diagnose an exhibited error.
+%\todo{none of them aim to find regression}
+
+%However, their work aims to reduce the burden of
+%configuration management and prevent certain errors from happening,
+%while our technique is designed to diagnose an exhibited problem.
+
