@@ -16,13 +16,14 @@ Properties API, and the Windows Registry.
 
 \subsection{Overview}
 
-There are two key insights behind \ourtool. First,
+There are two key insights in \ourtool. First,
 a program's control flow often propagates the majority of
 the effects of a configuration option and determines
 a program's execution path, while the value of a
 specific expression may be largely input-dependent.
 Second, the control flow differences of two execution
-traces on different program versions provide evidence
+traces can approximate the program behavior differences
+of two versions, and provide evidence
 for which parts of the program might be behaving
 abnormally and why.
 %undesirably.
@@ -31,21 +32,22 @@ Based on these two insights, \ourtool uses three
 steps to link the different behaviors across program
 versions to a specific configuration option.
 Figure~\ref{fig:overview} sketches the high-level workflow of
-\ourtool. To recommend configuration options that
-fix the undesired behavior, \ourtool first asks the
+\ourtool. 
+%To recommend configuration options that
+%fix the undesired behavior, 
+In this first step, \ourtool asks the
 user to run the same input and
-configuration on two instrumented program versions
-(Section~\ref{sec:profiling}).
-Then, \ourtool identifies differences between
-two execution traces produced
-by the old and new program versions, respectively.
-In particular, \ourtool identifies program predicates
+configuration on two \ourtool-instrumented program versions,
+and demonstrate the different behaviors (Section~\ref{sec:profiling}).
+Then, \ourtool analyzes two execution traces produced
+by user demonstration, and identifies the control flow differences between
+them. In particular, \ourtool identifies program predicates
 that behave differently across two executions
 (Section~\ref{sec:comparison}).
 After that, \ourtool uses a lightweight dependence
 analysis technique, called thin slicing~\cite{},
 to statically reason about which configuration
-options may cause such behavioral differences,
+options may cause such control flow differences,
 and reports a ranked list of 
 suspicious configuration options to the user (Section~\ref{sec:rootcause}).
 
@@ -70,65 +72,83 @@ We next discuss some design issues in \ourtool.
 
 \vspace{1mm}
 
-\noindent \textbf{\textit{Fixing configuration problems vs. Fixing regression bugs.}}
-It appears that software configuration lies in the gray zone between
-the software developers of software users.
-The responsibility for creating correct configurations
-lies with both parties; the developer should create
+\noindent \textbf{\textit{Recommending configuration options
+vs. Localizing regression bugs.}}
+The problem addressed in this paper is significantly different
+than the traditional regression bug localization problem~\cite{}.
+A regression bug occurs when developers have made a mistake,
+which cause software to behave \textit{unintended} after a session of code changes.
+By contrast, in our problem, the software behavior on the new version
+is still \textit{intended} but \textit{undesired}, when compared
+to its original behavior on the old version. \ourtool addresses
+this problem from a specific angel by recommending configuration options
+to fix the undesired behavior. Further, compared to
+regression bugs that made by software developers,
+software configuration lies in the gray zone between
+the software developers of software users. The responsibility for creating
+correct configurations lies with both parties; the developer should create
 intuitive configuration logic, build logic that detects
 errors, and convey configuration knowledge to users
-effectively; \todo{evolve} the end-user should imbibe the
-knowledge and manage cross-version configurations.
-This shared responsibility is non-trivial to efficiently
-achieve. For example, there is no obviously ``correct'' way to
-build configuration logic; also, unlike fixing a bug once,
-every software user has to be informed on the right way to
-configure the system. Perhaps as a result, misconfigurations
-have been one of the dominant causes of system issues and
-is likely to continue so.
+effectively. This shared responsibility makes recommend configuration options
+different than localizing a regression bug, and causes many existing
+techniques not applicable. We will discuss related techniques below
+and in Section~\ref{sec:related}.
 
-\todo{a few more tradeoffs can be discussed here.}
 
 \vspace{1mm}
-\noindent \textbf{\textit{Why not use a pure dynamic analysis in \ourtool?}}
-\ourtool uses static thin slicing to estimate the effects of
-a configuration option. Another possible way is to use a pure
-dynamic analysis to assess the causality. State-of-the-art
-techniques such as value replacement~\cite{} and dual slicing~\cite{}
-\todo{describe them}.
-However, a major challenge is that it is difficult for
-\ourtool to find a replacement value for a configuration option.
+\noindent \textbf{\textit{Why not use a dynamic analysis in recommending
+configuration options?}}
+\ourtool uses thin slicing to statically identify responsible configuration
+options for a behaviorally-deviated predicate. Another possible way is to use a pure
+dynamic analysis to assess the causality of how a configuration option
+may affect the control flow. State-of-the-art
+techniques such as Delta Debugging~\cite{}, value replacement~\cite{} and dual slicing~\cite{}
+adapts a similar idea: they replace a variable value with other alternaives,
+and then re-execute the program to check whether the outcome is desired.
+There are two major challenges that prevent these dynamic analyses
+from being used. First, it is
+difficult to find a valid replacement value for a configuration option.
 For Boolean type option, it is trivial to find alternative values.
-However, for many configurtion options with string types, it
-is hard to determine good alternative values without a specification.
-\todo{illustrate more clearly above}. Investigating how
-to combine static and dynamic analyses 
+However, for many configurtion options with string or regular expression types, it
+can be hard to determine good alternative values without a specification.
+Second, automatically checking program outcomes requires
+a testing oracle, which is often not available in practice, and end-users
+should not be  expected to provide it. To address these challenges,
+\ourtool approximates the program behavioral differences by the
+control flow differences of two executions, and then statically reasons
+about the responsible configuration options.
+
+%However, a major challenge is that it is difficult for
+%\todo{illustrate more clearly above}. Investigating how
+%to combine static and dynamic analyses 
 
 
 \vspace{1mm}
 \noindent \textbf{\textit{\ourtool's current limitations.}}
-There are four major limitations in the \ourtool technique.
+There are four major limitations in the our \ourtool technique.
 First, \ourtool currently assumes that only one
-configuration option has an incorrect value.
-If fixing a particular configuration error
+configuration option is responsible for the undeisred behavior.
+If fixing a particular configuration problem
 requires changing values of two configuration options,
 then \ourtool may not identify both of them.
 Second, \ourtool assumes the different behaviors
-on two program versions can be demonstrated by users,
-and does not support diagnosing non-deterministic
-errors. For non-deterministic errors, \ourtool
+on two program versions are not caused by non-determinism.
+For non-deterministic behaviors, \ourtool
 could potentially leverage a deterministic replay
 system~\cite{Huang:2013:CRL, Jin:2012:BRF} to faithfully reproduce the behaviors.
-Third, \ourtool matches one predicate in the old
+Third, \ourtool only matches one predicate in the old
 program version to one predicate in the new program version.
-It might be possible that a predicate will evolve
-into multiple predicates. We did not see such cases
-in our experiment, but we speculate that \ourtool
-may not produce useful matching results.
+If a predicate evolves into multiple predicates in the new
+version, \ourtool may produce less useful matching results. 
+%We did not see such cases
+%in our experiment, but we speculate that \ourtool
+%may not produce useful matching results.
 Fourth, \ourtool focuses on identifying root cause
-configuration options that can change behaviors of
-the analyzed program rather than the underlying OS
-or runtime system. Configuration options, such
-as \CodeIn{-Xmx} used in launch a Java program for
-specifying JVM's heap size, are not supported
-in \ourtool.
+configuration options that can change the functional behaviors of
+the target program.
+% rather than the underlying OS
+%or runtime system. 
+Configuration options that essentially affect the underlying
+OS or runtime system, such as \CodeIn{-Xmx} used to
+specify JVM's heap size when launching a Java program,
+are not supported in \ourtool.

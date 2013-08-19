@@ -23,7 +23,7 @@ errors are \textit{prevalent}, \textit{severe}, and
 %the dominant cause of problems~\cite{}.
 A recent analysis of Yahoo's mission-critical Zookeeper service
 showed that software misconfigurations accounted for
-the majority of all user-visible failrues~\cite{bft}. Another
+the majority of all user-visible failures~\cite{bft}. Another
 recent study analyzed reported problems of a commercial
 storage company, and found configuration-related issues
 caused about 31\% of all user-visible failures~\cite{Yin:2011:ESC}.
@@ -59,16 +59,15 @@ values of certain configuration options.
 
 Continual change is a fact of life for software systems.
 Among software changes, configuration changes are prevalent.
-In a study of XXX versions of 9 configurable software
+In a study of 9 real-world configurable software
 systems (Section~\ref{sec:study}),
 we found that configuration changes happen in \textit{every} studied
-version of \textit{each} system. In many use
-cases, reusing existing configuration used in the old
-version \textit{without} appriopriate
-\textit{reconfiguration} for the new
+version of \textit{each} system. In many 
+cases, directly reusing the existing configuration
+for the old version for the new
 version can lead the software exhibit \textit{undesired} behaviors,
 even the software is working exactly as \textit{intended}.
-In practice, such configuration errors can lead to serious results.
+In practice, such improper reconfiguration can lead to serious results.
 For example, on July 26 2012, after software updating,
 a small misconfiguration caused a system error, and resulted in
 Microsoft's public cloud hosting and development platform, Azure,
@@ -82,12 +81,13 @@ being unavailable for about two and a half hours~\cite{msdown}.
 %\todo{not the right place}
 %Inappropriate reconfiguration can lead to serious results.
 
-Configuration errors are different from software regression bugs.
-They can still happen even after an unrealistically comprehensive
-regression test suite (with 100\% coverage ) passes. This is primarily
-because configuration errors are mostly user driven.
-They usually do not indicate problems in the software itself, but
-occur when the use of software is unexpected
+%Configuration errors are different from software regression bugs.
+%They can still happen even after an unrealistically comprehensive
+%regression test suite (with 100\% coverage ) passes. This is primarily
+%because 
+
+Unlike software regression bugs, configuration errors are mostly user driven.
+They occur when the use of software is unexpected
 situations, in which it does not behave as a user would expect.
 For software developers,
 it is impossible for them to test software in every possible
@@ -97,13 +97,15 @@ impossible even to foresee every such situation.
 
 Take the popular JMeter performance testing tool as an example, 
 in version 2.8, the testing report is saved as an XML
-file after running a usage command\footnote{\CodeIn{jmeter -n -t ../threadgroup.jmx -l ../output.jtl -j ../testplan.log}} from in the user manual.
+file after running an example command
+%\footnote{\CodeIn{jmeter -n -t ../threadgroup.jmx -l ../output.jtl -j ../test.log}}
+from in the user manual.
 However, when upgrading to version 2.9, 
 after executing the same command, the testing report is saved
-in a CSV file. For this case, all regression tests between
-these two versions passed; the new JMeter version
+in a CSV file. Further, all JMeter regression tests pass 
+on the updated version, but the new JMeter version
 just behaves as \textit{intended} but \textit{differently}
-than a user would expect.
+than a user was expecting.
 
 
 %To understand why a configuration error happens and
@@ -114,34 +116,34 @@ than a user would expect.
 
 Our technique (and its tool implementation \ourtool) can help
 diagnose configuration errors. For the JMeter example,
-users first demonstrate the desired and undesired
+users first demonstrate the different
 behaviors on two \ourtool-instrumented
-JMeter versions, respectively. Then, \ourtool analyzes the
-recorded execution profiles produced by two versions, and produces
-a ranked list of root cause configuration options. At the
-\todo{top, need to confirm} of the list is the
-\CodeIn{output\_format} option whose 
-value has been changed from \CodeIn{XML} to \CodeIn{CSV}
-between two versions. To restore JMeter's desired
-behavior as storing results in a CSV file, users
-need to reconfigure its value to \CodeIn{XML}.
+JMeter versions. Then, \ourtool analyzes the
+recorded execution traces produced by the two instrumented
+versions, and outputs a ranked list of root cause configuration options.
+At the top of the list is the
+\CodeIn{output\_format} option, whose default value is \CodeIn{CSV}
+in version 2.9.
+To resolve this problem, users only need to change
+its value to \CodeIn{XML}.
 
 \subsection{Configuration Option Recommendation}
 
 Broadly speaking, diagnosing a configuration
 error can be divided into three separate tasks:
-reproducing the error, identifying which specific
-configuration option is responsible for the unexpected
+reproducing the error, recommending which specific
+configuration option should be changed for the undesired
 behavior, and determining a better value for the
 configuration option to fix the error. \ourtool addresses
-the second task: identifying the root cause of
-a configuration error.
+the second task: recommending the root cause configuration options.
+%a configuration error.
 
 \ourtool aims to help two types of users: software end-users
 who may have problems with software installed on their
 personal computers; and system administrators who are
 responsible for maintaining production systems.
-They can use \ourtool for error diagnosis.
+They can use \ourtool to diagnose an unexpected configuration
+problem during software evolution. 
 %to troubleshoot an
 %error they encounter but do not know how to fix it. 
 
@@ -153,39 +155,44 @@ They can use \ourtool for error diagnosis.
 
 %\ourtool focuses on diagnosing configuration errors
 %caused by software evolution. 
-The key idea of \ourtool is to identify differences between
-two execution traces (produced by desired and
-undesired behaviors on two versions, respectively),
-and then use static dependence analysis to reason
-about which configuration options
+The key idea of \ourtool is to approximate program behavioral
+differences by control flow differences between 
+two execution traces (produced by running the old
+and new program versions, respectively),
+and then reasons about configuration options
 might cause such differences. It uses
 three steps, as illustrated in Figure~\ref{fig:overview},  to link the undesired
 behavior to specific root cause configuration options:
 
+\vspace{-2mm}
+
 \begin{itemize}
 
 \item \textbf{Instrumentation and Profiling.} \ourtool
-instruments two program versions by monitoring the
-execution of every predicate, and then asks users to
+instruments both old and new program versions by inserting
+code to monitor the execution of each statement as well as the
+evaluation result of every predicate. Then, it asks users to
 demonstrate the different behaviors on two instrumented
-program versions. User demonstration produces two execution
-traces resulting from the desired and undesired program
-behaviors, respectively.
+program versions. 
+%User demonstration produces two execution
+%traces resulting from the desired and undesired program
+%behaviors, respectively.
 
 \item \textbf{Execution Trace Comparison.}
-\ourtool analyzes two execution traces and identifies 
-predicates where the desired execution and the undesired
-execution diverged. The behavioral differences in
-the recorded predicates provide evidence for what
-predicates in a program might be behaving abnormally
+\ourtool analyzes two execution traces to identify
+the control flow differences. In particular, \ourtool
+identify program predicates that are behaving
+differently between two versions. These
+behaviorally-different predicate 
+provide useful evidence for what parts of a program might
+be behaving abnormally
 and why.
 
-\item \textbf{Root Cause Analysis.} For each behaviorally-different
-predicate between two executions, \ourtool 
- uses a lightweight static dependence analysis
+\item \textbf{Configuration Option Recommendation.} 
+\ourtool uses a lightweight static dependence analysis
 technique, called thin slicing~\cite{}, to attribute
-differences to specific configuration options and
-finally reports a ranked list of suspcious options to the users.
+control flow differences to specific configuration options.
+It outputs a ranked list of suspcious options to the users.
 
 
 \end{itemize}
@@ -215,12 +222,12 @@ oracle to check the software behavior. By contrast,
 demonstrate the different behaviors on two versions.
 \ourtool uses the execution trace produced in the old
 version as an approximate oracle to
-reason about the error in the new version.
+reason about the undesired behavior in the new version.
 
 \item \textbf{It determines likely root cause options}.
 Many error diagnosis and debugging techniques primarily focus on
-determining \textit{what} causes the undesired behaviors
--- they leave the more challenging
+determining \textit{what} causes the undesired behaviors, e.g.,
+a snippet of code -- they leave the more challenging
 question of \textit{how} to fix the undesired behaviors
 unanswered. Users must manually inspect the analysis
 report to infer
@@ -241,18 +248,36 @@ OS-level configuration error diagnosis~\cite{}.
 \subsection{Evaluation}
 
 We implemented \ourtool for Java software, and empirically evaluated
-its effectiveness using \subjnum open-source configurable Java
-software. We employ \ourtool to identify behavioral differences between
-two versions of these software.
-\todo{describe experiment results above}
+its effectiveness using \errornum configuration errors
+from \subjnum open-source configurable Java software. 
+We used \ourtool to recommend configuration options whose values
+can be changed to fix each error.
+\ourtool successfully recommend correct configuration options
+for XXX errors. In XX errors, the correct option was \ourtool's first
+suggestion. In XXX errors, the correct option was among
+\ourtool's top 3 suggestions. 
+\ourtool fails to recommend correct options for the remaining
+one error. \ourtool is fast enough for practical use,
+taking less than XX minutes to diagnose one configuration error, on average.
+\ourtool's accuracy and speed make it a promising technique.
 
-We compared \ourtool to two existing techniques~\cite{}, which uses XXX.
-The existing technique only
-\todo{will compare it to ConfDiagnoser and ConfAnalyzer, show results
-above} 
 
-Overall, we find that \ourtool is highly effective at helping
-identify the root cause of cross-version behavioral differences. 
+We compared \ourtool to two existing configuration error diagnosis
+techniques, called \prevtool~\cite{} and \conftool~\cite{}.
+\prevtool assumes the existence of some correct execution traces
+on the new program version, and compares the undesired execution
+trace with them to identify the different parts. \conftool exclusively
+focuses on diagnosing crashing configuration errors.
+By contrast, \ourtool eliminates \prevtool's assumption and
+can diagnose both crashing errors and non-crashing errors. Our experiments
+show that \ourtool significantly outperforms these two existing techniques.
+
+Finally, we evaluated an internal design choice of \ourtool. We showed
+that using thin slicing is better choice than the traditional full
+slicing to reason about the root cause configuration options.
+
+%Overall, we find that \ourtool is highly effective at helping
+%identify the root cause of cross-version behavioral differences. 
 
 \subsection{Contributions}
 
@@ -265,7 +290,7 @@ study of 9 configurable software systems.
 Our study indicates that software configuration changes
 are frequent and persistent during its evolution (Section~\ref{sec:study}).
 
-\item \textbf{Technique.} We present a technique to diagnosis
+\item \textbf{Technique.} We present a technique to diagnose
 configuration errors for evolving software. Our technique
 uses dynamic profiling, execution trace comparison, and
 static analysis to link certain undesired behaviors to a
