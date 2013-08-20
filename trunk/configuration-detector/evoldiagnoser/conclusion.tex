@@ -7,8 +7,9 @@ When they do, identifying the root causes
 can be challenging, especially when a software's
 behavior depends on a wide range of configuration options.
 
-This paper describes \ourtool, a technique to recommend
-configuration options whose values can be changed to
+This paper describes \ourtool, a technique to help software
+users to reconfigure a configurable software system. \ourtool
+recommends configuration options whose values can be changed to
 produce desired behavior on the new software version.
 %\ourtool represents a novel synthesis of \todo{} steps:
 %records \todo{} and collects \todo{}.
@@ -35,23 +36,22 @@ with our subject programs.
 
 \item \textbf{Formulating guidance of error diagnosis.}
 An important question that is not answered in \ourtool
-is that how to distinguish bugs from 
+is that how to automatically distinguish software bugs from 
 configuration errors, when a software system exhibits
-undesired behaviors. We plan to formulate guidance
+some undesired behavior. We plan to formulate guidance
 regarding when the user should give up on \ourtool
 and assume the error is not related to a configuration option.
 
 \item \textbf{Improving configuration error reporting and fixing.}
-Unlike a software bug, a configuration error is mostly
-user-driven. Reporting it must combine the software use
-scenario with the error-revealing software state.
-Further, there is no obviously ``correct'' way to
-build configuration logic; also, unlike fixing a bug once,
+A bug report of a configuration error must combine the
+failing software state with its use scenario.
+When fixing a configuration error, there is no obviously ``correct'' way to
+build configuration logic. In addition, unlike fixing a bug once,
 every software user has to be informed on the right way to
 configure the system.  Perhaps as a result, misconfigurations
 have been one of the dominant causes of system issues and
 is likely to continue so. To address these related problems,
-we plan to explore the existing software configuration error
+we plan to explore the existing software configuration errors
 to summarize error patterns, and then use machine learning
 techniques to synthesize good-quality error reports and fixes.
 

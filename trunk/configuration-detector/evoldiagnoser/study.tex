@@ -2,12 +2,13 @@
 \label{sec:study}
 
 In the software engineering literature, desipte a rich body of
-software change analysis work~\cite{}, 
+software change analysis work~\cite{STVR:STVR1475, Dagenais:2008, Tao:2012:SEU}, 
 software configuration changes across multiple
-versions are less studied. To understand whether configuration
-changes arise during software evolution in practice,
-this section describes a preliminary study of
-\studysubjnum  real-world configurable systems.
+versions are less studied. Does configuration
+change arise during software evolution in practice?
+This section describes a preliminary study of
+\studysubjnum  real-world configurable systems to answer
+this question.
 % to investigate whether
 %and how configuration changes arise during software evolution.
 %\todo{say the object is whether such changes
@@ -160,47 +161,34 @@ Table~\ref{tab:subjects} lists
 \studysubjnum open-source configurable systems used in our
 study. The \studysubjnum subjects contains
 three C/C++ software and six Java software.
-MySQL~\cite{}  is a popular relational database management
-system. Apache~\cite{} is a HTTP server which has acquired
-the largest share on the internet since 1996. FireFox~\cite{}
+MySQL~\cite{mysql}  is a popular relational database management
+system. Apache~\cite{apache} is a HTTP server which has acquired
+the largest share on the internet since 1996. FireFox~\cite{firefox}
 is an open-source browser available on multiple platforms.
-Randoop~\cite{} is an automated test generator for Java
-programs. Weka~\cite{} is a toolkit that implements machine
-learning algorithms. JChord~\cite{} is a program analysis platform that
+Randoop~\cite{randoop} is an automated test generator for Java
+programs. Weka~\cite{weka} is a toolkit that implements machine
+learning algorithms. JChord~\cite{jchord} is a program analysis platform that
 enables users to design, implement, and evaluate static and
-dynamic program analyses for Java. Synoptic~\cite{} mines a
+dynamic program analyses for Java. Synoptic~\cite{synoptic} mines a
 finite state machine model representation of a system from
-logs. JMeter~\cite{} is a tool to load test functional
+logs. JMeter~\cite{jmeter} is a tool to load test functional
 behavior and measure performance.
 Each program is highly configurable, and has evolved over
-a considerable amount of time (\todo{xx--xx} years).
+a considerable amount of time for selected versions ({2--6} years).
 
 
-In comparison to software bugs that have well-maintained
-bug databases and have benefits from many
-software bug characteristic studies~\cite{},
-a configuration evolution study is much harder, mainly
-because configuration changes usually have not been
-documented rigorously~\cite{}. Sometimes, after a
-session of code changes, when
-regression tests pass, developers may simply treat the
-software behaviors have been validated. Further,
-the description of software misconfigurations is user-driven,
-the ``fixes'' may be recorded simply as pointers
-to manuals and best-practice documents.
-
-In our study, rather than searching bug repositories,
-we manually examine the revision history of each subject program,
-and searched for related keywords, such as ``Add option'',
-``Delete option'', ``Rename option'', etc,
-in commit messages as well as in the change logs,
-which records developers' activities
-during software evolution. For each match,
-we read the description of the change,
-and the ``diff'' of the original file and the
-changed file. This information indicated
-to us whether the change is related to how the
-software should be configured.
+In our study, %rather than searching bug repositories,
+we manually examined the revision history of each subject program,
+and searched for a set of 4 keywords (``add option'',
+``delete option'', ``rename option'', and ``change option'')
+in commit messages as well as in the change logs.
+For each match, we read the description of the change,
+and the ``diff'' of the original file to check whether
+the change is made to a configuration option.
+%and the
+%changed file. This information indicated
+%to us whether the change is related to how the
+%software should be configured.
 
 %We identifies the
 %changed code and its affected configuration options
@@ -222,13 +210,29 @@ in the evolution of every subject program. In fact, they occur in
 every revision of each subject program (not shown in Table~\ref{tab:options},
 due to space limit). 
 
-Table~\ref{tab:categories} shows the number of
-configuration change types for each subject program.
-Feature related changes are the largest group across
+As shown in Table~\ref{tab:categories},
+feature related configuration changes are the largest group across
 all subject programs. These changes include
 adding new configuration options to customize a program's
-functionality. Other three categories of canges occur as well, although
+functionality, deleting existing options, or modifying the default
+value of an option. Other three categories of canges occur as well, although
 with less frequency.
+
+Regarding the impact of configuration changes, 
+in comparison to software regression bugs that have well-maintained
+bug databases, finding documented configuration errors
+is much harder, mainly
+because configuration errors usually have not been
+documented rigorously~\cite{Yin:2011:ESC}. Sometimes, after a
+session of code changes, when
+regression tests pass, developers may simply treat the
+software behaviors have been validated. Further,
+the description of software misconfigurations is user-driven,
+the ``fixes'' may be recorded simply as pointers
+to manuals and best-practice documents.
+
+\todo{need a transition sentence here. do not claim much
+for this initial study.}
 
 Many of such configuration changes listed in Table~\ref{tab:options},
 perhaps except for changes to fix a reported bug, can affect
@@ -283,8 +287,8 @@ they may not apply to arbitrary programs.
 The identified configuration changes by our methodology is certainly not complete.
 Our methodology only studies changes that are directly made to a
 software configuration option. We may miss certain
-code or environment changes would indirectly affect the software behavior,
-and consequently require reconfiguration to the new software version.
+code or environment changes that may indirectly affect the software behavior,
+and consequently require users to reconfigurate the new software version.
 
 %We only examined software change logs to identify changed configurations, which is a biased
 %subset; there may be (many) other configuration

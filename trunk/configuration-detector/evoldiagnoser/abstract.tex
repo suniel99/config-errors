@@ -9,9 +9,12 @@ When upgrading to a new software version.
 users may need to re-configure the software
 by changing values of certain configuration options.
 
-This paper presents a technique (and its tool implementation,
-called \ourtool) to help software users
-troubleshoot configuration errors caused by software evolution. 
+This paper addresses a central question during the evolution
+of a configurable software system: which configuration option
+should a user change to maintain the software's desired behavior?
+We present a technique (and its tool implementation,
+called \ourtool) to troubleshoot the configuration error
+caused by software evolution. 
 \ourtool uses dynamic profiling, execution trace
 comparison, and static analysis to link the undesired
 behavior to its root cause -- a single configuration option

@@ -23,17 +23,19 @@ code fragments that are affcted by the changes.
 Different than \ourtool's predicate matching
 algorithm (Section~\ref{sec:match_predicate}),
 existing program differencing techniques primarily focus on matching
-program elements at the method level~\cite{},
+program elements at the method level~\cite{frameworkevolution,
+Xing:2005:UAO, Kim:2013, Nguyen:2010:RBF,Dig:2006:ADR,
+Kamiya:2002:CMT, Dagenais:2008},
 or matching program statements on the source code based on
-textual similarity~\cite{}.
+textual similarity~\cite{Horwitz:1990:IST}.
 By contrast, \ourtool's matching algorithm, inspried by
-the JDiff algorithm~\cite{}, is specifically designed 
+the JDiff algorithm~\cite{Apiwattanapong:2004}, is specifically designed 
 to identify the evolved predicate in the new program version.
 (See Section~\ref{sec:match_predicate} for a detailed
 comparison with JDiff.)
 The algorithm directly works on the bytecode of two program
 versions without any additional information from users,
-such as a software revision history~\cite{}.
+such as a software revision history~\cite{frameworkevolution}.
 
 %these techniques can identify possible
 %software regressions, but are not applicable to
@@ -131,7 +133,7 @@ ConfAnalyzer~\cite{Rabkin:2011:PPC} uses dynamic information flow analysis to pr
 possible configuration error diagnoses for every possible crashing point
 in a program. 
 
-\ourtool is significantly different from the other approaches.
+\ourtool is significantly different from these approaches.
 First, most previous approaches focus exclusively on a single software
 version and diagnose configuration errors that lead to a crash or
 assertion failure~\cite{Attariyan:2008:UCD, Whitaker:2004:CDS, 
@@ -143,24 +145,22 @@ Second, several approaches~\cite{Attariyan:2010:ACT, Whitaker:2004:CDS}
 assume the existence of a testing oracle that can 
 check whether the software functions correctly. However, as we discussed
 before, a testing oracle is often not availabe, and it
-is infeasible to expert end-users to provide it in practice.
+is infeasible to expert end-users to provide it.
 By contrast, our technique eliminates this assumption by
 comparing two execution traces to reason about the control flow differences
 between them. 
-Third, several techniques~\cite{} requires alternations
+Third, several techniques~\cite{Whitaker:2004:CDS, Su:2007:AIC} require alternations
 to the underlying operating system or runtime environment
 in order to diagnose a configuration error. Compared with
 the platform-independent offline instrumentation used
-in \ourtool, this requirement may be
-impractical for many ordinary end-users.
+in \ourtool, switching to use a new OS or runtime may be
+too impractical for many ordinary end-users.
 Fourth, approaches like
 PeerPressure~\cite{Wang:2004:AMT} and RangeFixer~\cite{rangefix}
 benefit from the known schema of the Windows Registry and
 feature models, but cannot help diagnose configuration errors
 that lie outside these specific domains. Our technique
 of analyzing the execution traces is more general.
-
-
 
 
 \subsection{Configuration-Aware Software Analysis}
@@ -182,7 +182,7 @@ goals. They primarily focus on reducing the burden of
 configuration management and preventing certain errors from
 happening, or creating test suites to find new errors in
 a configurable software system earlier, but cannot
-diagnose an exhibit configuration error. Our \ourtool technique
+diagnose an exhibit configuration error. By contrast, our \ourtool technique
 links the behavioral differences to a small number
 of configuration options, and explicitly guides software end-users
 how to fix a configuration error.
