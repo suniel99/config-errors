@@ -15,8 +15,8 @@ identifyDeviatedPredicates($\mathit{T_{old}}$, $\mathit{T_{new}}$, $\mathit{stmt
 \begin{algorithmic}[1]
 \STATE $\mathit{predMap}$ $\leftarrow$ new Map$\langle$$\langle$Predicate, Predicate$\rangle$, Float$\rangle$
 \FOR{each predicate $\mathit{p_{old}}$ in getPredicates($\mathit{T_{old}}$)}
-\STATE $\mathit{p_{new}}$ $\leftarrow$ $\mathit{stmtMap}$[$\mathit{p_{old}}$]
 \STATE $\mathit{v}$ $\leftarrow$ $\phi$($\mathit{p_{old}}$, $\mathit{T_{old}}$)
+\STATE $\mathit{p_{new}}$ $\leftarrow$ $\mathit{stmtMap}$[$\mathit{p_{old}}$]
 \IF{$\mathit{p_{new}}$ $\neq$ $\mathit{null}$}
 \STATE $\mathit{v}$ $\leftarrow$ $|\phi$($\mathit{p_{old}}$, $\mathit{T_{old}}$) - $\phi$($\mathit{p_{new}}$, $\mathit{T_{new}}$)$|$
 \ENDIF
@@ -34,6 +34,7 @@ identifyDeviatedPredicates($\mathit{T_{old}}$, $\mathit{T_{new}}$, $\mathit{stmt
 \ENDFOR
 \RETURN $\mathit{predMap}$
 \end{algorithmic}
+\vspace{-2mm}
 \caption{Algorithm for identifying behavioral-deviated
 predicates. The $\phi$ function is defined in Section~\ref{sec:identify_diff}.
 \label{fig:identify}

@@ -15,7 +15,8 @@ behave differently (Section~\ref{sec:identify_diff}).
 \label{sec:match_predicate}
 
 For each predicate recorded in the old execution trace,
-\ourtool matches it in the new program version.
+\ourtool matches it in the new program version to identify
+its possibly updated counterpart.
 To match a predicate, \ourtool first matches its declaring method,
 by using two strategies. \ourtool uses
 the first strategy that succeeds.
@@ -30,32 +31,57 @@ fully-qualified name in the new version.
 \item \textbf{Similar method content.} Return the method with
 the most similar content in the new version. Given
 a method in the old program version, \ourtool
-uses the algorithm shown in Figure~\ref{fig:matching} (discussed
-in detail below) to \textit{every} instruction in it to
-\textit{each} method in the new program version, and then
-chooses the method with the most matched matched instructions
+uses the algorithm shown in Figure~\ref{fig:matching}
+(details are discussed below) to match it
+to \textit{every} method in the new program version, and then
+chooses the method with the most matched matched statements
 (in the new program version).
 \end{enumerate}
 
 The algorithm in Figure~\ref{fig:matching} is inspired by
 a well-established program differencing algorithm, called
-JDiff~\cite{}. \todo{describe JDiff and the difference here.}
+JDiff~\cite{Apiwattanapong:2004}. The original JDiff
+algorithm is based on a method-level representation
+(called hammocks) that models the object-oriented features.\
+It works in a hierarchical way by first identifying matching
+classes and then matched method pairs. Our
+algorithm directly works on the program control flow graph
+to establish the matching between statements.
 
-If there is no matched method in the new program
+In Figure~\ref{fig:matching}, \ourtool first constructs the control
+flow graphs of two given methods (lines 2--3), then pushes their
+entry nodes (a synthetic node for each method) to a stack (line 5), which retains
+the next statement pair for comparing. The algorithm repeatedly
+compares each statement pair from the stack (line 7), and
+decides whether the two statements are the same. To avoid infinite
+loop, the algorithm first checks whether the next statement for comparison
+has been compared before (lines 8--9). If two statements match,
+the algorithm saves them in the result map (line 11--12). Otherwise,
+the algorithm follows the control flow graph to compare a statement with
+the next $lh$ statements, and check whether any two statements can be
+matched (lines 14--19). This approximation aims to tolerate some small
+changes in the method code, and attemps to match as many statements as possible.
+
+After running the matching algorithm, \ourtool further checks the ratio of
+matched statements in the old method, and discards method candidates whose
+matching ratio is below a threshold (default value: 0.9).
+
+If there is no matched for the declaring method in the new program
 version, \ourtool concludes that the predicate cannot be
 matched. Otherwise, \ourtool uses the following two strategies
 to find the corresponding predicate.
 
 \begin{enumerate}
 \item If the declaring method is matched by using the first
-``Identical method name'' heuristic, \ourtool runs the algorithm
+``\textbf{Identical method name}'' heuristic, \ourtool runs the algorithm
 in Figure~\ref{fig:matching} to establish the mapping between
-each instruction, and returns the matched instruction of the
-predicate.
+instructions, and then returns the matched instruction of the
+predicate (or NULL if the predicate cannot be matched).
 \item If the declaring method is matched by using the second
-``similar method content'' heuristic,  \ourtool
-uses the result of the algorithm in Figure~\ref{fig:matching}
-by returning the matched instruction of the given predicate.
+``\textbf{Similar method content}'' heuristic,  \ourtool
+queries the output of the algorithm in Figure~\ref{fig:matching}
+by returning the matched statement of the given predicate (
+or NULL if there is no corresponding match).
 \end{enumerate}
 
 %For both cases, if the matching algorithm fails to identified
@@ -69,17 +95,54 @@ With the predicate matching information, \ourtool further
 identifies predicates that behave differently
 between two versions. 
 
-The algorithm is shown in Figure~\ref{fig:identify}. \ourtool
-\todo{describe the algorithm ..}
+\ourtool uses a function $\phi$ to characterize a predicate's behavior.
+The $\phi$ metric combines sensitivity (informally, the need
+for multiple observations) and specificity (informally, the
+true ratio) in a standard way by computing their harmonic mean.
+As empirically demonstrated in our previous work~\cite{Zhang:2013:ADS},
+the metric $\phi$ provides a good characterization of a predicate's behavior.
 
-\ourtool outputs three categories of predicates:
+\vspace{-1mm}
+
+{\small{
+\[
+\|\phi|(p, t) = \frac{2}{{1}/{\|trueRatio|(p, t)} + {1}/{\|totalExecNum|(p, e)}}
+\]
+}}
+
+\vspace{-1mm}
+
+In $\phi(p, t)$, $\|trueRatio|(p, e)$ is the ratio of executions of the
+predicate $p$ that evaluated to true in a trace $t$,
+and $\|totalExecNum|(p, t)$ is the the total
+number of executions of predicate $p$ in $t$.
+To smooth corner cases, if a predicate $p$ is not executed in $t$, 
+i.e., $\|totalExecNum|(p, t) = 0$, then $\phi(p, t)$ returns 0;
+and if a predicate $p$'s true ratio is 0, i.e., $\|trueRatio|(p, t) = 0$,
+then $\phi(p, t)$ returns $1/\|totalExecNum|(p, t)$.
+
+The algorithm is shown in Figure~\ref{fig:identify}.
+It first iterates every predicate in the old execution trace (line 2)
+, computes its metric value as the initial deviation value (line 3), and
+checks whether it has a matched predicate executed in the
+new execution (lines 4--5). If so, it updates the
+initial deviation value (line 6). The algorithm further filters away
+predicate pairs whose deviation value is less than a predefined $\delta$ (lines 8 and 15). The algorithm next iterates through the executed predicate list
+in the new execution trace, and identifies the predicate without any
+corresponding predicate in the old execution trace (lines 13--18).
+
+The output of the algorithm in this step contains three categories
+of matched predicate pairs:
 (1) predicates that are only executed in the
-old version, (2) predicates that are only executed
-in the new version, and (3) predicates that
+old version. For each of those predicates, there is no matched predicate
+for such predicate in the new version, or the matched predicate
+is not executed; (2) predicates that are only executed
+in the new version. For each of those predicates, there is
+no matched predicate in the old version, or the matched predicate
+is not executed. (3) predicates that
 are executed in both versions but exhibit different
-behaviors. For each category, \ourtool sorts the
-predicates based on their deviation scores in the
-descreasing order.
+behaviors. For each predicate pair, \ourtool sorts computes
+its deviation score between versions.
 
 
 Differences in predicate behaviors indicate different executed paths

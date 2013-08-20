@@ -1,12 +1,19 @@
 \begin{figure}[t]
+\textbf{Axuiliary methods}:
+
+sameStatement($\mathit{s}$, $\mathit{s'}$): return whether two statements $\mathit{s}$and $\mathit{s'}$ are the same statements.
+
+succStmtsInBFS($\mathit{s}$, $\mathit{cfg}$, $\mathit{d}$): return an ordered list of reachable successive statements from statement $\mathit{s}$ in $\mathit{cfg}$ by Breath-First Search (BFS).
+
+firstMatch($\mathit{stmtList_1}$, $\mathit{stmtList_2}$): return the first matched statement pair between $\mathit{stmtList_1}$ and $\mathit{stmtList_2}$ (iterating $\mathit{stmtList_1}$ first).
+
+
 \textbf{Input}: two methods from two software versions: $\mathit{m_{old}}$ and $m_{new}$,
 
-\quad a similarity threshold $\mathit{s}$, and a maximum lookahead value $\mathit{lh}$. 
-
-\quad Our experiment uses $\mathit{s}=0.9$ and $\mathit{lh}=5$.\\
+\quad a maximum lookahead value $\mathit{lh}$ (Our experiment uses $\mathit{lh}=5$.).\\
 \textbf{Output}: matched statements between old and new versions.
 \vspace{-4mm}%
-matchStatements($\mathit{m_{old}}$, $\mathit{m_{new}}$, $\mathit{s}$, $\mathit{lh}$)\\
+matchStatements($\mathit{m_{old}}$, $\mathit{m_{new}}$, $\mathit{lh}$)\\
 \begin{algorithmic}[1]
 \STATE $\mathit{matchedStmts}$ $\leftarrow$ new Map$\langle$Stmt, Stmt$\rangle$
 \STATE $\mathit{cfg_{old}}$ $\leftarrow$ constructControlFlowGraph($\mathit{m_{old}}$)
@@ -19,25 +26,15 @@ matchStatements($\mathit{m_{old}}$, $\mathit{m_{new}}$, $\mathit{s}$, $\mathit{l
 \IF{$\mathit{matchedStmts}$.keys().contains($\mathit{stmt_{old}}$) \\ \quad || $\mathit{matchedStmts}$.values().contains($\mathit{stmt_{new}}$)}
 \STATE \textbf{continue}
 \ENDIF
-\IF{$\mathit{stmt_{old}}$ = $\mathit{stmt_{new}}$}
+\IF{sameStatement($\mathit{stmt_{old}}$, $\mathit{stmt_{new}}$)}
 \STATE $\mathit{matchedStmts}$[$\mathit{stmt_{old}}$] = $\mathit{stmt_{new}}$
 \ELSE
-\STATE $\mathit{nodeList_{old}}$ $\leftarrow$ reachableSuccStmtsInOrder($\mathit{stmt_{old}}$, $\mathit{lh}$)
-\STATE $\mathit{nodeList_{new}}$ $\leftarrow$ reachableSuccStmtsInOrder($\mathit{stmt_{new}}$, $\mathit{lh}$)
-\FOR{each $\mathit{s_{old}}$ in $\mathit{nodeList_{old}}$}
-\FOR{each $\mathit{s_{new}}$ in $\mathit{nodeList_{new}}$}
-\IF{$\mathit{s_{old}}$ = $\mathit{s_{new}}$}
-\STATE $\mathit{matchedStmts}$[$\mathit{s_{old}}$] = $\mathit{s_{new}}$
-\FOR{each $\mathit{succ_{old}}$ in succ($\mathit{s_{old}}$)}
-\FOR{each $\mathit{succ_{new}}$ in succ($\mathit{s_{new}}$)}
-\STATE $\mathit{stack}$.push($\langle$$\mathit{succ_{old}}$, $\mathit{succ_{new}}$$\rangle$)
-\ENDFOR
-\ENDFOR
-\STATE Break two for loops outside.
-%\STATE $\mathit{stack}$.push($\langle$$\mathit{s_{old}}$, $\mathit{s_{new}}$$\rangle$)
+\STATE $\mathit{stmtList_{old}}$ $\leftarrow$ succStmtsInBFS($\mathit{stmt_{old}}$, $\mathit{lh}$)
+\STATE $\mathit{stmtList_{new}}$ $\leftarrow$ succStmtsInBFS($\mathit{stmt_{new}}$, $\mathit{lh}$)
+\STATE $\langle$$\mathit{stmt_{old}}$, $\mathit{stmt_{new}}$$\rangle$ $\leftarrow$ firstMatch($\mathit{stmtList_{old}}$, $\mathit{stmtList_{new}}$)
+\IF{$\langle$$\mathit{stmt_{old}}$, $\mathit{stmt_{new}}$$\rangle$ $\neq$ null}
+\STATE $\mathit{stack}$.push($\langle$$\mathit{stmt_{old}}$, $\mathit{stmt_{new}}$$\rangle$)
 \ENDIF
-\ENDFOR
-\ENDFOR
 \ENDIF
 \ENDWHILE
 \RETURN $\mathit{matchedStmts}$
