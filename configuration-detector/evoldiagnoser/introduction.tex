@@ -59,7 +59,7 @@ values of certain configuration options.
 
 Continual change is a fact of life for software systems.
 Among software changes, configuration changes are prevalent.
-In a study of 9 real-world configurable software
+In an initial study of 9 real-world configurable software
 systems (Section~\ref{sec:study}),
 we found that configuration changes happen in \textit{every} studied
 version of \textit{each} system. In many 
@@ -86,7 +86,7 @@ being unavailable for about two and a half hours~\cite{msdown}.
 %regression test suite (with 100\% coverage ) passes. This is primarily
 %because 
 
-Unlike software regression bugs, configuration errors are mostly user driven.
+Differing from software regression bugs, configuration errors are mostly user driven.
 They occur when the use of software is unexpected
 situations, in which it does not behave as a user would expect.
 For software developers,
@@ -97,9 +97,11 @@ impossible even to foresee every such situation.
 
 Take the popular JMeter performance testing tool as an example, 
 in version 2.8, the testing report is saved as an XML
-file after running an example command
+file after running an example command (
+\CodeIn{jmeter -n -t ../threadgroup.jmx -l ../output.jtl -j ../test.log}
+)
 %\footnote{\CodeIn{jmeter -n -t ../threadgroup.jmx -l ../output.jtl -j ../test.log}}
-from in the user manual.
+from the user manual.
 However, when upgrading to version 2.9, 
 after executing the same command, the testing report is saved
 in a CSV file. Further, all JMeter regression tests pass 
@@ -122,7 +124,7 @@ JMeter versions. Then, \ourtool analyzes the
 recorded execution traces produced by the two instrumented
 versions, and outputs a ranked list of root cause configuration options.
 At the top of the list is the
-\CodeIn{output\_format} option, whose default value is \CodeIn{CSV}
+\CodeIn{output\_format} option with a value of \CodeIn{CSV}
 in version 2.9.
 To resolve this problem, users only need to change
 its value to \CodeIn{XML}.
@@ -157,9 +159,10 @@ problem during software evolution.
 %caused by software evolution. 
 The key idea of \ourtool is to approximate program behavioral
 differences by control flow differences between 
-two execution traces (produced by running the old
+two execution traces (by running the old
 and new program versions, respectively),
-and then reasons about configuration options
+and then reason about the control flow differences to
+identify configuration options that
 might cause such differences. It uses
 three steps, as illustrated in Figure~\ref{fig:overview},  to link the undesired
 behavior to specific root cause configuration options:
@@ -181,7 +184,7 @@ program versions.
 \item \textbf{Execution Trace Comparison.}
 \ourtool analyzes two execution traces to identify
 the control flow differences. In particular, \ourtool
-identify program predicates that are behaving
+identifies program predicates that are behaving
 differently between two versions. These
 behaviorally-different predicate 
 provide useful evidence for what parts of a program might
@@ -190,22 +193,26 @@ and why.
 
 \item \textbf{Configuration Option Recommendation.} 
 \ourtool uses a lightweight static dependence analysis
-technique, called thin slicing~\cite{}, to attribute
+technique, called thin slicing~\cite{Sridharan:2007}, to attribute
 control flow differences to specific configuration options.
-It outputs a ranked list of suspcious options to the users.
+Finally, it outputs a ranked list of suspcious options to the users.
 
 
 \end{itemize}
 
 Compared to existing error diagnosis
-techniques~\cite{}, \ourtool differs in four
+techniques~\cite{Wang:2004:AMT, Rabkin:2011:PPC, Whitaker:2004:CDS,
+Zhang:2013:ADS, Attariyan:2010:ACT, Su:2007:AIC, Attariyan:2008:UCD, xray
+}, \ourtool differs in four
 key aspects:
 
 \begin{itemize}
-\item \textbf{It diagnoses configuration errors across versions}.
+\item \textbf{It diagnoses configuration errors caused by software evolution}.
 Most existing configuration error diagnosis techniques
 exclusively focus on identifying errors in a single program
-version~\cite{}. By contrast, \ourtool targets
+version~\cite{Wang:2004:AMT, Rabkin:2011:PPC, Whitaker:2004:CDS,
+Zhang:2013:ADS, Attariyan:2010:ACT, Su:2007:AIC, Attariyan:2008:UCD, xray
+}. By contrast, \ourtool targets
 configuration errors caused by software evolution, and
 works on two different versions of the same program. 
 It uses the desired behavior on the old software version
@@ -214,7 +221,8 @@ reasons about the behavioral differences.
 
 
 \item \textbf{It requires no testing oracle}.
-Some existing work~\cite{} require users to answer the difficult
+Some existing work~\cite{Rabkin:2011:PPC, Whitaker:2004:CDS,
+Attariyan:2010:ACT, Su:2007:AIC} require users to answer the difficult
 questions like ``why is the software not working'', or
 ``is the software currently working'' by writing a testing
 oracle to check the software behavior. By contrast,
@@ -225,7 +233,8 @@ version as an approximate oracle to
 reason about the undesired behavior in the new version.
 
 \item \textbf{It determines likely root cause options}.
-Many error diagnosis and debugging techniques primarily focus on
+Many error diagnosis and debugging techniques~\cite{dd, autoflow}
+primarily focus on
 determining \textit{what} causes the undesired behaviors, e.g.,
 a snippet of code -- they leave the more challenging
 question of \textit{how} to fix the undesired behaviors
@@ -241,7 +250,7 @@ configuration options which may fix the error.
 does not need alternations to the JVM, operating systems, or
 standard library. This makes \ourtool more portable, and
 distinguishes it from related techniques, such as
-OS-level configuration error diagnosis~\cite{}.
+OS-level configuration error diagnosis~\cite{Whitaker:2004:CDS, Su:2007:AIC}.
 
 \end{itemize}
 
@@ -263,7 +272,8 @@ taking less than XX minutes to diagnose one configuration error, on average.
 
 
 We compared \ourtool to two existing configuration error diagnosis
-techniques, called \prevtool~\cite{} and \conftool~\cite{}.
+techniques, called \prevtool~\cite{Zhang:2013:ADS}
+and \conftool~\cite{Rabkin:2011:PPC}.
 \prevtool assumes the existence of some correct execution traces
 on the new program version, and compares the undesired execution
 trace with them to identify the different parts. \conftool exclusively

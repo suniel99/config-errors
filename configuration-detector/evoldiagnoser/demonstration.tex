@@ -1,11 +1,13 @@
 \ourtool first instruments both the old and new program versions
-to monitor the program  execution at runtime. \ourtool's instrumentation
+to monitor the program  execution at runtime. \ourtool directly
+instruments the bytecode. The instrumentation
 consists of two parts:
 
 \vspace{-2mm}
 
 \begin{itemize}
-\item For each program predicate, \ourtool inserts one
+\item For each program predicate (i.e., a branch instruction
+in bytecode), \ourtool inserts one
 statement before and one statement after it
 to monitor how frequent the predicate is executed, and
 how often the predicate evaluates to true, respectively. In our

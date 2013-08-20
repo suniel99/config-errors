@@ -1,3 +1,33 @@
+we dened a new graph representation and a dif-
+ferencing algorithm that uses the representation to identify
+and classify changes at the statement level between two ver-
+sions of a program
+
+
+. First, it matches classes,
+interfaces, and methods in the two versions. Second, it
+builds enhanced CFGs for all matched methods in the orig-
+inal and modied versions of the program. Third, it re-
+duces all graphs to a series of nodes and single-entry, single-
+exit subgraphs called hammocks. Fourth, it compares, for
+each method in the original version and the corresponding
+method in the modied version, the reduced graphs, to iden-
+tify corresponding hammocks. Finally, it recursively ex-
+pands and compares the corresponding hammocks.
+
+In this paper, we presented an algorithm for comparing
+two Java programs. The algorithm is based on a method-
+level representation that models the object-oriented features
+of the language. Given two programs, our algorithm identi-
+es matching classes and methods, builds our representation
+for each pair of matching methods, and compares the rep-
+resentation for the two methods to identify similarities and
+differences. The results of our differencing can be used for
+various development and maintainance tasks, such as impact
+analysis and regression testing
+
+
+
 
 Difference summarization first attributes XXX costs
 such as xxx and xxx to xxx. Then, it uses xxx to

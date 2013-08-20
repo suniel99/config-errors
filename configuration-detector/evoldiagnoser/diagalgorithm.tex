@@ -1,19 +1,38 @@
 
 \begin{figure}[t]
-\textbf{Input}: a software version: $\mathit{V}$, an execute trace: $\mathit{T}$, 
+\textbf{Auxiliary methods:}
 
-\quad a set of analyzed predicates: $\mathit{predicates}$, 
+\quad getAffectingOptions($\mathit{p}$, $\mathit{V}$): return all configuration options that affect predicate $\mathit{p}$ in the software version $\mathit{V}$
 
-\quad a set of behaviorally-different predicates: $\mathit{preds_{diff}}$, and
+\quad getExecutedStmtNum($\mathit{p}$, $\mathit{V}$, $\mathit{T}$): return the number of executed statements (determined by predicate $\mathit{p}$) in trace $\mathit{T}$
 
-\quad a weight map: $\mathit{weightMap}$\\
-\textbf{Output}: None. The algorithm updates the weight map: $\mathit{weightMap}$\\
+\textbf{Input}: two software version: $\mathit{V_{old}}$ and $\mathit{V_{new}}$, 
+
+\quad the map of all behaviorally-deviated predicates: $\mathit{predMap}$
+
+\textbf{Output}: {a ranked list of likely root cause configuration options}
 \vspace{-4mm}%
-updateWeights($\mathit{weightMap}$, $\mathit{predicates}$, $\mathit{V}$, $\mathit{T}$, $\mathit{preds_{diff}}$)\\
+recommendOptions($\mathit{V_{old}}$, $\mathit{V_{new}}$, $\mathit{predMap}$)\\
 \begin{algorithmic}[1]
-\STATE $\mathit{worklist}$ $\leftarrow$ new Queue$\langle$Predicate$\rangle$
-\STATE $\mathit{worklist}$.enqueueAll($\mathit{predicates}$)
-\STATE $\mathit{visited}$ $\leftarrow$ new Set$\langle$Predicate$\rangle$
+\STATE $\mathit{optionMap}$ $\leftarrow$ new Map$\langle$Option, Float$\rangle$
+\FOR{each $\langle$$\mathit{p_{old}}$, $\mathit{p_{new}}$$\rangle$ in $\mathit{predMap}$.keys()}
+\STATE $\mathit{v}$ $\leftarrow$ $\mathit{predMap}$[$\langle$$\mathit{p_{old}}$, $\mathit{p_{new}}$$\rangle$]
+\IF{$\mathit{p_{old}}$ $\neq$ $\mathit{null}$}
+\STATE $\mathit{options_{old}}$ $\leftarrow$ getAffectingOptions($\mathit{p_{old}}$, $\mathit{V_{old}}$)
+\STATE $\mathit{v}$ $\leftarrow$ $\mathit{v}$ $\times$ getExecutedStmtNum($\mathit{p_{old}}$, $\mathit{V_{old}}$, $\mathit{T_{old}}$)
+\FOR{each Option $\mathit{option}$ in $\mathit{options_{old}}$}
+\STATE $\mathit{optionMap}$[$\mathit{option}$] = $\mathit{optionMap}$[$\mathit{option}$] + $\mathit{v}$
+\ENDFOR
+\ENDIF
+\IF{$\mathit{p_{new}}$ $\neq$ $\mathit{null}$}
+\STATE $\mathit{options_{new}}$ $\leftarrow$ getAffectingOptions($\mathit{p_{new}}$, $\mathit{V_{new}}$)
+\STATE $\mathit{v}$ $\leftarrow$ $\mathit{v}$ $\times$ getExecutedStmtNum($\mathit{p_{new}}$, $\mathit{V_{new}}$, $\mathit{T_{new}}$)
+\FOR{each Option $\mathit{option}$ in $\mathit{options_{new}}$}
+\STATE $\mathit{optionMap}$[$\mathit{option}$] = $\mathit{optionMap}$[$\mathit{option}$] + $\mathit{v}$
+\ENDFOR
+\ENDIF
+\ENDFOR
+\RETURN $\mathit{optionMap}$.sortedKeys()
 \vspace{-2mm}
 \end{algorithmic}
 \caption{Algorithm for recommending configuration options.

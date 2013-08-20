@@ -45,10 +45,10 @@ them. In particular, \ourtool identifies program predicates
 that behave differently across two executions
 (Section~\ref{sec:comparison}).
 After that, \ourtool uses a lightweight dependence
-analysis technique, called thin slicing~\cite{},
+analysis technique, called thin slicing~\cite{Sridharan:2007},
 to statically reason about which configuration
-options may cause such control flow differences,
-and reports a ranked list of 
+options may cause such control flow differences.
+Finally, \ourtool reports a ranked list of 
 suspicious configuration options to the user (Section~\ref{sec:rootcause}).
 
 \subsection{Instrumentation and Demonstration}
@@ -76,15 +76,16 @@ We next discuss some design issues in \ourtool.
 \noindent \textbf{\textit{Fixing configuration errors 
 vs. Localizing regression bugs.}}
 The problem addressed in this paper is significantly different
-than the traditional regression bug localization problem~\cite{}.
+than the traditional regression bug localization problem~\cite{dd, autoflow}.
 A regression bug occurs when developers have made a mistake,
-which cause software to behave \textit{unintended} after a session of code changes.
+which causes software to behave \textit{unintended} after a session of code changes.
 By contrast, in our problem, the software behavior on the new version
-is still \textit{intended} but \textit{undesired}, when compared
-to its original behavior on the old version. \ourtool addresses
-this problem from a specific angel by recommending configuration options
-to fix the undesired behavior. Further, compared to
-regression bugs that made by software developers,
+is still \textit{intended} but \textit{undesired}. 
+%\ourtool addresses
+%this problem from a specific angel by recommending configuration options
+%to fix the undesired behavior.
+Further, compared to
+regression bugs introduced by software developers,
 software configuration lies in the gray zone between
 the software developers of software users. The responsibility for creating
 correct configurations lies with both parties; the developer should create
@@ -93,18 +94,20 @@ errors, and convey configuration knowledge to users
 effectively. This shared responsibility makes recommend configuration options
 different than localizing a regression bug, and causes many existing
 techniques not applicable. We will discuss related techniques below
-and in Section~\ref{sec:related}.
+and in Section~\ref{sec:related}, and describe an empirical comparison
+in Section~\ref{sec:evaluation}.
 
 
 \vspace{1mm}
-\noindent \textbf{\textit{Why not use a dynamic analysis in recommending
+\noindent \textbf{\textit{Why not use a dynamic analysis to recommend
 configuration options?}}
 \ourtool uses thin slicing to statically identify responsible configuration
 options for a behaviorally-deviated predicate. Another possible way is to use a pure
 dynamic analysis to assess the causality of how a configuration option
 may affect the control flow. State-of-the-art
-techniques such as Delta Debugging~\cite{}, value replacement~\cite{} and dual slicing~\cite{}
-adapts a similar idea: they replace a variable value with other alternaives,
+techniques such as Delta Debugging~\cite{dd}, value replacement~\cite{failuredoc},
+and dual slicing~\cite{Sumner:2013:CCE}
+use a similar idea: they repeatedly replace a variable value with other alternaives,
 and then re-execute the program to check whether the outcome is desired.
 There are two major challenges that prevent these dynamic analyses
 from being used. First, it is
@@ -128,8 +131,10 @@ about the responsible configuration options.
 \noindent \textbf{\textit{\ourtool's current limitations.}}
 There are four major limitations in the our \ourtool technique.
 First, \ourtool currently assumes that only one
-configuration option is responsible for the undeisred behavior.
-If fixing a particular configuration problem
+configuration option is responsible for the undeisred behavior,
+although it can diagnose two errors caused by two independent options
+at a time (Section~\ref{sec:evaluation}).
+If fixing a particular configuration error
 requires changing values of two configuration options,
 then \ourtool may not identify both of them.
 Second, \ourtool assumes the different behaviors
@@ -140,7 +145,7 @@ system~\cite{Huang:2013:CRL, Jin:2012:BRF} to faithfully reproduce the behaviors
 Third, \ourtool only matches one predicate in the old
 program version to one predicate in the new program version.
 If a predicate evolves into multiple predicates in the new
-version, \ourtool may produce less useful matching results. 
+version, \ourtool may output less useful results. 
 %We did not see such cases
 %in our experiment, but we speculate that \ourtool
 %may not produce useful matching results.
@@ -150,6 +155,6 @@ the target program.
 % rather than the underlying OS
 %or runtime system. 
 Configuration options that essentially affect the underlying
-OS or runtime system, such as \CodeIn{-Xmx} used to
+OS or runtime system, such as the \CodeIn{-Xmx} option used to
 specify JVM's heap size when launching a Java program,
 are not supported in \ourtool.

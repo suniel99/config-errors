@@ -1,16 +1,41 @@
 \begin{figure}[t]
-\textbf{Input}: two versions of the software: $\mathit{V_{old}}$ and $V_{new}$
 
-\quad two execution traces on the two versions: $\mathit{T_{old}}$ and $T_{new}$\\
-\textbf{Output}: a ranked list of suspicious configuration options\\
+\textbf{Auxiliary methods}: 
+
+\quad getPredicates($\mathit{T}$): return all predicates in the execution trace $\mathit{T}$.
+
+\textbf{Input}: two execution traces: $\mathit{T_{old}}$ and $T_{new}$
+
+\quad the instruction map: $\mathit{stmtMap}$ produced by Figure~\ref{fig:matching}
+
+\quad a threshold: $\delta$ (default value: 0.1, used in our experiments)\\
+\textbf{Output}: all pairs of behaviroally-deviated predicates between two versions, and their deviation degree\\
 \vspace{-4mm}%
-diagnoseConfigurationErrors($\mathit{V_{old}}$, $\mathit{V_{new}}$, $\mathit{T_{old}}$, $\mathit{T_{new}}$)\\
+identifyDeviatedPredicates($\mathit{T_{old}}$, $\mathit{T_{new}}$, $\mathit{stmtMap}$)\\
 \begin{algorithmic}[1]
-\STATE 
-\RETURN $\mathit{weightMap}$.sortedKeys()
+\STATE $\mathit{predMap}$ $\leftarrow$ new Map$\langle$$\langle$Predicate, Predicate$\rangle$, Float$\rangle$
+\FOR{each predicate $\mathit{p_{old}}$ in getPredicates($\mathit{T_{old}}$)}
+\STATE $\mathit{p_{new}}$ $\leftarrow$ $\mathit{stmtMap}$[$\mathit{p_{old}}$]
+\STATE $\mathit{v}$ $\leftarrow$ $\phi$($\mathit{p_{old}}$, $\mathit{T_{old}}$)
+\IF{$\mathit{p_{new}}$ $\neq$ $\mathit{null}$}
+\STATE $\mathit{v}$ $\leftarrow$ $|\phi$($\mathit{p_{old}}$, $\mathit{T_{old}}$) - $\phi$($\mathit{p_{new}}$, $\mathit{T_{new}}$)$|$
+\ENDIF
+\IF{$\mathit{v}$ $\geq$ $\delta$}
+\STATE $\mathit{predMap}$.put($\langle$$\mathit{p_{old}}$, $p_{new}$$\rangle$, $\mathit{v}$)
+\ENDIF
+\ENDFOR
+\FOR{each predicate $\mathit{p_{new}}$ in getPredicates($\mathit{T_{new}}$)}
+\IF{$\neg$$\mathit{stmtMap}$.values().contain($\mathit{p_{new}}$)}
+\STATE $\mathit{v}$ $\leftarrow$ $\phi$($\mathit{p_{new}}$, $\mathit{T_{new}}$)
+\IF{$\mathit{v}$ $\geq$ $\delta$}
+\STATE $\mathit{predMap}$.put($\langle$$\mathit{null}$, $p_{new}$$\rangle$, $\mathit{v}$)
+\ENDIF
+\ENDIF
+\ENDFOR
+\RETURN $\mathit{predMap}$
 \end{algorithmic}
-\caption{Algorithm for diagnosing configuration errors. The
-procedure \CodeIn{updateWeights} is defined in Figure~\ref{fig:update}.
+\caption{Algorithm for identifying behavioral-deviated
+predicates. The $\phi$ function is defined in Section~\ref{sec:identify_diff}.
 \label{fig:identify}
 }
 \end{figure}
