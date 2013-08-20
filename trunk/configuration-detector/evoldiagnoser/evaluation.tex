@@ -17,14 +17,20 @@ a configuration error (Section~\ref{sec:timecost})?
 existing approaches (Section~\ref{sec:existing})?
 
 \item How does \ourtool's effectiveness compare to
-an alternative approach based on \todo{describe it} (Section~\ref{sec:alternative})?
+an alternative approach using full slicing in recommending
+configuration options (Section~\ref{sec:alternative})?
 
 \end{enumerate}
 
 \subsection{Subject Programs}
 
-We evaluated \ourtool on the \subjnum Java programs
-described in our empirical study (Table~\ref{tab:subjects}).
+We evaluated \ourtool on \subjnum Java programs
+listed in Table~\ref{tab:subjects}.
+The top 5 subject programs are the 5 Java programs
+in our empirical study (Section~\ref{sec:study}),
+and the remaining subject program Javalanche~\cite{javalanche}
+(and its configuration error) is provided
+by its real-world user.
 
 
 \begin{table}[t]
@@ -37,76 +43,97 @@ described in our empirical study (Table~\ref{tab:subjects}).
  Program & Old Version & New Version & $\Delta$LOC & \#Options \\
  \hline
  \hline
- 1 &  &  &&   \\
- 2 &  & & &  \\
- 3 &  & & &  \\
- 4 &  & & &  \\
- 5 &  & & &  \\
- 6 &  & & &  \\
- 7 &  & & &  \\
-\hline
+ Randoop &  &  &&   \\
+ Weka &  & & &  \\
+ Synoptic &  & & &  \\
+ JChord &  & & &  \\
+ JMeter &  & & &  \\
+ Javalanche &  & & &  \\
 \hline
 \end{tabular}
 }
 \vspace{-2mm}
-\Caption{{\label{tab:experiment-sub} All subject .... 
+\Caption{{\label{tab:experiment-sub} All subject programs
+used in the evaluation. Column ``$\Delta$LOC'' shows
+the number of changed lines of code between the old and new versions.
+Column ``\#Options'' shows the number of configuration options
+supported in the new program version.
 }
 }
 \end{table}
 
-\subsubsection{Configuration Errors Across Versions}
+\subsubsection{Configuration Errors}
 
 \begin{table}[t]
 \vspace{1mm}
 \centering
 \small{
 \setlength{\tabcolsep}{.80\tabcolsep}
-\begin{tabular}{|l||c|c|}
+\begin{tabular}{|l||l|l|}
 \hline
  Error ID& Program & Description\\
  \hline
  \hline
- 1 &  &  \\
- 2 &  &  \\
- 3 &  &  \\
- 4 &  &  \\
- 5 &  &  \\
- 6 &  &  \\
- 7 &  &  \\
- 8 &  &  \\
-\hline
+ 1 & Randoop  & An order of magnitude less tests generated \\
+ 2 & Weka &  A different error message when Weka crashes\\
+ 3 & Synoptic & The generated initial model not saved\\
+ 4 & Synoptic & The generated model not saved as JPEG file \\
+ 5 & JChord & Bytecode parsed incorrected \\
+ 6 & JChord &  Method names not printed in the console\\
+ 7 & JMeter &  Results saved to a file with different formats\\
+ 8 & Javalanche &  No mutants generated\\
 \hline
 \end{tabular}
 }
 \vspace{-2mm}
-\Caption{{\label{tab:errorlist} All errors ...
-}
+\Caption{{\label{tab:errorlist} All configuration errors used in the evaluation.
+Only the 2-nd error is a crashing errors, and all the other errors are non-crashing
+errors. }
 }
 \end{table}
 
 \input{program-table}
 
-For each subject program, we manually examinated all
-configuration-related changes listed in Table~\ref{tab:options},
-and wrote a test driver that revealed different
-behaviors on two corresponding versions for each configuration change.
-
-We collected \errornum configuration errors caused by
-software evolution. \todo{reasons of relatively few
-errors}. First, we excluded option additions, since
-those options are not available in the old version.
+For the 5 Java programs used in our empirical study,
+we manually examinated all configuration-related changes
+listed in Table~\ref{tab:options},
+and wrote a test driver that reveals different
+behaviors on the two corresponding versions for each configuration change.
+When reproducing the different behaviors,
+we excluded newly-added options, since
+they options are only available in the new version
+and will not be used by users of the old version.
 Second, we excluded option changes that are backward
 compatible. Third, for such option changes, if the
 new program version already identifies the potential
 configuration errors by dumping explicit error messages,
-we excluded them. No tool support is even needed
-for this case.
+we excluded them. \todo{rephrase above}
 
+For the Javalanche program, we reproduced the configuration
+error as provided by the user.
+
+%We collected \errornum configuration errors caused by
+%software evolution. \todo{reasons of relatively few
+%errors}. 
 We evaluated all configuration errors that we can reproduce;
 we did not select only errors that \ourtool works well.
 Table~\ref{tab:errors} lists all errors.
 
 \subsection{Evaluation Procedure}
+
+\todo{how to specify an option}
+
+When diagnosing a configuration error, we first use
+\ourtool to instrument both versions. Then, we reproduce
+the different behaviors on both instrumented versions with 
+the same input and configuration. After that, \ourtool automatically
+analyzed the obtained execution traces as well as the
+bytecode of two program versions, and output a ranked
+list of configuration options.
+
+Our experiments were run on a 2.67GHz Intel Core PC
+with 4GB physical memory (2GB was allocated for the JVM),
+running Windows 7.
 
 \subsection{Results}
 
@@ -192,9 +219,24 @@ cannot work.}
 \subsection{Discussion}
 
 \noindent \textbf{\textit{Threats to validity.}}
+There are several threats to validity of our evaluation.
+First, the 6 Java programs might not be representative, though some of them are used
+in previous research. research. Likewise, the
+8 configuration errors might not be representative, even though we
+evaluated every error we found. Second, 
+\ourtool's effectiveness depends on the effectiveness of the
+predicate matching algorithm. It may yield less
+useful results for programs with significant code changes.
+However, different algorithms can be plugged into \ourtool.
+Third, Our evaluation only compared \ourtool with two other
+approaches. Comparing with other analyses or tools might yield
+different observations.
+Fourth, our evaluation focuses on \ourtool's algorithm for
+configuration option recommendation. A future user study should
+evaluate whether \ourtool helps users.
 
 \vspace{1mm}
-The use case for reproducing differences may not reflect
-users.
 
 \noindent \textbf{\textit{Experimental conclusions.}}
+We have three chief findings. (1) ...  (2) ... and (3)...
+

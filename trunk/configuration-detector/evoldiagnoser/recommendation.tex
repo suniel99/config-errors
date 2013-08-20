@@ -15,30 +15,29 @@ the differences.
 %\subsubsection{Attributing Trace Differences to Configuration Options}
 
 To identify the configuration options that can affect
-a predicate, a straightforward way is to use program slicing~\cite{}
+a predicate, a straightforward way is to use program slicing~\cite{Weiser:1981}
 to compute a forward slice from the initialization statement
 of a configuration option, and then check whether the predicate is
 in the slice. Unfortunately, traditional
-full slicing~\cite{} is infeasible due
+full slicing~\cite{Weiser:1981} is infeasible due
 to its conservatism, such as the need of handling pointers
 and the need of following both data and control dependences.
 %As been experimentally demonstrated in our
 %previous work~\cite{}, traditional full slicing includes
 %too much of the program, and can significantly affect an analysis's
 %accuracy. 
-\todo{an example}
 
 
-To address this limitation, \ourtool uses thin slicing~\cite{}
+To address this limitation, \ourtool uses thin slicing~\cite{Sridharan:2007}
 to identify configuration options that \textit{directly} affect
-a predicate. Different from traditional full slicing~\cite{},
+a predicate. Different from traditional full slicing,
 thin slicing \textit{only} follows the data flow dependencies
 from the seed (i.e., the initialization statement of a
 configuration option), and ignores control flow dependencies
 as well as uses of base pointers. This property separates
 pointer computations from the flow of configuration option
 values and naturally connects a configuration option with its
-directly affected statements. \todo{an example}. Section~\ref{sec:alternative}
+directly affected statements. Section~\ref{sec:alternative}
 empirically demonstrates that traditional full slicing includes
 too much of the program, and can significantly affect an analysis's
 accuracy; while thin slicing is a better
@@ -63,34 +62,46 @@ to be the root cause.
 %by a behaviorally-different predicate, it is more likely
 %to be the root cause.
 
-\todo{explain with the pseduo code}
 Figure~\ref{fig:recommend} sketches the configuration option
 recommendation algorithm.
 For each predicate with different behaviors between two
 versions, \ourtool first attributes the control flow difference 
-to its affecting configuration options. Then,
-\ourtool calculates a cost for each predicate by computing
-the number of statements whose execution are determined
-by the predicate's evaluation result. Specifically,
-\ourtool statically exams the source code to compute
+to its affecting configuration options (lines 5 and 12). Then,
+\ourtool computes a value for each configuration option, by summing
+the results of multipling the deviation value of each affected
+predicate with the number of
+executed statements determined by that predicate (lines 6 and 13).
+To compute the number of executed statements dominated by a predicate,
+\ourtool first statically examines the source code to compute
 the immediate post-dominant statement of a predicate, and then
 analyzes the execution trace to count the number of statements that
 are executed between the predicate and its post-dominant
-statement. After that, the algorithm multiples the predicate's deviation
-degree (computed by \todo{xx}) by the number of executed statements,
-and updates the weight of all affecting options.
-%attributes the divergence to the affecting options.
+statement. 
+
+%\ourtool first iterates each predicate pair with different
+%behaviors between two versions (line 2), and then attribute
+%the behavior difference to its affecting configuration options (lines 4--17).
+%For each predicate pair, \ourtool analyzes the predicate
+%in the old and new program versions separately in lines 4--10
+%and lines 11--17, respectively. For a predicate, \ourtool
+%first identifies all configuration options that can affect its
+%behavior (lines 5 and 12). The weight of each configuration option
+%is accumulated by summing up the result of multipling the
+%deviation value of its affected predicate with the number of
+%executed statements determined by that predicate (lines 6 and 13).
 
 \ourtool outputs a ranked list of
 configuration options that might be responsible for the
-behavior differences. In the output list, if an option only appears
-in the old program version, it indicates that option may not
-take any effect in the new version (e.g., the option has
+behavior differences. In the output list, if an option affects 
+a predicates in the old program version,
+it indicates that option may have a different effect on the new
+version (e.g., the option has
 been renamed), and the user should switch to a different option.
-If an option only appears in the new version or in both
+If an option affects predicates in the new version or in both
 versions, it indicates that the user should change its
 existing value.
-\todo{rephrase the above to avoid confusion.}
+
+\todo{need more clarification of above.}
 
 %Finally, the algorithm sums
 %first summing
