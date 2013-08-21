@@ -4,30 +4,35 @@
 \centering
 \small{
 \setlength{\tabcolsep}{.96\tabcolsep}
-\begin{tabular}{|l||c|c|c|c|c|c|}
+\begin{tabular}{|l||c|c|c|c|c|}
 \hline
- Error ID.& Root Cause  & \ourtool & \prevtool~\cite{}  & ConfAnalyzer~\cite{} & \ourtool w/ Full Slicing\\
- \cline{3-6}
- Program&  Configuration Option & Rank & Rank & Rank & Rank\\
+ Error ID. Program& Root Cause Configuration Option & \multicolumn{3}{|c|}{Rank of the Root Cause Configuration Option}\\
+ \cline{3-5}
+ &  & \ourtool & \prevtool~\cite{}  & ConfAnalyzer~\cite{} \\
  %&  Options &  Options&  Options \\
  \hline
  \hline
- & & &   & &\\
- & & &   & &\\
- & & &   & &\\
- & & &   & &\\
- & & &   & &\\
- & & &   & &\\
+ & & &   & \\
+ & & &   & \\
+ & & &   & \\
+ & & &   & \\
+ & & &   & \\
+ & & &   & \\
 \hline
 \hline
- Mean &  & & & &\\
+ Mean &  &  & &\\
 \hline
 \end{tabular}
 }
 \vspace{-2mm}
 \Caption{{\label{tab:errors} 
 Experimental results in diagnosing configuration
-errors.
+errors. Column ``Root Cause Configuration Option'' shows the actual root
+cause configuration option. Column ``\#Options'' shows the number
+of configuration options in the new program version, taken from
+Table~\ref{tab:experiment-sub}. Column ``\ourtool'' shows the results
+of using our technique. Columns ``\prevtool'' and ``\conftool'' shows
+the results of using two existing techniques, respectively.
 }
 }
 \end{table*}

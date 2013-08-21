@@ -27,10 +27,10 @@ configuration options (Section~\ref{sec:alternative})?
 We evaluated \ourtool on \subjnum Java programs
 listed in Table~\ref{tab:subjects}.
 The top 5 subject programs are the 5 Java programs
-in our empirical study (Section~\ref{sec:study}),
+studied in Section~\ref{sec:study},
 and the remaining subject program Javalanche~\cite{javalanche}
 (and its configuration error) is provided
-by its real-world user.
+by a Javalanche user.
 
 
 \begin{table}[t]
@@ -94,11 +94,13 @@ errors. }
 
 \input{program-table}
 
-For the 5 Java programs used in our empirical study,
+For the 5 Java programs studied in Section~\ref{sec:study},
 we manually examinated all configuration-related changes
-listed in Table~\ref{tab:options},
-and wrote a test driver that reveals different
-behaviors on the two corresponding versions for each configuration change.
+listed in Table~\ref{tab:options}. For each
+change, we wrote a test driver to cover
+it, and then checked whether the test driver
+reveals different behaviors on two versions.
+\todo{exclude}
 When reproducing the different behaviors,
 we excluded newly-added options, since
 they options are only available in the new version
@@ -121,15 +123,18 @@ Table~\ref{tab:errors} lists all errors.
 
 \subsection{Evaluation Procedure}
 
-\todo{how to specify an option}
+We used \ourtool to instrument both versions. 
+For each configuration error, we use the same test driver
+(with the same input and configuration)
+to reproduce the different behaviors on both instrumented versions.
 
-When diagnosing a configuration error, we first use
-\ourtool to instrument both versions. Then, we reproduce
-the different behaviors on both instrumented versions with 
-the same input and configuration. After that, \ourtool automatically
-analyzed the obtained execution traces as well as the
-bytecode of two program versions, and output a ranked
-list of configuration options.
+When recommending configuration options, we manually specify
+the initialization statement of each configuration option as
+the seed for thin slicing. This manual step cost around
+10 minutes on average for each subject program. After that,
+\ourtool works in a fully-automatic way: it 
+analyzes two program versions and two execution traces,
+and outputs a ranked list of configuration options.
 
 Our experiments were run on a 2.67GHz Intel Core PC
 with 4GB physical memory (2GB was allocated for the JVM),
@@ -137,21 +142,62 @@ running Windows 7.
 
 \subsection{Results}
 
-\subsubsection{Diagnosis Accuracy}
+\subsubsection{Accuracy in Option Recommendation}
 \label{sec:accuracy}
+
+As shown in Table~\ref{tab:errors}, \ourtool is highly effective
+is recommending the root cause configuration option that should
+be changed in the new program version. For all \todo{xxx the
+results}
+
+\todo{show one more example to illustrate its effectiveness}
+
+\ourtool fails to recommend correct options for one error in
+JChord (error \todo{xx}). This is because the predicate matching
+algorithm outputs a wrong matching result.
+
+\todo{show some code here}
+
+\vspace{1mm}
+
+\noindent \textbf{\textit{Summary.}}
 
 \subsubsection{Performance of \ourtool}
 \label{sec:timecost}
 
 We measured \ourtool's performance in two ways:
-the time cost of diagnosing an error and
-the overhead introduced by instrumentation
-in reproducing an error.
-
+the performance overhead introduced by instrumentation
+in reproducing the error, and the time cost
+of recommending configuration options.
 Table~\ref{tab:performance} shows the results.
 
-\todo{to reduce the overhead, only instrument
-every block}
+The performance overhead to reproduce the error
+varies among programs. The current tool implementation
+imposes an average \todo{num}X slowdown in a
+\ourtool-instrumented version. This is due to
+\ourtool's inefficient instrumentation code that
+monitors the execution of every instruction.
+Even so, the different behaviors can be reproduced
+in less than XXX minutes on average on both versions, 
+with a worse case of XXX minutes.
+
+
+\ourtool spends an average of XXX minutes
+to recommend configuration options for one
+error (including time to compute thin slices
+and the time to suggest suspicious options). 
+Computing thin slices for all configuration options
+is expensive. However, this step is one-time cost
+per program and the computed results can
+be cached to share across runs. 
+The time used for suggesting configuration options
+is roughly proportional to the \todo{features},
+rather than the size of the subject program.
+
+\vspace{1mm}
+\noindent \textbf{\textit{Summary.}} \ourtool
+recommends configuration options for fixing
+configuration errors with acceptable time cost.
 
 \begin{table}[t]
 \vspace{1mm}
@@ -190,31 +236,137 @@ For both columns, the mean is the geometric mean.
 }
 \end{table}
 
-\subsubsection{Comparison with Existing Approaches}
+\subsubsection{Comparison with Two Existing Approaches}
 \label{sec:existing}
 
-\todo{want to compare with ConfDiagnoser and ConfAnalyzer}
+This section compares \ourtool with two existing approaches,
+called \prevtool~\cite{Zhang:2013:ADS} and \conftool~\cite{Rabkin:2011:PPC}.
 
-In our previous work~\cite{}, we proposed \prevtool, an automated
-software configuration error diagnosis tool. Besides working
-on two different versions, \ourtool differs from \prevtool in
-two additional key aspects. First, unlike \prevtool, \ourtool
-does not require users to collect a set of correct execution traces
-for comparison. Second, 
-First, \todo{versions ...}. Second, \todo{assume hot spot}.
-\todo{may refer to experiment results here}
-\todo{missing above, discuss slicing-based techniques, dual slicing;
-why it cannot work, since needs a slicing point}
-\todo{discuss existing debugging techniques like tarantula~\cite{Jones:2002}
-cannot work.}
+\prevtool, proposd in our previous work~\cite{}, is an automated
+software configuration error diagnosis technique. Unlike \ourtool,
+\prevtool diagnoses configuration errors on a single program version.
+Besides, it differs from \ourtool from two key aspects:
+first, \prevtool assumes the existence of a set of correct execution
+traces, which are used to compare to against the undesired
+execution trace to identify the behaviorally-deviated parts.
+Second, when comparing the undesired execution trace with a
+correct execution trace, \prevtool only focuses on the behavior
+of an executed predicate, ignoring the statements determined
+by the predicate's evaluation result. To compare \ourtool with
+\prevtool, for 4 subject programs (Randoop, Synoptic, JChord, and
+Weka) that are also used
+to evaluate \prevtool, we reuse the pre-built trace database
+from~\cite{}. For the other two subject programs (JMeter and
+Javalanche), we manually built an execution trace database for each
+of them, by running correct examples from their user manuals.
+
+\conftool, proposed by Rabkin and Katz~\cite{}, is a lightweight
+static analysis technique to precompute diagnosis for a program.
+\conftool tracks the flow of labeled objects through 
+program control flow and data flow, and treats a configuration option
+as a root cause if its value may flow to a crashing point.
+Since \conftool cannot diagnose non-crashing errors, we only use
+it to diagnose the crashing error in the Weka program.
 
 
-\subsubsection{Comparison with Alternative Approaches}
+\todo{show the results here}
+
+We did not compare \ourtool with other related
+configuration error diagnosis approaches~\cite{Attariyan:2010:ACT,
+xray, Whitaker:2004:CDS, Su:2007:AIC, Wang:2004:AMT, rangefix},
+because these approaches target a rather
+different problem than \ourtool or require different
+inputs than \ourtool. For example, ConfAid~\cite{Attariyan:2010:ACT}
+and X-Ray~\cite{xray} can only diagnose crashing
+or performance configuration errors on a single
+program version. Chronus~\cite{Whitaker:2004:CDS}
+and AutoBash~\cite{Su:2007:AIC}
+require OS-level support for capture and replay.
+PeerPressure~\cite{Wang:2004:AMT} and RangerFixer~\cite{rangefix} only
+supports configuration options defined by certain
+specific feature models. It is unknown whether
+such techniques can be extended to diagnose configuration
+errors caused by software evolution. On the other
+hand, general software fault locaization techniques
+are not well-suited for diagnosing software
+configuration errors~\cite{Jones:2002}, since such techniques
+often focus on identifying the buggy code or
+invalid input values. This has been empirically
+validated in our previous work~\cite{Zhang:2013:ADS}.
+
+
+\vspace{1mm}
+
+\noindent \textbf{\textit{Summary.}}
+
+
+\begin{table}[t]
+\vspace{1mm}
+\centering
+\small{
+\setlength{\tabcolsep}{1.10\tabcolsep}
+\begin{tabular}{|l|c|c|c|}
+\hline
+ Error ID & \multicolumn{3}{|c|}{Rank of the root cause configuration option}  \\
+\cline{2-4}
+  & \ourtool & Full Slicing & Predicate Behavior  \\
+ \hline
+ \hline
+ 1 &  &  & \\
+ 2 &  &  & \\
+ 3 &  &  & \\
+ 4 &  &  & \\
+ 5 &  &  & \\
+ 6 &  &  & \\
+ 7 &  &  & \\
+ 8 &  &  & \\
+\hline
+\hline
+ Mean &  & & \\
+\hline
+\end{tabular}
+}
+\vspace{-2mm}
+\Caption{{\label{tab:choices} 
+Experimental results of evaluating two design choices
+of \ourtool. Column ``\ourtool'' shows \ourtool's
+results, taken from Table~\ref{tab:errors}.
+Column ``Full Slicing'' shows the results of replacing
+thin slicing with full slicing in \ourtool.
+Column ``Predicate Behavior'' shows the results of 
+\ourtool, if it only considers
+predicate behavior changes.
+For both columns, the mean is the geometric mean. 
+}
+}
+\end{table}
+
+\subsubsection{Evaluating Two Design Choices}
 \label{sec:alternative}
 
-\todo{use ConfDiagnoser's ranking, full slicing, no iterative slicing}
+This section evaluates two design choices in \ourtool:
 
-\todo{just identified changed cases...}
+\begin{itemize}
+\item \textbf{thin slicing vs. full slicing.} \ourtool
+uses thin slicing to identify the affecting configuration
+options for a predicate. We next investigate the effects
+of replacing thin slicing with full slicing~\cite{Horwitz:1988}.
+Table~\ref{tab:choices} (Column ``Full Slicing'') shows the results.
+\item \textbf{predicate behavior + affected statements vs. predicate behavior.}
+\ourtool combines the metrics of predicate behavior changes
+and the number of affected statements to rank the importance
+of a predicate\todo{need re-wording}. We next
+investigate the effects of using the sole metric of
+predicate behavior change to rank predicates, as \prevtool does.
+Table~\ref{tab:chocies} (Column ``Predicate Behavior'') shows
+the results.
+\end{itemize}
+
+
+\todo{results here}
+
+\vspace{1mm}
+\noindent \textbf{\textit{Summary.}} \todo{summary here}
 
 \subsection{Discussion}
 
