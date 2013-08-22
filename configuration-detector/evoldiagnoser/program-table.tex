@@ -4,33 +4,44 @@
 \centering
 \small{
 \setlength{\tabcolsep}{.96\tabcolsep}
-\begin{tabular}{|l||c|c|c|c|c|}
+\begin{tabular}{|l||c|c|c|c|c|c|}
 \hline
- Error ID. Program& Root Cause Configuration Option & \multicolumn{3}{|c|}{Rank of the Root Cause Configuration Option}\\
- \cline{3-5}
- &  & \ourtool & \prevtool~\cite{}  & ConfAnalyzer~\cite{} \\
+ Error ID. Program& Root Cause Configuration Option & \#Options & \multicolumn{3}{|c|}{Rank of the Root Cause Configuration Option}\\
+ \cline{4-6}
+ & & & \ourtool & \prevtool~\cite{Zhang:2013:ADS}  & \conftool~\cite{Rabkin:2011:PPC} \\
  %&  Options &  Options&  Options \\
  \hline
  \hline
- & & &   & \\
- & & &   & \\
- & & &   & \\
- & & &   & \\
- & & &   & \\
- & & &   & \\
+ 1. Randoop& \CodeIn{usethreads} & \randoopoptnum & 1 &  & \x \\
+ 2. Weka & \CodeIn{m\_numFolds} & \wekaoptnum &  1 & & 1 \\
+ 3. Synoptic& \CodeIn{dumpInitialGraphDotFile} & \synopticoptnum & 1 &  & \x \\
+ 4. Synoptic& \CodeIn{dumpInitialGraphPngFile} &\synopticoptnum & 6 &  & \x \\
+ 5. JChord& \CodeIn{chord.ssa} & \jchordoptnum & \n & & \x \\
+ 6. JChord& \CodeIn{chord.print.methods} & \jchordoptnum &  & & \x \\
+ 7. JMeter&\CodeIn{output\_format} & \jmeteroptnum & 1 & & \x \\
+ 8. Javalanche& \CodeIn{project.tests} &  \javalancheoptnum && & \x \\
 \hline
 \hline
- Mean &  &  & &\\
+ Average &  & & & &\\
 \hline
 \end{tabular}
 }
 \vspace{-2mm}
 \Caption{{\label{tab:errors} 
-Experimental results in diagnosing configuration
-errors. Column ``Root Cause Configuration Option'' shows the actual root
-cause configuration option. Column ``\#Options'' shows the number
+Experimental results. Column ``Root Cause Configuration Option''
+shows the actual root cause configuration option.
+Column ``\#Options'' shows the number
 of configuration options in the new program version, taken from
-Table~\ref{tab:experiment-sub}. Column ``\ourtool'' shows the results
+Table~\ref{tab:experiment-sub}. 
+Column ``Rank of the Root Cause Configuration Option'' shows the
+absolute rank of the actual root
+cause configuration option in each technique's output (lower is better).
+``\x'' means the technique is not applicable (i.e., requiring a crashing
+point), and ``\n'' means the technique does not identify the actual root cause.
+When computing the average rank, each ``\x'' or ``\n'' is treated as
+half of the number of configuration options, because a user would need to examine
+on average half of the avaiable options to find the root cause.
+Column ``\ourtool'' shows the results
 of using our technique. Columns ``\prevtool'' and ``\conftool'' shows
 the results of using two existing techniques, respectively.
 }
