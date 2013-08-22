@@ -6,8 +6,8 @@ We evaluated 4 aspects of \ourtool's effectiveness, answering
 the following research questions:
 
 \begin{enumerate}
-\item How accurate is \ourtool in diagnosing configuration errors
-caused by software evolution? That is, what is the rank of the
+\item How accurate is \ourtool in recommending configuration options
+to fix configuration errors caused by software evolution? That is, what is the rank of the
 actual root cause configuration option in \ourtool's output (Section~\ref{sec:accuracy})?
 
 \item How long does it take for \ourtool to diagnose
@@ -17,8 +17,9 @@ a configuration error (Section~\ref{sec:timecost})?
 existing approaches (Section~\ref{sec:existing})?
 
 \item How does \ourtool's effectiveness compare to
-an alternative approach using full slicing in recommending
-configuration options (Section~\ref{sec:alternative})?
+alternative approaches using full slicing in identifying
+suspicious configuration options, and only using predicate behaviors
+to recommend configuration options (Section~\ref{sec:alternative})?
 
 \end{enumerate}
 
@@ -29,26 +30,32 @@ listed in Table~\ref{tab:subjects}.
 The top 5 subject programs are the 5 Java programs
 studied in Section~\ref{sec:study},
 and the remaining subject program Javalanche~\cite{javalanche}
-(and its configuration error) is provided
-by a Javalanche user.
+(and its configuration error), a popular mutation
+testing framework, is provided by a Javalanche user.
 
+\newcommand{\randoopoptnum}{57\xspace}
+\newcommand{\wekaoptnum}{14\xspace}
+\newcommand{\synopticoptnum}{37\xspace}
+\newcommand{\jchordoptnum}{79\xspace}
+\newcommand{\jmeteroptnum}{55\xspace}
+\newcommand{\javalancheoptnum}{27\xspace}
 
 \begin{table}[t]
 \vspace{1mm}
 \centering
 \small{
-\setlength{\tabcolsep}{.80\tabcolsep}
-\begin{tabular}{|l||c|c|c|c|c|}
+\setlength{\tabcolsep}{.20\tabcolsep}
+\begin{tabular}{|l||c|c|c|c|c|c|}
 \hline
- Program & Old Version & New Version & $\Delta$LOC & \#Options \\
+ Program & Old Version & New Version & LOC (new version) & $\Delta$LOC & \#Options \\
  \hline
  \hline
- Randoop &  &  &&   \\
- Weka &  & & &  \\
- Synoptic &  & & &  \\
- JChord &  & & &  \\
- JMeter &  & & &  \\
- Javalanche &  & & &  \\
+ Randoop & 1.2.1 & 1.3.2 &18571&1893& \randoopoptnum  \\
+ Weka & 3.6.1 & 3.6.2 &275035& 1458 & \wekaoptnum \\
+ Synoptic & 0.05 & 0.1 &19153& 1658 & \synopticoptnum \\
+ JChord & 2.0 & 2.1&26617& 3085 & \jchordoptnum \\
+ JMeter & 2.8 & 2.9 &91979& 3264 &  \jmeteroptnum \\
+ Javalanche & 0.36 & 0.40 & 25144 &9261& \javalancheoptnum \\
 \hline
 \end{tabular}
 }
@@ -114,12 +121,17 @@ we excluded them. \todo{rephrase above}
 For the Javalanche program, we reproduced the configuration
 error as provided by the user.
 
-%We collected \errornum configuration errors caused by
-%software evolution. \todo{reasons of relatively few
-%errors}. 
 We evaluated all configuration errors that we can reproduce;
 we did not select only errors that \ourtool works well.
 Table~\ref{tab:errors} lists all errors.
+In Table~\ref{tab:errors}, errors \#3 and \#4
+can be reproduced in a single execution, and each of the other
+error is reproduced in one execution.
+
+
+%We collected \errornum configuration errors caused by
+%software evolution. \todo{reasons of relatively few
+%errors}. 
 
 \subsection{Evaluation Procedure}
 
@@ -128,9 +140,14 @@ For each configuration error, we use the same test driver
 (with the same input and configuration)
 to reproduce the different behaviors on both instrumented versions.
 
+The average size of the produced execution traces is 40MB,
+and the largest one (Randoop's trace) is 140MB
+
+
+
 When recommending configuration options, we manually specify
 the initialization statement of each configuration option as
-the seed for thin slicing. This manual step cost around
+the seed for thin slicing. This manual step took around
 10 minutes on average for each subject program. After that,
 \ourtool works in a fully-automatic way: it 
 analyzes two program versions and two execution traces,
@@ -142,7 +159,7 @@ running Windows 7.
 
 \subsection{Results}
 
-\subsubsection{Accuracy in Option Recommendation}
+\subsubsection{Accuracy}
 \label{sec:accuracy}
 
 As shown in Table~\ref{tab:errors}, \ourtool is highly effective
@@ -191,7 +208,7 @@ is expensive. However, this step is one-time cost
 per program and the computed results can
 be cached to share across runs. 
 The time used for suggesting configuration options
-is roughly proportional to the \todo{features},
+is roughly proportional to the size of the execution trace
 rather than the size of the subject program.
 
 \vspace{1mm}
@@ -206,18 +223,19 @@ configuration errors with acceptable time cost.
 \setlength{\tabcolsep}{.80\tabcolsep}
 \begin{tabular}{|l||c|c||c|c|}
 \hline
- Configuration & \multicolumn{2}{|c||}{Run-time Slowdown ($\times$)} & \multicolumn{2}{|c|}{\ourtool time (s)}\\
+ Error ID.& \multicolumn{2}{|c||}{Run-time Slowdown ($\times$)} & \multicolumn{2}{|c|}{\ourtool time (s)}\\
  \cline{2-5}
- Error ID& Old Version & New Version & Slicing & Suggestion\\
+ Program& Old Version & New Version & Slicing & Suggestion\\
  \hline
  \hline
- 1 &  &  & &  \\
- 2 &  &  & & \\
- 3 &  &  &  &\\
- 4 &  &  & & \\
- 5 &  &  & & \\
- 6 &  &  & & \\
- 7 &  &  & & \\
+ 1. Randoop & 20.1 & 4.1 & 90 & 295 \\
+ 2. Weka & 1.6 & 1.6 & 80 & 49 \\
+ 3. Synoptic & 1.7 & 4.7 &48 & 42 \\
+ 4. Synoptic & 1.7 & 4.7 &48  & 42  \\
+ 5. JChord & 18.7 & 44.3  & & \\
+ 6. JChord & 17.6 & 41.1 & & \\
+ 7. JMeter & 1.3 & 1.4 &51 & 63 \\
+ 8. Javalanche& 1.4 & 1.5 & & \\
 \hline
 \hline
  Mean & & & & \\
@@ -307,19 +325,19 @@ validated in our previous work~\cite{Zhang:2013:ADS}.
 \setlength{\tabcolsep}{1.10\tabcolsep}
 \begin{tabular}{|l|c|c|c|}
 \hline
- Error ID & \multicolumn{3}{|c|}{Rank of the root cause configuration option}  \\
+ Error ID. & \multicolumn{3}{|c|}{Rank of the Root Cause Configuration Option}  \\
 \cline{2-4}
-  & \ourtool & Full Slicing & Predicate Behavior  \\
+ Program & \ourtool & Full Slicing & Predicate Behavior  \\
  \hline
  \hline
- 1 &  &  & \\
- 2 &  &  & \\
- 3 &  &  & \\
- 4 &  &  & \\
- 5 &  &  & \\
- 6 &  &  & \\
- 7 &  &  & \\
- 8 &  &  & \\
+ 1. Randoop &  &  & \\
+ 2. Weka &  &  & \\
+ 3. Synoptic &  &  & \\
+ 4. Synoptic &  &  & \\
+ 5. JChord &  &  & \\
+ 6. JChord &  &  & \\
+ 7. JMeter &  &  & \\
+ 8. Javalanche &  &  & \\
 \hline
 \hline
  Mean &  & & \\
