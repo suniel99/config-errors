@@ -3,12 +3,13 @@
 In this step, \ourtool compares two execution traces
 from two program versions, and identifies the
 control flow differences between them. \ourtool focuses on the
-recorded behavior of each predicate. It first 
-matches each predicate recorded in the old
-execution trace to its counterpart in the new version
-(Section~\ref{sec:match_predicate}),
-and then identify all predicate pairs across execution traces that
-behave differently (Section~\ref{sec:identify_diff}).
+recorded behavior of each predicate.
+First, it statically
+matches each predicate in the old
+source code execution trace to its counterpart in the new source code
+(Section~\ref{sec:match_predicate}).
+Then, it identifies all predicate pairs that
+behave differently across the execution traces (Section~\ref{sec:identify_diff}).
 
 
 \subsubsection{Matching Predicates across Versions}
@@ -17,9 +18,12 @@ behave differently (Section~\ref{sec:identify_diff}).
 For each predicate recorded in the old execution trace,
 \ourtool matches it in the new program version to identify
 its possibly updated counterpart.
-To match a predicate, \ourtool first matches its declaring method,
-by using two strategies. \ourtool uses
-the first strategy that succeeds.
+The predicate-matching process proceeds in two steps.
+First, \ourtool finds corresponding methods.
+Then, \ourtool matches predicates within matching methods.
+
+To match methods, \ourtool uses
+the first of these two strategies that succeeds:
 
 %, and then
 %identifies its runtime behaviors in the undesired execution profile.
@@ -36,6 +40,10 @@ uses the algorithm shown in Figure~\ref{fig:matching}
 to \textit{every} method in the new program version, and then
 chooses the method with the most matched matched statements
 (in the new program version).
+
+After running the matching algorithm, \ourtool further checks the ratio of
+matched statements in the old method, and discards method candidates whose
+matching ratio is below a threshold (default value: 0.9).
 \end{enumerate}
 
 The algorithm in Figure~\ref{fig:matching} is inspired by
@@ -62,9 +70,6 @@ the next $lh$ statements, and check whether any two statements can be
 matched (lines 14--19). This approximation aims to tolerate some small
 changes in the method code, and attemps to match as many statements as possible.
 
-After running the matching algorithm, \ourtool further checks the ratio of
-matched statements in the old method, and discards method candidates whose
-matching ratio is below a threshold (default value: 0.9).
 
 If there is no matched for the declaring method in the new program
 version, \ourtool concludes that the predicate cannot be

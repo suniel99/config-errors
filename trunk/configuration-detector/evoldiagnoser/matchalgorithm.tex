@@ -1,11 +1,16 @@
 \begin{figure}[t]
 \textbf{Axuiliary methods}:
 
-sameStatement($\mathit{s}$, $\mathit{s'}$): return whether two statements $\mathit{s}$and $\mathit{s'}$ are the same statements.
+sameStatement($\mathit{s}$, $\mathit{s'}$): return whether two statements
+$\mathit{s}$ and $\mathit{s'}$ are the same statements. \todo{What does
+  ``same statement'' mean?  The same source code?  The same subexpressions
+  too? (For example, does this return true for if statement only if the
+  predicate, then clause, and else clause are all identical?)}
 
-succStmtsInBFS($\mathit{s}$, $\mathit{cfg}$, $\mathit{d}$): return an ordered list of reachable successive statements from statement $\mathit{s}$ in $\mathit{cfg}$ by Breath-First Search (BFS).
+BFS($\mathit{s}$, $\mathit{cfg}$): return an ordered list of reachable successive statements from statement $\mathit{s}$ in $\mathit{cfg}$ by Breath-First Search (BFS).
 
 firstMatch($\mathit{stmtList_1}$, $\mathit{stmtList_2}$): return the first matched statement pair between $\mathit{stmtList_1}$ and $\mathit{stmtList_2}$ (iterating $\mathit{stmtList_1}$ first).
+\todo{What is a ``matched statement pair''?}
 
 
 \textbf{Input}: two methods from two software versions: $\mathit{m_{old}}$ and $m_{new}$,
@@ -18,7 +23,7 @@ matchStatements($\mathit{m_{old}}$, $\mathit{m_{new}}$, $\mathit{lh}$)\\
 \STATE $\mathit{matchedStmts}$ $\leftarrow$ new Map$\langle$Stmt, Stmt$\rangle$
 \STATE $\mathit{cfg_{old}}$ $\leftarrow$ constructControlFlowGraph($\mathit{m_{old}}$)
 \STATE $\mathit{cfg_{new}}$ $\leftarrow$ constructControlFlowGraph($\mathit{m_{new}}$)
-\STATE $\mathit{stack}$ $\leftarrow$ new Stack$\langle$Stmt, Stmt$\rangle$
+\STATE $\mathit{stack}$ $\leftarrow$ new Stack$\langle$Pair$\langle$Stmt, Stmt$\rangle$$\rangle$
 \STATE $\mathit{stack}$.push($\mathit{cfg_{old}}$.$\mathit{entry}$, $\mathit{cfg_{new}}$.$\mathit{entry}$)
 \WHILE{$\mathit{stack}$ is not empty}
 \STATE $\langle$$\mathit{stmt_{old}}$, $\mathit{stmt_{new}}$$\rangle$ $\leftarrow$ $\mathit{stack}$.pop()
@@ -27,10 +32,10 @@ matchStatements($\mathit{m_{old}}$, $\mathit{m_{new}}$, $\mathit{lh}$)\\
 \STATE \textbf{continue}
 \ENDIF
 \IF{sameStatement($\mathit{stmt_{old}}$, $\mathit{stmt_{new}}$)}
-\STATE $\mathit{matchedStmts}$[$\mathit{stmt_{old}}$] = $\mathit{stmt_{new}}$
+\STATE $\mathit{matchedStmts}$[$\mathit{stmt_{old}}$] $\leftarrow$ $\mathit{stmt_{new}}$
 \ELSE
-\STATE $\mathit{stmtList_{old}}$ $\leftarrow$ succStmtsInBFS($\mathit{stmt_{old}}$, $\mathit{lh}$)
-\STATE $\mathit{stmtList_{new}}$ $\leftarrow$ succStmtsInBFS($\mathit{stmt_{new}}$, $\mathit{lh}$)
+\STATE $\mathit{stmtList_{old}}$ $\leftarrow$ BFS($\mathit{stmt_{old}}$, $\mathit{lh}$)
+\STATE $\mathit{stmtList_{new}}$ $\leftarrow$ BFS($\mathit{stmt_{new}}$, $\mathit{lh}$)
 \STATE $\langle$$\mathit{stmt_{old}}$, $\mathit{stmt_{new}}$$\rangle$ $\leftarrow$ firstMatch($\mathit{stmtList_{old}}$, $\mathit{stmtList_{new}}$)
 \IF{$\langle$$\mathit{stmt_{old}}$, $\mathit{stmt_{new}}$$\rangle$ $\neq$ null}
 \STATE $\mathit{stack}$.push($\langle$$\mathit{stmt_{old}}$, $\mathit{stmt_{new}}$$\rangle$)
@@ -40,7 +45,11 @@ matchStatements($\mathit{m_{old}}$, $\mathit{m_{new}}$, $\mathit{lh}$)\\
 \RETURN $\mathit{matchedStmts}$
 \end{algorithmic}
 \vspace{-4mm}
-\caption{Algorithm for matching two program versions.
+\caption{Algorithm for matching statements from two methods.
 \label{fig:matching}
+\todo{This algorithm is suspicious to me.  For one thing, the size of the
+  stack is always $\le 1$ --- why use a stack in that case?  For another
+  thing, as soon as \emph{any} statement satisfies sameStatement(), then
+  the algorithm terminates.  Is there a bug in the algorithm?}
 }
 \end{figure}

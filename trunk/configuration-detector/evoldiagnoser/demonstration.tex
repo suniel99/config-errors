@@ -8,9 +8,9 @@ consists of two parts:
 \begin{itemize}
 \item For each program predicate (i.e., a branch instruction
 in bytecode), \ourtool inserts one
-statement before and one statement after it
-to monitor how frequent the predicate is executed, and
-how often the predicate evaluates to true, respectively. In our
+probe before and one probe after it
+to monitor how frequently the predicate is executed and
+how often the predicate evaluates to true. In our
 context, a predicate is a Boolean expression in a
 conditional or loop statement,
 whose evaluation result affects the program
@@ -19,8 +19,17 @@ following statement or not.
 
 
 \item For each of the other statements, \ourtool inserts
-one statement before it to monitor whether the statement
+one probe before it to monitor whether the statement
 gets executed or not at runtime.
+
+\todo{This seems excessively inefficient.  The probe should only be
+  necessary at the start of each basic block, unless you are concerned
+  about exceptions.}
+
+\todo{Where is this information about non-predicate statements used?  I see
+  that the algorithm uses the true ratio for predicates, but not where it
+  uses the number of executions for arbitrary statements.}
+
 \end{itemize}
 
 
@@ -35,10 +44,10 @@ and it is easier than writing specifications or scripts of any form.
 Executing the instrumented program produces an execution trace,
 which consists of a sequence of executed statements as well
 as the evaluation result of each predicate.
-The captured execution trace by \ourtool is by no means complete
-in recording the full execution trace;  it only
+The execution trace captured by \ourtool is by no means complete
+in recording the full program behavior; it only
 captures the control flows a program is taking. As demonstrated
-in our experiments, such control flow information serves
+in our experiments, such control flow information serves as a
 good approximation to determine which parts of the program behave
 abnormally and why.
 % are
