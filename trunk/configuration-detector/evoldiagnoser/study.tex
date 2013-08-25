@@ -4,8 +4,8 @@
 In the software engineering literature, desipte a rich body of
 software change analysis work~\cite{STVR:STVR1475, Dagenais:2008, Tao:2012:SEU}, 
 software configuration changes across multiple
-versions are less studied. Does configuration
-change arise during software evolution in practice?
+versions are less studied. Do configuration
+changes arise during software evolution in practice?
 This section describes a preliminary study of
 \studysubjnum  real-world configurable systems to answer
 this question.
@@ -39,7 +39,7 @@ this question.
  \hline
  MySQL & 5.1, 5.5, 5.6, 5.7 & 3 &1565212& C/C++\\
  Apache& 2.0, 2.2, 2.4 & 3  & 139178 &C/C++\\
- FireFox& 7.0--22.0 (16 versions) & 3  & 8237915&C/C++\\
+ Firefox& 7.0--22.0 (16 versions) & 3  & 8237915&C/C++\\
  Randoop & 1.2.1, 1.3.2, 1.3.3 & 6 & 19511   &Java\\
  Weka & 3.4, 3.5, 3.6, 3.7  & 2  & 288369 &Java\\
  JChord & 1.0, 2.0, 2.1 &  4 & 26617  &Java\\
@@ -71,7 +71,7 @@ for the selected versions.
  \hline
  MySQL& 26 & 24 & 23 \\
  Apache & 5 & 0 & 10 \\
- FireFox& 28 & 7 & 56 \\
+ Firefox& 28 & 7 & 56 \\
  Randoop & 37  & 26 & 2\\
  Weka &  72 & 4 & 13 \\
  JChord & 13  & 10 & 5 \\
@@ -86,8 +86,11 @@ for the selected versions.
 \vspace{-2mm}
 \Caption{{\label{tab:options} The total number of new, deleted,
 and modified configuration options for each subject program
-in the studied versions.}
-}
+in the studied versions.
+\todo{Are the added options interesting from the point of view of this
+  paper?  They never contribute to configuration errors, do they?  If so,
+  explain.  If not, remove them from all the tables.}
+}}
 \end{table}
 
 
@@ -103,7 +106,7 @@ in the studied versions.}
  \hline
 Bugs & Fix existing bugs\\
  \hline
-Renaming & Change the original option name\\
+Renaming & Change the option name\\
  \hline
 Features & Add, remove, or modify features\\
  \hline
@@ -135,7 +138,7 @@ study from the subject programs in Table~\ref{tab:subjects}.}
  \hline
  MySQL & 0 & 15 & 55 & 3 \\
  Apache& 0 & 0 & 11 & 4 \\
- FireFox& 28 & 0 & 55 & 8 \\
+ Firefox& 28 & 0 & 55 & 8 \\
  %FindBugs & & & & \\
  Randoop & 0  & 2 & 62  & 1\\
  Weka & 1  & 0 & 81  & 8 \\
@@ -149,7 +152,7 @@ study from the subject programs in Table~\ref{tab:subjects}.}
 \end{tabular}
 }
 \vspace{-2mm}
-\Caption{{\label{tab:categories} The numbers of configuration changes of
+\Caption{{\label{tab:categories} The number of configuration changes of
 each type (Table~\ref{tab:conftypes}).}}
 \end{table}
 
@@ -158,12 +161,13 @@ each type (Table~\ref{tab:conftypes}).}}
 
 
 Table~\ref{tab:subjects} lists
-\studysubjnum open-source configurable systems used in our
-study. The \studysubjnum subjects contains
-three C/C++ software and six Java software.
+\studysubjnum\todo{The table contains only 8, not 9.} open-source configurable systems used in our
+study.
+% The \studysubjnum subjects contains
+% three C/C++ software systems and six Java software systems.
 MySQL~\cite{mysql}  is a popular relational database management
 system. Apache~\cite{apache} is a HTTP server which has acquired
-the largest share on the internet since 1996. FireFox~\cite{firefox}
+the largest share on the Internet since 1996. Firefox~\cite{firefox}
 is an open-source browser available on multiple platforms.
 Randoop~\cite{randoop} is an automated test generator for Java
 programs. Weka~\cite{weka} is a toolkit that implements machine
@@ -174,7 +178,7 @@ finite state machine model representation of a system from
 logs. JMeter~\cite{jmeter} is a tool to load test functional
 behavior and measure performance.
 Each program is highly configurable, and has evolved over
-a considerable amount of time for selected versions ({2--6} years).
+a considerable amount of time for the selected versions ({2--6} years).
 
 
 In our study, %rather than searching bug repositories,
@@ -182,6 +186,8 @@ we manually examined the revision history of each subject program,
 and searched for a set of 4 keywords (``add option'',
 ``delete option'', ``rename option'', and ``change option'')
 in commit messages as well as in the change logs.
+\todo{How many total commit messages and change log entries (out of how
+  many total) were matched by the search?}
 For each match, we read the description of the change,
 and the ``diff'' of the original file to check whether
 the change is made to a configuration option.
@@ -200,7 +206,7 @@ the change is made to a configuration option.
 
 Table~\ref{tab:options} summarizes the identified
 configuration changes for each subject program.
-Table~\ref{tab:categories} further classifies all
+Table~\ref{tab:categories} further classifies the
 configuration changes into four categories shown
 in Table~\ref{tab:conftypes} (each change belongs to a single category).
 
@@ -211,12 +217,11 @@ every revision of each subject program (not shown in Table~\ref{tab:options},
 due to space limit). 
 
 As shown in Table~\ref{tab:categories},
-feature related configuration changes are the largest group across
+feature-related configuration changes are the largest group across
 all subject programs. These changes include
 adding new configuration options to customize a program's
 functionality, deleting existing options, or modifying the default
-value of an option. Other three categories of canges occur as well, although
-with less frequency.
+value of an option. 
 
 Regarding the impact of configuration changes, 
 in comparison to software regression bugs that have well-maintained
@@ -226,16 +231,17 @@ because configuration errors usually have not been
 documented rigorously~\cite{Yin:2011:ESC}. Sometimes, after a
 session of code changes, when
 regression tests pass, developers may simply treat the
-software behaviors have been validated. Further,
-the description of software misconfigurations is user-driven,
+software behaviors as having been validated. Further,
+because the description of software misconfigurations is user-driven,
 the ``fixes'' may be recorded simply as pointers
 to manuals and best-practice documents.
 
+\todo{I would cut this entire paragraph.  I don't see it as contributing much.}
 \todo{need a transition sentence here. do not claim much
 for this initial study.}
-
 Many of such configuration changes listed in Table~\ref{tab:options},
-perhaps except for changes to fix a reported bug, can affect
+perhaps except for changes to fix a reported bug\todo{but that changes
+  behavior, too, doesn't it?}, can affect
 a software's behavior. As described in Section~\ref{sec:evaluation},
 we produced XXX configuration errors for all 5 Java programs.
 Such XXX configuration errors include both crashing and non-crashing errors.
@@ -285,6 +291,7 @@ Our findings apply in the context of our subject programs and methodology;
 they may not apply to arbitrary programs.
 
 The identified configuration changes by our methodology is certainly not complete.
+Our keyword search might have missed some configuration changes.
 Our methodology only studies changes that are directly made to a
 software configuration option. We may miss certain
 code or environment changes that may indirectly affect the software behavior,
