@@ -21,14 +21,14 @@ recommendOptions($\mathit{V_{old}}$, $\mathit{V_{new}}$, $\mathit{predMap}$)\\
 \STATE $\mathit{options_{old}}$ $\leftarrow$ getAffectingOptions($\mathit{p_{old}}$, $\mathit{V_{old}}$)
 \STATE $\mathit{v}$ $\leftarrow$ $\mathit{v}$ $\times$ getExecutedStmtNum($\mathit{p_{old}}$, $\mathit{V_{old}}$, $\mathit{T_{old}}$)
 \FOR{each Option $\mathit{option}$ in $\mathit{options_{old}}$}
-\STATE $\mathit{optionMap}$[$\mathit{option}$] = $\mathit{optionMap}$[$\mathit{option}$] + $\mathit{v}$
+\STATE $\mathit{optionMap}$[$\mathit{option}$] $\leftarrow$ $\mathit{optionMap}$[$\mathit{option}$] + $\mathit{v}$
 \ENDFOR
 \ENDIF
 \IF{$\mathit{p_{new}}$ $\neq$ $\mathit{null}$}
 \STATE $\mathit{options_{new}}$ $\leftarrow$ getAffectingOptions($\mathit{p_{new}}$, $\mathit{V_{new}}$)
 \STATE $\mathit{v}$ $\leftarrow$ $\mathit{v}$ $\times$ getExecutedStmtNum($\mathit{p_{new}}$, $\mathit{V_{new}}$, $\mathit{T_{new}}$)
 \FOR{each Option $\mathit{option}$ in $\mathit{options_{new}}$}
-\STATE $\mathit{optionMap}$[$\mathit{option}$] = $\mathit{optionMap}$[$\mathit{option}$] + $\mathit{v}$
+\STATE $\mathit{optionMap}$[$\mathit{option}$] $\leftarrow$ $\mathit{optionMap}$[$\mathit{option}$] + $\mathit{v}$
 \ENDFOR
 \ENDIF
 \ENDFOR

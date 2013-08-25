@@ -2,7 +2,7 @@
 \section{Technique}
 \label{sec:technique}
 
-In \ourtool, we model a configuration as a set of key-value
+\ourtool models a configuration as a set of key-value
 pairs, where the keys are strings and the values have
 arbitrary type. 
 This key-value abstraction
@@ -16,11 +16,10 @@ Properties API, and the Windows Registry.
 
 \subsection{Overview}
 
-There are two key insights in \ourtool. First,
-a program's control flow often propagates the majority of
+\ourtool is based on two key insights. First,
+a program's control flow, rather than data flow, often propagates the majority of
 the effects of a configuration option and determines
-a program's execution path, while the value of a
-specific expression may be largely input-dependent.
+a program's execution path.
 Second, the control flow differences of two execution
 traces can approximate the program behavior differences
 of two versions, and provide evidence
@@ -29,17 +28,17 @@ abnormally and why.
 %undesirably.
 
 Based on these two insights, \ourtool uses three
-steps to link the different behaviors across program
-versions to a specific configuration option.
+steps to link different behaviors across program
+versions to a specific configuration option that caused the difference.
 Figure~\ref{fig:overview} sketches the high-level workflow of
 \ourtool. 
 %To recommend configuration options that
 %fix the undesired behavior, 
-In this first step, \ourtool asks the
-user to run the same input and
-configuration on two \ourtool-instrumented program versions,
-and demonstrate the different behaviors (Section~\ref{sec:profiling}).
-Then, \ourtool analyzes two execution traces produced
+In the first step, \ourtool asks the
+user to demonstrate the different behaviors, using the same input and
+configuration, on two \ourtool-instrumented program versions
+(Section~\ref{sec:profiling}).
+Then, \ourtool analyzes the two execution traces produced
 by user demonstration, and identifies the control flow differences between
 them. In particular, \ourtool identifies program predicates
 that behave differently across two executions
@@ -47,7 +46,7 @@ that behave differently across two executions
 After that, \ourtool uses a lightweight dependence
 analysis technique, called thin slicing~\cite{Sridharan:2007},
 to statically reason about which configuration
-options may cause such control flow differences.
+options may cause the control flow differences.
 Finally, \ourtool reports a ranked list of 
 suspicious configuration options to the user (Section~\ref{sec:rootcause}).
 
