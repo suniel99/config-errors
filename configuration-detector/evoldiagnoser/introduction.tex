@@ -89,15 +89,15 @@ even if the software is working exactly as \textit{designed}.
 %regression test suite (with 100\% coverage ) passes. This is primarily
 %because 
 
-\todo{I propose that we cut this paragraph.  It doesn't seem to be
-  contributing much.}
-Differing from software regression bugs, configuration errors are mostly user driven.
-They occur when the use of software is unexpected
-situations, in which it does not behave as a user would expect.
-For software developers,
-it is impossible for them to test software in every possible
-situation in which it might be misconfigured; in fact, it is usually
-impossible even to foresee every such situation. 
+% \todo{I propose that we cut this paragraph.  It doesn't seem to be
+%   contributing much.}
+% Differing from software regression bugs, configuration errors are mostly user driven.
+% They occur when the use of software is unexpected
+% situations, in which it does not behave as a user would expect.
+% For software developers,
+% it is impossible for them to test software in every possible
+% situation in which it might be misconfigured; in fact, it is usually
+% impossible even to foresee every such situation. 
 
 
 Take the popular JMeter performance testing tool as an example.
@@ -212,17 +212,14 @@ key aspects:
 \begin{itemize}
 \item \textbf{It diagnoses configuration errors caused by software evolution}.
 Most existing configuration error diagnosis techniques
-focus on identifying errors in a single program
+try to identifying errors from a single program
 version~\cite{Wang:2004:AMT, Rabkin:2011:PPC, Whitaker:2004:CDS,
 Zhang:2013:ADS, Attariyan:2010:ACT, Su:2007:AIC, Attariyan:2008:UCD, xray}.
-By contrast, \ourtool targets
-configuration errors caused by software evolution, and
+By contrast, \ourtool is cognizant of software evolution and
 works on two different versions of the same program. 
 It uses the desired behavior on the old software version
 as a baseline with which to compare new program behavior against, and only
 reasons about the behavioral differences.
-
-\todo{Rewrite the above to make it sound like an advantage, not a disadvantage.}
 
 \item \textbf{It requires no testing oracle}.
 Some previous work~\cite{Rabkin:2011:PPC, Whitaker:2004:CDS,
@@ -242,15 +239,14 @@ primarily focus on
 determining \textit{what} causes the undesired behaviors, e.g.,
 a snippet of code --- they leave the more challenging
 question of \textit{how} to fix the undesired behaviors
-unanswered. Users must manually inspect the analysis
+unanswered.  Users must manually inspect the analysis
 report to infer
 the root cause, e.g., a configuration option,
 of the unexpected behaviors 
 based on their expertise and knowledge of the software.
-By contrast, \ourtool explicitly guides users to specific
-configuration options which may fix the error.
-
-\todo{say:  in terms that end users understand}
+By contrast, \ourtool makes reports in terms that 
+end users understand and can act on:  it explicitly guides users to specific
+configuration options that may fix the error.
 
 \item \textbf{It requires no OS-level support}. \ourtool
 does not need alterations to the JVM, operating system, or
@@ -281,11 +277,15 @@ We compared \ourtool to two existing configuration error diagnosis
 techniques, called \prevtool~\cite{Zhang:2013:ADS}
 and \conftool~\cite{Rabkin:2011:PPC}.
 \prevtool assumes the existence of some correct execution traces
-on the new program version, and compares the undesired execution
-trace with them to identify the different parts. \conftool exclusively
-focuses on diagnosing crashing configuration errors.
-\todo{Hard to parse:}By contrast, \ourtool eliminates \prevtool's assumption and
-can diagnose both crashing errors and non-crashing errors. Our experiments
+on the new program version; by contrast, \ourtool eliminates the
+assumption.
+\conftool exclusively focuses on diagnosing crashing configuration errors;
+by contrast, \ourtool eliminates can diagnose both crashing errors and
+non-crashing errors.
+Both \prevtool and \conftool can identify a configuration option, but they
+do not suggest a new value; by contrast, \ourtool makes a specific
+suggestion.
+Our experiments
 show that \ourtool significantly outperforms these two existing techniques.
 
 Finally, we evaluated an internal design choice of \ourtool. We showed
