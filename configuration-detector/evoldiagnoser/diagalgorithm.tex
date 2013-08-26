@@ -2,9 +2,12 @@
 \begin{figure}[t]
 \textbf{Auxiliary methods:}
 
-\quad getAffectingOptions($\mathit{p}$, $\mathit{V}$): return all configuration options that affect predicate $\mathit{p}$ in the software version $\mathit{V}$
+\quad getAffectingOptions($\mathit{p}$, $\mathit{V}$): return all
+configuration options that may affect predicate $\mathit{p}$ in the software version $\mathit{V}$
+\todo{Is this thin slicing?  If so, say so to clarify.}
 
 \quad getExecutedStmtNum($\mathit{p}$, $\mathit{V}$, $\mathit{T}$): return the number of executed statements (determined by predicate $\mathit{p}$) in trace $\mathit{T}$
+\todo{I'm not sure what this means.  By ``determined'', do you mean ``controlled''?}
 
 \textbf{Input}: two software version: $\mathit{V_{old}}$ and $\mathit{V_{new}}$, 
 
@@ -38,4 +41,35 @@ recommendOptions($\mathit{V_{old}}$, $\mathit{V_{new}}$, $\mathit{predMap}$)\\
 \caption{Algorithm for recommending configuration options.
 \label{fig:recommend}
 }
+
+\todo{Each entry of optionMap needs to be initialized to 0.}
+
+\todo{The algorithm of Figure~\ref{fig:recommend}, together with that of
+  Figure~\ref{fig:identify}, seem too complicated to me.  For example,
+  pairs are put in predMap, but the correspondence between the elements of
+  those pairs is not used.  I think that both figures can be replaced by
+  something much shorter (and clearer to me):
+}
+
+\begin{Verbatim}
+deviation(p1, T1, p2, T2):
+  result = | \phi(p, T) - \phi(p_other, T_other) |
+  if result < \delta
+    result = 0
+  return result
+
+recommendOptions(V_old, V_new, stmtMap)
+  optionMap <- new Map<Option, Float>
+  for p_old in getPredicates(T_old):
+    v <- deviation(p_old, T_old, stmtMap[p_old], T_new)
+    ... [lines 5-9 of current algorithm]
+  for p_new in getPredicates(T_new):
+    v <- deviation(stmtMap^{-1}[p_new], T_old, p_new, T_new)
+    ... [lines 12-16 of current algorithm]
+  return optionMap.sortedKey()
+\end{Verbatim}
+
 \end{figure}
+
+
+%  LocalWords:  getAffectingOptions getExecutedStmtNum recommendOptions

@@ -46,6 +46,20 @@ matched statements in the old method, and discards method candidates whose
 matching ratio is below a threshold (default value: 0.9).
 \end{enumerate}
 
+
+If there is no matched for the declaring method in the new program
+version, \ourtool concludes that the predicate cannot be
+matched. Otherwise, \ourtool runs the algorithm
+in Figure~\ref{fig:matching} (or looks up a cached version of the result)
+to establish the mapping between
+instructions, and then returns the matched instruction of the
+predicate (or NULL if the predicate cannot be matched).
+
+
+%For both cases, if the matching algorithm fails to identified
+
+\paragraph{Statement-matching algorithm}
+
 The algorithm in Figure~\ref{fig:matching} is inspired by
 a well-established program differencing algorithm, called
 JDiff~\cite{Apiwattanapong:2004}. The original JDiff
@@ -68,28 +82,9 @@ the algorithm saves them in the result map (line 11--12). Otherwise,
 the algorithm follows the control flow graph to compare a statement with
 the next $lh$ statements, and check whether any two statements can be
 matched (lines 14--19). This approximation aims to tolerate some small
-changes in the method code, and attemps to match as many statements as possible.
+changes in the method code, and attempts to match as many statements as possible.
 
 
-If there is no matched for the declaring method in the new program
-version, \ourtool concludes that the predicate cannot be
-matched. Otherwise, \ourtool uses the following two strategies
-to find the corresponding predicate.
-
-\begin{enumerate}
-\item If the declaring method is matched by using the first
-``\textbf{Identical method name}'' heuristic, \ourtool runs the algorithm
-in Figure~\ref{fig:matching} to establish the mapping between
-instructions, and then returns the matched instruction of the
-predicate (or NULL if the predicate cannot be matched).
-\item If the declaring method is matched by using the second
-``\textbf{Similar method content}'' heuristic,  \ourtool
-queries the output of the algorithm in Figure~\ref{fig:matching}
-by returning the matched statement of the given predicate (
-or NULL if there is no corresponding match).
-\end{enumerate}
-
-%For both cases, if the matching algorithm fails to identified
 
 \input{identifyalgorithm}
 
@@ -100,10 +95,15 @@ With the predicate matching information, \ourtool further
 identifies predicates that behave differently
 between two versions. 
 
+\todo{In what sense does $\phi$ ``characterize'' behavior?  What does it
+  represent?  What is the intuition?  Right now it's just an arbitrary
+  number that you claim works well, but that doesn't convey understanding.}
+
 \ourtool uses a function $\phi$ to characterize a predicate's behavior.
 The $\phi$ metric combines sensitivity (informally, the need
 for multiple observations) and specificity (informally, the
-true ratio) in a standard way by computing their harmonic mean.
+true ratio\todo{``true ratio'' is not defined and could be easily
+  misinterpreted as ``the actual ratio'' as opposed to some imprecise ratio}) in a standard way by computing their harmonic mean.
 As empirically demonstrated in our previous work~\cite{Zhang:2013:ADS},
 the metric $\phi$ provides a good characterization of a predicate's behavior.
 
@@ -125,10 +125,11 @@ To smooth corner cases, if a predicate $p$ is not executed in $t$,
 i.e., $\|totalExecNum|(p, t) = 0$, then $\phi(p, t)$ returns 0;
 and if a predicate $p$'s true ratio is 0, i.e., $\|trueRatio|(p, t) = 0$,
 then $\phi(p, t)$ returns $1/\|totalExecNum|(p, t)$.
+Finally, we let $\phi(null, t) = 0$ for all $t$.
 
 The algorithm is shown in Figure~\ref{fig:identify}.
-It first iterates every predicate in the old execution trace (line 2)
-, computes its metric value as the initial deviation value (line 3), and
+It first iterates every predicate in the old execution trace (line 2),
+computes its metric value as the initial deviation value (line 3), and
 checks whether it has a matched predicate executed in the
 new execution (lines 4--5). If so, it updates the
 initial deviation value (line 6). The algorithm further filters away
@@ -159,3 +160,5 @@ which part of the program might be behaving unexpectedly and why.
 %branch instruction for which the branch condition
 %is affected by one or more configuration options.
 
+
+%  LocalWords:  JDiff

@@ -90,7 +90,7 @@ the software developers of software users. The responsibility for creating
 correct configurations lies with both parties; the developer should create
 intuitive configuration logic, build logic that detects
 errors, and convey configuration knowledge to users
-effectively. This shared responsibility makes recommend configuration options
+effectively. This shared responsibility makes recommending configuration options
 different than localizing a regression bug, and causes many existing
 techniques not applicable. We will discuss related techniques below
 and in Section~\ref{sec:related}, and describe an empirical comparison
@@ -106,13 +106,13 @@ dynamic analysis to assess the causality of how a configuration option
 may affect the control flow. State-of-the-art
 techniques such as Delta Debugging~\cite{dd}, value replacement~\cite{failuredoc},
 and dual slicing~\cite{Sumner:2013:CCE}
-use a similar idea: they repeatedly replace a variable value with other alternaives,
+use a similar idea: they repeatedly replace a variable value with other alternatives,
 and then re-execute the program to check whether the outcome is desired.
 There are two major challenges that prevent these dynamic analyses
 from being used. First, it is
 difficult to find a valid replacement value for a configuration option.
 For Boolean type option, it is trivial to find alternative values.
-However, for many configurtion options with string or regular expression types, it
+However, for many configuration options with string or regular expression types, it
 can be hard to determine good alternative values without a specification.
 Second, automatically checking program outcomes requires
 a testing oracle, which is often not available in practice, and end-users
@@ -130,14 +130,14 @@ about the responsible configuration options.
 \noindent \textbf{\textit{\ourtool's current limitations.}}
 There are four major limitations in the our \ourtool technique.
 First, \ourtool currently assumes that only one
-configuration option is responsible for the undeisred behavior,
+configuration option is responsible for a given undesired behavior,
 although it can diagnose two errors caused by two independent options
 at a time (Section~\ref{sec:evaluation}).
 If fixing a particular configuration error
 requires changing values of two configuration options,
 then \ourtool may not identify both of them.
 Second, \ourtool assumes the different behaviors
-on two program versions are not caused by non-determinism.
+of two program versions are not caused by non-determinism.
 For non-deterministic behaviors, \ourtool
 could potentially leverage a deterministic replay
 system~\cite{Huang:2013:CRL, Jin:2012:BRF} to faithfully reproduce the behaviors.
@@ -157,3 +157,5 @@ Configuration options that essentially affect the underlying
 OS or runtime system, such as the \CodeIn{-Xmx} option used to
 specify JVM's heap size when launching a Java program,
 are not supported in \ourtool.
+
+%  LocalWords:  Xmx JVM's
