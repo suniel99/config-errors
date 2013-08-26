@@ -1,3 +1,5 @@
+% -*- LaTeX -*-
+
 %An alternate path is any path not taken by the actual
 %program execution that starts at a conditional
 %branch instruction for which the branch condition
@@ -9,7 +11,7 @@ In this step, \ourtool links the control flow differences
 to one or more root cause configuration options.
 The key idea is to identify configuration options that
 may affect the behaviorally-deviated predicates, and then rank
-these options by the degree of how they may cause
+these options by the \todo{This phrase isn't clear:}degree of how they may cause
 the differences.
 
 %\subsubsection{Attributing Trace Differences to Configuration Options}
@@ -47,10 +49,10 @@ choice.
 To distinguish the likelihood of each configuration
 option being the root cause, \ourtool associates each
 configuration option with a weight, which represents the strength of
-the causual relationship between the configuration option
+the causal relationship between the configuration option
 and the execution differences.
 A larger weight value indicates that a configuration option
-can potentially affect more statements wihthin the control
+can potentially affect more statements within the control
 flow differences as its value propagates in the program, and thus
 the configuration option is more likely
 to be the root cause.
@@ -68,7 +70,7 @@ For each predicate with different behaviors between two
 versions, \ourtool first attributes the control flow difference 
 to its affecting configuration options (lines 5 and 12). Then,
 \ourtool computes a value for each configuration option, by summing
-the results of multipling the deviation value of each affected
+the results of multiplying the deviation value of each affected
 predicate with the number of
 executed statements determined by that predicate (lines 6 and 13).
 To compute the number of executed statements dominated by a predicate,
@@ -86,7 +88,7 @@ statement.
 %and lines 11--17, respectively. For a predicate, \ourtool
 %first identifies all configuration options that can affect its
 %behavior (lines 5 and 12). The weight of each configuration option
-%is accumulated by summing up the result of multipling the
+%is accumulated by summing up the result of multiplying the
 %deviation value of its affected predicate with the number of
 %executed statements determined by that predicate (lines 6 and 13).
 
@@ -192,3 +194,4 @@ existing value.
 %it uses thin slicing to identify a
 %set of configuration options for each deviated
 %execution path as the root causes.
+

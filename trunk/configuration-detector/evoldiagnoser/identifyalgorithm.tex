@@ -7,9 +7,11 @@
 \textbf{Input}: two execution traces: $\mathit{T_{old}}$ and $T_{new}$
 
 \quad the instruction map: $\mathit{stmtMap}$ produced by Figure~\ref{fig:matching}
+\todo{Figure~\ref{fig:matching} is for 2 specific methods and is called
+  many times.  I think you mean the union of all calls for matched methods.}
 
 \quad a threshold: $\delta$ (default value: 0.1, used in our experiments)\\
-\textbf{Output}: all pairs of behaviroally-deviated predicates between two versions, and their deviation degree\\
+\textbf{Output}: all pairs of behaviorally-deviated predicates between two versions, and their deviation degree\\
 \vspace{-4mm}%
 identifyDeviatedPredicates($\mathit{T_{old}}$, $\mathit{T_{new}}$, $\mathit{stmtMap}$)\\
 \begin{algorithmic}[1]
@@ -40,3 +42,5 @@ predicates. The $\phi$ function is defined in Section~\ref{sec:identify_diff}.
 \label{fig:identify}
 }
 \end{figure}
+
+%  LocalWords:  getPredicates identifyDeviatedPredicates stmtMap predMap
