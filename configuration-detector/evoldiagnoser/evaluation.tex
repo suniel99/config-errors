@@ -177,7 +177,10 @@ algorithm outputs a wrong matching result.
 
 \vspace{1mm}
 
-\noindent \textbf{\textit{Summary.}}
+\noindent \textbf{\textit{Summary.}} \ourtool
+recommends correct configuration options with
+high accuracy for evolving configurable software systems
+with non-trivial code changes.
 
 \subsubsection{Performance of \ourtool}
 \label{sec:timecost}
@@ -190,21 +193,26 @@ Table~\ref{tab:performance} shows the results.
 
 The performance overhead to reproduce the error
 varies among programs. The current tool implementation
-imposes an average \todo{num}X slowdown in a
-\ourtool-instrumented version. This is due to
-\ourtool's inefficient instrumentation code that
+imposes an average 8X and 12.8X slowdown in a
+\ourtool-instrumented old and new program version, respectively.
+This is due to \ourtool's inefficient instrumentation code that
 monitors the execution of every instruction.
-Even so, the different behaviors can be reproduced
-in less than XXX minutes on average on both versions, 
-with a worse case of XXX minutes.
+Even so, except for two errors (errors \#5 and \#6) from\
+the JChord subject program,  all other errors can
+be reproduced in less than 30 seconds. Errors \#5 and \#6
+require about 20 minutes to reproduce.
+
+%the different behaviors can be reproduced
+%in less than XXX minutes on average on both versions, 
+%with a worse case of XXX minutes.
 
 
-\ourtool spends an average of XXX minutes
+\ourtool spends an average of \todo{xx} minutes
 to recommend configuration options for one
 error (including time to compute thin slices
 and the time to suggest suspicious options). 
 Computing thin slices for all configuration options
-is expensive. However, this step is one-time cost
+is non-trivial. However, this step is one-time cost
 per program and the computed results can
 be cached to share across runs. 
 The time used for suggesting configuration options
@@ -235,10 +243,10 @@ configuration errors with acceptable time cost.
  5. JChord & 18.7 & 44.3  & & \\
  6. JChord & 17.6 & 41.1 & & \\
  7. JMeter & 1.3 & 1.4 &51 & 63 \\
- 8. Javalanche& 1.4 & 1.5 & & \\
+ 8. Javalanche& 1.4 & 1.5 & 430 & \\
 \hline
 \hline
- Mean & & & & \\
+ Mean & 8.0 & 12.8 & & \\
 \hline
 \end{tabular}
 }
@@ -289,6 +297,17 @@ it to diagnose the crashing error in the Weka program.
 
 \todo{show the results here}
 
+Table~\ref{tab:errors} shows the experimental results.
+
+\ourtool produces significantly accurate results than \prevtool,
+for two primary reasons. First,
+\todo{to do}
+
+\conftool outputs correct result for only one error, since
+it exclusively focuses on diagnosing crashing configuration errors.
+By contrast, \ourtool is capable to diagnose both crashing
+and non-crashing errors.
+
 We did not compare \ourtool with other related
 configuration error diagnosis approaches~\cite{Attariyan:2010:ACT,
 xray, Whitaker:2004:CDS, Su:2007:AIC, Wang:2004:AMT, rangefix},
@@ -315,7 +334,12 @@ validated in our previous work~\cite{Zhang:2013:ADS}.
 
 \vspace{1mm}
 
-\noindent \textbf{\textit{Summary.}}
+\noindent \textbf{\textit{Summary.}} Configuration
+error diagnosis techniques designed for a \textit{single}
+program version cannot be directly applied to diagnose
+configuration erros introduced in software evolution.
+\ourtool reasons about the behavior differences across
+two program versions, and produces more accurate results.
 
 
 \begin{table}[t]
@@ -370,21 +394,45 @@ uses thin slicing to identify the affecting configuration
 options for a predicate. We next investigate the effects
 of replacing thin slicing with full slicing~\cite{Horwitz:1988}.
 Table~\ref{tab:choices} (Column ``Full Slicing'') shows the results.
+\todo{indicate changes to the algorithm}
+
 \item \textbf{predicate behavior + affected statements vs. predicate behavior.}
 \ourtool combines the metrics of predicate behavior changes
 and the number of affected statements to rank the importance
 of a predicate\todo{need re-wording}. We next
 investigate the effects of using the sole metric of
 predicate behavior change to rank predicates, as \prevtool does.
-Table~\ref{tab:chocies} (Column ``Predicate Behavior'') shows
-the results.
+Table~\ref{tab:choices} (Column ``Predicate Behavior'') shows
+the results. \todo{indicate changes to the algorithm}
 \end{itemize}
 
+\ourtool achieves substantially less accurate results when
+using full slicing. The primary reason is that full slicing
+identifies many irrelevant configuration options that \textit{indirectly}
+affect a predicate of interest. Such configuration options
+are not pertinent to the task of error diagnosis. Linking them
+to the different behaviors between two versions would degrade
+\ourtool's accuracy.
 
-\todo{results here}
+
+\ourtool's accuracy degrades substantially when using
+predicate behavior difference as the only metric (as \prevtool
+does) in option recommendation.
+The primary reason is that, between two execution traces,
+many predicates may have the same value of the predicate
+behavior metric, but they have significantly different
+impacts to the overall program behavior difference. \ourtool
+uses the number of statements determined by the predicate
+evaluation result to approximate such potential impacts.
 
 \vspace{1mm}
-\noindent \textbf{\textit{Summary.}} \todo{summary here}
+\noindent \textbf{\textit{Summary.}} Full slicing
+includes too many irrelevant program statements due to its
+conservatism; and only focusing on a predicate's behavior
+may ignore its potential impact to the program behavior.
+Using thin slicing and a combination of predicate behavior
+and its impacted statements can be a better choice in diagnosing
+configuration errors.
 
 \subsection{Discussion}
 
@@ -408,5 +456,11 @@ evaluate whether \ourtool helps users.
 \vspace{1mm}
 
 \noindent \textbf{\textit{Experimental conclusions.}}
-We have three chief findings. (1) ...  (2) ... and (3)...
+We have three chief findings. (1) \ourtool is highly effective
+in diagnosing configuration errors introduced by configuration
+evolution; (2) \ourtool produces more accurate results than
+approaches designed to diagnose errors on a single program version;
+and (3) using thin slicing and combining the behavior of
+a predicate and its affected statements permit \ourtool
+to produce more accurate diagnosis.
 
