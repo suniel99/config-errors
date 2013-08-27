@@ -99,8 +99,17 @@ public class TestCodeAnalyzer extends TestCase {
 		coder = CodeAnalyzerRepository.getJavalancheOldAnalyzer();
 		coder.buildAnalysis();
 		
-		coder = CodeAnalyzerRepository.getJavalancheNewAnalyzer();
-		coder.buildAnalysis();
+		for(CGNode node : coder.getCallGraph()) {
+			String sig = node.getMethod().getSignature();
+			if(sig.indexOf("MutationTestSuite") != -1
+					|| sig.indexOf("Junit3MutationTestDriver") != -1
+					|| sig.indexOf("TestSuiteUtil") != -1) {
+				System.out.println(node);
+			}
+		}
+		
+//		coder = CodeAnalyzerRepository.getJavalancheNewAnalyzer();
+//		coder.buildAnalysis();
 	}
 	
 	public void testFindUniqueMethodsJChord() {

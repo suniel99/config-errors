@@ -1,12 +1,17 @@
 package edu.washington.cs.conf.analysis.evol.experiments;
 
+import java.util.Set;
+
 import edu.washington.cs.conf.analysis.ConfEntityRepository;
+import edu.washington.cs.conf.analysis.evol.CodeAnalysisUtils;
 import edu.washington.cs.conf.analysis.evol.CodeAnalyzer;
 import edu.washington.cs.conf.analysis.evol.CodeAnalyzerRepository;
 import edu.washington.cs.conf.analysis.evol.ErrorDiagnoser;
 import edu.washington.cs.conf.analysis.evol.EvolConfOptionRepository;
+import edu.washington.cs.conf.analysis.evol.SimpleChecks;
 import edu.washington.cs.conf.analysis.evol.TraceRepository;
 import edu.washington.cs.conf.analysis.evol.TracesWrapper;
+import edu.washington.cs.conf.util.Utils;
 import junit.framework.TestCase;
 
 public class TestErrorDiagnoser extends TestCase {
@@ -63,12 +68,64 @@ public class TestErrorDiagnoser extends TestCase {
 		diagnoser.diagnoseRootCauses();
 	}
 	
-	public void testJChord1() {
+	public void testJChord_SSA() {
+		ConfEntityRepository oldConf = EvolConfOptionRepository.jchordOldConfs();
+		ConfEntityRepository newConf = EvolConfOptionRepository.jchordNewConfs();
+		CodeAnalyzer oldCoder = CodeAnalyzerRepository.getJChordOldAnalyzer();
+		oldCoder.buildAnalysis();
+		CodeAnalyzer newCoder = CodeAnalyzerRepository.getJChordNewAnalyzer();
+		newCoder.buildAnalysis();
 		
+		//set up for jchord
+		SimpleChecks.unique_matching = true;
+		String[] pkgs = new String[]{"chord."};
+		Set<String> uniqueSet1 = CodeAnalysisUtils.findUniquelyInvokedMethods(oldCoder, pkgs);
+		Set<String> uniqueSet2 = CodeAnalysisUtils.findUniquelyInvokedMethods(newCoder, pkgs);
+		Set<String> uniqueIntersect = Utils.intersect(uniqueSet1, uniqueSet2);
+		SimpleChecks.uniqueMethods = uniqueIntersect;
+		//end of set up
+		
+		//the different part
+		TracesWrapper wrapper = TraceRepository.getChordTraces_SSA();
+		
+		ErrorDiagnoser diagnoser = new ErrorDiagnoser(oldConf, newConf, oldCoder, newCoder, wrapper);
+		diagnoser.diagnoseRootCauses();
 	}
 	
-	public void testJChord2() {
+	public void testJChord_Print() {
+		ConfEntityRepository oldConf = EvolConfOptionRepository.jchordOldConfs();
+		ConfEntityRepository newConf = EvolConfOptionRepository.jchordNewConfs();
+		CodeAnalyzer oldCoder = CodeAnalyzerRepository.getJChordOldAnalyzer();
+		oldCoder.buildAnalysis();
+		CodeAnalyzer newCoder = CodeAnalyzerRepository.getJChordNewAnalyzer();
+		newCoder.buildAnalysis();
 		
+		//set up for jchord
+		SimpleChecks.unique_matching = true;
+		String[] pkgs = new String[]{"chord."};
+		Set<String> uniqueSet1 = CodeAnalysisUtils.findUniquelyInvokedMethods(oldCoder, pkgs);
+		Set<String> uniqueSet2 = CodeAnalysisUtils.findUniquelyInvokedMethods(newCoder, pkgs);
+		Set<String> uniqueIntersect = Utils.intersect(uniqueSet1, uniqueSet2);
+		SimpleChecks.uniqueMethods = uniqueIntersect;
+		//end of set up
+		
+		TracesWrapper wrapper = TraceRepository.getChordTraces_Print();
+		
+		ErrorDiagnoser diagnoser = new ErrorDiagnoser(oldConf, newConf, oldCoder, newCoder, wrapper);
+		diagnoser.diagnoseRootCauses();
+	}
+	
+	public void testJavalanche() {
+		ConfEntityRepository oldConf = EvolConfOptionRepository.javalancheOldConfs();
+		ConfEntityRepository newConf = EvolConfOptionRepository.javalancheNewConfs();
+		CodeAnalyzer oldCoder = CodeAnalyzerRepository.getJavalancheOldAnalyzer();
+		oldCoder.buildAnalysis();
+		CodeAnalyzer newCoder = CodeAnalyzerRepository.getJavalancheNewAnalyzer();
+		newCoder.buildAnalysis();
+		TracesWrapper wrapper = TraceRepository.getJavalancheTraces();
+		
+		ErrorDiagnoser diagnoser = new ErrorDiagnoser(oldConf, newConf, oldCoder, newCoder, wrapper);
+		diagnoser.diagnoseRootCauses();
 	}
 
 }

@@ -116,13 +116,15 @@ public class TraceRepository {
 	public static String chordNewHistoryDump_SSA = null;
 	public static String chordOldPredicateDump_SSA = chordDir + "predicate_dump_SSA-chord-2.0.txt";
 	public static String chordNewPredicateDump_SSA = chordDir + "predicate_dump_SSA-chord-2.1.txt";
-	@Deprecated
-	public static TracesWrapper getChordTraces_P1() {
+//	@Deprecated
+	static boolean dummy = true;
+	public static TracesWrapper getChordTraces_SSA() {
 		return new TracesWrapper(chordOldSig, chordNewSig,
 				chordOldPredicateDump_SSA, chordNewPredicateDump_SSA,
-				chordOldHistoryDump_SSA, chordNewHistoryDump_SSA,
+				counting_ssa_old, counting_ssa_new,
+//				chordOldHistoryDump_SSA, chordNewHistoryDump_SSA,
 				EvolConfOptionRepository.jchordOldCacheFile,
-				EvolConfOptionRepository.jchordNewCacheFile);
+				EvolConfOptionRepository.jchordNewCacheFile, dummy);
 	}
 	
 	@Deprecated
@@ -131,13 +133,14 @@ public class TraceRepository {
 	public static String chordNewHistoryDump_Print = null;
 	public static String chordOldPredicateDump_Print = chordDir + "predicate_dump_print-chord-2.0.txt";
 	public static String chordNewPredicateDump_Print = chordDir + "predicate_dump_print-chord-2.1.txt";
-	@Deprecated
+//	@Deprecated
 	public static TracesWrapper getChordTraces_Print() {
 		return new TracesWrapper(chordOldSig, chordNewSig,
 				chordOldPredicateDump_Print, chordNewPredicateDump_Print,
-				chordOldHistoryDump_Print, chordNewHistoryDump_Print,
+				counting_print_old, counting_print_new,
+//				chordOldHistoryDump_Print, chordNewHistoryDump_Print,
 				EvolConfOptionRepository.jchordOldCacheFile,
-				EvolConfOptionRepository.jchordNewCacheFile);
+				EvolConfOptionRepository.jchordNewCacheFile, dummy);
 	}
 	private static String countingTraceDir = "D:\\research\\configurations\\";
 	public static String counting_ssa_new = countingTraceDir + "instr_counting-new-ssa.txt";
@@ -154,9 +157,40 @@ public class TraceRepository {
 	public static Collection<String> getJavalancheOldPredicateFiles() {
 		return getPredicateFiles(traceDir36);
 	}
+	public static Collection<String> getJavalancheOldTraceFiles() {
+		return getTraceFiles(traceDir36);
+	}
 	
     public static Collection<String> getJavalancheNewPredicateFiles() {
     	return getPredicateFiles(traceDir40);
+	}
+    
+    public static Collection<String> getJavalancheNewTraceFiles() {
+    	return getTraceFiles(traceDir40);
+    }
+    
+    static String oldMerged = traceDir36 + "\\merged_history.dump.txt";
+    public static String getJavalancheMergedOldTraceFile() {
+    	Collection<String> oldTraces = getJavalancheOldTraceFiles();
+    	return Files.mergeFilesNoExp(oldTraces.toArray(new String[0]), oldMerged);
+    }
+    
+    static String oldPredicateMerged = traceDir36 + "\\merged_predicate.dump.txt";
+    
+    static String newMerged = traceDir40 + "\\merged_history.dump.txt";
+    public static String getJavalancheMergedNewTraceFile() {
+    	Collection<String> newTraces = getJavalancheNewTraceFiles();
+    	return Files.mergeFilesNoExp(newTraces.toArray(new String[0]), newMerged);
+    }
+    
+    static String newPredicateMerged = traceDir40 + "\\merged_predicate.dump.txt";
+    
+    public static TracesWrapper getJavalancheTraces() {
+		return new TracesWrapper(javalancheOldSig, javalancheNewSig, 
+				oldPredicateMerged, newPredicateMerged,
+				oldMerged, newMerged,
+				EvolConfOptionRepository.javalancheOldCacheFile,
+				EvolConfOptionRepository.javalancheNewCacheFile);
 	}
     
     static Collection<String> getPredicateFiles(String dir) {
@@ -165,6 +199,20 @@ public class TraceRepository {
 			Collection<String> predicates = new HashSet<String>();
 			for(File f : files) {
 				if(f.getName().startsWith(EfficientTracer.PREDICATE_DUMP_FILE)) {
+					predicates.add(f.getAbsolutePath());
+				}
+			}
+			return predicates; 
+		} catch (FileNotFoundException e) {
+			throw new Error(e);
+		}
+	}
+    static Collection<String> getTraceFiles(String dir) {
+		try {
+			List<File> files = Files.getFileListing(new File(dir));
+			Collection<String> predicates = new HashSet<String>();
+			for(File f : files) {
+				if(f.getName().startsWith(EfficientTracer.HISTORY_DUMP_FILE)) {
 					predicates.add(f.getAbsolutePath());
 				}
 			}
