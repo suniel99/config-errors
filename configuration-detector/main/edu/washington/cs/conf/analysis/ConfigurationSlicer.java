@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
@@ -65,7 +66,9 @@ public class ConfigurationSlicer {
 	private boolean backward = false;
 	//if the default slice seed does not work, use
 	//the return statement from getters
-	private boolean addSliceSeeFromGet = false;
+	private boolean addSliceSeedFromGet = false;
+	private boolean useReturnSeed = false; //return the last get instruction from the affecting method
+	private boolean extractAllGets = false;
 	
 	private DataDependenceOptions dataOption = DataDependenceOptions.NO_BASE_PTRS;
 	private ControlDependenceOptions controlOption =ControlDependenceOptions.NONE;
@@ -152,7 +155,15 @@ public class ConfigurationSlicer {
 	}
 	
 	public void setAddSliceSeedFromGet(boolean addSliceSeed) {
-		this.addSliceSeeFromGet = addSliceSeed;
+		this.addSliceSeedFromGet = addSliceSeed;
+	}
+	
+	public void setUseReturnSeed(boolean useReturnSeed) {
+		this.useReturnSeed = useReturnSeed;
+	}
+	
+	public void setExtractAllGets(boolean extractAllGets) {
+		this.extractAllGets = extractAllGets;
 	}
 	
 	public void setDataDependenceOptions(DataDependenceOptions op) {
@@ -206,7 +217,7 @@ public class ConfigurationSlicer {
 	public ConfPropOutput outputSliceConfOption(ConfEntity entity) {
 		long startT = System.currentTimeMillis();
 		Collection<Statement> stmts = sliceConfOption(entity);
-		if(this.addSliceSeeFromGet) {
+		if(this.addSliceSeedFromGet) {
 			//compute more affected statement, and then add to stmts
 			Collection<Statement> moreStmts = sliceConfOptionFromGetter(entity);
 			stmts.addAll(moreStmts);
@@ -241,11 +252,37 @@ public class ConfigurationSlicer {
 		Statement s = this.extractConfStatement(entity);
 		if(s == null) {
 			IClass clz = WALAUtils.lookupClass(this.getClassHierarchy(), entity.getClassName());
-			Utils.checkTrue(clz == null);
+			if(clz != null) {
+				//need to take a look at this statement
+				String signature = entity.getClassName() + "." +
+				    (entity.getAssignMethod() == null
+				      ?(entity.isStatic() ? "<clinit>" : "<init>")
+				      : entity.getAssignMethod());
+				Collection<CGNode> nodes = WALAUtils.lookupCGNode(this.getCallGraph(), signature);
+				for(CGNode node : nodes) {
+					System.out.println("---the CGNode:" + node);
+				    WALAUtils.printAllIRs(node);
+				}
+				if(nodes.isEmpty()) {
+					//the call graph do not contain such nodes
+					System.err.println(" no such nodes in CG: " + signature);
+					return new LinkedList<Statement>();
+				}
+			}
+			
+			Utils.checkTrue(clz == null, "Class: " + entity.getClassName()
+					+ ",  here is the entity: " + entity);
 		}
 		Utils.checkNotNull(s, "statement is null? " + entity);
 		//compute the slice
-		return this.performSlicing(s);
+		Collection<Statement> slice = this.performSlicing(s);
+		
+		if(this.extractAllGets) {
+			Collection<Statement> stmtsFromGetters = this.sliceConfOptionFromEveryGetter(entity);
+			slice.addAll(stmtsFromGetters);
+		}
+		
+		return slice;
 	}
 	
 	public Collection<Statement> sliceConfOptionFromGetter(ConfEntity entity) {
@@ -256,6 +293,20 @@ public class ConfigurationSlicer {
 		}
 		System.out.println("Add additional seed: " + s + " to: " + entity.getConfName());
 		return this.performSlicing(s);
+	}
+	
+	Collection<Statement> sliceConfOptionFromEveryGetter(ConfEntity entity) {
+		this.checkCG();
+		Collection<Statement> allStmts = new LinkedHashSet<Statement>();
+		
+		Collection<Statement> allGetStmts = this.extractAllGetStatements(entity);
+		System.err.println("   all get stmts: " + allGetStmts.size());
+		for(Statement getStmt : allGetStmts) {
+			Collection<Statement> slicedStmts = this.performSlicing(getStmt);
+			allStmts.addAll(slicedStmts);
+		}
+		
+		return allStmts;
 	}
 	
 	public Collection<Statement> performSlicing(Statement s) {
@@ -370,6 +421,21 @@ public class ConfigurationSlicer {
 			String fullMethodName = WALAUtils.getFullMethodName(node.getMethod());
 			//Log.logln("full method name: " + fullMethodName + ",  className: " + className);
 			if(fullMethodName.equals(className + "." + targetMethod)) {
+				
+				if(this.useReturnSeed) {
+					List<SSAInstruction> irList = WALAUtils.getAllIRs(node);
+					Collections.reverse(irList);
+					for(SSAInstruction ssa : irList) {
+						if(ssa instanceof SSAGetInstruction) {
+							SSAGetInstruction ssaGet = (SSAGetInstruction)ssa;
+							if(ssaGet.toString().indexOf(confName) != -1) {
+								Statement s = new NormalStatement(node, WALAUtils.getInstructionIndex(node, ssaGet));
+								return s;
+							}
+						}
+					}
+				}
+				
 //				WALAUtils.printAllIRs(node);
 				Iterator<SSAInstruction> ssaIt = node.getIR().iterateAllInstructions();
 				while(ssaIt.hasNext()) {
@@ -393,6 +459,10 @@ public class ConfigurationSlicer {
 		}
 		
 		return null;
+	}
+	
+	public Collection<Statement> extractAllGetStatements(ConfEntity entity) {
+		return ConfUtils.getextractAllGetStatements(entity, this.getCallGraph());
 	}
 	
 	public Statement extractConfStatementFromGetter(ConfEntity entity) {

@@ -87,7 +87,12 @@ public class ExecutionTraceReader {
 			    }
 			}
 			String[] splits = line.split(EfficientTracer.EVAL_SEP);
-			Utils.checkTrue(splits.length == 2, "line is: " + line);
+			if(splits.length != 2 && line.startsWith(EfficientTracer.NORMAL)) {
+				System.err.println("incorrect line: " + line);
+				continue;
+			}
+			Utils.checkTrue(splits.length == 2, "line is: " + line + ", length: " +
+					splits.length + ", in trace file: " + traceFileName);
 			
 			//convert the line into the real instruction
 			Integer num = Integer.parseInt(splits[1]);

@@ -1,13 +1,24 @@
 package edu.washington.cs.conf.analysis;
 
 import java.util.Collection;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+
+import com.ibm.wala.ipa.callgraph.CGNode;
+import com.ibm.wala.ipa.callgraph.CallGraph;
+import com.ibm.wala.ipa.slicer.NormalStatement;
+import com.ibm.wala.ipa.slicer.Statement;
+import com.ibm.wala.ssa.SSAGetInstruction;
+import com.ibm.wala.ssa.SSAInstruction;
 
 import edu.washington.cs.conf.diagnosis.PredicateProfile;
 import edu.washington.cs.conf.util.Files;
 import edu.washington.cs.conf.util.Utils;
+import edu.washington.cs.conf.util.WALAUtils;
 
 public class ConfUtils {
 
@@ -109,5 +120,53 @@ public class ConfUtils {
 			filtered.add(stmt);
 		}
 		return filtered;
+	}
+	
+	private static Map<ConfEntity, Collection<Statement>> cachedStmts = new LinkedHashMap<ConfEntity, Collection<Statement>>();
+	public static void buildCachedStatements(Collection<ConfEntity> entities, CallGraph cg, String[] pkgs) {
+		Utils.checkTrue(pkgs.length > 0);
+		
+		Map<ConfEntity, Collection<Statement>> confStmts = new LinkedHashMap<ConfEntity, Collection<Statement>>();
+		for(ConfEntity entity : entities) {
+			confStmts.put(entity, new LinkedHashSet<Statement>());
+		}
+		//build the cache
+		for(CGNode node : cg) {
+			if(node.getIR() == null) {
+				continue;
+			}
+			String fullClassName = WALAUtils.getFullMethodName(node.getMethod());
+			if(!Utils.startWith(fullClassName, pkgs)) {
+				continue;
+			}
+			Iterator<SSAInstruction> iter = node.getIR().iterateAllInstructions();
+			while(iter.hasNext()) {
+				SSAInstruction ssa = iter.next();
+				if(ssa instanceof SSAGetInstruction) {
+					SSAGetInstruction ssaGet = (SSAGetInstruction)ssa;
+					//quick and dirty hack
+					String sig = ssaGet.toString();
+					//check each conf entity
+					for(ConfEntity entity : entities) {
+						String confClassName = entity.getClassName();
+						String confName = entity.getConfName();
+						String jvmClassName = Utils.translateDotToSlash(confClassName);
+						if(sig.indexOf(confName) != -1 && sig.indexOf(jvmClassName) != -1) {
+							Statement s = new NormalStatement(node, WALAUtils.getInstructionIndex(node, ssa));
+							confStmts.get(entity).add(s);
+						}
+					}
+				}
+			}
+		}
+		//add to the cache
+		cachedStmts.putAll(confStmts);
+	}
+	
+	public static Collection<Statement> getextractAllGetStatements(ConfEntity entity, CallGraph cg) {
+		if(cachedStmts.containsKey(entity)) {
+			return cachedStmts.get(entity);
+		}
+		throw new Error("Not built: " + entity);
 	}
 }
