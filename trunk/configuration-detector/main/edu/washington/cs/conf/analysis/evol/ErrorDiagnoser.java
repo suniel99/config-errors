@@ -60,14 +60,16 @@ public class ErrorDiagnoser {
 		Utils.checkNotNull(wrapper);
 		this.oldRep = oldConfs;
 		this.newRep = newConfs;
-		this.oldTrace = new ExecutionTrace(wrapper.oldHistoryFile, wrapper.oldSigFile, wrapper.oldPredicateFile);
-		this.newTrace = new ExecutionTrace(wrapper.newHistoryFile, wrapper.newSigFile, wrapper.newPredicateFile);
+		this.traceWrapper = wrapper;
+		this.oldTrace = this.createOldTrace(); 
+			//new ExecutionTrace(this.traceWrapper.oldHistoryFile, this.traceWrapper.oldSigFile, this.traceWrapper.oldPredicateFile);
+		this.newTrace = this.createNewTrace(); 
+			//new ExecutionTrace(this.traceWrapper.newHistoryFile, this.traceWrapper.newSigFile, this.traceWrapper.newPredicateFile);
 		this.oldCoder = oldCoder;
 		this.newCoder = newCoder;
-		this.traceWrapper = wrapper;
 		//read the slice rsult back
-		this.oldSliceOutput = ConfOutputSerializer.deserializeAsSchema(wrapper.oldSliceCache);
-		this.newSliceOutput = ConfOutputSerializer.deserializeAsSchema(wrapper.newSliceCache);
+		this.oldSliceOutput = ConfOutputSerializer.deserializeAsSchema(this.traceWrapper.oldSliceCache);
+		this.newSliceOutput = ConfOutputSerializer.deserializeAsSchema(this.traceWrapper.newSliceCache);
 	}
 	
 	/**a ranked list of suspicious configuration options
@@ -82,12 +84,8 @@ public class ErrorDiagnoser {
 	public List<ConfEntity> diagnoseRootCauses() {
 		
 		//get predicates executed in the old version
-		Collection<PredicateExecInfo>  oldPredExecs
-            = ExecutionTraceReader.createPredicateExecInfoList(this.traceWrapper.oldPredicateFile,
-     		    this.traceWrapper.oldSigFile);
-	    Collection<PredicateExecInfo> newPredExecs
-	        = ExecutionTraceReader.createPredicateExecInfoList(this.traceWrapper.newPredicateFile,
-	    		this.traceWrapper.newSigFile);
+		Collection<PredicateExecInfo>  oldPredExecs = createOldPredExecInfo();
+	    Collection<PredicateExecInfo> newPredExecs = createNewPredExecInfo();
 	    
 	    //the matched predicates
 	    Set<PredicateBehaviorAcrossVersions> matchedPreds
@@ -165,6 +163,40 @@ public class ErrorDiagnoser {
 		
 		List<ConfEntity> list = new LinkedList<ConfEntity>();
 		return list;
+	}
+	
+	private ExecutionTrace createOldTrace() {
+		ExecutionTrace oldTrace = null;
+		if(this.traceWrapper.useCountingFile()) {
+			oldTrace = new ExecutionTrace(this.traceWrapper.oldCountingFile);
+		} else {
+		    oldTrace = new ExecutionTrace(this.traceWrapper.oldHistoryFile, this.traceWrapper.oldSigFile, this.traceWrapper.oldPredicateFile);
+		}
+		return oldTrace;
+	}
+	
+	private ExecutionTrace createNewTrace() {
+		ExecutionTrace newTrace = null;
+		if(this.traceWrapper.useCountingFile()) {
+			newTrace = new ExecutionTrace(this.traceWrapper.newCountingFile);
+		} else {
+			newTrace = new ExecutionTrace(this.traceWrapper.newHistoryFile, this.traceWrapper.newSigFile, this.traceWrapper.newPredicateFile);
+		}
+		return newTrace;
+	}
+	
+	private Collection<PredicateExecInfo> createOldPredExecInfo() {
+		Collection<PredicateExecInfo>  oldPredExecs
+            = ExecutionTraceReader.createPredicateExecInfoList(this.traceWrapper.oldPredicateFile,
+ 		      this.traceWrapper.oldSigFile);
+		return oldPredExecs;
+	}
+	
+	private Collection<PredicateExecInfo> createNewPredExecInfo() {
+		Collection<PredicateExecInfo> newPredExecs
+            = ExecutionTraceReader.createPredicateExecInfoList(this.traceWrapper.newPredicateFile,
+    		  this.traceWrapper.newSigFile);
+		return newPredExecs;
 	}
 	
 	private int getExecutedInstructionNumInOldVersion(PredicateExecInfo pred) {

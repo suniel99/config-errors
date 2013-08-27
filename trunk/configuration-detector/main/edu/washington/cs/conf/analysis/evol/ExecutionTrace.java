@@ -47,7 +47,7 @@ public class ExecutionTrace {
 	public ExecutionTrace(String traceFile, String sigmapFile, String predicateFile) {
 		Utils.checkFileExistence(traceFile);
 		Utils.checkFileExistence(sigmapFile);
-		Utils.checkFileExistence(predicateFile);
+//		Utils.checkFileExistence(predicateFile);
 		this.traceFileName = traceFile;
 		this.sigmapFileName = sigmapFile;
 		this.predicateFileName = predicateFile;
@@ -103,6 +103,7 @@ public class ExecutionTrace {
 	}
 	
 	public Set<PredicateExecInfo> getExecutedPredicates() {
+		Utils.checkFileExistence(this.predicateFileName);
 		Collection<PredicateExecInfo> predColl = ExecutionTraceReader.createPredicateExecInfoList(this.predicateFileName,this.sigmapFileName);
 		Set<PredicateExecInfo> predSet = new LinkedHashSet<PredicateExecInfo>(predColl);
 		return predSet;

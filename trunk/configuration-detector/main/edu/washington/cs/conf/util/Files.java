@@ -194,6 +194,39 @@ public final class Files {
     return retval;
   }
   
+  public static String mergeFilesNoExp(String[] sourceFiles, String destFile) {
+	  try {
+		  return mergeFiles(sourceFiles, destFile);
+	  } catch (Throwable e) {
+		  e.printStackTrace();
+		  throw new Error(e);
+	  }
+  }
+  
+  //all file must be text file
+  public static String mergeFiles(String[] sourceFiles, String destFile) throws IOException {
+	  for(String fName : sourceFiles) {
+		  File f = new File(fName);
+		  checkFileExistence(f.getAbsolutePath());
+	  }
+	  createIfNotExist(destFile);
+	  //the writer for the dest file
+	  BufferedWriter writer= new BufferedWriter(new FileWriter(new File(destFile)));
+	  //start to copy contents to the destination file
+	  for(String fName : sourceFiles) {
+		  File f = new File(fName);
+		  BufferedReader reader = new BufferedReader(new FileReader(f));
+		  String line= reader.readLine();
+		  while(line != null) {
+		      writer.write(line);
+		      writer.write(Globals.lineSep);
+		      line= reader.readLine();
+		  }
+	  }
+	  
+	  return destFile;
+  }
+  
   public static void copyFileNoExp(File sourceFile, File destFile) {
 	  try {
 		  copyFile(sourceFile, destFile);
