@@ -66,17 +66,31 @@ public class EvolConfOptionRepository {
 		return new ConfEntityRepository(entities);
 	}
 	
-	//TODO
-	public static final String jchordOldOptionFile = null;
-	public static final String jchordOldCacheFile = null;
-	public static ConfEntity[] jchordOldConfs() {
-		return new ConfEntity[]{};	
+	public static final String jchordOldOptionFile = optionDir + "jchord-old-options.txt";
+	public static final String jchordOldCacheFile = sliceCacheDir + "jchord-old-slice.dat";
+	public static ConfEntityRepository jchordOldConfs() {
+		Collection<ConfEntity> entities = ConfEntity.readConfigOptionsFromFile(jchordOldOptionFile);
+		return new ConfEntityRepository(entities);
 	}
 	
-	//TODO
-	public static final String jchordNewOptionFile = null;
-	public static final String jchordNewCacheFile = null;
-	public static ConfEntity[] jchordNewConfs() {
-		return new ConfEntity[]{};
+	public static final String jchordNewOptionFile = optionDir + "jchord-new-options.txt";;
+	public static final String jchordNewCacheFile = sliceCacheDir + "jchord-new-slice.dat";
+	public static ConfEntityRepository jchordNewConfs() {
+		Collection<ConfEntity> entities = ConfEntity.readConfigOptionsFromFile(jchordNewOptionFile);
+		return new ConfEntityRepository(entities);
+	}
+	
+	public static final String javalancheOldOptionFile = optionDir + "javalanche-old-options.txt";
+	public static final String javalancheOldCacheFile = sliceCacheDir + "javalanche-old-slices.dat";
+	public static ConfEntityRepository javalancheOldConfs() {
+		Collection<ConfEntity> entities = ConfEntity.readConfigOptionsFromFile(javalancheOldOptionFile);
+		return new ConfEntityRepository(entities);
+	}
+	
+	public static final String javalancheNewOptionFile = optionDir + "javalanche-new-options.txt";
+	public static final String javalancheNewCacheFile = sliceCacheDir + "javalanche-new-slices.dat";
+	public static ConfEntityRepository javalancheNewConfs() {
+		Collection<ConfEntity> entities = ConfEntity.readConfigOptionsFromFile(javalancheNewOptionFile);
+		return new ConfEntityRepository(entities);
 	}
 }

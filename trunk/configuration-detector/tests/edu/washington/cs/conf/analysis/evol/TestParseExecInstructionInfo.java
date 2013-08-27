@@ -3,6 +3,7 @@ package edu.washington.cs.conf.analysis.evol;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -13,6 +14,7 @@ import com.ibm.wala.ssa.SSAInstruction;
 
 import edu.washington.cs.conf.analysis.evol.experimental.PredicateExecInfo;
 import edu.washington.cs.conf.instrument.evol.CountingTracer;
+import edu.washington.cs.conf.instrument.evol.EfficientTracer;
 import edu.washington.cs.conf.instrument.evol.HardCodingPaths;
 import edu.washington.cs.conf.util.Files;
 import edu.washington.cs.conf.util.Globals;
@@ -559,7 +561,6 @@ public class TestParseExecInstructionInfo extends TestCase {
 		ExecutionTrace oldTrace = new ExecutionTrace(TraceRepository.counting_ssa_old);
 		ExecutionTrace newTrace = new ExecutionTrace(TraceRepository.counting_ssa_new);
 		
-		
 		Map<String, Float> outputMap = new HashMap<String, Float>();
 		
 		Set<PredicateBehaviorAcrossVersions> matchedPreds
@@ -831,10 +832,12 @@ public class TestParseExecInstructionInfo extends TestCase {
 	//for the Javalanche
 	public void testParseTracesForJavaLanche() {
 //		SimpleChecks.useStrictMatching = false;
-		Collection<PredicateExecInfo> oldPreds = ExecutionTraceReader.createPredicateExecInfoList(TraceRepository.getJavalancheOldPredicateFiles(),
-				TraceRepository.javalancheOldSig);
-		Collection<PredicateExecInfo> newPreds = ExecutionTraceReader.createPredicateExecInfoList(TraceRepository.getJavalancheNewPredicateFiles(),
-				TraceRepository.javalancheNewSig);
+		Collection<String> allOldPredicates = TraceRepository.getJavalancheOldPredicateFiles();
+		Collection<PredicateExecInfo> oldPreds =
+			ExecutionTraceReader.createPredicateExecInfoList(allOldPredicates, TraceRepository.javalancheOldSig);
+		Collection<String> allNewPredicates = TraceRepository.getJavalancheNewPredicateFiles();
+		Collection<PredicateExecInfo> newPreds =
+			ExecutionTraceReader.createPredicateExecInfoList(allNewPredicates, TraceRepository.javalancheNewSig);
 		System.out.println("Number in old: " + oldPreds.size());
 		System.out.println("Number in new: " + newPreds.size());
 		
@@ -848,11 +851,22 @@ public class TestParseExecInstructionInfo extends TestCase {
 		CodeAnalyzer newCoder = CodeAnalyzerRepository.getJavalancheNewAnalyzer();
 		newCoder.buildAnalysis();
 		
+		String oldMergedTrace = TraceRepository.getJavalancheMergedOldTraceFile();
+		ExecutionTrace oldTrace = new ExecutionTrace(oldMergedTrace,
+				TraceRepository.javalancheOldSig, null);
+		
+		String newMergedTrace = TraceRepository.getJavalancheMergedNewTraceFile();
+		ExecutionTrace newTrace = new ExecutionTrace(newMergedTrace, 
+				TraceRepository.javalancheNewSig, null);
+		
 		Set<PredicateBehaviorAcrossVersions> matchedPreds
 	        = SimpleChecks.getMatchedPredicateExecutions(oldPreds, newPreds, oldCoder, newCoder);
 	    System.out.println("Number of matched preds: " + matchedPreds.size());
 	    
 	    matchedPreds = SimpleChecks.rankByBehaviorChanges(matchedPreds);
+	    
+	    Map<String, Float> diffMap = new HashMap<String, Float>();
+	    
 		for(PredicateBehaviorAcrossVersions predBehavior : matchedPreds) {
 			float degree = predBehavior.getDifferenceDegree();
 			if(degree < 0.1f) {
@@ -860,6 +874,35 @@ public class TestParseExecInstructionInfo extends TestCase {
 			}
 			System.out.println(predBehavior);
 			System.out.println("      diff: " + degree);
+			
+			int delta = 0;
+			if(predBehavior.isExecutedOnOldVersion()) {
+				Set<InstructionExecInfo> set = oldTrace.getExecutedInstructionsInsidePredicate(oldCoder, predBehavior.createOldPredicateExecInfo());
+				System.out.println("     executed: " + set.size());
+				delta = delta + set.size();
+			} else {
+				System.out.println("     not executed on old version.");
+			}
+			
+			if(predBehavior.isExecutedOnNewVersion()) {
+				Set<InstructionExecInfo> set = newTrace.getExecutedInstructionsInsidePredicate(newCoder, predBehavior.createNewPredicateExecInfo());
+				System.out.println("    executed: " + set.size());
+				delta = delta - set.size();
+			} else {
+				System.out.println("     not executed on new version");
+			}
+			
+			diffMap.put(predBehavior.toString(), degree*(Math.abs(delta)));
+			diffMap = Utils.sortByValue(diffMap, false);
+			
+			System.out.println();
+		}
+		
+		System.out.println("===================");
+		
+		for(String key : diffMap.keySet()) {
+			System.out.println(key);
+			System.out.println("    -> " + diffMap.get(key));
 			System.out.println();
 		}
 	}
@@ -883,10 +926,11 @@ public class TestParseExecInstructionInfo extends TestCase {
 				nodes.add(pred.getMethodSig());
 //				System.out.println(node);
 			}
-			if(pred.getMethodSig().indexOf("TestMessage") != -1
+			if(pred.getMethodSig().indexOf("Junit3MutationTestDriver") != -1
 					|| pred.getMethodSig().indexOf("SingleTestResult") != -1
 					|| pred.getMethodSig().indexOf("MutationTestDriver") != -1
-					|| pred.getMethodSig().indexOf("TestSuiteUtil") != -1) {
+					|| pred.getMethodSig().indexOf("TestSuiteUtil") != -1
+					) {
 				System.err.println(ssa);
 				System.err.println("    " + pred);
 				matchedCount++;
@@ -932,6 +976,10 @@ public class TestParseExecInstructionInfo extends TestCase {
 		assertEquals(68, matchedCount);
 	}
 	
+	public void testFileMergingInJavalanche() {
+		String oldMergedTrace = TraceRepository.getJavalancheMergedOldTraceFile();
+	}
+	
 	//----------------see file size
 	public void testFileSize_for_experiment() {
 		new ExecutionTrace(TraceRepository.randoopOldHistoryDump,
@@ -950,5 +998,61 @@ public class TestParseExecInstructionInfo extends TestCase {
 				TraceRepository.jmeterOldSig, TraceRepository.jmeterOldPredicateDump);
 		new ExecutionTrace(TraceRepository.jmeterNewHistoryDump,
 				TraceRepository.jmeterNewSig, TraceRepository.jmeterNewPredicateDump);
+	}
+	
+	public void testMergePredicateInJavalanche() {
+		Collection<String> oldFiles = TraceRepository.getJavalancheOldPredicateFiles();
+		String mergedFile = TraceRepository.oldPredicateMerged;
+		this.mergePredicates(oldFiles, mergedFile);
+		
+		mergedFile = TraceRepository.newPredicateMerged;
+		Collection<String> newFiles = TraceRepository.getJavalancheNewPredicateFiles();
+		this.mergePredicates(newFiles, mergedFile);
+	}
+	
+	private void mergePredicates(Collection<String> files, String mergedFile) {
+		Map<String, Integer> freqMap = new LinkedHashMap<String, Integer>();
+		Map<String, Integer> evalMap = new LinkedHashMap<String, Integer>();
+		for(String file : files) {
+			List<String> lines = Files.readWholeNoExp(file);
+			for(String line : lines) {
+				if(line.trim().equals("")) {
+					continue;
+				}
+				//parse line
+				String[] splits = line.split(EfficientTracer.PRED_SEP);
+				Utils.checkTrue(splits.length == 2);
+				String key = splits[0];
+				String[] results = splits[1].split(EfficientTracer.EVAL_SEP);
+				Utils.checkTrue(results.length == 2);
+				Integer freq = Integer.parseInt(results[0]);
+				Integer eval = Integer.parseInt(results[1]);
+				if(!freqMap.containsKey(key)) {
+					Utils.checkTrue(!evalMap.containsKey(key));
+					freqMap.put(key, freq);
+					evalMap.put(key, eval);
+				} else {
+					freqMap.put(key, freq + freqMap.get(key));
+					if(evalMap.containsKey(key)) {
+						evalMap.put(key, eval + evalMap.get(key));
+					} else {
+						evalMap.put(key, eval);
+					}
+				}
+			}
+		}
+		//write to the merged file
+		StringBuilder sb = new StringBuilder();
+		for(String key : freqMap.keySet()) {
+			int freq = freqMap.get(key);
+			int eval = evalMap.containsKey(key) ? evalMap.get(key) : 0;
+			sb.append(key);
+			sb.append(EfficientTracer.PRED_SEP);
+			sb.append(freq);
+			sb.append(EfficientTracer.EVAL_SEP);
+			sb.append(eval);
+			sb.append(Globals.lineSep);
+		}
+		Files.writeToFileNoExp(sb.toString(), mergedFile);
 	}
 }

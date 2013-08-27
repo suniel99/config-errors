@@ -17,9 +17,9 @@ import edu.washington.cs.conf.util.WALAUtils;
 //just for experiment purpose
 public class SimpleChecks {
 	
-	static boolean unique_matching = false;
+	public static boolean unique_matching = false;
 	
-	static Set<String> uniqueMethods = null;
+	public static Set<String> uniqueMethods = null;
 	
 	public static Set<String> getUnmatchedOldMethods(
 			Collection<PredicateExecInfo> oldSet,
@@ -208,10 +208,10 @@ public class SimpleChecks {
 							System.out.println(" --> more than 1 item: " + ssalist);
 						}
 						
-						if(oldMethodSig.indexOf("chord.program.Program.<init>()") != - 1
-								&& oldPred.getIndex() == 8) {
-							throw new Error("list: " + ssalist);
-						}
+//						if(oldMethodSig.indexOf("chord.program.Program.<init>()") != - 1
+//								&& oldPred.getIndex() == 8) {
+//							throw new Error("list: " + ssalist);
+//						}
 						
 					}
 				}

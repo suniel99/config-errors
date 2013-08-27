@@ -3,6 +3,7 @@ package edu.washington.cs.conf.analysis.evol;
 import java.io.File;
 import java.io.FileNotFoundException;
 
+import com.ibm.wala.classLoader.IClass;
 import com.ibm.wala.ipa.callgraph.Entrypoint;
 import com.ibm.wala.ipa.cha.ClassHierarchy;
 import com.ibm.wala.ipa.slicer.Slicer.DataDependenceOptions;
@@ -135,18 +136,20 @@ public class CodeAnalyzerRepository {
 		return newAnalyzer;
 	}
 	
-	static String chordMainClass = "Lchord/project/Main";
-	static String chordExclusions = "ChordExclusions.txt";
+	public static String chordMainClass = "Lchord/project/Main";
+	public static String chordExclusions = "ChordExclusions.txt";
+	public static String jChordOldPath ="D:\\research\\configurations\\workspace\\chord-2.0\\chord.jar"; 
 	public static CodeAnalyzer getJChordOldAnalyzer() {
-		String oldChordPath = "D:\\research\\configurations\\workspace\\chord-2.0\\chord.jar";
+		String oldChordPath = jChordOldPath;
 		CodeAnalyzer oldCoder = new CodeAnalyzer(oldChordPath, chordMainClass);
 		oldCoder.slicer.setExclusionFile(chordExclusions);
 		oldCoder.slicer.setCGType(CG.ZeroCFA);
 		return oldCoder;
 	}
 	
+	public static String jChordNewPath =  "D:\\research\\configurations\\workspace\\chord-2.1\\chord.jar";
 	public static CodeAnalyzer getJChordNewAnalyzer() {
-		String newChordPath = "D:\\research\\configurations\\workspace\\chord-2.1\\chord.jar";
+		String newChordPath = jChordNewPath;
 		CodeAnalyzer newCoder = new CodeAnalyzer(newChordPath, chordMainClass);
 		newCoder.slicer.setExclusionFile(chordExclusions);
 		newCoder.slicer.setCGType(CG.ZeroCFA);
@@ -155,11 +158,22 @@ public class CodeAnalyzerRepository {
 	
 //	static String javalancheOldPath = null;
 	static String javalancheMainClass = "Lde/unisb/cs/st/javalanche/mutation/analyze/AnalyzeMain";
+	static String javalancheEntryClass = "de.unisb.cs.st.javalanche.mutation.runtime.testDriver.MutationTestDriver";
+	static String javalancheEntryMethod = "run";
 	public static CodeAnalyzer getJavalancheOldAnalyzer() {
 		CodeAnalyzer oldCoder = new CodeAnalyzer(getJavalancheOldPath(), javalancheMainClass);
 		oldCoder.slicer.setExclusionFile("JavalancheExclusions.txt");
 //		oldCoder.slicer.setCGType(CG.ZeroCFA);
+		
+//		oldCoder.slicer.buildClassHierarchy();
+//		ClassHierarchy cha = oldCoder.slicer.getClassHierarchy();
+//		Iterable<Entrypoint> entryPoints = WALAUtils.createEntrypoints(javalancheEntryClass, javalancheEntryMethod, cha);
+//		Iterable<Entrypoint> points = entryPoints;
+//		oldCoder.slicer.setEntrypoints(points);
+		
+		oldCoder.slicer.setDataDependenceOptions(DataDependenceOptions.NO_BASE_NO_HEAP_NO_EXCEPTIONS);
 		oldCoder.slicer.setCGType(CG.RTA);
+		
 		return oldCoder;
 	}
 	
@@ -169,9 +183,19 @@ public class CodeAnalyzerRepository {
 		newCoder.slicer.setExclusionFile("JavalancheExclusions.txt");
 //		newCoder.slicer.setCGType(CG.ZeroCFA);
 		newCoder.slicer.setCGType(CG.RTA);
+		
+//		
+//
+//		
+//		newCoder.slicer.buildClassHierarchy();
+//		ClassHierarchy cha = newCoder.slicer.getClassHierarchy();
+//		Iterable<Entrypoint> entryPoints = WALAUtils.createEntrypoints(javalancheEntryClass, javalancheEntryMethod, cha);
+//		Iterable<Entrypoint> points = Utils.combine(c1, entryPoints);
+//		newCoder.slicer.setEntrypoints(points);
+		
 		return newCoder;
 	}
-	
+
 	
 	//the long classpath for JMeter
 	public static String getOldJMeterPath() {
@@ -370,7 +394,8 @@ public class CodeAnalyzerRepository {
 	
 	public static String getJavalancheNewPath() {
 	  String dir = "D:\\research\\confevol\\subject-programs\\javalanche\\versions\\javalanche\\javalanche-0.4.0-bin\\lib\\";
-	  String allJars = dir + "original\\javalanche-0.4.jar" + Globals.pathSep +
+	  String allJars = 
+		dir + "original\\javalanche-0.4.jar" + Globals.pathSep +
 	    dir + "antlr-2.7.6.jar" +Globals.pathSep +
 		dir + "asm-debug-all-3.3.1.jar" +Globals.pathSep +
 		dir + "bsh-2.0b4.jar" +Globals.pathSep +
