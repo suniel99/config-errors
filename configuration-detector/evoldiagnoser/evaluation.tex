@@ -17,9 +17,9 @@ a configuration error (Section~\ref{sec:timecost})?
 existing approaches (Section~\ref{sec:existing})?
 
 \item How does \ourtool's effectiveness compare to
-alternative approaches using full slicing in identifying
-suspicious configuration options, and only using predicate behaviors
-to recommend configuration options (Section~\ref{sec:alternative})?
+two alternative approaches that use full slicing in identifying
+suspicious configuration options, and only focus on predicate behavior
+changes to recommend configuration options (Section~\ref{sec:alternative})?
 
 \end{enumerate}
 
@@ -30,15 +30,26 @@ listed in Table~\ref{tab:subjects}.
 The top 5 subject programs are the 5 Java programs
 studied in Section~\ref{sec:study},
 and the remaining subject program Javalanche~\cite{javalanche}
-(and its configuration error), a popular mutation
-testing framework, is provided by a Javalanche user.
+(which is a popular mutation testing framework) and
+its configuration error, is provided by one of its real users.
 
 \newcommand{\randoopoptnum}{57\xspace}
 \newcommand{\wekaoptnum}{14\xspace}
 \newcommand{\synopticoptnum}{37\xspace}
 \newcommand{\jchordoptnum}{79\xspace}
 \newcommand{\jmeteroptnum}{55\xspace}
-\newcommand{\javalancheoptnum}{27\xspace}
+\newcommand{\javalancheoptnum}{35\xspace}
+
+\newcommand{\randooprank}{1\xspace}
+\newcommand{\wekarank}{1\xspace}
+\newcommand{\synopticrankfirst}{1\xspace}
+\newcommand{\synopticranksecond}{6\xspace}
+\newcommand{\jchordrankfirst}{1\xspace}
+\newcommand{\jchordranksecond}{1\xspace}
+\newcommand{\jmeterrank}{1\xspace}
+\newcommand{\javalancherank}{3\xspace}
+
+\newcommand{\averagerank}{1.8\xspace}
 
 \begin{table}[t]
 \vspace{1mm}
@@ -81,13 +92,13 @@ supported in the new program version.
  Error ID& Program & Description\\
  \hline
  \hline
- 1 & Randoop  & An order of magnitude less tests generated \\
+ 1 & Randoop  & Poor performance in test generation\\
  2 & Weka &  A different error message when Weka crashes\\
  3 & Synoptic & The generated initial model not saved\\
  4 & Synoptic & The generated model not saved as JPEG file \\
  5 & JChord & Bytecode parsed incorrected \\
  6 & JChord &  Method names not printed in the console\\
- 7 & JMeter &  Results saved to a file with different formats\\
+ 7 & JMeter &  Results saved to a file with a different format\\
  8 & Javalanche &  No mutants generated\\
 \hline
 \end{tabular}
@@ -127,6 +138,8 @@ Table~\ref{tab:errors} lists all errors.
 In Table~\ref{tab:errors}, errors \#3 and \#4
 can be reproduced in a single execution, and each of the other
 error is reproduced in one execution.
+
+\todo{cover different types of options, and different types of errors}
 
 
 %We collected \errornum configuration errors caused by
@@ -187,11 +200,11 @@ with non-trivial code changes.
 
 We measured \ourtool's performance in two ways:
 the performance overhead introduced by instrumentation
-in reproducing the error, and the time cost
-of recommending configuration options.
+when demonstrating the configuration error,
+and the time cost of recommending configuration options.
 Table~\ref{tab:performance} shows the results.
 
-The performance overhead to reproduce the error
+The performance overhead to demonstrate the error
 varies among programs. The current tool implementation
 imposes an average 8X and 12.8X slowdown in a
 \ourtool-instrumented old and new program version, respectively.
@@ -207,7 +220,7 @@ require about 20 minutes to reproduce.
 %with a worse case of XXX minutes.
 
 
-\ourtool spends an average of \todo{xx} minutes
+\ourtool spends an average of \avgtime minutes
 to recommend configuration options for one
 error (including time to compute thin slices
 and the time to suggest suspicious options). 
@@ -240,13 +253,13 @@ configuration errors with acceptable time cost.
  2. Weka & 1.6 & 1.6 & 80 & 49 \\
  3. Synoptic & 1.7 & 4.7 &48 & 42 \\
  4. Synoptic & 1.7 & 4.7 &48  & 42  \\
- 5. JChord & 18.7 & 44.3  & & \\
- 6. JChord & 17.6 & 41.1 & & \\
+ 5. JChord & 18.7 & 44.3  & 20 & 38 \\
+ 6. JChord & 17.6 & 41.1 & 23 & 29 \\
  7. JMeter & 1.3 & 1.4 &51 & 63 \\
- 8. Javalanche& 1.4 & 1.5 & 430 & \\
+ 8. Javalanche& 1.4 & 1.5 & 430 & 265\\
 \hline
 \hline
- Mean & 8.0 & 12.8 & & \\
+ Average & 8.0 & 12.8 & 99 & 91 \\
 \hline
 \end{tabular}
 }
@@ -257,7 +270,9 @@ shows the cost of reproducing the error in
 an \ourtool-instrumented version of the subject program.
 The ``\ourtool time (seconds)'' column shows
 the time took by \ourtool to diagnose configuration errors.
-For both columns, the mean is the geometric mean. 
+Column ``Slicing'' includes the cost of computing
+thin slices on both old and new program versions.
+%For both columns, the mean is the geometric mean. 
 }
 }
 \end{table}
@@ -268,54 +283,71 @@ For both columns, the mean is the geometric mean.
 This section compares \ourtool with two existing approaches,
 called \prevtool~\cite{Zhang:2013:ADS} and \conftool~\cite{Rabkin:2011:PPC}.
 
-\prevtool, proposd in our previous work~\cite{}, is an automated
+\prevtool, proposd in our previous work~\cite{Zhang:2013:ADS},
+is an automated
 software configuration error diagnosis technique. Unlike \ourtool,
-\prevtool diagnoses configuration errors on a single program version.
+\prevtool is \textit{not} cognizant of
+software evolution: it diagnoses configuration errors on
+a single program version.
 Besides, it differs from \ourtool from two key aspects:
 first, \prevtool assumes the existence of a set of correct execution
-traces, which are used to compare to against the undesired
-execution trace to identify the behaviorally-deviated parts.
+traces, which are used to compare against the undesired
+execution trace to identify the abnormal program parts.
 Second, when comparing the undesired execution trace with a
 correct execution trace, \prevtool only focuses on the behavior
-of an executed predicate, ignoring the statements determined
-by the predicate's evaluation result. To compare \ourtool with
-\prevtool, for 4 subject programs (Randoop, Synoptic, JChord, and
-Weka) that are also used
-to evaluate \prevtool, we reuse the pre-built trace database
-from~\cite{}. For the other two subject programs (JMeter and
-Javalanche), we manually built an execution trace database for each
-of them, by running correct examples from their user manuals.
+change of an executed predicate (using the same $\phi$
+function in Section~\ref{sec:comparison}), ignoring the statements determined
+by the predicate's evaluation result. \todo{explain
+above} To compare \ourtool with \prevtool, 
+we reuse the pre-built execution trace database
+for 4 subject programs (Randoop, Synoptic, JChord, and Weka)
+from our existing work~\cite{Zhang:2013:ADS}.
+For the remaining two subject programs (JMeter and
+Javalanche), we manually built an execution trace database
+for each of them by running correct examples from their user manuals.
+The built databases contain \todo{xx} and \todo{xx}
+execution traces for JMeter and Javalanche, respectively.
 
 \conftool, proposed by Rabkin and Katz~\cite{}, is a lightweight
 static analysis technique to precompute diagnosis for a program.
 \conftool tracks the flow of labeled objects through 
 program control flow and data flow, and treats a configuration option
 as a root cause if its value may flow to a crashing point.
-Since \conftool cannot diagnose non-crashing errors, we only use
-it to diagnose the crashing error in the Weka program.
+Since \conftool cannot diagnose non-crashing errors, we
+can only apply it to diagnose the crashing error in
+Weka (error\#2 in Table~\ref{tab:errors}).
 
 
-\todo{show the results here}
-
-Table~\ref{tab:errors} shows the experimental results.
+\vspace{1mm}
+\noindent \textbf{\textit{Results.}}
+Columns ``\prevtool'' and ``\conftool'' in Table~\ref{tab:errors} show
+the experimental results.
+%\todo{show the results here}
 
 \ourtool produces significantly accurate results than \prevtool,
 for two primary reasons. First,
 \todo{to do}
 
-\conftool outputs correct result for only one error, since
-it exclusively focuses on diagnosing crashing configuration errors.
-By contrast, \ourtool is capable to diagnose both crashing
-and non-crashing errors.
+\conftool outputs correct result for the crashing error in Weka,
+but is not applicable to diagnosing other non-crashing errors.
+The crashing error in Weka occurs soon after the program
+is launched; a small number of configuration options
+are initialized and only one of them flows to the crashing point.
+
+
+%since
+%it exclusively focuses on diagnosing crashing configuration errors.
+%By contrast, \ourtool is capable to diagnose both crashing
+%and non-crashing errors.
 
 We did not compare \ourtool with other related
 configuration error diagnosis approaches~\cite{Attariyan:2010:ACT,
 xray, Whitaker:2004:CDS, Su:2007:AIC, Wang:2004:AMT, rangefix},
 because these approaches target a rather
-different problem than \ourtool or require different
-inputs than \ourtool. For example, ConfAid~\cite{Attariyan:2010:ACT}
-and X-Ray~\cite{xray} can only diagnose crashing
-or performance configuration errors on a single
+different problem than \ourtool, or require different
+inputs than \ourtool. For example, 
+X-Ray~\cite{xray} can only diagnose
+performance-related configuration errors on a single
 program version. Chronus~\cite{Whitaker:2004:CDS}
 and AutoBash~\cite{Su:2007:AIC}
 require OS-level support for capture and replay.
@@ -323,10 +355,10 @@ PeerPressure~\cite{Wang:2004:AMT} and RangerFixer~\cite{rangefix} only
 supports configuration options defined by certain
 specific feature models. It is unknown whether
 such techniques can be extended to diagnose configuration
-errors caused by software evolution. On the other
+errors handled by \ourtool. On the other
 hand, general software fault locaization techniques
 are not well-suited for diagnosing software
-configuration errors~\cite{Jones:2002}, since such techniques
+configuration errors~\cite{Jones:2002, McCamant:2003}, since such techniques
 often focus on identifying the buggy code or
 invalid input values. This has been empirically
 validated in our previous work~\cite{Zhang:2013:ADS}.
@@ -338,7 +370,7 @@ validated in our previous work~\cite{Zhang:2013:ADS}.
 error diagnosis techniques designed for a \textit{single}
 program version cannot be directly applied to diagnose
 configuration erros introduced in software evolution.
-\ourtool reasons about the behavior differences across
+\ourtool reasons about the behavior differences between
 two program versions, and produces more accurate results.
 
 
@@ -354,17 +386,17 @@ two program versions, and produces more accurate results.
  Program & \ourtool & Full Slicing & Predicate Behavior  \\
  \hline
  \hline
- 1. Randoop &  &  & \\
- 2. Weka &  &  & \\
- 3. Synoptic &  &  & \\
- 4. Synoptic &  &  & \\
- 5. JChord &  &  & \\
- 6. JChord &  &  & \\
- 7. JMeter &  &  & \\
- 8. Javalanche &  &  & \\
+ 1. Randoop & \randooprank & 32 & 7 \\
+ 2. Weka & \wekarank & 7 & 1 \\
+ 3. Synoptic & \synopticrankfirst & 16 & 3\\
+ 4. Synoptic & \synopticranksecond & 17 & 8 \\
+ 5. JChord & \jchordrankfirst & 19 & 5 \\
+ 6. JChord & \jchordranksecond & 30 & 5 \\
+ 7. JMeter & \jmeterrank & \n & 1 \\
+ 8. Javalanche & \javalancherank & \n & 13 \\
 \hline
 \hline
- Mean &  & & \\
+ Average & \averagerank  & 20.7 & 5.4 \\
 \hline
 \end{tabular}
 }
@@ -375,10 +407,11 @@ of \ourtool. Column ``\ourtool'' shows \ourtool's
 results, taken from Table~\ref{tab:errors}.
 Column ``Full Slicing'' shows the results of replacing
 thin slicing with full slicing in \ourtool.
-Column ``Predicate Behavior'' shows the results of 
-\ourtool, if it only considers
-predicate behavior changes.
-For both columns, the mean is the geometric mean. 
+``\n'' means the technique does not identify the actual
+root cause. Column ``Predicate Behavior'' shows the results of 
+\ourtool, if it only considers predicate behavior changes.
+When computing the average rank, each ``\n'' is treated
+as half of the number of configuration options.
 }
 }
 \end{table}
@@ -390,9 +423,10 @@ This section evaluates two design choices in \ourtool:
 
 \begin{itemize}
 \item \textbf{thin slicing vs. full slicing.} \ourtool
-uses thin slicing to identify the affecting configuration
-options for a predicate. We next investigate the effects
-of replacing thin slicing with full slicing~\cite{Horwitz:1988}.
+uses thin slicing to identify configuration options
+whose values may affect a predicate. We next investigate
+the effects of replacing thin slicing with
+the traditional full slicing~\cite{Horwitz:1988}.
 Table~\ref{tab:choices} (Column ``Full Slicing'') shows the results.
 \todo{indicate changes to the algorithm}
 
@@ -400,8 +434,8 @@ Table~\ref{tab:choices} (Column ``Full Slicing'') shows the results.
 \ourtool combines the metrics of predicate behavior changes
 and the number of affected statements to rank the importance
 of a predicate\todo{need re-wording}. We next
-investigate the effects of using the sole metric of
-predicate behavior change to rank predicates, as \prevtool does.
+investigate the effects of using the 
+predicate behavior change as the sole metric to rank predicates, as \prevtool does.
 Table~\ref{tab:choices} (Column ``Predicate Behavior'') shows
 the results. \todo{indicate changes to the algorithm}
 \end{itemize}
@@ -411,25 +445,31 @@ using full slicing. The primary reason is that full slicing
 identifies many irrelevant configuration options that \textit{indirectly}
 affect a predicate of interest. Such configuration options
 are not pertinent to the task of error diagnosis. Linking them
-to the different behaviors between two versions would degrade
-\ourtool's accuracy.
+to the exhibited different behavior would degrade
+\ourtool's accuracy. Further, computing full slices is much
+more expensive than computing thin slices. The mature
+full slicing algorithm implemented in WALA failed to scale
+to two of our subject programs (JMeter and Javalanche).
 
 
 \ourtool's accuracy degrades substantially when using
-predicate behavior difference as the only metric (as \prevtool
-does) in option recommendation.
-The primary reason is that, between two execution traces,
+predicate behavior change as the metric in option
+recommendation. The primary reason is that, between two execution traces,
 many predicates may have the same value of the predicate
-behavior metric, but they have significantly different
-impacts to the overall program behavior difference. \ourtool
+behavior metric\todo{need rewording}, but they have different
+impacts to the overall program behavior change. \ourtool
 uses the number of statements determined by the predicate
 evaluation result to approximate such potential impacts.
+
+%\todo{We also consider other metrics to measure predicate deviations}
 
 \vspace{1mm}
 \noindent \textbf{\textit{Summary.}} Full slicing
 includes too many irrelevant program statements due to its
 conservatism; and only focusing on a predicate's behavior
-may ignore its potential impact to the program behavior.
+difference
+may ignore the impact to the program behavior. \todo{need
+rephrase}
 Using thin slicing and a combination of predicate behavior
 and its impacted statements can be a better choice in diagnosing
 configuration errors.
@@ -438,15 +478,19 @@ configuration errors.
 
 \noindent \textbf{\textit{Threats to validity.}}
 There are several threats to validity of our evaluation.
-First, the 6 Java programs might not be representative, though some of them are used
-in previous research. research. Likewise, the
-8 configuration errors might not be representative, even though we
-evaluated every error we found. Second, 
-\ourtool's effectiveness depends on the effectiveness of the
+First, the \subjnum Java programs might not be representative, though some of them had been
+used in previous research. Likewise, the
+\errornum configuration errors might not be representative, even though we
+evaluated every error we found. 
+Second, in our evaluation, we assume the configuration errors
+are not caused by software regression bugs, as all regression
+tests between two versions pass. Applying \ourtool to a buggy
+program version may yield a different result.
+Third, \ourtool's effectiveness depends on the effectiveness of the
 predicate matching algorithm. It may yield less
 useful results for programs with significant code changes.
 However, different algorithms can be plugged into \ourtool.
-Third, Our evaluation only compared \ourtool with two other
+Fourth, our evaluation only compared \ourtool with two other
 approaches. Comparing with other analyses or tools might yield
 different observations.
 Fourth, our evaluation focuses on \ourtool's algorithm for
@@ -460,7 +504,10 @@ We have three chief findings. (1) \ourtool is highly effective
 in diagnosing configuration errors introduced by configuration
 evolution; (2) \ourtool produces more accurate results than
 approaches designed to diagnose errors on a single program version;
-and (3) using thin slicing and combining the behavior of
-a predicate and its affected statements permit \ourtool
-to produce more accurate diagnosis.
+and (3) \ourtool outperforms two alternative approaches
+that use full slicing and solely focuses on a predicate's
+behavior change, respectively.
+%using thin slicing and combining the behavioral
+%difference of a predicate and its affected statements
+%permit \ourtool to produce more accurate diagnosis.
 

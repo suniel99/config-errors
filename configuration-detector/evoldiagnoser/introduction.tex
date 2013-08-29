@@ -10,7 +10,7 @@ behaviors.
 %error can be both time-consuming and furstrating.
 
 Software configuration errors are errors in which
-the application code and the input is correct, but the software is
+the application code and the input are correct, but the software is
 configured so that it does not behave
 as desired by the end-user. Such errors may lead software to crash,
 produce erroneous output, or simply perform poorly.
@@ -46,11 +46,20 @@ Microsoft's public cloud platform, Azure,
 unavailable for about two and a half hours~\cite{msdown}.
 Such incidents affected millions of users.
 
-Furthermore, configuration
-errors are difficult to diagnose. 
+Furthermore, configuration errors are difficult to diagnose. 
+They usually require great expertise to understand
+the error root causes. For example, in one
+configuration error of CentOS described in~\cite{Yin:2011:ESC},
+the user could not mount a newly created file system system,
+because the CentOS kernel for this file system was
+misconfigured. The user need to have deep understanding about the
+exhibited symptom,  and re-install kernel modules and
+also modify configuration option values in
+several places to get it to work.
 Techniques helping escape from the ``configuration hell''
 are highly demanded~\cite{googleconf}.
-\todo{It would be nice to have more evidence about this point.}
+\edit{I edit the above paragraph}
+%\todo{It would be nice to have more evidence about this point.}
 
 Unlike software bugs,
 which can only be fixed by experienced software developers, fixing a software
@@ -143,7 +152,8 @@ configuration option to fix the error. \ourtool addresses
 the second task: recommending the root cause configuration options.
 %a configuration error.
 
-\ourtool aims to help two types of users: software end-users
+\ourtool focuses on software configuration errors, and
+aims to help two types of users: software end-users
 who may have problems with software installed on their
 personal computers, and system administrators who are
 responsible for maintaining production systems.
@@ -162,7 +172,7 @@ problem during software evolution.
 %caused by software evolution. 
 The key idea of \ourtool is to approximate program behavioral
 differences by control flow differences between 
-two execution traces (by running the old
+two executions (by running the old
 and new program versions, respectively),
 and then reason about the control flow differences to
 identify configuration options that
@@ -269,7 +279,7 @@ suggestion. In XXX errors, the correct option was among
 \ourtool's top 3 suggestions. 
 \ourtool fails to recommend the correct option for the remaining
 one error. \ourtool is fast enough for practical use,
-taking less than XX minutes to diagnose one configuration error, on average.
+taking less than \avgtime minutes to diagnose one configuration error, on average.
 \ourtool's accuracy and speed make it a promising technique.
 
 
@@ -280,17 +290,24 @@ and \conftool~\cite{Rabkin:2011:PPC}.
 on the new program version; by contrast, \ourtool eliminates the
 assumption.
 \conftool exclusively focuses on diagnosing crashing configuration errors;
-by contrast, \ourtool eliminates can diagnose both crashing errors and
+by contrast, \ourtool can diagnose both crashing errors and
 non-crashing errors.
-Both \prevtool and \conftool can identify a configuration option, but they
-do not suggest a new value; by contrast, \ourtool makes a specific
-suggestion.
+%Both \prevtool and \conftool can identify a configuration option, but they
+%do not suggest a new value; by contrast, \ourtool makes a specific
+%suggestion.
 Our experiments
 show that \ourtool significantly outperforms these two existing techniques.
 
-Finally, we evaluated an internal design choice of \ourtool. We showed
-that using thin slicing is better choice than the traditional full
-slicing to reason about the root cause configuration options.
+Finally, we evaluated two internal design choices of \ourtool. First, we 
+showed that using thin slicing~\cite{Sridharan:2007} is better choice than
+the traditional full slicing~\cite{Horwitz:1988} to reason about the
+root cause configuration options. Second, we showed that 
+\ourtool outperforms an alternative approach
+solely using predicate behavior changes to reason about
+the root cause configuration options.
+
+\edit{I edited the above paragraph}
+
 
 %Overall, we find that \ourtool is highly effective at helping
 %identify the root cause of cross-version behavioral differences. 
