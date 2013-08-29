@@ -8,17 +8,13 @@ can be challenging, especially when a software's
 behavior depends on a wide range of configuration options.
 
 This paper describes \ourtool, a technique to help software
-users to reconfigure a configurable software system. \ourtool
+users to troubleshoot configuration errors. \ourtool
+focuses on errors caused by software evolution, and
 recommends configuration options whose values can be changed to
-produce desired behavior on the new software version.
-%\ourtool represents a novel synthesis of \todo{} steps:
-%records \todo{} and collects \todo{}.
-%\ourtool uses \todo{} to attribute .. to
-%suspicious configuration options that should
-%be re-setted. 
+produce the desired behavior on the new software version.
 Our experimental results show that \ourtool
 can accurately identify the root causes of
-\errornum configuration problems in \subjnum real-world software systems.
+\errornum configuration errors in \subjnum real-world software systems.
 The source code of \ourtool is publicly available
 at: \url{http://config-errors.googlecode.com}.
 
@@ -35,7 +31,7 @@ will be finding study participants who are familiar
 with our subject programs.
 
 \item \textbf{Formulating guidance of error diagnosis.}
-An important question that is not answered in \ourtool
+An important question that is not answered in this paper
 is that how to automatically distinguish software bugs from 
 configuration errors, when a software system exhibits
 some undesired behavior. We plan to formulate guidance
@@ -43,28 +39,16 @@ regarding when the user should give up on \ourtool
 and assume the error is not related to a configuration option.
 
 \item \textbf{Improving configuration error reporting and fixing.}
-A bug report of a configuration error must combine the
-failing software state with its use scenario.
+A good bug report of a configuration error should contain both the
+failing software state and its use-case scenario.
 When fixing a configuration error, there is no obviously ``correct'' way to
 build configuration logic. In addition, unlike fixing a bug once,
 every software user has to be informed on the right way to
-configure the system.  Perhaps as a result, misconfigurations
+configure the system. Perhaps as a result, misconfigurations
 have been one of the dominant causes of system issues and
 is likely to continue so. To address these related problems,
-we plan to explore the existing software configuration errors
+we plan to further study the existing software configuration errors
 to summarize error patterns, and then use machine learning
 techniques to synthesize good-quality error reports and fixes.
 
-%; \todo{evolve} the end-user should imbibe the
-%knowledge and manage cross-version configurations.
-
-
 \end{itemize}
-
-%As future work,  We are also interested
-%in developing new problem reporting mechanisms to
-%make configuration problems more diagnosable.
-%Yet another direction of work will be studying
-%test-suite augmentation techniques to automatically
-%create new tests that can reveal potential configuration
-%problems, as software evolves.
