@@ -39,6 +39,9 @@ public class ErrorDiagnoser {
 	private float pruneThreshold = 0.1f;
 	private boolean debug = true;
 	
+	//just for comparison experiments
+	private boolean onlyUsePredicate = false;
+	
 	public final InstrumentSchema oldSliceOutput;
 	public final InstrumentSchema newSliceOutput;
 	
@@ -48,6 +51,10 @@ public class ErrorDiagnoser {
 //	public final IterativeSlicer oldSlicer;
 //	public final IterativeSlicer newSlicer;
 //	private final TraceComparator comparator;
+	
+	public void setOnlyUsePredicate(boolean onlyUse) {
+		this.onlyUsePredicate = onlyUse;
+	}
 	
 	public ErrorDiagnoser(ConfEntityRepository oldConfs, ConfEntityRepository newConfs,
 			CodeAnalyzer oldCoder, CodeAnalyzer newCoder, TracesWrapper wrapper) {
@@ -116,6 +123,9 @@ public class ErrorDiagnoser {
 			}
 			
 			int instrDelta = Math.abs(instrNumOnNewVersion - instrNumOnOldVersion);
+			if(this.onlyUsePredicate) {
+				instrDelta = 1;
+			}
 			float behaviorDelta = instrDelta*behaviorDiff;
 			
 			Set<ConfEntity> oldConfs = this.getAffectingOptionsInOldVersion(predBehavior.oldMethodSig, predBehavior.oldIndex);
@@ -148,8 +158,38 @@ public class ErrorDiagnoser {
 			}
 		}
 		
+		System.out.println("new conf maps: " + newConfMap);
+		
+		int threshold = 10000000;
+		for(ConfEntity e : oldConfMap.keySet()) {
+			if(oldConfMap.get(e) == null) {
+				continue;
+			}
+			if(oldConfMap.get(e) > threshold) {
+				oldConfMap.put(e, 0.0f);
+			} else {
+			    oldConfMap.put(e, oldConfMap.get(e)
+			    		+ (this.newRep.lookupConfEntity(e.getFullConfName()) == null ? 1.0f : 0.0f));
+			}
+		}
+		for(ConfEntity e : newConfMap.keySet()) {
+			if(newConfMap.get(e) == null) {
+				continue;
+			}
+			if(newConfMap.get(e) > threshold) {
+				newConfMap.put(e, 0.0f);
+			} else {
+				newConfMap.put(e, newConfMap.get(e) 
+						+ (this.oldRep.lookupConfEntity(e.getFullConfName()) == null ? 1.0f : 0.0f));
+			}
+		}
+		
+//		System.out.println("new conf maps: " + newConfMap);
+		
 		oldConfMap = Utils.sortByValue(oldConfMap, false);
 		newConfMap = Utils.sortByValue(newConfMap, false);
+		
+//		System.out.println("new conf maps after ranking: " + newConfMap);
 		
 		System.out.println(" ========= Dump the results =========");
 		System.out.println(" ========= old version =========");
@@ -158,11 +198,16 @@ public class ErrorDiagnoser {
 		}
 		System.out.println(" ========= new version =========");
 		for(ConfEntity e : newConfMap.keySet()) {
-			System.out.println(e.getConfName() + " => " + oldConfMap.get(e));
+			System.out.println(e.getConfName() + " => " + newConfMap.get(e));
 		}
 		
 		List<ConfEntity> list = new LinkedList<ConfEntity>();
 		return list;
+	}
+	
+	public void setFuzzMatching(boolean match) {
+		this.oldSliceOutput.setFuzzMatching(match);
+		this.newSliceOutput.setFuzzMatching(match);
 	}
 	
 	private ExecutionTrace createOldTrace() {

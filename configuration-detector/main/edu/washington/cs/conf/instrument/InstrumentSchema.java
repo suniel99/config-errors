@@ -103,6 +103,12 @@ public class InstrumentSchema {
 		}
 	}
 	
+	private boolean useFuzzMatching = false;
+	
+	public void setFuzzMatching(boolean fuzz) {
+		this.useFuzzMatching = fuzz;
+	}
+	
 	public Collection<ConfEntity> getAffectingConfOptions(String methodSig, int instructionIndex) {
 		Collection<ConfEntity> coll = new LinkedHashSet<ConfEntity>();
 		for(ConfEntity e : this.locations.keySet()) {
@@ -111,6 +117,15 @@ public class InstrumentSchema {
 				if(p.getMethodSig().equals(methodSig) && p.getInstructionIndex() == instructionIndex) {
 					isIn = true;
 					break;
+				}
+				if(useFuzzMatching) {
+					if(methodSig != null && methodSig.indexOf(".") != -1) {
+					    String clazz = methodSig.substring(0, methodSig.lastIndexOf("."));
+					    if(p.getMethodSig().startsWith(clazz)) {
+						    isIn = true;
+						    break;
+					    }
+					}
 				}
 			}
 			if(isIn) {
