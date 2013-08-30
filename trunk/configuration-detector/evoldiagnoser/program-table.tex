@@ -12,12 +12,12 @@
  %&  Options &  Options&  Options \\
  \hline
  \hline
- 1. Randoop& \CodeIn{usethreads} & \randoopoptnum & \randooprank &  & \x \\
- 2. Weka & \CodeIn{m\_numFolds} & \wekaoptnum &  \wekarank & & 1 \\
- 3. Synoptic& \CodeIn{dumpInitialGraphDotFile} & \synopticoptnum & \synopticrankfirst &  & \x \\
- 4. Synoptic& \CodeIn{dumpInitialGraphPngFile} &\synopticoptnum & \synopticranksecond &  & \x \\
- 5. JChord& \CodeIn{chord.ssa} & \jchordoptnum & \jchordrankfirst & & \x \\
- 6. JChord& \CodeIn{chord.print.methods} & \jchordoptnum & \jchordranksecond & & \x \\
+ 1. Randoop& \CodeIn{usethreads} & \randoopoptnum & \randooprank & \n & \x \\
+ 2. Weka & \CodeIn{m\_numFolds} & \wekaoptnum &  \wekarank & 9 & 1 \\
+ 3. Synoptic& \CodeIn{dumpInitialGraphDotFile} & \synopticoptnum & \synopticrankfirst & \n & \x \\
+ 4. Synoptic& \CodeIn{dumpInitialGraphPngFile} &\synopticoptnum & \synopticranksecond & \n & \x \\
+ 5. JChord& \CodeIn{chord.ssa} & \jchordoptnum & \jchordrankfirst & 3& \x \\
+ 6. JChord& \CodeIn{chord.print.methods} & \jchordoptnum & \jchordranksecond & \n & \x \\
  7. JMeter&\CodeIn{output\_format} & \jmeteroptnum & \jmeterrank & & \x \\
  8. Javalanche& \CodeIn{project.tests} &  \javalancheoptnum & \javalancherank& & \x \\
 \hline
@@ -36,6 +36,7 @@ Table~\ref{tab:experiment-sub}.
 Column ``Rank of the Root Cause Configuration Option'' shows the
 absolute rank of the actual root
 cause configuration option in each technique's output (lower is better).
+%``\N'' means the technique does not identify the root casue configuration options.
 ``\x'' means the technique is not applicable (i.e., requiring a crashing
 point), and ``\n'' means the technique does not identify the actual root cause.
 When computing the average rank, each ``\x'' or ``\n'' is treated as
