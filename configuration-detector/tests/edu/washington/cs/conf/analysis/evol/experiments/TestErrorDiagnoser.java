@@ -16,6 +16,27 @@ import junit.framework.TestCase;
 
 public class TestErrorDiagnoser extends TestCase {
 	
+	boolean useFullSlicing = false;
+	
+	public void setUp() {
+		if(useFullSlicing) {
+			System.err.println("Use full slicing in error diagnosis...");
+		    this.useFullSlicing();
+		}
+	}
+	
+	//just for experiment purpose
+	private void useFullSlicing() {
+		EvolConfOptionRepository.randoopOldCacheFile = EvolConfOptionRepository.randoopOldVersionFullSlicing;
+		EvolConfOptionRepository.randoopNewCacheFile = EvolConfOptionRepository.randoopNewVersionFullSlicing;
+		EvolConfOptionRepository.wekaOldCacheFile = EvolConfOptionRepository.wekaOldVersionFullSlicing;
+		EvolConfOptionRepository.wekaNewCacheFile = EvolConfOptionRepository.wekaNewVersionFullSlicing;
+		EvolConfOptionRepository.synopticOldCacheFile = EvolConfOptionRepository.synopticOldVersionFullSlicing;
+		EvolConfOptionRepository.synopticNewCacheFile = EvolConfOptionRepository.synopticNewVersionFullSlicing;
+		EvolConfOptionRepository.jchordOldCacheFile = EvolConfOptionRepository.jchordOldVersionFullSlicing;
+		EvolConfOptionRepository.jchordNewCacheFile = EvolConfOptionRepository.jchordNewVersionFullSlicing;
+	}
+	
 	public void testRandoop() {
 		ConfEntityRepository oldConf = EvolConfOptionRepository.randoopOldConfs();
 		ConfEntityRepository newConf = EvolConfOptionRepository.randoopNewConfs();
@@ -26,6 +47,7 @@ public class TestErrorDiagnoser extends TestCase {
 		TracesWrapper wrapper = TraceRepository.getRandoopTraces();
 		
 		ErrorDiagnoser diagnoser = new ErrorDiagnoser(oldConf, newConf, oldCoder, newCoder, wrapper);
+//		diagnoser.setOnlyUsePredicate(true); //just for experiments
 		diagnoser.diagnoseRootCauses();
 	}
 	
@@ -39,6 +61,7 @@ public class TestErrorDiagnoser extends TestCase {
 		TracesWrapper wrapper = TraceRepository.getWekaTraces();
 		
 		ErrorDiagnoser diagnoser = new ErrorDiagnoser(oldConf, newConf, oldCoder, newCoder, wrapper);
+//		diagnoser.setOnlyUsePredicate(true);
 		diagnoser.diagnoseRootCauses();
 	}
 	
@@ -52,6 +75,7 @@ public class TestErrorDiagnoser extends TestCase {
 		TracesWrapper wrapper = TraceRepository.getSynopticTraces();
 		
 		ErrorDiagnoser diagnoser = new ErrorDiagnoser(oldConf, newConf, oldCoder, newCoder, wrapper);
+//		diagnoser.setOnlyUsePredicate(true);
 		diagnoser.diagnoseRootCauses();
 	}
 	
@@ -65,6 +89,7 @@ public class TestErrorDiagnoser extends TestCase {
 		TracesWrapper wrapper = TraceRepository.getJMeterTraces();
 		
 		ErrorDiagnoser diagnoser = new ErrorDiagnoser(oldConf, newConf, oldCoder, newCoder, wrapper);
+//		diagnoser.setOnlyUsePredicate(true);
 		diagnoser.diagnoseRootCauses();
 	}
 	
@@ -89,6 +114,7 @@ public class TestErrorDiagnoser extends TestCase {
 		TracesWrapper wrapper = TraceRepository.getChordTraces_SSA();
 		
 		ErrorDiagnoser diagnoser = new ErrorDiagnoser(oldConf, newConf, oldCoder, newCoder, wrapper);
+//		diagnoser.setOnlyUsePredicate(true);
 		diagnoser.diagnoseRootCauses();
 	}
 	
@@ -112,8 +138,10 @@ public class TestErrorDiagnoser extends TestCase {
 		TracesWrapper wrapper = TraceRepository.getChordTraces_Print();
 		
 		ErrorDiagnoser diagnoser = new ErrorDiagnoser(oldConf, newConf, oldCoder, newCoder, wrapper);
+//		diagnoser.setOnlyUsePredicate(true);
 		diagnoser.diagnoseRootCauses();
 	}
+	
 	
 	public void testJavalanche() {
 		ConfEntityRepository oldConf = EvolConfOptionRepository.javalancheOldConfs();
@@ -125,6 +153,8 @@ public class TestErrorDiagnoser extends TestCase {
 		TracesWrapper wrapper = TraceRepository.getJavalancheTraces();
 		
 		ErrorDiagnoser diagnoser = new ErrorDiagnoser(oldConf, newConf, oldCoder, newCoder, wrapper);
+		diagnoser.setFuzzMatching(true);
+//		diagnoser.setOnlyUsePredicate(true);
 		diagnoser.diagnoseRootCauses();
 	}
 
