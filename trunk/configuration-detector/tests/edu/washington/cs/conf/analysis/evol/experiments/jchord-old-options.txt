@@ -20,6 +20,7 @@ chord.project.Config#checkExcludeStr#true
 chord.project.Config#buildScope#true
 chord.project.Config#useJvmti#true
 chord.project.Config#printClasses#true
+chord.project.Config#printMethods#true
 chord.project.Config#printAllClasses#true
 chord.project.Config#userClassesDirName#true
 chord.project.Config#instrSchemeFileName#true

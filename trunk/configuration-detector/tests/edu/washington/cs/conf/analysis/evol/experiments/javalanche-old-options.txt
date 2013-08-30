@@ -1,8 +1,6 @@
 de.unisb.cs.st.javalanche.mutation.properties.MutationProperties#STOP_AFTER_FIRST_FAIL#true
 de.unisb.cs.st.javalanche.mutation.properties.MutationProperties#OUTPUT_DIR#true
 de.unisb.cs.st.javalanche.mutation.properties.MutationProperties#MUTATION_FILE_NAME#true
-de.unisb.cs.st.javalanche.mutation.properties.MutationProperties#IGNORE_MESSAGES#true
-de.unisb.cs.st.javalanche.mutation.properties.MutationProperties#IGNORE_EXCEPTION_TRACES#true
 de.unisb.cs.st.javalanche.mutation.properties.MutationProperties#PROJECT_PREFIX#true
 de.unisb.cs.st.javalanche.mutation.properties.MutationProperties#TEST_SUITE#true
 de.unisb.cs.st.javalanche.mutation.properties.MutationProperties#TEST_METHODS#true
@@ -25,3 +23,5 @@ de.unisb.cs.st.javalanche.mutation.properties.MutationProperties#MULTIPLE_MAKEFI
 de.unisb.cs.st.javalanche.mutation.properties.MutationProperties#TEST_FILTER_FILE_NAME#true
 de.unisb.cs.st.javalanche.mutation.properties.MutationProperties#EXPERIMENT_DATA_FILENAME#true
 de.unisb.cs.st.javalanche.mutation.properties.MutationProperties#MUTATION_PRINT_STATEMENTS_ENABLED#true
+de.unisb.cs.st.javalanche.mutation.properties.MutationProperties#IGNORE_MESSAGES#true
+de.unisb.cs.st.javalanche.mutation.properties.MutationProperties#IGNORE_EXCEPTION_TRACES#true

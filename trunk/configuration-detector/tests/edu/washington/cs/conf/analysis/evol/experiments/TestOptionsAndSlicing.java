@@ -47,7 +47,7 @@ public class TestOptionsAndSlicing extends TestCase {
 		}
 		
 		String saveFileName = EvolConfOptionRepository.wekaOldCacheFile;
-		this.saveAndCheckSlicingResult(saveFileName, outputs);
+		saveAndCheckSlicingResult(saveFileName, outputs);
 	}
 	
 	public void testWekaNewOptions() {
@@ -66,7 +66,7 @@ public class TestOptionsAndSlicing extends TestCase {
 		}
 		
 		String saveFileName = EvolConfOptionRepository.wekaNewCacheFile;
-		this.saveAndCheckSlicingResult(saveFileName, outputs);
+		saveAndCheckSlicingResult(saveFileName, outputs);
 	}
 	
 	//some unreachable options are exluded in the file
@@ -83,7 +83,7 @@ public class TestOptionsAndSlicing extends TestCase {
 		}
 		
 		String saveFileName = EvolConfOptionRepository.randoopOldCacheFile;
-		this.saveAndCheckSlicingResult(saveFileName, outputs);
+		saveAndCheckSlicingResult(saveFileName, outputs);
 	}
 	
 	public void testRandoopNewOptions() {
@@ -103,7 +103,7 @@ public class TestOptionsAndSlicing extends TestCase {
 		}
 		
 		String saveFileName = EvolConfOptionRepository.randoopNewCacheFile;
-		this.saveAndCheckSlicingResult(saveFileName, outputs);
+		saveAndCheckSlicingResult(saveFileName, outputs);
 	}
 	
 	public void testSynopticOldOptions() {
@@ -119,7 +119,7 @@ public class TestOptionsAndSlicing extends TestCase {
 		}
 		
 		String saveFileName = EvolConfOptionRepository.synopticOldCacheFile;
-		this.saveAndCheckSlicingResult(saveFileName, outputs);
+		saveAndCheckSlicingResult(saveFileName, outputs);
 	}
 	
 	public void testSynopticNewOptions() {
@@ -141,7 +141,7 @@ public class TestOptionsAndSlicing extends TestCase {
 		}
 		
 		String saveFileName = EvolConfOptionRepository.synopticNewCacheFile;
-		this.saveAndCheckSlicingResult(saveFileName, outputs);
+		saveAndCheckSlicingResult(saveFileName, outputs);
 	}
 	
 	public void testJMeterOldOptions() {
@@ -161,7 +161,7 @@ public class TestOptionsAndSlicing extends TestCase {
 		}
 		
 		String saveFileName = EvolConfOptionRepository.jmeterOldCacheFile;
-		this.saveAndCheckSlicingResult(saveFileName, outputs);
+		saveAndCheckSlicingResult(saveFileName, outputs);
 	}
 	
 	public void testJMeterNewOptions() {
@@ -184,7 +184,7 @@ public class TestOptionsAndSlicing extends TestCase {
 		}
 		
 		String saveFileName = EvolConfOptionRepository.jmeterNewCacheFile;
-		this.saveAndCheckSlicingResult(saveFileName, outputs);
+		saveAndCheckSlicingResult(saveFileName, outputs);
 	}
 	
 	public void testJChordOldOptions() {
@@ -206,7 +206,7 @@ public class TestOptionsAndSlicing extends TestCase {
 		}
 		
 		String saveFileName = EvolConfOptionRepository.jchordOldCacheFile;
-		this.saveAndCheckSlicingResult(saveFileName, outputs);
+		saveAndCheckSlicingResult(saveFileName, outputs);
 	}
 	
 	public void testJChordNewOptions() {
@@ -228,7 +228,7 @@ public class TestOptionsAndSlicing extends TestCase {
 		}
 		
 		String saveFileName = EvolConfOptionRepository.jchordNewCacheFile;
-		this.saveAndCheckSlicingResult(saveFileName, outputs);
+		saveAndCheckSlicingResult(saveFileName, outputs);
 	}
 
 	public void testJavalancheOldOptions() {
@@ -269,7 +269,7 @@ public class TestOptionsAndSlicing extends TestCase {
 		}
 		
 		String saveFileName = EvolConfOptionRepository.javalancheOldCacheFile;
-		this.saveAndCheckSlicingResult(saveFileName, outputs);
+		saveAndCheckSlicingResult(saveFileName, outputs);
 	}
 	
 	public void testJavalancheNewOptions() {
@@ -304,10 +304,33 @@ public class TestOptionsAndSlicing extends TestCase {
 		}
 		
 		String saveFileName = EvolConfOptionRepository.javalancheNewCacheFile;
-		this.saveAndCheckSlicingResult(saveFileName, outputs);
+		saveAndCheckSlicingResult(saveFileName, outputs);
 	}
 	
-	private void saveAndCheckSlicingResult(String saveFileName, Collection<ConfPropOutput> outputs) {
+	public void testCheckJavalancheSlicing() {
+//		String saveFileName = EvolConfOptionRepository.javalancheNewCacheFile;
+		String saveFileName = EvolConfOptionRepository.javalancheOldCacheFile;
+		InstrumentSchema schema = ConfOutputSerializer.deserializeAsSchema(saveFileName);
+		Map<ConfEntity, Collection<ShrikePoint>> locations = schema.getLocations();
+		//see the conf entity
+		for(ConfEntity e : locations.keySet()) {
+			boolean has = false;
+//			if(!e.getConfName().startsWith("test")) {
+//				continue;
+//			}
+			System.out.println(e);
+			for(ShrikePoint p : locations.get(e)) {
+				if(p.getMethodSig().startsWith("de.unisb")) {
+				    System.out.println("   " + p);
+				}
+			}
+//			if(has) {
+//				System.out.println(e);
+//			}
+		}
+	}
+	
+	static void saveAndCheckSlicingResult(String saveFileName, Collection<ConfPropOutput> outputs) {
 		InstrumentSchema schema = new InstrumentSchema();
 		schema.setType(TYPE.ALL_PRED_STMT);
 		schema.addInstrumentationPoint(outputs);
