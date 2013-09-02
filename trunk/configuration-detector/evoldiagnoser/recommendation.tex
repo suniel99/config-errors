@@ -7,12 +7,14 @@
 
 \input{diagalgorithm.tex}
 
-In this step, \ourtool links the control flow differences
+In this step, \ourtool attributes the control flow differences
 to one or more root cause configuration options.
 The key idea is to identify configuration options that
 may affect the behaviorally-deviated predicates, and then rank
-these options by the \todo{This phrase isn't clear:}degree of how they may cause
-the differences.
+these options by the deviation value (computed by the
+{deviation} method in Figure~\ref{fig:recommend})
+and the number of executed statements they control (computed
+by the {getExecutedStmtNum} auxiliary method in Figure~\ref{fig:recommend}).
 
 %\subsubsection{Attributing Trace Differences to Configuration Options}
 
@@ -52,10 +54,9 @@ configuration option with a weight, which represents the strength of
 the causal relationship between the configuration option
 and the execution differences.
 A larger weight value indicates that a configuration option
-can potentially affect more statements within the control
+can potentially attributes more to the control
 flow differences as its value propagates in the program, and thus
-the configuration option is more likely
-to be the root cause.
+the configuration option is more likely to be the root cause.
 %which is the number
 %of affected statements, as its effects propagates
 %in the program.  The weight. 
@@ -66,20 +67,22 @@ to be the root cause.
 
 Figure~\ref{fig:recommend} sketches the configuration option
 recommendation algorithm.
-For each predicate with different behaviors between two
-versions, \ourtool first attributes the control flow difference 
-to its affecting configuration options (lines 5 and 12). Then,
-\ourtool computes a value for each configuration option, by summing
-the results of multiplying the deviation value of each affected
-predicate with the number of
-executed statements determined by that predicate (lines 6 and 13).
-To compute the number of executed statements dominated by a predicate,
-\ourtool first statically examines the source code to compute
-the immediate post-dominant statement of a predicate, and then
-analyzes the execution trace to count the number of statements that
+For each predicate in both versions,
+\ourtool first attributes the control flow difference 
+to its affecting configuration options (lines 4 and 12). Then,
+\ourtool computes the number of executed statements controlled
+by that predicate (lines 5 and 13). To obtain the number of
+executed statements controlled by a predicate,
+the getExecutedStmtNum method first statically examines the
+source code to compute the immediate post-dominant statement
+of a predicate, and then traverses the execution trace to count
+the number of statements that
 are executed between the predicate and its post-dominant
 statement. 
-
+\ourtool mulitples the a predicate's cross-version deviation value 
+with the number of executed statements, and updates the
+weight of each affecting configuration option (lines 5--8
+and 13--16).
 %\ourtool first iterates each predicate pair with different
 %behaviors between two versions (line 2), and then attribute
 %the behavior difference to its affecting configuration options (lines 4--17).
@@ -91,21 +94,29 @@ statement.
 %is accumulated by summing up the result of multiplying the
 %deviation value of its affected predicate with the number of
 %executed statements determined by that predicate (lines 6 and 13).
+Finally, \ourtool ranks all affecting configuration options
+in decreasing order, and outputs a ranked list of suspicious
+options that might be responsible for the
+behavior differences (line 18). 
 
-\ourtool outputs a ranked list of
-configuration options that might be responsible for the
-behavior differences. In the output list, if an option affects 
-a predicates in the old program version,
-it indicates that option may have a different effect on the new
-version (e.g., the option has
-been renamed), and the user should switch to a different option.
-If an option affects predicates in the new version or in both
-versions, it indicates that the user should change its
-existing value.
+In \ourtool, if two configuration options have the
+same weights, \ourtool prefers the configuration option
+having more statements in its thin slice. This heuristic
+is based on the intuition that configuration options affecting
+more statements seem more likely to be relevant to the behavior
+differences.
 
-\todo{need more clarification of above.}
+%In the output list, if an option affects 
+%a predicates in the old program version,
+%it indicates that option may have a different effect on the new
+%version (e.g., the option has
+%been renamed), and the user should switch to a different option.
+%If an option affects predicates in the new version or in both
+%versions, it indicates that the user should change its
+%existing value.
 
-\todo{say how to break a tie, options in one version but not another}
+%\todo{need more clarification of above.}
+
 
 %Finally, the algorithm sums
 %first summing

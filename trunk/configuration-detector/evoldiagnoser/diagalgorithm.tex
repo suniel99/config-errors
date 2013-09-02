@@ -2,48 +2,69 @@
 \begin{figure}[t]
 \textbf{Auxiliary methods:}
 
-\quad getAffectingOptions($\mathit{p}$, $\mathit{V}$): return all
-configuration options that may affect predicate $\mathit{p}$ in the software version $\mathit{V}$
-\todo{Is this thin slicing?  If so, say so to clarify.}
+\quad getPredicates($\mathit{T}$): returns all executed predicates in the execution trace $\mathit{T}$.
 
-\quad getExecutedStmtNum($\mathit{p}$, $\mathit{V}$, $\mathit{T}$): return the number of executed statements (determined by predicate $\mathit{p}$) in trace $\mathit{T}$
-\todo{I'm not sure what this means.  By ``determined'', do you mean ``controlled''?}
+\quad getAffectingOptions($\mathit{p}$, $\mathit{V}$): uses thin slicing~\cite{Sridharan:2007} to compute all configuration options that may affect predicate $\mathit{p}$ in the software version $\mathit{V}$. 
 
-\textbf{Input}: two software version: $\mathit{V_{old}}$ and $\mathit{V_{new}}$, 
+\quad getExecutedStmtNum($\mathit{p}$, $\mathit{V}$, $\mathit{T}$): return the number of executed statements (controlled by predicate $\mathit{p}$) in trace $\mathit{T}$
 
-\quad the map of all behaviorally-deviated predicates: $\mathit{predMap}$, produced by Figure~\ref{fig:identify}.
+\textbf{Input}: two software versions: $\mathit{V_{old}}$ and $\mathit{V_{new}}$. 
+
+\quad two execution traces: $\mathit{T_{old}}$ and $\mathit{T_{new}}$, on both versions.
+
+\quad a map of matched statements between $\mathit{V_{old}}$ and $\mathit{V_{new}}$ : $\mathit{stmtMap}$.
 
 \textbf{Output}: {a ranked list of likely root cause configuration options}
+
+\vspace{1mm}
+
+deviation($\mathit{p_{1}}$, $\mathit{T_1}$, $\mathit{p_{2}}$, $\mathit{T_2}$):\\
 \vspace{-4mm}%
-recommendOptions($\mathit{V_{old}}$, $\mathit{V_{new}}$, $\mathit{predMap}$)\\
 \begin{algorithmic}[1]
-\STATE $\mathit{optionMap}$ $\leftarrow$ new Map$\langle$Option, Float$\rangle$
-\FOR{each $\langle$$\mathit{p_{old}}$, $\mathit{p_{new}}$$\rangle$ in $\mathit{predMap}$.keys()}
-\STATE $\mathit{v}$ $\leftarrow$ $\mathit{predMap}$[$\langle$$\mathit{p_{old}}$, $\mathit{p_{new}}$$\rangle$]
-\IF{$\mathit{p_{old}}$ $\neq$ $\mathit{null}$}
+\STATE $\mathit{result} \leftarrow$ $|$$\phi$($\mathit{p_{1}}$, $\mathit{T_1}$) - $\phi$($\mathit{p_{2}}$, $\mathit{T_2}$)$|$\\
+\COMMENT{$\delta$ is a pre-defined threshold with default value: 0.1}
+\IF{$\mathit{result}$ < $\delta$}
+\STATE $\mathit{result}$ = 0
+\ENDIF
+\RETURN $\mathit{result}$
+\end{algorithmic}
+
+recommendOptions($\mathit{T_{old}}$, $\mathit{T_{new}}$, $\mathit{V_{old}}$, $\mathit{V_{new}}$, $\mathit{predMap}$)\\
+\vspace{-4mm}%
+\begin{algorithmic}[1]
+\STATE $\mathit{optionMap}$ $\leftarrow$ new Map$\langle$Option, Float$\rangle$\\
+\COMMENT{Each entry of $\mathit{optionMap}$ is initialized to 0.}
+\FOR{each $\mathit{p_{old}}$ in getPredicates($\mathit{V_{old}}$)}
+\STATE $\mathit{v} \leftarrow$ deviation($\mathit{p_{old}}$, $\mathit{T_{old}}$, $\mathit{stmtMap}$[$\mathit{p_{old}}$], $\mathit{T_{new}}$)
 \STATE $\mathit{options_{old}}$ $\leftarrow$ getAffectingOptions($\mathit{p_{old}}$, $\mathit{V_{old}}$)
 \STATE $\mathit{v}$ $\leftarrow$ $\mathit{v}$ $\times$ getExecutedStmtNum($\mathit{p_{old}}$, $\mathit{V_{old}}$, $\mathit{T_{old}}$)
 \FOR{each Option $\mathit{option}$ in $\mathit{options_{old}}$}
 \STATE $\mathit{optionMap}$[$\mathit{option}$] $\leftarrow$ $\mathit{optionMap}$[$\mathit{option}$] + $\mathit{v}$
 \ENDFOR
-\ENDIF
-\IF{$\mathit{p_{new}}$ $\neq$ $\mathit{null}$}
+\ENDFOR
+\FOR{each $\mathit{p_{new}}$ in getPredicates($V_{new}$)}
+\STATE $\mathit{v} \leftarrow$ deviation($\mathit{stmtMap^{-1}}$[$\mathit{p_{new}}$], $\mathit{p_{new}}$, $\mathit{T_{old}}$, $\mathit{T_{new}}$)
 \STATE $\mathit{options_{new}}$ $\leftarrow$ getAffectingOptions($\mathit{p_{new}}$, $\mathit{V_{new}}$)
 \STATE $\mathit{v}$ $\leftarrow$ $\mathit{v}$ $\times$ getExecutedStmtNum($\mathit{p_{new}}$, $\mathit{V_{new}}$, $\mathit{T_{new}}$)
 \FOR{each Option $\mathit{option}$ in $\mathit{options_{new}}$}
 \STATE $\mathit{optionMap}$[$\mathit{option}$] $\leftarrow$ $\mathit{optionMap}$[$\mathit{option}$] + $\mathit{v}$
 \ENDFOR
-\ENDIF
 \ENDFOR
 \RETURN $\mathit{optionMap}$.sortedKeys()
 \vspace{-2mm}
 \end{algorithmic}
 \caption{Algorithm for recommending configuration options.
+Method deviation is a helper method to compute the deviation
+degree between two predicates $\mathit{p_1}$ and $\mathit{p_2}$, and function $\phi$
+used in deviation is defined in Section~\ref{sec:identify_diff}.
 \label{fig:recommend}
 }
 
-\todo{Each entry of optionMap needs to be initialized to 0.}
 
+\end{figure}
+
+\begin{comment}
+\todo{Each entry of optionMap needs to be initialized to 0.}
 \todo{The algorithm of Figure~\ref{fig:recommend}, together with that of
   Figure~\ref{fig:identify}, seem too complicated to me.  For example,
   pairs are put in predMap, but the correspondence between the elements of
@@ -68,8 +89,5 @@ recommendOptions(V_old, V_new, stmtMap)
     ... [lines 12-16 of current algorithm]
   return optionMap.sortedKey()
 \end{Verbatim}
-
-\end{figure}
-
-
+\end{comment}
 %  LocalWords:  getAffectingOptions getExecutedStmtNum recommendOptions

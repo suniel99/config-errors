@@ -1,17 +1,30 @@
 \begin{figure}[t]
 \textbf{Axuiliary methods}:
 
-sameStatement($\mathit{s}$, $\mathit{s'}$): return whether two statements
-$\mathit{s}$ and $\mathit{s'}$ are the same statements. \todo{What does
-  ``same statement'' mean?  The same source code?  The same subexpressions
-  too? (For example, does this return true for if statement only if the
-  predicate, then clause, and else clause are all identical?)}
+matched($\mathit{s}$, $\mathit{s'}$): return whether two statements
+$\mathit{s}$ and $\mathit{s'}$ are matched. Details are explained
+in Section~\ref{sec:comparison}.
+%\todo{What does
+%  ``same statement'' mean?  The same source code?  The same subexpressions
+%  too? (For example, does this return true for if statement only if the
+%  predicate, then clause, and else clause are all identical?)}
 
-BFS($\mathit{s}$, $\mathit{cfg}$): return an ordered list of reachable successive statements from statement $\mathit{s}$ in $\mathit{cfg}$ by Breath-First Search (BFS).
+BFS($\mathit{s}$, $\mathit{cfg}$, $\mathit{d}$): return an ordered list of reachable successive statements from statement $\mathit{s}$ in $\mathit{cfg}$ by Breath-First Search (BFS) within $\mathit{d}$ steps.
 
-firstMatch($\mathit{stmtList_1}$, $\mathit{stmtList_2}$): return the first matched statement pair between $\mathit{stmtList_1}$ and $\mathit{stmtList_2}$ (iterating $\mathit{stmtList_1}$ first).
-\todo{What is a ``matched statement pair''?  Is it a recursive call to this
-algorithm, matchedStatements()?}
+firstMatchedPair($\mathit{stmtList_1}$, $\mathit{stmtList_2}$): returns the first matched statement pair $\langle$$\mathit{s}$, $\mathit{s'}$$\rangle$ such that $\mathit{s} \in \mathit{stmtList_1}$, $\mathit{s'} \in \mathit{stmtList_2}$, and matched($\mathit{s}, \mathit{s'}$) returns true. Returns null if no such pair exists.
+
+% (iterating $\mathit{stmtList_1}$ first).
+%\begin{algorithmic}[1]
+%\FOR{each statement $\mathit{s}$ in $\mathit{stmtList_1}$}
+%\FOR{each statement $\mathit{s'}$ in $\mathit{stmtList_2}$}
+%\IF{matched($\mathit{s}$, $\mathit{s'}$)}
+%\RETURN $\langle$$\mathit{s}$, $\mathit{s'}$$\rangle$
+%\ENDIF
+%\ENDFOR
+%\ENDFOR
+%\RETURN null
+%\end{algorithmic}
+
 
 
 \textbf{Input}: two methods from two software versions: $\mathit{m_{old}}$ and $m_{new}$,
@@ -21,10 +34,10 @@ algorithm, matchedStatements()?}
 \vspace{-4mm}%
 matchStatements($\mathit{m_{old}}$, $\mathit{m_{new}}$, $\mathit{lh}$)\\
 \begin{algorithmic}[1]
-\STATE $\mathit{matchedStmts}$ $\leftarrow$ new Map$\langle$Stmt, Stmt$\rangle$
+\STATE $\mathit{matchedStmts}$ $\leftarrow$ new Map$\langle$Statement, Statement$\rangle$
 \STATE $\mathit{cfg_{old}}$ $\leftarrow$ constructControlFlowGraph($\mathit{m_{old}}$)
 \STATE $\mathit{cfg_{new}}$ $\leftarrow$ constructControlFlowGraph($\mathit{m_{new}}$)
-\STATE $\mathit{stack}$ $\leftarrow$ new Stack$\langle$Pair$\langle$Stmt, Stmt$\rangle$$\rangle$
+\STATE $\mathit{stack}$ $\leftarrow$ new Stack$\langle$Pair$\langle$Statement, Statement$\rangle$$\rangle$
 \STATE $\mathit{stack}$.push($\mathit{cfg_{old}}$.$\mathit{entry}$, $\mathit{cfg_{new}}$.$\mathit{entry}$)
 \WHILE{$\mathit{stack}$ is not empty}
 \STATE $\langle$$\mathit{stmt_{old}}$, $\mathit{stmt_{new}}$$\rangle$ $\leftarrow$ $\mathit{stack}$.pop()
@@ -32,25 +45,36 @@ matchStatements($\mathit{m_{old}}$, $\mathit{m_{new}}$, $\mathit{lh}$)\\
 \IF{$\mathit{matchedStmts}$.keys().contains($\mathit{stmt_{old}}$) \\ \quad || $\mathit{matchedStmts}$.values().contains($\mathit{stmt_{new}}$)}
 \STATE \textbf{continue}
 \ENDIF
-\IF{sameStatement($\mathit{stmt_{old}}$, $\mathit{stmt_{new}}$)}
+\STATE $\mathit{matchedPair}$ $\leftarrow$ null
+\IF{matched($\mathit{stmt_{old}}$, $\mathit{stmt_{new}}$)}
 \STATE $\mathit{matchedStmts}$[$\mathit{stmt_{old}}$] $\leftarrow$ $\mathit{stmt_{new}}$
+\STATE $\mathit{matchedPair}$ $\leftarrow$ $\langle$$\mathit{stmt_{old}}$, $\mathit{stmt_{new}}$$\rangle$
 \ELSE
-\STATE $\mathit{stmtList_{old}}$ $\leftarrow$ BFS($\mathit{stmt_{old}}$, $\mathit{lh}$)
-\STATE $\mathit{stmtList_{new}}$ $\leftarrow$ BFS($\mathit{stmt_{new}}$, $\mathit{lh}$)
-\STATE $\langle$$\mathit{stmt_{old}}$, $\mathit{stmt_{new}}$$\rangle$ $\leftarrow$ firstMatch($\mathit{stmtList_{old}}$, $\mathit{stmtList_{new}}$)
-\IF{$\langle$$\mathit{stmt_{old}}$, $\mathit{stmt_{new}}$$\rangle$ $\neq$ null}
-\STATE $\mathit{stack}$.push($\langle$$\mathit{stmt_{old}}$, $\mathit{stmt_{new}}$$\rangle$)
+\STATE $\mathit{stmtList_{old}}$ $\leftarrow$ BFS($\mathit{stmt_{old}}$, $\mathit{cfg_{old}}$, $\mathit{lh}$)
+\STATE $\mathit{stmtList_{new}}$ $\leftarrow$ BFS($\mathit{stmt_{new}}$, $\mathit{cfg_{new}}$, $\mathit{lh}$)
+\STATE $\langle$$\mathit{s_{old}}$, $\mathit{s_{new}}$$\rangle$ $\leftarrow$ firstMatchedPair($\mathit{stmtList_{old}}$, $\mathit{stmtList_{new}}$)
+\IF{$\langle$$\mathit{s_{old}}$, $\mathit{s_{new}}$$\rangle$ $\neq$ null}
+\STATE $\mathit{matchedStmts}$[$\mathit{s_{old}}$] $\leftarrow$ $\mathit{s_{new}}$
+\STATE $\mathit{matchedPair}$ $\leftarrow$ $\langle$$\mathit{s_{old}}$, $\mathit{s_{new}}$$\rangle$
+%\STATE $\mathit{stack}$.push($\langle$$\mathit{stmt_{old}}$, $\mathit{stmt_{new}}$$\rangle$)
 \ENDIF
+\ENDIF
+\IF{$\mathit{matchedPair}$ $\neq$ null}
+\FOR{each $\mathit{s}$ in BFS($\mathit{matchedPair}$.first(), $\mathit{cfg_{old}}$, 1)}
+\FOR{each $\mathit{s'}$ in BFS($\mathit{matchedPair}$.second(), $\mathit{cfg_{new}}$, 1)}
+\STATE $\mathit{stack}$.push($\langle$$\mathit{s}$, $\mathit{s'}$$\rangle$)
+\ENDFOR
+\ENDFOR
 \ENDIF
 \ENDWHILE
 \RETURN $\mathit{matchedStmts}$
 \end{algorithmic}
-\vspace{-4mm}
+\vspace{-2mm}
 \caption{Algorithm for matching statements from two methods.
 \label{fig:matching}
-\todo{This algorithm is suspicious to me.  For one thing, the size of the
-  stack is always $\le 1$ --- why use a stack in that case?  For another
-  thing, as soon as \emph{any} statement satisfies sameStatement(), then
-  the algorithm terminates.  Is there a bug in the algorithm?}
+%\todo{This algorithm is suspicious to me.  For one thing, the size of the
+%  stack is always $\le 1$ --- why use a stack in that case?  For another
+%  thing, as soon as \emph{any} statement satisfies sameStatement(), then
+%  the algorithm terminates.  Is there a bug in the algorithm?}
 }
 \end{figure}

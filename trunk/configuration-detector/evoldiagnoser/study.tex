@@ -87,10 +87,11 @@ for the selected versions.
 \Caption{{\label{tab:options} The total number of new, deleted,
 and modified configuration options for each subject program
 in the studied versions.
-\todo{Are the added options interesting from the point of view of this
-  paper?  They never contribute to configuration errors, do they?  If so,
-  explain.  If not, remove them from all the tables.}
-}}
+%\todo{Are the added options interesting from the point of view of this
+%  paper?  They never contribute to configuration errors, do they?  If so,
+%  explain.  If not, remove them from all the tables.}
+}
+}
 \end{table}
 
 
@@ -161,7 +162,7 @@ each type (Table~\ref{tab:conftypes}).}}
 
 
 Table~\ref{tab:subjects} lists
-\studysubjnum\todo{The table contains only 8, not 9.} open-source configurable systems used in our
+\studysubjnum open-source configurable systems used in our
 study.
 % The \studysubjnum subjects contains
 % three C/C++ software systems and six Java software systems.
@@ -183,11 +184,11 @@ a considerable amount of time for the selected versions ({2--6} years).
 
 In our study, %rather than searching bug repositories,
 we manually examined the revision history of each subject program,
-and searched for a set of 4 keywords (``add option'',
+and searched for a set of 5 keywords (``configuration option'', ``add option'',
 ``delete option'', ``rename option'', and ``change option'')
 in commit messages as well as in the change logs.
-\todo{How many total commit messages and change log entries (out of how
-  many total) were matched by the search?}
+We searched \todo{xx} commit messages and \todo{xx} change log entries, in
+which \todo{yy} commit messages and \todo{yy} change log entries were matched.
 For each match, we read the description of the change,
 and the ``diff'' of the original file to check whether
 the change is made to a configuration option.
@@ -214,7 +215,9 @@ in Table~\ref{tab:conftypes} (each change belongs to a single category).
 As shown in Table~\ref{tab:options}, configuration changes occur
 in the evolution of every subject program. In fact, they occur in
 every revision of each subject program (not shown in Table~\ref{tab:options},
-due to space limit). 
+due to space limit).  
+%During software evolution, 
+%developers frequently add \todo{xx}
 
 As shown in Table~\ref{tab:categories},
 feature-related configuration changes are the largest group across
@@ -223,18 +226,27 @@ adding new configuration options to customize a program's
 functionality, deleting existing options, or modifying the default
 value of an option. 
 
-Regarding the impact of configuration changes, 
-in comparison to software regression bugs that have well-maintained
-bug databases, finding documented configuration errors
-is much harder, mainly
-because configuration errors usually have not been
-documented rigorously~\cite{Yin:2011:ESC}. Sometimes, after a
-session of code changes, when
-regression tests pass, developers may simply treat the
-software behaviors as having been validated. Further,
-because the description of software misconfigurations is user-driven,
-the ``fixes'' may be recorded simply as pointers
-to manuals and best-practice documents.
+Configuration evolution can have unexpected impact to
+program behaviors. After configuration changes, reusing
+the existing configuration for an old software version
+may yield a misconfiguration, causing different results
+on the new version. In our study, we found adding
+new configuration options is less likely to cause
+a configuration errors, since most of the added options are
+used in new software features, which are not available in
+the old version. Some new added options are introduced
+to improve existing features, but they are disabled by
+default and will not have any effects on the new program
+version unless explicitly turned on. For the deleted
+and modified options, they are more likely to affect a
+program's existing behavior. Described in
+Section~\ref{sec:evaluation}, we reproduced \errornum
+user-visible misconfigurations caused by these
+deleted or modified options in the 5 Java programs in Table~\ref{tab:options},
+by simply following the change description and user manual.
+
+
+%Regarding the impact of configuration changes, 
 
 % \todo{I would cut this entire paragraph.  I don't see it as contributing much.}
 % \todo{need a transition sentence here. do not claim much
