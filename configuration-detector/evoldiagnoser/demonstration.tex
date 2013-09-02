@@ -20,16 +20,18 @@ following statement or not.
 
 \item For each of the other statements, \ourtool inserts
 one probe before it to monitor whether the statement
-gets executed or not at runtime.
+gets executed or not at runtime. The statement execution
+information is used to calculate the number of executed
+statements controlled by a predicate (Section~\ref{sec:rootcause}).
 
-\todo{This seems excessively inefficient.  The probe should only be
-  necessary at the start of each basic block, unless you are concerned
-  about exceptions.}
+%\todo{This seems excessively inefficient.  The probe should only be
+%  necessary at the start of each basic block, unless you are concerned
+%  about exceptions.}
 
-\todo{Where is this information about non-predicate statements used?  I see
-  that the algorithm uses the true ratio for predicates, but not where it
-  uses the number of executions for arbitrary statements.  Oh, maybe it's
-  used in getExecutedStmtNum, but that isn't clear.}
+%\todo{Where is this information about non-predicate statements used?  I see
+%  that the algorithm uses the true ratio for predicates, but not where it
+%  uses the number of executions for arbitrary statements.  Oh, maybe it's
+%  used in getExecutedStmtNum, but that isn't clear.}
 
 \end{itemize}
 

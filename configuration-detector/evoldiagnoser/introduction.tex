@@ -11,7 +11,7 @@ behaviors.
 
 Software configuration errors are errors in which
 the application code and the input are correct, but the software is
-configured so that it does not behave
+misconfigured so that it does not behave
 as desired by the end-user. Such errors may lead software to crash,
 produce erroneous output, or simply perform poorly.
 In practice, software configuration
@@ -26,7 +26,7 @@ showed that software misconfigurations accounted for
 the majority of all user-visible failures~\cite{bft}. Another
 recent study analyzed reported problems of a commercial
 storage company, and found configuration-related issues
-caused about 31\% of all user-visible failures~\cite{Yin:2011:ESC}.
+caused about 31\% of all failures~\cite{Yin:2011:ESC}.
 Further, as described in a recent article about system deployment experience
 in Google, the vast majority of production failures (in Google)
 arise not due to bugs in the software, but bugs in the
@@ -199,10 +199,10 @@ program versions.
 the control flow differences. In particular, \ourtool
 identifies program predicates that behave
 differently between two versions. These
-behaviorally-different predicates
+behaviorally-different predicates and their
+affected program statements
 provide evidence about what parts of a program might
-be behaving abnormally
-and why.
+be behaving abnormally and why.
 
 \item \textbf{Configuration Option Recommendation.} 
 \ourtool uses a lightweight static dependence analysis
@@ -274,11 +274,10 @@ from \subjnum open-source configurable Java software systems.
 We used \ourtool to recommend configuration options whose values
 can be changed to fix each error.
 \ourtool successfully recommended correct configuration options
-for XXX errors. In XX errors, the correct option was \ourtool's first
-suggestion. In XXX errors, the correct option was among
-\ourtool's top 3 suggestions. 
-\ourtool fails to recommend the correct option for the remaining
-one error. \ourtool is fast enough for practical use,
+for all \errornum errors. In 6 errors, the correct option was \ourtool's first
+suggestion. In 1 error, the correct option was
+\ourtool's third suggestion. The root cause of the remaining
+error was \ourtool's sixth suggestion. \ourtool is fast enough for practical use,
 taking less than \avgtime minutes to diagnose one configuration error, on average.
 \ourtool's accuracy and speed make it a promising technique.
 
@@ -299,11 +298,11 @@ Our experiments
 show that \ourtool significantly outperforms these two existing techniques.
 
 Finally, we evaluated two internal design choices of \ourtool. First, we 
-showed that using thin slicing~\cite{Sridharan:2007} is better choice than
+showed that using thin slicing~\cite{Sridharan:2007} is a better choice than
 the traditional full slicing~\cite{Horwitz:1988} to reason about the
 root cause configuration options. Second, we showed that 
 \ourtool outperforms an alternative approach
-solely using predicate behavior changes to reason about
+solely using predicate behavior change to reason about
 the root cause configuration options.
 
 \edit{I edited the above paragraph}

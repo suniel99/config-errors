@@ -28,6 +28,7 @@ the first of these two strategies that succeeds:
 %, and then
 %identifies its runtime behaviors in the undesired execution profile.
 
+\vspace{-1mm}
 
 \begin{enumerate}
 \item \textbf{Identical method name.} Return a method with the identical
@@ -53,10 +54,8 @@ matched. Otherwise, \ourtool runs the algorithm
 in Figure~\ref{fig:matching} (or looks up a cached version of the result)
 to establish the mapping between
 instructions, and then returns the matched instruction of the
-predicate (or NULL if the predicate cannot be matched).
+predicate (or null if the predicate cannot be matched).
 
-
-%For both cases, if the matching algorithm fails to identified
 
 \paragraph{Statement-matching algorithm}
 
@@ -66,94 +65,129 @@ JDiff~\cite{Apiwattanapong:2004}. The original JDiff
 algorithm is based on a method-level representation
 (called hammocks) that models the object-oriented features.\
 It works in a hierarchical way by first identifying matching
-classes and then matched method pairs. Our
-algorithm directly works on the program control flow graph
+classes and then matched method pairs, and uses
+textual similarity to compare two program statements. Our
+algorithm directly works on the bytecode, using program control flow graph
 to establish the matching between statements.
 
 In Figure~\ref{fig:matching}, \ourtool first constructs the control
 flow graphs of two given methods (lines 2--3), then pushes their
 entry nodes (a synthetic node for each method) to a stack (line 5), which retains
-the next statement pair for comparing. The algorithm repeatedly
+the next statement pair for comparison. The algorithm repeatedly
 compares each statement pair from the stack (line 7), and
-decides whether the two statements are the same. To avoid infinite
+decides whether the two statements are matched.  To avoid infinite
 loop, the algorithm first checks whether the next statement for comparison
-has been compared before (lines 8--9). If two statements match,
-the algorithm saves them in the result map (line 11--12). Otherwise,
+has been compared before (lines 8--9). 
+
+The algorithm decides whether two statements are matched by using
+the matched($\mathit{s}$, $\mathit{s'}$) axuiliary method. Method
+matched($\mathit{s}$, $\mathit{s'}$) returns true if both
+$\mathit{s}$ and $\mathit{s'}$ have the same statement type (i.e.,
+the same instruction type in bytecode), and if $\mathit{s}$ and
+$\mathit{s'}$ are field-accessing or method-invoking statements,
+the same field or method are accessed or invoked by both statements.
+This approximate matching is used since \ourtool directly works
+on bytecode without source code. It tolerates small differences
+occurs between two versions, such as changes to a constant value.
+
+
+If two statements are matched, the algorithm saves them in the
+result map (line 13). Otherwise,
 the algorithm follows the control flow graph to compare a statement with
 the next $lh$ statements, and check whether any two statements can be
-matched (lines 14--19). This approximation aims to tolerate some small
+matched (lines 16--22). This approximation aims to tolerate some small
 changes in the method code, and attempts to match as many statements as possible.
 
+When two matched statements are found  (stored in
+the $\mathit{matchedPair}$ variable in lines 14 or 21),
+the algorithm pushes every pair of
+their successive statements onto the stack (line 27).
 
 
-\input{identifyalgorithm}
 
-\subsubsection{Identifying Control Flow Differences}
+%\input{identifyalgorithm}
+
+\subsubsection{Identifying Behaviorally-Deviated Predicates}
 \label{sec:identify_diff}
 
-With the predicate matching information, \ourtool further
+With the predicate matching information, \ourtool 
 identifies predicates that behave differently
 between two versions. 
 
-\todo{In what sense does $\phi$ ``characterize'' behavior?  What does it
-  represent?  What is the intuition?  Right now it's just an arbitrary
-  number that you claim works well, but that doesn't convey understanding.}
+Given an execution trace $\mathit{T}$,
+\ourtool characterizes a predicate $\mathit{p}$'s behavior by how often
+it is evaluated (i.e., the number of observed executions),
+and how often it is evaluated to true (i.e., the true ratio).
+The true ratio is more important, but it is less dependable
+if fewer times the predicate has been executed.
 
-\ourtool uses a function $\phi$ to characterize a predicate's behavior.
-The $\phi$ metric combines sensitivity (informally, the need
-for multiple observations) and specificity (informally, the
-true ratio\todo{``true ratio'' is not defined and could be easily
-  misinterpreted as ``the actual ratio'' as opposed to some imprecise ratio}) in a standard way by computing their harmonic mean.
-As empirically demonstrated in our previous work~\cite{Zhang:2013:ADS},
-the metric $\phi$ provides a good characterization of a predicate's behavior.
+\ourtool uses a function $\phi$ to combine both measurements
+in a standard way by computing their harmonic mean.
+
+%characterize a predicate's behavior.
+%The $\phi$ metric combines sensitivity (informally, the need
+%for multiple observations) and specificity (informally, the
+%true ratio in a standard way by computing their harmonic mean.
+%As empirically demonstrated in our previous work~\cite{Zhang:2013:ADS},
+%the metric $\phi$ provides a good characterization of a predicate's behavior.
+
+\vspace{-2mm}
+
+\begin{equation*}
+ \|\phi|(p, T)= \cfrac{2}{\cfrac{1}{\|trueRatio|(p, T)} + \cfrac{1}{\|totalExecNum|(p, T)}}
+\end{equation*}
 
 \vspace{-1mm}
 
-{\small{
-\[
-\|\phi|(p, t) = \frac{2}{{1}/{\|trueRatio|(p, t)} + {1}/{\|totalExecNum|(p, e)}}
-\]
-}}
+In $\phi(p, T)$, $\|trueRatio|(p, T)$ returns the ratio of executions of the
+predicate $p$ that evaluated to true in $T$,
+and $\|totalExecNum|(p, t)$ returns the the total
+number of observed executions of predicate $p$ in $T$.
+To smooth corner cases, if a predicate $p$ is not executed in $T$, 
+i.e., $\|totalExecNum|(p, t) = 0$, or
+a predicate $p$'s true ratio is 0, i.e., $\|trueRatio|(p, t) = 0$,
+then $\phi(p, t)$ returns 0.
+%and if a predicate $p$'s true ratio is 0, 
+%then $\phi(p, t)$ returns $1/\|totalExecNum|(p, t)$.
+Finally, we let $\phi(null, T) = 0$ for all $T$.
 
-\vspace{-1mm}
+%The algorithm is shown in Figure~\ref{fig:identify}.
+%It first iterates every predicate in the old execution trace (line 2),
+%computes its metric value as the initial deviation value (line 3), and
+%checks whether it has a matched predicate executed in the
+%new execution (lines 4--5). If so, it updates the
+%initial deviation value (line 6). The algorithm further filters away
+%predicate pairs whose deviation value is less than a predefined $\delta$ (lines 8 and 15). The algorithm next iterates through the executed predicate list
+%in the new execution trace, and identifies the predicate without any
+%corresponding predicate in the old execution trace (lines 13--18).
 
-In $\phi(p, t)$, $\|trueRatio|(p, e)$ is the ratio of executions of the
-predicate $p$ that evaluated to true in a trace $t$,
-and $\|totalExecNum|(p, t)$ is the the total
-number of executions of predicate $p$ in $t$.
-To smooth corner cases, if a predicate $p$ is not executed in $t$, 
-i.e., $\|totalExecNum|(p, t) = 0$, then $\phi(p, t)$ returns 0;
-and if a predicate $p$'s true ratio is 0, i.e., $\|trueRatio|(p, t) = 0$,
-then $\phi(p, t)$ returns $1/\|totalExecNum|(p, t)$.
-Finally, we let $\phi(null, t) = 0$ for all $t$.
+Given two predicates $p_{1}$ and $p_{2}$ in two different execution traces,
+\ourtool uses the \textit{deviation} function defined in Figure~\ref{fig:recommend}
+to compute the behavioral deviation value across executions.
+In Figure~\ref{fig:recommend}, the \textit{deviation} function
+discards predicates whose behavioral deviation value is less than
+a pre-defined threshold (line 2). This is for tolerating small non-determinism
+during program execution and only focusing on predicates with substantial
+behavioral differences.
 
-The algorithm is shown in Figure~\ref{fig:identify}.
-It first iterates every predicate in the old execution trace (line 2),
-computes its metric value as the initial deviation value (line 3), and
-checks whether it has a matched predicate executed in the
-new execution (lines 4--5). If so, it updates the
-initial deviation value (line 6). The algorithm further filters away
-predicate pairs whose deviation value is less than a predefined $\delta$ (lines 8 and 15). The algorithm next iterates through the executed predicate list
-in the new execution trace, and identifies the predicate without any
-corresponding predicate in the old execution trace (lines 13--18).
-
-The output of the algorithm in this step contains three categories
-of matched predicate pairs:
-(1) predicates that are only executed in the
-old version. For each of those predicates, there is no matched predicate
-for such predicate in the new version, or the matched predicate
-is not executed; (2) predicates that are only executed
-in the new version. For each of those predicates, there is
-no matched predicate in the old version, or the matched predicate
-is not executed. (3) predicates that
-are executed in both versions but exhibit different
-behaviors. For each predicate pair, \ourtool sorts computes
-its deviation score between versions.
-
-
-Differences in predicate behaviors indicate different executed paths
-between two versions. Such differences provide evidence of
+The identified behaviorally-deviated predicates indicate different
+control flow taken between two versions under the same input
+and configuration. Such control flow differences provide evidence of
 which part of the program might be behaving unexpectedly and why.
+
+%The output of the algorithm in this step contains three categories
+%of matched predicate pairs:
+%(1) predicates that are only executed in the
+%old version. For each of those predicates, there is no matched predicate
+%for such predicate in the new version, or the matched predicate
+%is not executed; (2) predicates that are only executed
+%in the new version. For each of those predicates, there is
+%no matched predicate in the old version, or the matched predicate
+%is not executed. (3) predicates that
+%are executed in both versions but exhibit different
+%behaviors. For each predicate pair, \ourtool sorts computes
+%its deviation score between versions.
+
 
 %is any path not taken by the actual
 %program execution that starts at a conditional
