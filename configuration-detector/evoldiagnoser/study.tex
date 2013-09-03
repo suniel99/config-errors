@@ -173,7 +173,7 @@ is an open-source browser available on multiple platforms.
 Randoop~\cite{randoop} is an automated test generator for Java
 programs. Weka~\cite{weka} is a toolkit that implements machine
 learning algorithms. JChord~\cite{jchord} is a program analysis platform that
-enables users to design, implement, and evaluate static and
+enables users to design and implement static and
 dynamic program analyses for Java. Synoptic~\cite{synoptic} mines a
 finite state machine model representation of a system from
 logs. JMeter~\cite{jmeter} is a tool to load test functional
@@ -230,19 +230,20 @@ Configuration evolution can have unexpected impact to
 program behaviors. After configuration changes, reusing
 the existing configuration for an old software version
 may yield a misconfiguration, causing different results
-on the new version. In our study, we found adding
+on the new version. Adding
 new configuration options is less likely to cause
 a configuration errors, since most of the added options are
 used in new software features, which are not available in
-the old version. Some new added options are introduced
+the old version. Some newly added options are introduced
 to improve existing features, but they are disabled by
 default and will not have any effects on the new program
 version unless explicitly turned on. For the deleted
 and modified options, they are more likely to affect a
-program's existing behavior. Described in
-Section~\ref{sec:evaluation}, we reproduced \errornum
-user-visible misconfigurations caused by these
-deleted or modified options in the 5 Java programs in Table~\ref{tab:options},
+program's existing behavior. As described in
+Section~\ref{sec:evaluation}, in our evaluation,
+we focused on deleted and modified options, and reproduced \errornum
+user-visible misconfigurations caused by them
+in the 5 Java programs of Table~\ref{tab:options},
 by simply following the change description and user manual.
 
 

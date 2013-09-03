@@ -67,20 +67,20 @@ the configuration option is more likely to be the root cause.
 
 Figure~\ref{fig:recommend} sketches the configuration option
 recommendation algorithm.
-For each predicate in both versions,
-\ourtool first attributes the control flow difference 
+For each predicate in an execution trace,
+\ourtool first attributes the deviated behavior
 to its affecting configuration options (lines 4 and 12). Then,
 \ourtool computes the number of executed statements controlled
-by that predicate (lines 5 and 13). To obtain the number of
-executed statements controlled by a predicate,
-the getExecutedStmtNum method first statically examines the
+by that predicate (lines 5 and 13). To do so, 
+%compute the number of executed statements controlled by a predicate,
+the getExecutedStmtNum auxiliary method first statically examines the
 source code to compute the immediate post-dominant statement
 of a predicate, and then traverses the execution trace to count
 the number of statements that
 are executed between the predicate and its post-dominant
 statement. 
-\ourtool mulitples the a predicate's cross-version deviation value 
-with the number of executed statements, and updates the
+\ourtool multiples a predicate's cross-version deviation value 
+with the number of executed statements, and then updates the
 weight of each affecting configuration option (lines 5--8
 and 13--16).
 %\ourtool first iterates each predicate pair with different
@@ -95,13 +95,13 @@ and 13--16).
 %deviation value of its affected predicate with the number of
 %executed statements determined by that predicate (lines 6 and 13).
 Finally, \ourtool ranks all affecting configuration options
-in decreasing order, and outputs a ranked list of suspicious
+in decreasing order, outputing a ranked list of suspicious
 options that might be responsible for the
 behavior differences (line 18). 
 
 In \ourtool, if two configuration options have the
 same weights, \ourtool prefers the configuration option
-having more statements in its thin slice. This heuristic
+affecting more statements in its thin slice. This heuristic
 is based on the intuition that configuration options affecting
 more statements seem more likely to be relevant to the behavior
 differences.

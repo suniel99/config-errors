@@ -5,6 +5,8 @@
 We evaluated 4 aspects of \ourtool's effectiveness, answering
 the following research questions:
 
+\vspace{-2mm}
+
 \begin{enumerate}
 \item How accurate is \ourtool in identifying the root
 cause configuration options ? That is, what is the rank of the
@@ -128,7 +130,7 @@ For the Javalanche program, we reproduced the configuration
 error reported by the user.
 In Table~\ref{tab:errors}, errors \#3 and \#4
 can be reproduced together in a single execution, and each of the other
-error is reproduced in one execution.
+errors is reproduced in one execution.
 
 Our methodology of collecting
 configuration errors is different from what was used in
@@ -231,8 +233,8 @@ imposes an average 8X and 12.8X slowdown in a
 \ourtool-instrumented old and new program version, respectively.
 This is due to \ourtool's inefficient instrumentation code that
 monitors the execution of every instruction.
-Even so, except for two errors (errors \#5 and \#6) from\
-the JChord subject program,  all other errors can
+Even so, except for two errors (errors \#5 and \#6) in\
+JChord,  all other errors can
 be reproduced in less than 30 seconds. Errors \#5 and \#6
 require about 20 minutes to reproduce.
 
@@ -243,7 +245,7 @@ require about 20 minutes to reproduce.
 
 \ourtool spends an average of \avgtime minutes
 to recommend configuration options for one
-error (including time to compute thin slices
+error (including the time to compute thin slices
 and the time to suggest suspicious options). 
 Computing thin slices for all configuration options
 is non-trivial. However, this step is one-time cost
@@ -255,7 +257,7 @@ rather than the size of the subject program.
 
 \vspace{1mm}
 \noindent \textbf{\textit{Summary.}} \ourtool
-recommends configuration options for fixing
+recommends configuration options for diagnosing
 configuration errors with acceptable time cost.
 
 \begin{table}[t]
@@ -308,21 +310,21 @@ called \prevtool~\cite{Zhang:2013:ADS} and \conftool~\cite{Rabkin:2011:PPC}.
 is an automated
 software configuration error diagnosis technique. %Unlike \ourtool,
 \prevtool is \textit{not} cognizant of
-software evolution, and it diagnoses configuration errors on
+software evolution, and it diagnoses configuration errors from
 a single program version.
 Besides, \prevtool differs from \ourtool from two key aspects:
 first, \prevtool assumes the existence of a set of correct execution
 traces, which are used to compare against the undesired
 execution trace to identify the abnormal program parts.
 Second, when comparing the undesired execution trace with a
-correct execution trace, \prevtool only uses the deviation
-value to reason about the most deviated predicates, while
-ignoring the statements controlled by the predicate's evaluation result. 
+correct execution trace, \prevtool only uses a predicate's deviation
+value to reason about the most suspicious predicates, while
+ignoring the statements controlled by a predicate's evaluation result. 
 
 To compare \ourtool with \prevtool, 
 we reuse the pre-built execution trace databases
 for the 4 shared subject programs (Randoop, Synoptic, JChord, and Weka)
-from our existing work~\cite{Zhang:2013:ADS}.
+from~\cite{Zhang:2013:ADS}.
 Each existing trace database contains 6--16 correct
 execution traces.
 For the remaining two subject programs (JMeter and
@@ -355,7 +357,7 @@ primarily for two reasons. First, \prevtool focuses on diagnosing
 \textit{erroneous} program behaviors and identifies their resposible
 configuration options. However, for the problem addressed in paper,
 the new software version that exhibits \textit{undesired} behavior 
-(after applying the same configuration from the old version)
+(after applying the same configuration used in the old version)
 is working exactly as \textit{designed}. In other words, the execution
 trace obtained by running the new program version is still
 \textit{correct}. Therefore, just comparing execution traces obtained
@@ -363,13 +365,13 @@ from the new program version fails to identify
 the ``abnormal'' behavior. By contrast, \ourtool compares execution
 traces from two different versions and directly reasons about the
 execution differences. Second, \prevtool only focuses on
-the program behavior changes, while ignoring the statements
+the predicate behavior changes, while ignoring the statements
 potentially impacted by the affected predicate. This makes
 \prevtool fail to distinguish predicates whose behavioral changes can
 have different impacts, and then output less accurate results.
 Section~\ref{sec:alternative} further evaluates this design
-choice, and showing that considering the number of controlled statements
-can substantially increases the diagnosis accuracy.
+choice, showing that considering the number of controlled statements
+can substantially increase the diagnosis accuracy.
 
 \conftool outputs correct result for the crashing error in Weka,
 but cannot identify root causes for other non-crashing errors.
@@ -455,7 +457,7 @@ Column ``Full Slicing'' shows the results of replacing
 thin slicing with full slicing in \ourtool.
 ``\n'' means the technique does not identify the actual
 root cause. Column ``Predicate Behavior'' shows the results of 
-\ourtool, if it only considers predicate behavior changes.
+\ourtool, if it only considers predicate behavior change.
 When computing the average rank, each ``\n'' is treated
 as half of the number of configuration options.
 }
@@ -479,11 +481,11 @@ configuration options that may affect a predicate.
 Table~\ref{tab:choices} (Column ``Full Slicing'') shows the results.
 
 \item \textbf{Predicate behavioral change metrics.}
-\ourtool considers both the predicate behavior changes
+\ourtool considers both the predicate behavior change
 and the number of affected statements in diagnosing
-configuration errors. We next an alternative technique
-that only uses the predicate behavior change in erorr
-diagnosis, as \prevtool does. This alternative techniques
+configuration errors. We next evaluate an alternative technique
+that only uses the predicate behavior change to diagnose erorrs.
+This alternative technique
 changes the getExecutedStmtNum auxiliary method in
 Figure~\ref{fig:recommend}, by making it always return 1.
 Table~\ref{tab:choices} (Column ``Predicate Behavior'') shows
@@ -505,8 +507,9 @@ to two subject programs (JMeter and Javalanche).
 \ourtool's accuracy degrades substantially when ranking
 predicates based on its behavioral changes without considering
 the number of affected statements.
-The primary reason is that, between two execution traces,
-many predicates' behaviors can be changed, but each predicate
+The primary reason is that, 
+behaviorally-deviated predicates occur all over the execution traces,
+but each predicate
 may have different impacts to the overall program behavior change.
 \ourtool uses the number of statements determined by the predicate
 evaluation result to approximate such potential impacts.
@@ -523,7 +526,7 @@ includes too many irrelevant program statements due to its
 conservatism; and only using a predicate's behavior
 change is not enough to identify the root cause configuration options.
 \ourtool, using thin slicing and considering both
-the predicate behavior changes and the impacted statements,
+the predicate behavior change and the impacted statements,
 can be a better choice in diagnosing configuration errors.
 
 \subsection{Discussion}
@@ -557,8 +560,8 @@ in diagnosing configuration errors introduced by configuration
 evolution; (2) \ourtool produces more accurate results than
 approaches designed to diagnose errors on a single program version;
 and (3) \ourtool outperforms two alternative approaches
-that use full slicing and solely focuses on a predicate's
-behavior change, respectively.
+that use full slicing and only  a predicate's
+behavior change in error diagnosis, respectively.
 %using thin slicing and combining the behavioral
 %difference of a predicate and its affected statements
 %permit \ourtool to produce more accurate diagnosis.

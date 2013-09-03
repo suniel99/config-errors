@@ -86,16 +86,17 @@ $\mathit{s}$ and $\mathit{s'}$ have the same statement type (i.e.,
 the same instruction type in bytecode), and if $\mathit{s}$ and
 $\mathit{s'}$ are field-accessing or method-invoking statements,
 the same field or method are accessed or invoked by both statements.
-This approximate matching is used since \ourtool directly works
-on bytecode without source code. It tolerates small differences
-occurs between two versions, such as changes to a constant value.
+We use such approximate matching since \ourtool directly works
+on bytecode rather than source code. The approximate matching also
+tolerates small differences
+occurs between two versions, such as changes to constant values.
 
 
 If two statements are matched, the algorithm saves them in the
 result map (line 13). Otherwise,
 the algorithm follows the control flow graph to compare a statement with
-the next $lh$ statements, and check whether any two statements can be
-matched (lines 16--22). This approximation aims to tolerate some small
+the next $lh$ statements, and checks whether any two statements can be
+matched (lines 16--22). Doing so permits the algorithm to tolerate some small
 changes in the method code, and attempts to match as many statements as possible.
 
 When two matched statements are found  (stored in
@@ -118,7 +119,8 @@ Given an execution trace $\mathit{T}$,
 \ourtool characterizes a predicate $\mathit{p}$'s behavior by how often
 it is evaluated (i.e., the number of observed executions),
 and how often it is evaluated to true (i.e., the true ratio).
-The true ratio is more important, but it is less dependable
+The true ratio is an important characteristic of a predicate's behavior,
+but it is less dependable
 if fewer times the predicate has been executed.
 
 \ourtool uses a function $\phi$ to combine both measurements
@@ -134,7 +136,7 @@ in a standard way by computing their harmonic mean.
 \vspace{-2mm}
 
 \begin{equation*}
- \|\phi|(p, T)= \cfrac{2}{\cfrac{1}{\|trueRatio|(p, T)} + \cfrac{1}{\|totalExecNum|(p, T)}}
+ \|\phi|(p, T)= \cfrac{2}{\frac{1}{\|trueRatio|(p, T)} + \frac{1}{\|totalExecNum|(p, T)}}
 \end{equation*}
 
 \vspace{-1mm}
@@ -143,9 +145,9 @@ In $\phi(p, T)$, $\|trueRatio|(p, T)$ returns the ratio of executions of the
 predicate $p$ that evaluated to true in $T$,
 and $\|totalExecNum|(p, t)$ returns the the total
 number of observed executions of predicate $p$ in $T$.
-To smooth corner cases, if a predicate $p$ is not executed in $T$, 
-i.e., $\|totalExecNum|(p, t) = 0$, or
-a predicate $p$'s true ratio is 0, i.e., $\|trueRatio|(p, t) = 0$,
+To smooth corner cases, if a predicate $p$ is not executed in $T$ 
+(i.e., $\|totalExecNum|(p, t) = 0$), or
+a predicate $p$'s true ratio is 0 (i.e., $\|trueRatio|(p, t) = 0$),
 then $\phi(p, t)$ returns 0.
 %and if a predicate $p$'s true ratio is 0, 
 %then $\phi(p, t)$ returns $1/\|totalExecNum|(p, t)$.
@@ -161,11 +163,11 @@ Finally, we let $\phi(null, T) = 0$ for all $T$.
 %in the new execution trace, and identifies the predicate without any
 %corresponding predicate in the old execution trace (lines 13--18).
 
-Given two predicates $p_{1}$ and $p_{2}$ in two different execution traces,
+Given two matched predicates $p_{1}$ and $p_{2}$ from two different execution traces,
 \ourtool uses the \textit{deviation} function defined in Figure~\ref{fig:recommend}
-to compute the behavioral deviation value across executions.
+to compute the behavioral deviation value.
 In Figure~\ref{fig:recommend}, the \textit{deviation} function
-discards predicates whose behavioral deviation value is less than
+ discards a predicate whose behavioral deviation value is less than
 a pre-defined threshold (line 2). This is for tolerating small non-determinism
 during program execution and only focusing on predicates with substantial
 behavioral differences.
