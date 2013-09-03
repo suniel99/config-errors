@@ -136,7 +136,7 @@ JMeter versions. Then, \ourtool analyzes the
 recorded execution traces produced by the two instrumented
 versions, and outputs a ranked list of root cause configuration options.
 At the top of the list is the
-\CodeIn{output\_format} option with a value of \CodeIn{CSV}
+\CodeIn{output\_format} option with a default value of \CodeIn{CSV}
 in version 2.9.
 To resolve this problem, users only need to change
 its value to \CodeIn{XML}.
@@ -152,7 +152,7 @@ configuration option to fix the error. \ourtool addresses
 the second task: recommending the root cause configuration options.
 %a configuration error.
 
-\ourtool focuses on software configuration errors, and
+\ourtool specifically focuses on software configuration errors, and
 aims to help two types of users: software end-users
 who may have problems with software installed on their
 personal computers, and system administrators who are
@@ -199,7 +199,7 @@ program versions.
 the control flow differences. In particular, \ourtool
 identifies program predicates that behave
 differently between two versions. These
-behaviorally-different predicates and their
+behaviorally-deviated predicates and their
 affected program statements
 provide evidence about what parts of a program might
 be behaving abnormally and why.
@@ -222,7 +222,7 @@ key aspects:
 \begin{itemize}
 \item \textbf{It diagnoses configuration errors caused by software evolution}.
 Most existing configuration error diagnosis techniques
-try to identifying errors from a single program
+try to identify errors from a single program
 version~\cite{Wang:2004:AMT, Rabkin:2011:PPC, Whitaker:2004:CDS,
 Zhang:2013:ADS, Attariyan:2010:ACT, Su:2007:AIC, Attariyan:2008:UCD, xray}.
 By contrast, \ourtool is cognizant of software evolution and
