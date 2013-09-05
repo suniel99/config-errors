@@ -36,8 +36,9 @@ studied in Section~\ref{sec:study},
 and the remaining subject program is Javalanche~\cite{javalanche},
 which is a popular mutation testing framework.
 
-We included Javalanche because one of its real users
-provide us a configuration error he encountered when using Javalanche.
+We included Javalanche because we received a real
+configuration error from one of its end-users.
+%provide us a configuration error he encountered when using Javalanche.
 
 \newcommand{\randoopoptnum}{57\xspace}
 \newcommand{\wekaoptnum}{14\xspace}
@@ -141,14 +142,13 @@ bug databases. By contrast, finding recorded configuration errors
 is much harder, mainly because most configuration errors have not been
 documented rigorously~\cite{Yin:2011:ESC}. Usually, after a
 session of code changes, when regression tests pass, developers
-may simply treat the software behaviors as having been validated. Further,
+may treat the software behaviors as having been validated. Further,
 because the software misconfigurations are user-driven,
 the ``fixes'' may be recorded simply as pointers
 to manuals and best-practice documents. 
 
 We evaluated all configuration errors that we can reproduce;
 we did not select only errors that \ourtool works well.
-Table~\ref{tab:errors} lists all errors.
 
 %Therefore, in
 %our evaluation, we have to manually reproduce 
@@ -197,7 +197,7 @@ cause configuration option ranks first in \ourtool's output;
 for 1 error, the root cause configuration option ranks third
 in \ourtool's output; and the root cause option ranks sixth
 for the remaning error. The primary reason is \ourtool's
-ability to identify the behaviorally-changed predicates with
+ability to identify the behaviorally-deviated predicates with
 substantial impacts through execution trace comparison.
 The top-ranked identified changed predicates often provide
 useful clues about what parts of a program have performed
@@ -228,7 +228,7 @@ and the time cost of recommending configuration options.
 Table~\ref{tab:performance} shows the results.
 
 The performance overhead to demonstrate the error
-varies among programs. The current tool implementation
+varies among programs. The current implementation
 imposes an average 8X and 12.8X slowdown in a
 \ourtool-instrumented old and new program version, respectively.
 This is due to \ourtool's inefficient instrumentation code that
@@ -318,7 +318,7 @@ traces, which are used to compare against the undesired
 execution trace to identify the abnormal program parts.
 Second, when comparing the undesired execution trace with a
 correct execution trace, \prevtool only uses a predicate's deviation
-value to reason about the most suspicious predicates, while
+value to reason about the most suspicious options, while
 ignoring the statements controlled by a predicate's evaluation result. 
 
 To compare \ourtool with \prevtool, 
@@ -416,8 +416,9 @@ validated in our previous work~\cite{Zhang:2013:ADS}.
 
 \noindent \textbf{\textit{Summary.}} Configuration
 error diagnosis techniques designed for a \textit{single}
-program version cannot be directly applied to diagnose
-configuration erros introduced in software evolution.
+program version achieve less accurate results in
+%cannot be directly applied to 
+diagnosing configuration erros introduced in software evolution.
 \ourtool reasons about the behavior differences between
 two program versions, and produces more accurate results.
 

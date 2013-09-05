@@ -8,7 +8,7 @@ First, it statically
 matches each predicate in the old
 source code execution trace to its counterpart in the new source code
 (Section~\ref{sec:match_predicate}).
-Then, it identifies all predicate pairs that
+Then, it identifies all predicates that
 behave differently across the execution traces (Section~\ref{sec:identify_diff}).
 
 
@@ -48,7 +48,7 @@ matching ratio is below a threshold (default value: 0.9).
 \end{enumerate}
 
 
-If there is no matched for the declaring method in the new program
+If there is no match for the declaring method in the new program
 version, \ourtool concludes that the predicate cannot be
 matched. Otherwise, \ourtool runs the algorithm
 in Figure~\ref{fig:matching} (or looks up a cached version of the result)
@@ -64,9 +64,9 @@ a well-established program differencing algorithm, called
 JDiff~\cite{Apiwattanapong:2004}. The original JDiff
 algorithm is based on a method-level representation
 (called hammocks) that models the object-oriented features.\
-It works in a hierarchical way by first identifying matching
+It works in a hierarchical way by first identifying matched
 classes and then matched method pairs, and uses
-textual similarity to compare two program statements. Our
+textual similarity to compare two program statements. By contrast, our
 algorithm directly works on the bytecode, using program control flow graph
 to establish the matching between statements.
 
@@ -74,8 +74,8 @@ In Figure~\ref{fig:matching}, \ourtool first constructs the control
 flow graphs of two given methods (lines 2--3), then pushes their
 entry nodes (a synthetic node for each method) to a stack (line 5), which retains
 the next statement pair for comparison. The algorithm repeatedly
-compares each statement pair from the stack (line 7), and
-decides whether the two statements are matched.  To avoid infinite
+pops each statement pair from the stack (line 7), and
+decides whether the two statements are matched (line 12).  To avoid infinite
 loop, the algorithm first checks whether the next statement for comparison
 has been compared before (lines 8--9). 
 
@@ -85,9 +85,9 @@ matched($\mathit{s}$, $\mathit{s'}$) returns true if both
 $\mathit{s}$ and $\mathit{s'}$ have the same statement type (i.e.,
 the same instruction type in bytecode), and if $\mathit{s}$ and
 $\mathit{s'}$ are field-accessing or method-invoking statements,
-the same field or method are accessed or invoked by both statements.
+they access the same field or invoke the same method.
 We use such approximate matching since \ourtool directly works
-on bytecode rather than source code. The approximate matching also
+on bytecode rather than source code. The approximate matching
 tolerates small differences
 occurs between two versions, such as changes to constant values.
 
@@ -103,7 +103,7 @@ When two matched statements are found  (stored in
 the $\mathit{matchedPair}$ variable in lines 14 or 21),
 the algorithm pushes every pair of
 their successive statements onto the stack (line 27).
-
+It terminates after every statement has been attempted to match.
 
 
 %\input{identifyalgorithm}
@@ -123,8 +123,8 @@ The true ratio is an important characteristic of a predicate's behavior,
 but it is less dependable
 if fewer times the predicate has been executed.
 
-\ourtool uses a function $\phi$ to combine both measurements
-in a standard way by computing their harmonic mean.
+\ourtool uses a function $\phi$ to combine both true ratio
+and number of executions in a standard way by computing their harmonic mean.
 
 %characterize a predicate's behavior.
 %The $\phi$ metric combines sensitivity (informally, the need
@@ -143,12 +143,12 @@ in a standard way by computing their harmonic mean.
 
 In $\phi(p, T)$, $\|trueRatio|(p, T)$ returns the ratio of executions of the
 predicate $p$ that evaluated to true in $T$,
-and $\|totalExecNum|(p, t)$ returns the the total
+and $\|totalExecNum|(p, T)$ returns the the total
 number of observed executions of predicate $p$ in $T$.
 To smooth corner cases, if a predicate $p$ is not executed in $T$ 
-(i.e., $\|totalExecNum|(p, t) = 0$), or
-a predicate $p$'s true ratio is 0 (i.e., $\|trueRatio|(p, t) = 0$),
-then $\phi(p, t)$ returns 0.
+(i.e., $\|totalExecNum|(p, T) = 0$), or
+a predicate $p$'s true ratio is 0 (i.e., $\|trueRatio|(p, T) = 0$),
+then $\phi(p, T)$ returns 0.
 %and if a predicate $p$'s true ratio is 0, 
 %then $\phi(p, t)$ returns $1/\|totalExecNum|(p, t)$.
 Finally, we let $\phi(null, T) = 0$ for all $T$.
@@ -163,13 +163,14 @@ Finally, we let $\phi(null, T) = 0$ for all $T$.
 %in the new execution trace, and identifies the predicate without any
 %corresponding predicate in the old execution trace (lines 13--18).
 
-Given two matched predicates $p_{1}$ and $p_{2}$ from two different execution traces,
-\ourtool uses the \textit{deviation} function defined in Figure~\ref{fig:recommend}
+Given two matched predicates $p_{1}$ and $p_{2}$ from two different execution traces $T_{1}$ and $T_{2}$,
+\ourtool uses the {deviation} function defined in Figure~\ref{fig:recommend}
 to compute the behavioral deviation value.
-In Figure~\ref{fig:recommend}, the \textit{deviation} function
+In Figure~\ref{fig:recommend}, the {deviation} function
  discards a predicate whose behavioral deviation value is less than
 a pre-defined threshold (line 2). This is for tolerating small non-determinism
-during program execution and only focusing on predicates with substantial
+during program execution and
+making \ourtool only focus on predicates with substantial
 behavioral differences.
 
 The identified behaviorally-deviated predicates indicate different

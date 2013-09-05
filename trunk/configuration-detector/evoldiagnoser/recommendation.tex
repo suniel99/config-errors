@@ -11,7 +11,8 @@ In this step, \ourtool attributes the control flow differences
 to one or more root cause configuration options.
 The key idea is to identify configuration options that
 may affect the behaviorally-deviated predicates, and then rank
-these options by the deviation value (computed by the
+these options by \todo{need rephrase}
+the deviation value (computed by the
 {deviation} method in Figure~\ref{fig:recommend})
 and the number of executed statements they control (computed
 by the {getExecutedStmtNum} auxiliary method in Figure~\ref{fig:recommend}).
@@ -67,7 +68,7 @@ the configuration option is more likely to be the root cause.
 
 Figure~\ref{fig:recommend} sketches the configuration option
 recommendation algorithm.
-For each predicate in an execution trace,
+For each behaviorally-deviated predicate in an execution trace,
 \ourtool first attributes the deviated behavior
 to its affecting configuration options (lines 4 and 12). Then,
 \ourtool computes the number of executed statements controlled
@@ -79,7 +80,7 @@ of a predicate, and then traverses the execution trace to count
 the number of statements that
 are executed between the predicate and its post-dominant
 statement. 
-\ourtool multiples a predicate's cross-version deviation value 
+\ourtool multiples a predicate's deviation value 
 with the number of executed statements, and then updates the
 weight of each affecting configuration option (lines 5--8
 and 13--16).
@@ -95,7 +96,7 @@ and 13--16).
 %deviation value of its affected predicate with the number of
 %executed statements determined by that predicate (lines 6 and 13).
 Finally, \ourtool ranks all affecting configuration options
-in decreasing order, outputing a ranked list of suspicious
+in decreasing order of weight, outputing a ranked list of suspicious
 options that might be responsible for the
 behavior differences (line 18). 
 
