@@ -39,7 +39,7 @@ a method in the old program version, \ourtool
 uses the algorithm shown in Figure~\ref{fig:matching}
 (details are discussed below) to match it
 to \textit{every} method in the new program version, and then
-chooses the method with the most matched matched statements
+chooses the method with the most matched statements
 (in the new program version).
 
 After running the matching algorithm, \ourtool further checks the ratio of
@@ -80,7 +80,7 @@ loop, the algorithm first checks whether the next statement for comparison
 has been compared before (lines 8--9). 
 
 The algorithm decides whether two statements are matched by using
-the matched($\mathit{s}$, $\mathit{s'}$) axuiliary method. Method
+the matched($\mathit{s}$, $\mathit{s'}$) auxiliary method. Method
 matched($\mathit{s}$, $\mathit{s'}$) returns true if both
 $\mathit{s}$ and $\mathit{s'}$ have the same statement type (i.e.,
 the same instruction type in bytecode), and if $\mathit{s}$ and

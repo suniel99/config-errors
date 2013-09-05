@@ -19,7 +19,7 @@ and present the change list to developers for inspection.
 Related, change impact analysis techniques~\cite{STVR:STVR1475}, which
 are often built on top of program differencing
 techniques, identify not only the changes, but also
-code fragments that are affcted by the changes. 
+code fragments that are affected by the changes. 
 Different than \ourtool's predicate matching
 algorithm (Section~\ref{sec:match_predicate}),
 existing program differencing techniques primarily focus on matching
@@ -28,7 +28,7 @@ Xing:2005:UAO, Kim:2013, Nguyen:2010:RBF,Dig:2006:ADR,
 Kamiya:2002:CMT, Dagenais:2008},
 or matching program statements on the source code based on
 textual similarity~\cite{Horwitz:1990:IST}.
-By contrast, \ourtool's matching algorithm, inspried by
+By contrast, \ourtool's matching algorithm, inspired by
 the JDiff algorithm~\cite{Apiwattanapong:2004}, is specifically designed 
 to match the evolved predicate in the new program version.
 (See Section~\ref{sec:match_predicate} for a detailed
@@ -67,7 +67,7 @@ First, existing techniques focus on helping software developers
 localize a software bug, while \ourtool targets software
 configuration errors that are fixable by software end-users.
 As we have discussed in Section~\ref{sec:tech_discuss},
-configuration errors are fundmanetally different than regression bugs.
+configuration errors are fundamentally different than regression bugs.
 They are mostly user driven and do not indicate problems in the source
 code. Second, most of the existing techniques identify
 \textit{what} (e.g., a snippet of code) causes the
@@ -137,7 +137,7 @@ crashing and non-crashing errors.
 Second, several approaches~\cite{Attariyan:2010:ACT, Whitaker:2004:CDS}
 assume the existence of a testing oracle that can 
 check whether the software functions correctly. However, as we discussed
-before, a testing oracle is often not availabe, and it
+before, a testing oracle is often not available, and it
 is infeasible to expert end-users to provide it.
 %By contrast, our technique eliminates this assumption by
 %comparing two execution traces to reason about the control flow differences

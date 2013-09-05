@@ -120,7 +120,7 @@ errors. }
 \input{program-table}
 
 For the 5 Java programs studied in Section~\ref{sec:study},
-we manually examinated all deleted and modified configuration
+we manually exanimated all deleted and modified configuration
 options listed in Table~\ref{tab:options}. For each
 change, based on our own understanding, we wrote a test driver to cover
 it, and then checked whether the test driver
@@ -196,7 +196,7 @@ the root cause in \ourtool's output is 1.8. For 6 errors, the root
 cause configuration option ranks first in \ourtool's output;
 for 1 error, the root cause configuration option ranks third
 in \ourtool's output; and the root cause option ranks sixth
-for the remaning error. The primary reason is \ourtool's
+for the remaining error. The primary reason is \ourtool's
 ability to identify the behaviorally-deviated predicates with
 substantial impacts through execution trace comparison.
 The top-ranked identified changed predicates often provide
@@ -288,7 +288,7 @@ configuration errors with acceptable time cost.
 }
 \vspace{-2mm}
 \Caption{{\label{tab:performance} \ourtool's
-performance. The ``Run-time slow down'' column
+performance. The ``Run-time Slowdown'' column
 shows the cost of reproducing the error in
 an \ourtool-instrumented version of the subject program.
 The ``\ourtool time (seconds)'' column shows
@@ -354,7 +354,7 @@ the experimental results.
 
 \ourtool produces significantly accurate results than \prevtool,
 primarily for two reasons. First, \prevtool focuses on diagnosing
-\textit{erroneous} program behaviors and identifies their resposible
+\textit{erroneous} program behaviors and identifies their responsible
 configuration options. However, for the problem addressed in paper,
 the new software version that exhibits \textit{undesired} behavior 
 (after applying the same configuration used in the old version)
@@ -404,7 +404,7 @@ specific feature models.
 %It is unknown whether
 %such techniques can be extended to diagnose configuration
 %errors handled by \ourtool. 
-Further, general software fault locaization techniques
+Further, general software fault localization techniques
 are not well-suited for diagnosing software
 configuration errors~\cite{Jones:2002, McCamant:2003}, since such techniques
 often focus on identifying the buggy code or
@@ -418,7 +418,7 @@ validated in our previous work~\cite{Zhang:2013:ADS}.
 error diagnosis techniques designed for a \textit{single}
 program version achieve less accurate results in
 %cannot be directly applied to 
-diagnosing configuration erros introduced in software evolution.
+diagnosing configuration errors introduced in software evolution.
 \ourtool reasons about the behavior differences between
 two program versions, and produces more accurate results.
 
@@ -485,7 +485,7 @@ Table~\ref{tab:choices} (Column ``Full Slicing'') shows the results.
 \ourtool considers both the predicate behavior change
 and the number of affected statements in diagnosing
 configuration errors. We next evaluate an alternative technique
-that only uses the predicate behavior change to diagnose erorrs.
+that only uses the predicate behavior change to diagnose errors.
 This alternative technique
 changes the getExecutedStmtNum auxiliary method in
 Figure~\ref{fig:recommend}, by making it always return 1.
