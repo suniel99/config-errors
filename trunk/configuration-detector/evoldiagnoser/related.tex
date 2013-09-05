@@ -2,7 +2,7 @@
 \label{sec:related}
 
 The most closely related work falls into
-three categories; (1) techniques for
+three categories: (1) techniques for
 supporting software evolution; (2) software
 configuration error diagnosis techniques;
 %(3) automated software debugging techniques;
@@ -46,7 +46,7 @@ such as a software revision history~\cite{frameworkevolution}.
 Zhang et al.~\cite{Zhang:2005:MEH} developed a technique to match
 control flows of two program versions running with
 the same input. Differing from \ourtool, their
-work assumes semantically equivalent program versions (e.g. optimized
+work assumes semantically equivalent program versions (e.g., optimized
 and unoptimized), while \ourtool compares two versions
 of the same program that include functional changes. 
 %\todo{missing above the work of semantic trace analysis,
@@ -54,7 +54,7 @@ of the same program that include functional changes.
 
 When a regression failure occurs, developers need
 to understand its root cause. To localize the
-failure, many techniques are developed to identify the
+failure, many techniques have been developed to identify the
 failure-inducing changes for evolving
 software~\cite{Banerjee:2010:GID, r2fix, Qi:2009:DAD, Hoffman:2009:STA}.
 For example, Delta Debugging aims to find a minimal
@@ -71,10 +71,10 @@ configuration errors are fundamentally different than regression bugs.
 They are mostly user driven and do not indicate problems in the source
 code. Second, most of the existing techniques identify
 \textit{what} (e.g., a snippet of code) causes the
-regression bug, but leave
+regression bug, but do not answer
 the more challenging question of \textit{how} (e.g., which
 configuration option should a user change?) to
-fix the error unanswered. By contrast, \ourtool
+fix the error. By contrast, \ourtool
 explicitly guides users to suspicious configuration options.
 Third, most of the regression failure localization
 techniques~\cite{dd} require 
@@ -124,7 +124,7 @@ possible configuration error diagnoses for every possible crashing point
 in a program. 
 
 \ourtool is significantly different from the existing approaches.
-First, most previous approaches is not cognizant of software evolution;
+First, most previous approaches are not cognizant of software evolution;
 they focus exclusively on a single software
 version~\cite{Attariyan:2008:UCD, Whitaker:2004:CDS, 
 Attariyan:2010:ACT, Rabkin:2011:PPC}. By contrast, \ourtool focuses
@@ -138,11 +138,11 @@ Second, several approaches~\cite{Attariyan:2010:ACT, Whitaker:2004:CDS}
 assume the existence of a testing oracle that can 
 check whether the software functions correctly. However, as we discussed
 before, a testing oracle is often not available, and it
-is infeasible to expert end-users to provide it.
+is infeasible to expect end-users to provide it.
 %By contrast, our technique eliminates this assumption by
 %comparing two execution traces to reason about the control flow differences
 %between them. 
-Third, several techniques~\cite{Whitaker:2004:CDS, Su:2007:AIC} require alternations
+Third, several techniques~\cite{Whitaker:2004:CDS, Su:2007:AIC} require alterations
 to the underlying operating system or runtime environment
 in order to diagnose a configuration error. Compared with
 the platform-independent offline instrumentation used
@@ -175,7 +175,7 @@ goals. They primarily focus on reducing the burden of
 configuration management and preventing certain errors from
 happening, or creating test suites to find new errors in
 a configurable software system earlier, but cannot
-diagnose an exhibit configuration error. By contrast, our \ourtool technique
+diagnose an exhibited configuration error. By contrast, our \ourtool technique
 links the behavioral differences to a small number
 of configuration options, and explicitly guides software end-users
 how to fix a configuration error.

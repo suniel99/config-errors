@@ -4,7 +4,7 @@
 Software evolution often causes software systems to
 exhibit undesired behaviors.
 When they do, identifying the root causes
-can be challenging, especially when a software's
+can be challenging, especially when software's
 behavior depends on a wide range of configuration options.
 
 This paper describes \ourtool, a technique to help software
@@ -20,7 +20,7 @@ at: \url{http://config-errors.googlecode.com}.
 
 We consider \ourtool as one step towards improving
 the diagnosability of configurable software systems.
-Our future work focuses on the following directions:
+Future work should focus on the following directions:
 
 \vspace{-2mm}
 
@@ -28,7 +28,7 @@ Our future work focuses on the following directions:
 \item \textbf{User study.} We plan a user study to evaluate
 \ourtool's usefulness to end-users. A challenge
 will be finding study participants who are familiar
-with our subject programs.
+with given subject programs.
 
 \item \textbf{Formulating guidance of error diagnosis.}
 An important question that is not answered in this paper
@@ -39,15 +39,15 @@ regarding when the user should give up on \ourtool
 and assume the error is not related to a configuration option.
 
 \item \textbf{Improving configuration error reporting and fixing.}
-A good bug report of a configuration error should contain both the
+A good bug report for a configuration error should contain both the
 failing software state and its use-case scenario.
 When fixing a configuration error, there is no obviously ``correct'' way to
 build configuration logic. In addition, unlike fixing a bug once,
-every software user has to be informed on the right way to
+every software user has to be informed of the right way to
 configure the system. Perhaps as a result, misconfigurations
 have been one of the dominant causes of system issues and
-is likely to continue so. To address these related problems,
-we plan to further study the existing software configuration errors
+are likely to continue so. To address these related problems,
+we plan to further study existing software configuration errors
 to summarize error patterns, and then use machine learning
 techniques to synthesize good-quality error reports and fixes.
 

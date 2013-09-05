@@ -3,32 +3,35 @@
 \vspace{1mm}
 \centering
 \small{
-\setlength{\tabcolsep}{.96\tabcolsep}
-\begin{tabular}{|l||c|c|c|c|c|c|}
+\setlength{\tabcolsep}{.26\tabcolsep}
+\begin{tabular}{|l|c|c|c|c|c|c|c|}
 \hline
- Error ID. Program& Root Cause Configuration Option & \#Options & \multicolumn{3}{|c|}{Rank of the Root Cause Configuration Option}\\
- \cline{4-6}
- & & & \ourtool & \prevtool~\cite{Zhang:2013:ADS}  & \conftool~\cite{Rabkin:2011:PPC} \\
+ Error ID.& Error Description & Root Cause  & \#Options & \multicolumn{3}{|c|}{Rank of the Root Cause Configuration Option}\\
+ \cline{5-7}
+ Program& & Configuration Option& & \ourtool & \prevtool~\cite{Zhang:2013:ADS}  & \conftool~\cite{Rabkin:2011:PPC} \\
  %&  Options &  Options&  Options \\
  \hline
  \hline
- 1. Randoop& \CodeIn{usethreads} & \randoopoptnum & \randooprank & \n & \x \\
- 2. Weka & \CodeIn{m\_numFolds} & \wekaoptnum &  \wekarank & 9 & 1 \\
- 3. Synoptic& \CodeIn{dumpInitialGraphDotFile} & \synopticoptnum & \synopticrankfirst & \n & \x \\
- 4. Synoptic& \CodeIn{dumpInitialGraphPngFile} &\synopticoptnum & \synopticranksecond & \n & \x \\
- 5. JChord& \CodeIn{chord.ssa} & \jchordoptnum & \jchordrankfirst & 3& \x \\
- 6. JChord& \CodeIn{chord.print.methods} & \jchordoptnum & \jchordranksecond & \n & \x \\
- 7. JMeter&\CodeIn{output\_format} & \jmeteroptnum & \jmeterrank & 1 & \x \\
- 8. Javalanche& \CodeIn{project.tests} &  \javalancheoptnum & \javalancherank& 4 & \x \\
+ 1. Randoop& Poor performance in test generation & \CodeIn{usethreads} & \randoopoptnum & \randooprank & \n & \x \\
+ 2. Weka & A different error message when Weka crashes & \CodeIn{m\_numFolds} & \wekaoptnum &  \wekarank & 9 & 1 \\
+ 3. Synoptic&  Initial model not saved& \CodeIn{dumpInitialGraphDotFile} & \synopticoptnum & \synopticrankfirst & \n & \x \\
+ 4. Synoptic& Generated model not saved as JPEG file& \CodeIn{dumpInitialGraphPngFile} &\synopticoptnum & \synopticranksecond & \n & \x \\
+ 5. JChord& Bytecode parsed incorrectly & \CodeIn{chord.ssa} & \jchordoptnum & \jchordrankfirst & 3& \x \\
+ 6. JChord& Method names not printed in the console& \CodeIn{chord.print.methods} & \jchordoptnum & \jchordranksecond & \n & \x \\
+ 7. JMeter& Results saved to a file with a different format & \CodeIn{output\_format} & \jmeteroptnum & \jmeterrank & 1 & \x \\
+ 8. Javalanche& No mutants generated & \CodeIn{project.tests} &  \javalancheoptnum & \javalancherank& 4 & \x \\
 \hline
 \hline
- Average &  & 49.1 & \averagerank &15.3 & 47.5\\
+ Average &  & & 49.1 & \averagerank &15.3 & 47.5\\
 \hline
 \end{tabular}
 }
 \vspace{-2mm}
 \Caption{{\label{tab:errors} 
-Experimental results. Column ``Root Cause Configuration Option''
+All configuration errors used in the evaluation and
+the experimental results. Only the 2-nd error is
+a crashing error, and all the other errors are non-crashing
+errors. Column ``Root Cause Configuration Option''
 shows the actual root cause configuration option.
 Column ``\#Options'' shows the number
 of configuration options in the new program version, taken from

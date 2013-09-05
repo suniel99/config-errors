@@ -9,7 +9,7 @@ the following research questions:
 
 \begin{enumerate}
 \item How accurate is \ourtool in identifying the root
-cause configuration options ? That is, what is the rank of the
+cause configuration options? That is, what is the rank of the
 actual root cause configuration option in \ourtool's output (Section~\ref{sec:accuracy})?
 
 \item How long does it take for \ourtool to diagnose
@@ -19,11 +19,11 @@ a configuration error (Section~\ref{sec:timecost})?
 existing approaches (Section~\ref{sec:existing})?
 
 \item How does \ourtool's effectiveness compare to
-two alternative approaches? The first alternative approach
+two variants? The first variant
 uses full slicing in identifying
-suspicious configuration options, and the second alternative
-approach only uses predicate behavior
-changes to recommend configuration options (Section~\ref{sec:alternative})?
+suspicious configuration options, and the second 
+variant only uses predicate behavior
+changes to recommend configuration options (Section~\ref{sec:alternative}).
 
 \end{enumerate}
 
@@ -36,9 +36,10 @@ studied in Section~\ref{sec:study},
 and the remaining subject program is Javalanche~\cite{javalanche},
 which is a popular mutation testing framework.
 
-We included Javalanche because we received a real
-configuration error from one of its end-users.
-%provide us a configuration error he encountered when using Javalanche.
+We included Javalanche because one of its real users
+% we received a real
+%configuration error from one of its end-users.
+provided us a configuration error he encountered when using Javalanche.
 
 \newcommand{\randoopoptnum}{57\xspace}
 \newcommand{\wekaoptnum}{14\xspace}
@@ -89,33 +90,6 @@ supported in the new program version.
 
 \subsubsection{Configuration Errors}
 
-\begin{table}[t]
-\vspace{1mm}
-\centering
-\small{
-\setlength{\tabcolsep}{.80\tabcolsep}
-\begin{tabular}{|l||l|l|}
-\hline
- Error ID& Program & Description\\
- \hline
- \hline
- 1 & Randoop  & Poor performance in test generation\\
- 2 & Weka &  A different error message when Weka crashes\\
- 3 & Synoptic & The generated initial model not saved\\
- 4 & Synoptic & The generated model not saved as JPEG file \\
- 5 & JChord & Bytecode parsed incorrected \\
- 6 & JChord &  Method names not printed in the console\\
- 7 & JMeter &  Results saved to a file with a different format\\
- 8 & Javalanche &  No mutants generated\\
-\hline
-\end{tabular}
-}
-\vspace{-2mm}
-\Caption{{\label{tab:errorlist} All configuration errors used in the evaluation.
-Only the 2-nd error is a crashing errors, and all the other errors are non-crashing
-errors. }
-}
-\end{table}
 
 \input{program-table}
 
@@ -137,7 +111,7 @@ Our methodology of collecting
 configuration errors is different from what was used in
 collecting software regression bugs in the literature~\cite{dd, autoflow}.
 Differing from configuration errors,
-software regression bugs often have well-maintained
+software regression bugs often can be found in well-maintained
 bug databases. By contrast, finding recorded configuration errors
 is much harder, mainly because most configuration errors have not been
 documented rigorously~\cite{Yin:2011:ESC}. Usually, after a
@@ -163,7 +137,7 @@ we did not select only errors that \ourtool works well.
 \subsection{Evaluation Procedure}
 
 For each subject program, we used \ourtool to instrument both versions. 
-For each configuration error, we use the same 
+For each configuration error, we used the same 
 input and configuration
 to reproduce the different behaviors on two instrumented versions.
 
@@ -190,7 +164,7 @@ running Windows 7.
 \label{sec:accuracy}
 
 As shown in Table~\ref{tab:errors}, \ourtool is highly effective
-is identifying the root cause configuration options that should
+in identifying the root cause configuration options that should
 be changed in the new program version. The average rank of
 the root cause in \ourtool's output is 1.8. For 6 errors, the root
 cause configuration option ranks first in \ourtool's output;
@@ -229,7 +203,7 @@ Table~\ref{tab:performance} shows the results.
 
 The performance overhead to demonstrate the error
 varies among programs. The current implementation
-imposes an average 8X and 12.8X slowdown in a
+imposes an average 8$\times$ and 12.8$\times$ slowdown in a
 \ourtool-instrumented old and new program version, respectively.
 This is due to \ourtool's inefficient instrumentation code that
 monitors the execution of every instruction.
@@ -322,7 +296,7 @@ value to reason about the most suspicious options, while
 ignoring the statements controlled by a predicate's evaluation result. 
 
 To compare \ourtool with \prevtool, 
-we reuse the pre-built execution trace databases
+we reused the pre-built execution trace databases
 for the 4 shared subject programs (Randoop, Synoptic, JChord, and Weka)
 from~\cite{Zhang:2013:ADS}.
 Each existing trace database contains 6--16 correct
@@ -352,10 +326,10 @@ Columns ``\prevtool'' and ``\conftool'' in Table~\ref{tab:errors} show
 the experimental results.
 %\todo{show the results here}
 
-\ourtool produces significantly accurate results than \prevtool,
+\ourtool produces significantly more accurate results than \prevtool,
 primarily for two reasons. First, \prevtool focuses on diagnosing
 \textit{erroneous} program behaviors and identifies their responsible
-configuration options. However, for the problem addressed in paper,
+configuration options. However, for the problem addressed in this paper,
 the new software version that exhibits \textit{undesired} behavior 
 (after applying the same configuration used in the old version)
 is working exactly as \textit{designed}. In other words, the execution
@@ -373,7 +347,7 @@ Section~\ref{sec:alternative} further evaluates this design
 choice, showing that considering the number of controlled statements
 can substantially increase the diagnosis accuracy.
 
-\conftool outputs correct result for the crashing error in Weka,
+\conftool outputs the correct result for the crashing error in Weka,
 but cannot identify root causes for other non-crashing errors.
 The crashing error in Weka occurs soon after the program
 is launched. \conftool correctly identifies its root cause because
@@ -395,18 +369,18 @@ different problem than \ourtool, or require different
 inputs than \ourtool. For example, 
 X-Ray~\cite{xray} can only diagnose
 performance-related configuration errors on a single
-program version. Chronus~\cite{Whitaker:2004:CDS}
-and AutoBash~\cite{Su:2007:AIC}
-require OS-level support for capture and replay.
+program version.
+%Chronus~\cite{Whitaker:2004:CDS}
+%and AutoBash~\cite{Su:2007:AIC}
+%require OS-level support for capture and replay.
 PeerPressure~\cite{Wang:2004:AMT} and RangerFixer~\cite{rangefix} only
-supports configuration options defined by certain
+support configuration options defined by certain
 specific feature models. 
 %It is unknown whether
 %such techniques can be extended to diagnose configuration
 %errors handled by \ourtool. 
-Further, general software fault localization techniques
-are not well-suited for diagnosing software
-configuration errors~\cite{Jones:2002, McCamant:2003}, since such techniques
+General software fault localization techniques~\cite{Jones:2002, McCamant:2003}
+are not well-suited for configuration error diagnosis, since such techniques
 often focus on identifying the buggy code or
 invalid input values. This has been empirically
 validated in our previous work~\cite{Zhang:2013:ADS}.
@@ -470,8 +444,7 @@ as half of the number of configuration options.
 
 This section evaluates two design choices in \ourtool:
 
-\begin{itemize}
-\item \textbf{Slicing algorithms.} \ourtool
+\noindent \textbf{{Slicing algorithms.}} \ourtool
 uses thin slicing to identify configuration options
 whose values may affect a predicate. We next evaluate
 an alternative technique that replaces thin slicing with
@@ -481,17 +454,6 @@ auxiliary method in Figure~\ref{fig:recommend}, by using full slicing to compute
 configuration options that may affect a predicate.
 Table~\ref{tab:choices} (Column ``Full Slicing'') shows the results.
 
-\item \textbf{Predicate behavioral change metrics.}
-\ourtool considers both the predicate behavior change
-and the number of affected statements in diagnosing
-configuration errors. We next evaluate an alternative technique
-that only uses the predicate behavior change to diagnose errors.
-This alternative technique
-changes the getExecutedStmtNum auxiliary method in
-Figure~\ref{fig:recommend}, by making it always return 1.
-Table~\ref{tab:choices} (Column ``Predicate Behavior'') shows
-the results. 
-\end{itemize}
 
 \ourtool achieves substantially less accurate results when
 using full slicing. The primary reason is that full slicing
@@ -504,12 +466,25 @@ more expensive than computing thin slices.
 The full slicing algorithm (implemented in WALA) failed to scale
 to two subject programs (JMeter and Javalanche).
 
+\vspace{1mm}
+
+\noindent \textbf{Predicate behavioral change metrics.}
+\ourtool considers both the predicate behavior change
+and the number of affected statements in diagnosing
+configuration errors. We next evaluate an alternative technique
+that only uses the predicate behavior change to diagnose errors.
+This alternative technique
+changes the getExecutedStmtNum auxiliary method in
+Figure~\ref{fig:recommend}, by making it always return 1.
+Table~\ref{tab:choices} (Column ``Predicate Behavior'') shows
+the results. 
+
+
 
 \ourtool's accuracy degrades substantially when ranking
 predicates based on its behavioral changes without considering
 the number of affected statements.
-The primary reason is that, 
-behaviorally-deviated predicates occur all over the execution traces,
+The primary reason is that behaviorally-deviated predicates occur all over the execution traces,
 but each predicate
 may have different impacts to the overall program behavior change.
 \ourtool uses the number of statements determined by the predicate
@@ -528,16 +503,26 @@ conservatism; and only using a predicate's behavior
 change is not enough to identify the root cause configuration options.
 \ourtool, using thin slicing and considering both
 the predicate behavior change and the impacted statements,
-can be a better choice in diagnosing configuration errors.
+is a better choice in diagnosing configuration errors.
 
 \subsection{Discussion}
 
 \noindent \textbf{\textit{Threats to validity.}}
 There are several threats to validity of our evaluation.
-First, the \subjnum Java programs might not be representative, though some of them had been
+First, the \subjnum Java programs might not be representative, though some of them have been
 used in previous research. Likewise, the
 \errornum configuration errors might not be representative, even though we
 evaluated every error we found. 
+We only evaluated \ourtool on errors
+caused by one configuration option.
+It is unclear whether \ourtool would produce
+useful results if fixing a particular configuration error
+requires changing values of two dependent configuration options.
+%
+%First, \ourtool currently assumes that only one
+%configuration option is responsible for a given undesired behavior,
+%although it can diagnose two errors caused by two independent options
+%at a time (Section~\ref{sec:evaluation}).
 Second, in our evaluation, we assume the configuration errors
 are not caused by software regression bugs, as all regression
 tests between two versions pass. Applying \ourtool to a buggy
