@@ -167,8 +167,8 @@ study.
 % The \studysubjnum subjects contains
 % three C/C++ software systems and six Java software systems.
 MySQL~\cite{mysql}  is a popular relational database management
-system. Apache~\cite{apache} is a HTTP server which has acquired
-the largest share on the Internet since 1996. Firefox~\cite{firefox}
+system. Apache~\cite{apache} has been a dominant
+HTTP server on the Internet since 1996. Firefox~\cite{firefox}
 is an open-source browser available on multiple platforms.
 Randoop~\cite{randoop} is an automated test generator for Java
 programs. Weka~\cite{weka} is a toolkit that implements machine
@@ -191,7 +191,8 @@ We searched \todo{xx} commit messages and \todo{xx} change log entries, in
 which \todo{yy} commit messages and \todo{yy} change log entries were matched.
 For each match, we read the description of the change,
 and the ``diff'' of the original file to check whether
-the change is made to a configuration option.
+the change is made to a configuration option. We collected
+394 distinct configuration changes in total.
 %and the
 %changed file. This information indicated
 %to us whether the change is related to how the
@@ -215,7 +216,7 @@ in Table~\ref{tab:conftypes} (each change belongs to a single category).
 As shown in Table~\ref{tab:options}, configuration changes occur
 in the evolution of every subject program. In fact, they occur in
 every revision of each subject program (not shown in Table~\ref{tab:options},
-due to space limit).  
+due to space limits).  
 %During software evolution, 
 %developers frequently add \todo{xx}
 
@@ -226,24 +227,26 @@ adding new configuration options to customize a program's
 functionality, deleting existing options, or modifying the default
 value of an option. 
 
-Configuration evolution can have unexpected impact to
-program behaviors. After configuration changes, reusing
+Configuration evolution can have unexpected impact on
+program behavior. After configuration changes, reusing
 the existing configuration for an old software version
 may yield a misconfiguration, causing different results
-on the new version. Among all configuration changes, adding
-new configuration options is less likely to cause
-a configuration errors, since most of the added options are
-used in new software features, which are not available in
-the old version. Some newly added options are introduced
-to modify existing features, but they are disabled by
-default and will not have any effects on the new program
-version unless been explicitly turned on. For the deleted
-and modified options, they are more likely to affect a
-program's existing behavior. In our evaluation (Section~\ref{sec:evaluation}),
-we focused on deleted and modified options, and reproduced \errornum
-user-visible misconfigurations caused by them
-in the 5 Java programs of Table~\ref{tab:options},
-by following the change description and user manual.
+on the new version.  As described in Section~\ref{sec:evaluation},
+our evaluation focused on deleted and modified options.
+Adding new configuration options is less likely to cause
+a configuration error.
+%, since most of the added options are
+%used in new software features, which are not available in
+%the old version. Some newly added options are introduced
+%to modify existing features, but they are disabled by
+%default and will not have any effects on the new program
+%version unless been explicitly turned on. For the deleted
+%and modified options, they are more likely to affect a
+%program's existing behavior. In our evaluation (Section~\ref{sec:evaluation}),
+%we focused on deleted and modified options, and reproduced \errornum
+%user-visible misconfigurations caused by them
+%in the 5 Java programs of Table~\ref{tab:options},
+%by following the change description and user manual.
 
 
 %Regarding the impact of configuration changes, 
@@ -302,12 +305,12 @@ by following the change description and user manual.
 Our findings apply in the context of our subject programs and methodology;
 they may not apply to arbitrary programs.
 
-The identified configuration changes by our methodology is certainly not complete.
-Our keyword search might have missed some configuration changes.
+The configuration changes identified by our methodology are
+certainly not complete. Our keyword search might have missed some configuration changes.
 Our methodology only studies changes that are directly made to a
-software configuration option. We may miss certain
-code or environment changes that may indirectly affect the software behavior,
-and consequently require users to reconfigure the new software version.
+software configuration option. We may miss
+code or environment changes that indirectly affect the software behavior
+and require users to re-configure the new software version.
 
 %We only examined software change logs to identify changed configurations, which is a biased
 %subset; there may be (many) other configuration

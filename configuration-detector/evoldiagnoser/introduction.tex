@@ -1,9 +1,10 @@
+
 \section{Introduction}
 \label{sec:introduction}
 
-Many modern software systems are configurable. They
-have a large number of configuration options for users
-to customize their behavior. This flexibility has a cost:
+Many modern software systems are configurable.
+Configuration options let users
+customize their behavior. This flexibility has a cost:
 a small configuration error might lead to hard-to-diagnose
 behaviors.
 %when something goes wrong, diagnosing a configuration
@@ -12,7 +13,8 @@ behaviors.
 Software configuration errors are errors in which
 the application code and the input are correct, but the software is
 misconfigured so that it does not behave
-as desired by the end-user. Such errors may lead software to crash,
+as desired by the end-user. Such errors may lead
+the software to crash,
 produce erroneous output, or simply perform poorly.
 In practice, software configuration
 errors are \textit{prevalent}, \textit{severe}, and
@@ -23,12 +25,10 @@ errors are \textit{prevalent}, \textit{severe}, and
 %the dominant cause of problems~\cite{}.
 A recent analysis of Yahoo's mission-critical Zookeeper service
 showed that software misconfigurations accounted for
-the majority of all user-visible failures~\cite{bft}. Another
-recent study analyzed reported problems of a commercial
-storage company, and found configuration-related issues
-caused about 31\% of all failures~\cite{Yin:2011:ESC}.
-Further, as described in a recent article about system deployment experience
-in Google, the vast majority of production failures (in Google)
+the majority of all user-visible failures~\cite{bft}.
+Configuration-related issues caused about 31\% of all
+failures at a commercial storage company~\cite{Yin:2011:ESC}.
+The vast majority of production failures at Google
 arise not due to bugs in the software, but bugs in the
 configuration settings (i.e., configuration errors)
 that control the software~\cite{googleconf}.
@@ -48,34 +48,35 @@ Such incidents affected millions of users.
 
 Furthermore, configuration errors are difficult to diagnose. 
 They usually require great expertise to understand
-the error root causes. For example, in one
-configuration error of CentOS described in~\cite{Yin:2011:ESC},
-the user could not mount a newly created file system,
-because the CentOS kernel for this file system was
-misconfigured. The user need to have deep understanding about the
-exhibited symptom,  and re-install kernel modules and
-also modify configuration option values in
-several places to get it to work.
-Techniques helping escape from the ``configuration hell''
+the error root causes. For example, a
+configuration error in the CentOS kernel prevented
+a user from mounting a newly-created file system.
+The user needed deep understanding about the
+exhibited symptom,  and had to re-install kernel modules and
+also modified configuration option values in
+several places to get it to work~\cite{Yin:2011:ESC}.
+Techniques helping escape to from the ``configuration hell''
 are highly demanded~\cite{googleconf}.
 
 Unlike software bugs,
 which can only be fixed by experienced software developers, fixing a software
 configuration error is \textit{actionable} for software end-users
 or system administrators. These users are not the software developers,
-and do not have the right expertise to understand (or even access to)
+and cannot access (much less understand)
+%do not have the right expertise to understand (or even access to)
 the source code;  but they can fix a configuration error by simply changing
 values of certain configuration options.
 
 
+\vspace{-1mm}
 \subsection{Configuration Evolution}
 \label{sec:evolerror}
 
 Continual change is a fact of life for software systems.
 Among software changes, configuration changes are prevalent.
-In an initial study of \studysubjnum real-world configurable software
-systems (Section~\ref{sec:study}),
-we found that configuration changes happen in \textit{every} studied
+We studied \studysubjnum real-world configurable software
+systems (Section~\ref{sec:study}), and
+found configuration changes in \textit{every} studied
 version of \textit{each} system. In many 
 cases, directly reusing the existing configuration
 for the old version for the new
@@ -128,16 +129,18 @@ than a user was expecting.
 
 Our technique (and its tool implementation \ourtool) can help
 diagnose configuration errors. For the JMeter example,
-users first demonstrate the different
+a user first demonstrates the different
 behaviors on two \ourtool-instrumented
 JMeter versions. Then, \ourtool analyzes the
 recorded execution traces produced by the two instrumented
-versions, and outputs a ranked list of root cause configuration options.
+versions, and outputs a ranked list of root-cause configuration options.
 At the top of the list is the
 \CodeIn{output\_format} option with a default value of \CodeIn{CSV}
 in version 2.9.
 To resolve this problem, users only need to change
 its value to \CodeIn{XML}.
+
+\vspace{-1mm}
 
 \subsection{Configuration Option Recommendation}
 
@@ -147,10 +150,10 @@ reproducing the error, recommending which specific
 configuration option is responsible for the undesired
 behavior, and determining a better value for the
 configuration option to fix the error. \ourtool addresses
-the second task: recommending the root cause configuration options.
+the second task: recommending the root-cause configuration options.
 %a configuration error.
 
-\ourtool specifically focuses on software configuration errors, and
+\ourtool specifically focuses on software configuration errors and
 aims to help two types of users: software end-users
 who may have problems with software installed on their
 personal computers, and system administrators who are
@@ -182,6 +185,8 @@ behavior to specific root cause configuration options:
 
 \begin{itemize}
 
+\vspace{-1mm}
+
 \item \textbf{Instrumentation and Profiling.} \ourtool
 instruments both old and new program versions by inserting
 code to monitor the execution of each statement as well as the
@@ -211,16 +216,21 @@ Finally, it outputs a ranked list of suspicious options to the users.
 
 \end{itemize}
 
+\vspace{-1mm}
+
 Compared to existing error diagnosis
 techniques~\cite{Wang:2004:AMT, Rabkin:2011:PPC, Whitaker:2004:CDS,
 Zhang:2013:ADS, Attariyan:2010:ACT, Su:2007:AIC, Attariyan:2008:UCD, xray
 }, \ourtool differs in four
 key aspects:
 
+\vspace{-1mm}
+
 \begin{itemize}
+\vspace{-1mm}
 \item \textbf{It diagnoses configuration errors caused by software evolution}.
 Most existing configuration error diagnosis techniques
-try to identify errors from a single program
+identify errors from a single program
 version~\cite{Wang:2004:AMT, Rabkin:2011:PPC, Whitaker:2004:CDS,
 Zhang:2013:ADS, Attariyan:2010:ACT, Su:2007:AIC, Attariyan:2008:UCD, xray}.
 By contrast, \ourtool is cognizant of software evolution and
@@ -258,7 +268,7 @@ configuration options that may fix the error.
 
 \item \textbf{It requires no OS-level support}. \ourtool
 does not need alterations to the JVM, operating system, or
-standard library. This makes \ourtool more portable, and
+standard library. This makes \ourtool more portable and
 distinguishes it from related techniques, such as
 OS-level configuration error diagnosis~\cite{Whitaker:2004:CDS, Su:2007:AIC}.
 
@@ -276,7 +286,8 @@ for all \errornum errors. In 6 errors, the correct option was \ourtool's first
 suggestion. In 1 error, the correct option was
 \ourtool's third suggestion. The root cause of the remaining
 error was \ourtool's sixth suggestion. \ourtool is fast enough for practical use,
-taking less than \avgtime minutes to diagnose one configuration error, on average.
+taking less than \avgtime minutes,
+on average, to diagnose one configuration error.
 \ourtool's accuracy and speed make it a promising technique.
 
 
@@ -297,10 +308,10 @@ show that \ourtool significantly outperforms these two existing techniques.
 
 Finally, we evaluated two internal design choices of \ourtool. First, we 
 showed that using thin slicing~\cite{Sridharan:2007} is a better choice than
-the traditional full slicing~\cite{Horwitz:1988} to reason about the
-root cause configuration options. Second, we showed that 
+traditional full slicing~\cite{Horwitz:1988} to reason about 
+root-cause configuration options. Second, we showed that 
 \ourtool outperforms an alternative approach
-that only uses predicate behavior change to reason about
+that solely uses predicate behavior change to reason about
 the root cause configuration options.
 
 
@@ -314,8 +325,8 @@ This paper makes the following main contributions:
 
 \begin{itemize}
 \vspace{-3mm}
-\item \textbf{Study.} We describe an empirical
-study of 9 configurable software systems.
+\item \textbf{Study of configuration changes.} We describe an empirical
+study of \studysubjnum configurable software systems.
 Our study indicates that configuration changes
 are frequent and persistent during software evolution (Section~\ref{sec:study}).
 

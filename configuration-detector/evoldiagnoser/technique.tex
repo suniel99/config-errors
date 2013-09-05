@@ -79,20 +79,21 @@ than the traditional regression bug localization problem~\cite{dd, autoflow}.
 A regression bug occurs when developers have made a mistake,
 which causes software to violate its specification after a session of code changes.
 By contrast, in our problem, the software behavior on the new version
-is still as \textit{designed} but \textit{undesired}. 
+is still as \textit{designed} by the developers
+but \textit{undesired} by the users. 
 %\ourtool addresses
 %this problem from a specific angel by recommending configuration options
 %to fix the undesired behavior.
 Further, compared to
 regression bugs introduced by software developers,
 software configuration lies in the gray zone between
-the software developers of software users. The responsibility for creating
+software developers and software users. The responsibility for creating
 correct configurations lies with both parties; the developer should create
 intuitive configuration logic, build logic that detects
 errors, and convey configuration knowledge to users
 effectively. This shared responsibility makes recommending configuration options
 different than localizing a regression bug, and causes many existing
-techniques not applicable. We will discuss related techniques below
+techniques to be inapplicable. We discuss related techniques below
 and in Section~\ref{sec:related}.
 %, and describe an empirical comparison
 %in Section~\ref{sec:evaluation}.
@@ -110,11 +111,9 @@ and dual slicing~\cite{Sumner:2013:CCE}
 use a similar idea: they repeatedly replace a variable value with other alternatives,
 and then re-execute the program to check whether the outcome is desired.
 There are two major challenges that prevent these dynamic analyses
-from being used. First, it is
-difficult to find a valid replacement value for a configuration option.
-For Boolean type option, it is trivial to find alternative values.
-However, for many configuration options with string or regular expression types, it
-can be hard to determine good alternative values without a specification.
+from being used. First, it can be
+difficult to find a valid replacement value for a non-Boolean
+configuration option, such as a string or regular expression.
 Second, automatically checking program outcomes requires
 a testing oracle, which is often not available in practice, and end-users
 should not be  expected to provide it. To address these challenges,
@@ -129,27 +128,20 @@ about the responsible configuration options.
 
 \vspace{1mm}
 \noindent \textbf{\textit{\ourtool's current limitations.}}
-There are four major limitations in the our \ourtool technique.
-First, \ourtool currently assumes that only one
-configuration option is responsible for a given undesired behavior,
-although it can diagnose two errors caused by two independent options
-at a time (Section~\ref{sec:evaluation}).
-If fixing a particular configuration error
-requires changing values of two configuration options,
-then \ourtool may not identify both of them.
-Second, \ourtool assumes the different behaviors
+There are three major limitations in the our \ourtool technique.
+First, \ourtool assumes the different behaviors
 of two program versions are not caused by non-determinism.
 For non-deterministic behaviors, \ourtool
 could potentially leverage a deterministic replay
 system~\cite{Huang:2013:CRL, Jin:2012:BRF} to faithfully reproduce the behaviors.
-Third, \ourtool only matches one predicate in the old
+Second, \ourtool only matches one predicate in the old
 program version to one predicate in the new program version.
 If a predicate evolves into multiple predicates in the new
 version, \ourtool may output less useful results. 
 %We did not see such cases
 %in our experiment, but we speculate that \ourtool
 %may not produce useful matching results.
-Fourth, \ourtool focuses on identifying root cause
+Third, \ourtool focuses on identifying root cause
 configuration options that can change the functional behaviors of
 the target program.
 % rather than the underlying OS
