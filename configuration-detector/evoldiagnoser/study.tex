@@ -6,7 +6,7 @@ software change analysis work~\cite{STVR:STVR1475, Dagenais:2008, Tao:2012:SEU},
 software configuration changes across multiple
 versions are less studied. Do configuration
 changes arise during software evolution in practice?
-This section describes a preliminary study of
+This section describes an initial study of
 \studysubjnum  real-world configurable systems to answer
 this question.
 % to investigate whether
@@ -230,21 +230,20 @@ Configuration evolution can have unexpected impact to
 program behaviors. After configuration changes, reusing
 the existing configuration for an old software version
 may yield a misconfiguration, causing different results
-on the new version. Adding
+on the new version. Among all configuration changes, adding
 new configuration options is less likely to cause
 a configuration errors, since most of the added options are
 used in new software features, which are not available in
 the old version. Some newly added options are introduced
-to improve existing features, but they are disabled by
+to modify existing features, but they are disabled by
 default and will not have any effects on the new program
-version unless explicitly turned on. For the deleted
+version unless been explicitly turned on. For the deleted
 and modified options, they are more likely to affect a
-program's existing behavior. As described in
-Section~\ref{sec:evaluation}, in our evaluation,
+program's existing behavior. In our evaluation (Section~\ref{sec:evaluation}),
 we focused on deleted and modified options, and reproduced \errornum
 user-visible misconfigurations caused by them
 in the 5 Java programs of Table~\ref{tab:options},
-by simply following the change description and user manual.
+by following the change description and user manual.
 
 
 %Regarding the impact of configuration changes, 
