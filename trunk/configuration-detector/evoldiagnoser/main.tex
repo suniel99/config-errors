@@ -69,8 +69,10 @@
 
 \newcommand{\avgtime}{3.1\xspace}
 
-\newcommand{\prevtool}{ConfDiagnoser\xspace}
-\newcommand{\conftool}{Conf\-An\-a\-lyzer\xspace}
+\newcommand{\prevtoolnoxspace}{ConfDiagnoser}
+\newcommand{\prevtool}{\prevtoolnoxspace\xspace}
+\newcommand{\conftoolnoxspace}{Conf\-An\-a\-lyzer}
+\newcommand{\conftool}{\conftoolnoxspace\xspace}
 \newcommand{\ourtool}{ConfSuggester\xspace}
 \newcommand{\missing}{$\bullet$ }
 
@@ -102,7 +104,7 @@
 \renewenvironment{enumerate}{\Enumerate\Nospacing}{\endlist}
 \renewenvironment{description}{\Description\Nospacing}{\endlist}
 
-\hyphenation{Wohl-stadt-er}
+\hyphenation{Wohl-stadt-er Conf-Sug-gest-er}
 
 \begin{document}
 
@@ -114,7 +116,7 @@
 \numberofauthors{1}
 
 \author{
-\alignauthor Sai Zhang \quad Michael D. Ernst\\
+\alignauthor Sai Zhang \qquad Michael D. Ernst\\
        \affaddr{Department of Computer Science \& Engineering}\\
        \affaddr{University of Washington}\\
        \email{\{szhang, mernst\}@cs.washington.edu}
