@@ -450,7 +450,7 @@ whose values may affect a predicate. We next evaluate
 an alternative technique that replaces thin slicing with
 the traditional full slicing~\cite{Horwitz:1988}.
 This alternative technique changes the getAffectingOptions
-auxiliary method in Figure~\ref{fig:recommend}, by using full slicing to compute all
+auxiliary function in Figure~\ref{fig:recommend}, by using full slicing to compute all
 configuration options that may affect a predicate.
 Table~\ref{tab:choices} (Column ``Full Slicing'') shows the results.
 
@@ -474,7 +474,7 @@ and the number of affected statements in diagnosing
 configuration errors. We next evaluate an alternative technique
 that only uses the predicate behavior change to diagnose errors.
 This alternative technique
-changes the getExecutedStmtNum auxiliary method in
+changes the getExecutedStmtNum auxiliary function in
 Figure~\ref{fig:recommend}, by making it always return 1.
 Table~\ref{tab:choices} (Column ``Predicate Behavior'') shows
 the results. 

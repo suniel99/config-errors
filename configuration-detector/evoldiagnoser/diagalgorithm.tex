@@ -1,27 +1,20 @@
 
 \begin{figure}[t]
-\textbf{Auxiliary methods:}
+\textbf{Auxiliary functions:}
 
-\quad getPredicates($\mathit{T}$): returns all executed predicates in the execution trace $\mathit{T}$.
+getPredicates($\mathit{T}$): returns all executed predicates in the execution trace $\mathit{T}$.
 
-\quad getAffectingOptions($\mathit{p}$, $\mathit{V}$): uses thin slicing~\cite{Sridharan:2007} to compute all configuration options that may affect predicate $\mathit{p}$ in the software version $\mathit{V}$. 
+getAffectingOptions($\mathit{p}$, $\mathit{V}$): uses thin slicing~\cite{Sridharan:2007} to compute all configuration options that may affect predicate $\mathit{p}$ in the software version $\mathit{V}$. 
 
-\quad getExecutedStmtNum($\mathit{p}$, $\mathit{V}$, $\mathit{T}$): return the number of executed statements (controlled by predicate $\mathit{p}$) in trace $\mathit{T}$ from software version $\mathit{V}$.
+getExecutedStmtNum($\mathit{p}$, $\mathit{V}$, $\mathit{T}$): return the number of executed statements (controlled by predicate $\mathit{p}$) in trace $\mathit{T}$ from software version $\mathit{V}$.
 
-\textbf{Input}: two software versions: $\mathit{V_{old}}$ and $\mathit{V_{new}}$. 
+%\vspace{1mm}
 
-\quad two execution traces: $\mathit{T_{old}}$ and $\mathit{T_{new}}$, on both versions.
-
-\quad a map of matched statements between $\mathit{V_{old}}$ and $\mathit{V_{new}}$ : $\mathit{stmtMap}$.
-
-\textbf{Output}: {a ranked list of likely root cause configuration options}
-
-\vspace{1mm}
 
 deviation($\mathit{p_{1}}$, $\mathit{T_1}$, $\mathit{p_{2}}$, $\mathit{T_2}$):\\
 \vspace{-4mm}%
 \begin{algorithmic}[1]
-\STATE $\mathit{result} \leftarrow$ $|$$\phi$($\mathit{p_{1}}$, $\mathit{T_1}$) - $\phi$($\mathit{p_{2}}$, $\mathit{T_2}$)$|$\\
+\STATE $\mathit{result} \leftarrow$ $|$$\phi$($\mathit{p_{1}}$, $\mathit{T_1}$) $-$ $\phi$($\mathit{p_{2}}$, $\mathit{T_2}$)$|$\\
 \COMMENT{$\delta$ is a pre-defined threshold with default value: 0.1}
 \IF{$\mathit{result}$ < $\delta$}
 \STATE $\mathit{result}$ = 0
@@ -29,25 +22,35 @@ deviation($\mathit{p_{1}}$, $\mathit{T_1}$, $\mathit{p_{2}}$, $\mathit{T_2}$):\\
 \RETURN $\mathit{result}$
 \end{algorithmic}
 
-recommendOptions($\mathit{T_{old}}$, $\mathit{T_{new}}$, $\mathit{V_{old}}$, $\mathit{V_{new}}$, $\mathit{predMap}$)\\
+\textbf{Input}: two software versions: $\mathit{V_{old}}$ and $\mathit{V_{new}}$. 
+
+\quad two execution traces: $\mathit{T_{old}}$ and $\mathit{T_{new}}$, on the respective versions.
+
+\quad a map of matched statements between $\mathit{V_{old}}$ and $\mathit{V_{new}}$ : $\mathit{stmtMap}$.
+
+\textbf{Output}: {a ranked list of likely root cause configuration options}
+
+\vspace{1mm}
+
+recommendOptions($\mathit{V_{old}}$, $\mathit{V_{new}}$, $\mathit{T_{old}}$, $\mathit{T_{new}}$, $\mathit{stmtMap}$)\\
 \vspace{-4mm}%
 \begin{algorithmic}[1]
 \STATE $\mathit{optionMap}$ $\leftarrow$ new Map$\langle$Option, Float$\rangle$\\
 \COMMENT{Each entry of $\mathit{optionMap}$ is initialized to 0.}
 \FOR{each $\mathit{p_{old}}$ in getPredicates($\mathit{V_{old}}$)}
-\STATE $\mathit{v} \leftarrow$ deviation($\mathit{p_{old}}$, $\mathit{T_{old}}$, $\mathit{stmtMap}$[$\mathit{p_{old}}$], $\mathit{T_{new}}$)
+\STATE $\mathit{d} \leftarrow$ deviation($\mathit{p_{old}}$, $\mathit{T_{old}}$, $\mathit{stmtMap}$[$\mathit{p_{old}}$], $\mathit{T_{new}}$)
 \STATE $\mathit{options_{old}}$ $\leftarrow$ getAffectingOptions($\mathit{p_{old}}$, $\mathit{V_{old}}$)
-\STATE $\mathit{v}$ $\leftarrow$ $\mathit{v}$ $\times$ getExecutedStmtNum($\mathit{p_{old}}$, $\mathit{V_{old}}$, $\mathit{T_{old}}$)
+\STATE $\mathit{w}$ $\leftarrow$ $\mathit{d}$ $\times$ getExecutedStmtNum($\mathit{p_{old}}$, $\mathit{V_{old}}$, $\mathit{T_{old}}$)
 \FOR{each Option $\mathit{option}$ in $\mathit{options_{old}}$}
-\STATE $\mathit{optionMap}$[$\mathit{option}$] $\leftarrow$ $\mathit{optionMap}$[$\mathit{option}$] + $\mathit{v}$
+\STATE $\mathit{optionMap}$[$\mathit{option}$] $\leftarrow$ $\mathit{optionMap}$[$\mathit{option}$] + $\mathit{w}$
 \ENDFOR
 \ENDFOR
 \FOR{each $\mathit{p_{new}}$ in getPredicates($V_{new}$)}
-\STATE $\mathit{v} \leftarrow$ deviation($\mathit{stmtMap^{-1}}$[$\mathit{p_{new}}$], $\mathit{p_{new}}$, $\mathit{T_{old}}$, $\mathit{T_{new}}$)
+\STATE $\mathit{d} \leftarrow$ deviation($\mathit{stmtMap^{-1}}$[$\mathit{p_{new}}$], $\mathit{T_{old}}$, $\mathit{p_{new}}$, $\mathit{T_{new}}$)
 \STATE $\mathit{options_{new}}$ $\leftarrow$ getAffectingOptions($\mathit{p_{new}}$, $\mathit{V_{new}}$)
-\STATE $\mathit{v}$ $\leftarrow$ $\mathit{v}$ $\times$ getExecutedStmtNum($\mathit{p_{new}}$, $\mathit{V_{new}}$, $\mathit{T_{new}}$)
+\STATE $\mathit{w}$ $\leftarrow$ $\mathit{d}$ $\times$ getExecutedStmtNum($\mathit{p_{new}}$, $\mathit{V_{new}}$, $\mathit{T_{new}}$)
 \FOR{each Option $\mathit{option}$ in $\mathit{options_{new}}$}
-\STATE $\mathit{optionMap}$[$\mathit{option}$] $\leftarrow$ $\mathit{optionMap}$[$\mathit{option}$] + $\mathit{v}$
+\STATE $\mathit{optionMap}$[$\mathit{option}$] $\leftarrow$ $\mathit{optionMap}$[$\mathit{option}$] + $\mathit{w}$
 \ENDFOR
 \ENDFOR
 \RETURN $\mathit{optionMap}$.sortedKeys()

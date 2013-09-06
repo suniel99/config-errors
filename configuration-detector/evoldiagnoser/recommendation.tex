@@ -11,11 +11,11 @@ In this step, \ourtool attributes the control flow differences
 to one or more root cause configuration options.
 The key idea is to identify configuration options that
 may affect the behaviorally-deviated predicates, and then rank
-these options by \todo{need rephrase}
+these options by
 the deviation value (computed by the
-{deviation} method in Figure~\ref{fig:recommend})
+{deviation} function in Figure~\ref{fig:recommend})
 and the number of executed statements they control (computed
-by the {getExecutedStmtNum} auxiliary method in Figure~\ref{fig:recommend}).
+by the {getExecutedStmtNum} auxiliary function in Figure~\ref{fig:recommend}).
 
 %\subsubsection{Attributing Trace Differences to Configuration Options}
 
@@ -38,15 +38,14 @@ to identify configuration options that \textit{directly} affect
 a predicate. Different from traditional full slicing,
 thin slicing \textit{only} follows the data flow dependencies
 from the seed (i.e., the initialization statement of a
-configuration option), and ignores control flow dependencies
+configuration option). It ignores control flow dependencies
 as well as uses of base pointers. This property separates
 pointer computations from the flow of configuration option
 values and naturally connects a configuration option with its
 directly affected statements. Section~\ref{sec:alternative}
 empirically demonstrates that traditional full slicing includes
-too much of the program, and can significantly affect an analysis's
-accuracy; while thin slicing is a better
-choice.
+too much of the program, and is less accurate than
+thin slicing.
 
 
 To distinguish the likelihood of each configuration
@@ -74,11 +73,11 @@ to its affecting configuration options (lines 4 and 12). Then,
 \ourtool computes the number of executed statements controlled
 by that predicate (lines 5 and 13). To do so, 
 %compute the number of executed statements controlled by a predicate,
-the getExecutedStmtNum auxiliary method first statically examines the
-source code to compute the immediate post-dominant statement
+the getExecutedStmtNum auxiliary function first statically examines the
+source code to compute the immediate post-dominator statement
 of a predicate, and then traverses the execution trace to count
 the number of statements that
-are executed between the predicate and its post-dominant
+are executed between the predicate and its post-dominator
 statement. 
 \ourtool multiples a predicate's deviation value 
 with the number of executed statements, and then updates the

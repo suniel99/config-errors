@@ -17,7 +17,7 @@ behave differently across the execution traces (Section~\ref{sec:identify_diff})
 
 For each predicate recorded in the old execution trace,
 \ourtool matches it in the new program version to identify
-its possibly updated counterpart.
+its possibly-updated counterpart.
 The predicate-matching process proceeds in two steps.
 First, \ourtool finds corresponding methods.
 Then, \ourtool matches predicates within matching methods.
@@ -39,8 +39,7 @@ a method in the old program version, \ourtool
 uses the algorithm shown in Figure~\ref{fig:matching}
 (details are discussed below) to match it
 to \textit{every} method in the new program version, and then
-chooses the method with the most matched statements
-(in the new program version).
+chooses the method in the new program version with the most matched statements.
 
 After running the matching algorithm, \ourtool further checks the ratio of
 matched statements in the old method, and discards method candidates whose
@@ -67,42 +66,45 @@ algorithm is based on a method-level representation
 It works in a hierarchical way by first identifying matched
 classes and then matched method pairs, and uses
 textual similarity to compare two program statements. By contrast, our
-algorithm directly works on the bytecode, using program control flow graph
-to establish the matching between statements.
+algorithm directly works on the bytecode, using the program control flow graph
+representation to establish the matching between statements.
 
 In Figure~\ref{fig:matching}, \ourtool first constructs the control
 flow graphs of two given methods (lines 2--3), then pushes their
-entry nodes (a synthetic node for each method) to a stack (line 5), which retains
+entry nodes (a synthetic node for each method) onto a worklist stack (line 5), which retains
 the next statement pair for comparison. The algorithm repeatedly
 pops each statement pair from the stack (line 7), and
-decides whether the two statements are matched (line 12).  To avoid infinite
-loop, the algorithm first checks whether the next statement for comparison
-has been compared before (lines 8--9). 
+decides whether the two statements are matched (line 12).  
+Each statement appears at most once in the result (lines 8--9). .
+%To avoid infinite
+%loop, the algorithm first checks whether the next statement for comparison
+%has been compared before 
 
 The algorithm decides whether two statements are matched by using
-the matched($\mathit{s}$, $\mathit{s'}$) auxiliary method. Method
-matched($\mathit{s}$, $\mathit{s'}$) returns true if both
+the matches($\mathit{s}$, $\mathit{s'}$) auxiliary function. Method
+matches($\mathit{s}$, $\mathit{s'}$) returns true if both
 $\mathit{s}$ and $\mathit{s'}$ have the same statement type (i.e.,
 the same instruction type in bytecode), and if $\mathit{s}$ and
 $\mathit{s'}$ are field-accessing or method-invoking statements,
-they access the same field or invoke the same method.
+the same field or method is accessed or invoked
+by both statements.
+%they access the same field or invoke the same method.
 We use such approximate matching since \ourtool directly works
 on bytecode rather than source code. The approximate matching
 tolerates small differences
-occurs between two versions, such as changes to constant values.
+between two versions, such as changes to constant values.
 
 
 If two statements are matched, the algorithm saves them in the
 result map (line 13). Otherwise,
-the algorithm follows the control flow graph to compare a statement with
-the next $lh$ statements, and checks whether any two statements can be
-matched (lines 16--22). Doing so permits the algorithm to tolerate some small
+the algorithm compares each statement reachable within $lh$
+control flow graph edges (lines 16--22). Doing so permits the algorithm to tolerate some small
 changes in the method code, and attempts to match as many statements as possible.
 
 When two matched statements are found  (stored in
 the $\mathit{matchedPair}$ variable in lines 14 or 21),
 the algorithm pushes every pair of
-their successive statements onto the stack (line 27).
+their successor statements onto the stack (line 27).
 It terminates after every statement has been attempted to match.
 
 
@@ -111,17 +113,17 @@ It terminates after every statement has been attempted to match.
 \subsubsection{Identifying Behaviorally-Deviated Predicates}
 \label{sec:identify_diff}
 
-With the predicate matching information, \ourtool 
+Using the predicate matching information, \ourtool 
 identifies predicates that behave differently
 between two versions. 
 
 Given an execution trace $\mathit{T}$,
 \ourtool characterizes a predicate $\mathit{p}$'s behavior by how often
 it is evaluated (i.e., the number of observed executions),
-and how often it is evaluated to true (i.e., the true ratio).
+and how often it evaluates to true (i.e., the ``true ratio'').
 The true ratio is an important characteristic of a predicate's behavior,
 but it is less dependable
-if fewer times the predicate has been executed.
+the fewer times the predicate has been executed.
 
 \ourtool uses a function $\phi$ to combine both true ratio
 and number of executions in a standard way by computing their harmonic mean.
@@ -141,14 +143,13 @@ and number of executions in a standard way by computing their harmonic mean.
 
 \vspace{-1mm}
 
-In $\phi(p, T)$, $\|trueRatio|(p, T)$ returns the ratio of executions of the
+In $\phi(p, T)$, $\|trueRatio|(p, T)$ returns the proportion of executions of the
 predicate $p$ that evaluated to true in $T$,
 and $\|totalExecNum|(p, T)$ returns the the total
 number of observed executions of predicate $p$ in $T$.
-To smooth corner cases, if a predicate $p$ is not executed in $T$ 
+To smooth corner cases, $\phi(p, T)$ returns 0, if a predicate $p$ is not executed in $T$ 
 (i.e., $\|totalExecNum|(p, T) = 0$), or
-a predicate $p$'s true ratio is 0 (i.e., $\|trueRatio|(p, T) = 0$),
-then $\phi(p, T)$ returns 0.
+a predicate $p$'s true ratio is 0 (i.e., $\|trueRatio|(p, T) = 0$).
 %and if a predicate $p$'s true ratio is 0, 
 %then $\phi(p, t)$ returns $1/\|totalExecNum|(p, t)$.
 Finally, we let $\phi(null, T) = 0$ for all $T$.
