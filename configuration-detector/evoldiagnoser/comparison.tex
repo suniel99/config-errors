@@ -113,7 +113,7 @@ It terminates after every statement has been attempted to match.
 \subsubsection{Identifying Behaviorally-Deviated Predicates}
 \label{sec:identify_diff}
 
-Using the predicate matching information, \ourtool 
+Using the predicate matching information, \ourtool next
 identifies predicates that behave differently
 between two versions. 
 
@@ -152,7 +152,7 @@ To smooth corner cases, $\phi(p, T)$ returns 0, if a predicate $p$ is not execut
 a predicate $p$'s true ratio is 0 (i.e., $\|trueRatio|(p, T) = 0$).
 %and if a predicate $p$'s true ratio is 0, 
 %then $\phi(p, t)$ returns $1/\|totalExecNum|(p, t)$.
-Finally, we let $\phi(null, T) = 0$ for all $T$.
+We let $\phi(null, T) = 0$ for all $T$.
 
 %The algorithm is shown in Figure~\ref{fig:identify}.
 %It first iterates every predicate in the old execution trace (line 2),
@@ -168,7 +168,7 @@ Given two matched predicates $p_{1}$ and $p_{2}$ from two different execution tr
 \ourtool uses the {deviation} function defined in Figure~\ref{fig:recommend}
 to compute the behavioral deviation value.
 In Figure~\ref{fig:recommend}, the {deviation} function
- discards a predicate whose behavioral deviation value is less than
+ discards a predicate pair whose behavioral deviation value is less than
 a pre-defined threshold (line 2). This is for tolerating small non-determinism
 during program execution and
 making \ourtool only focus on predicates with substantial
@@ -176,8 +176,9 @@ behavioral differences.
 
 The identified behaviorally-deviated predicates indicate different
 control flow taken between two versions under the same input
-and configuration. Such control flow differences provide evidence of
-which part of the program might be behaving unexpectedly and why.
+and configuration. Such control flow differences are useful
+in explaining %provide evidence of
+which part of the program might be behaving unexpectedly. 
 
 %The output of the algorithm in this step contains three categories
 %of matched predicate pairs:

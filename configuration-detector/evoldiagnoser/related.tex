@@ -46,7 +46,7 @@ such as a software revision history~\cite{frameworkevolution}.
 Zhang et al.~\cite{Zhang:2005:MEH} developed a technique to match
 control flows of two program versions running with
 the same input. Differing from \ourtool, their
-work assumes semantically equivalent program versions (e.g., optimized
+work assumes semantically-equivalent program versions (e.g., optimized
 and unoptimized), while \ourtool compares two versions
 of the same program that include functional changes. 
 %\todo{missing above the work of semantic trace analysis,
@@ -62,9 +62,9 @@ subset of changes that still makes the test fail~\cite{dd}.
 Test minimization techniques~\cite{Hoffman:2009:STA, Zhang:2013:PST}
 simplify the failed
 test to ease comprehension for developers. 
-\ourtool is differs from these techniques in three aspects.
+\ourtool differs from these techniques in three aspects.
 First, existing techniques focus on helping software developers
-localize a software bug, while \ourtool targets software
+localize a bug, while \ourtool targets software
 configuration errors that are fixable by software end-users.
 As we have discussed in Section~\ref{sec:tech_discuss},
 configuration errors are fundamentally different than regression bugs.
@@ -178,7 +178,8 @@ a configurable software system earlier, but cannot
 diagnose an exhibited configuration error. By contrast, our \ourtool technique
 links the behavioral differences to a small number
 of configuration options, and explicitly guides software end-users
-how to fix a configuration error.
+to the root causes.
+%how to fix a configuration error.
 
 
 

@@ -21,7 +21,7 @@ a program's control flow, rather than data flow, often propagates the majority o
 the effects of a configuration option and determines
 a program's execution path.
 Second, the control flow differences of two execution
-traces can approximate the program behavior differences
+traces can approximate the program behavioral differences
 of two versions, and provide evidence
 for which parts of the program might be behaving
 abnormally and why.
@@ -29,7 +29,7 @@ abnormally and why.
 
 Based on these two insights, \ourtool uses three
 steps to link different behaviors across program
-versions to a specific configuration option that caused the difference.
+versions to specific configuration options that cause the difference.
 Figure~\ref{fig:overview} sketches the high-level workflow of
 \ourtool. 
 %To recommend configuration options that
@@ -77,7 +77,7 @@ vs. Localizing regression bugs.}}
 The problem addressed in this paper is significantly different
 than the traditional regression bug localization problem~\cite{dd, autoflow}.
 A regression bug occurs when developers have made a mistake,
-which causes software to violate its specification after a session of code changes.
+which causes the software to violate its specification after a session of code changes.
 By contrast, in our problem, the software behavior on the new version
 is still as \textit{designed} by the developers
 but \textit{undesired} by the users. 

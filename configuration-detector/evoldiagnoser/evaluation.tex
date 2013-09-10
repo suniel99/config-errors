@@ -173,9 +173,9 @@ in \ourtool's output; and the root cause option ranks sixth
 for the remaining error. The primary reason is \ourtool's
 ability to identify the behaviorally-deviated predicates with
 substantial impacts through execution trace comparison.
-The top-ranked identified changed predicates often provide
+The top-ranked deviated predicates often provide
 useful clues about what parts of a program have performed
-differently and why.
+differently.
 
 %\todo{show one more example to illustrate its effectiveness}
 
@@ -447,9 +447,9 @@ This section evaluates two design choices in \ourtool:
 \noindent \textbf{{Slicing algorithms.}} \ourtool
 uses thin slicing to identify configuration options
 whose values may affect a predicate. We next evaluate
-an alternative technique that replaces thin slicing with
+a variant that replaces thin slicing with
 the traditional full slicing~\cite{Horwitz:1988}.
-This alternative technique changes the getAffectingOptions
+This variant changes the getAffectingOptions
 auxiliary function in Figure~\ref{fig:recommend}, by using full slicing to compute all
 configuration options that may affect a predicate.
 Table~\ref{tab:choices} (Column ``Full Slicing'') shows the results.
@@ -471,9 +471,9 @@ to two subject programs (JMeter and Javalanche).
 \noindent \textbf{Predicate behavioral change metrics.}
 \ourtool considers both the predicate behavior change
 and the number of affected statements in diagnosing
-configuration errors. We next evaluate an alternative technique
+configuration errors. We next evaluate a variant
 that only uses the predicate behavior change to diagnose errors.
-This alternative technique
+This variant 
 changes the getExecutedStmtNum auxiliary function in
 Figure~\ref{fig:recommend}, by making it always return 1.
 Table~\ref{tab:choices} (Column ``Predicate Behavior'') shows
@@ -545,7 +545,7 @@ We have three chief findings. (1) \ourtool is highly effective
 in diagnosing configuration errors introduced by configuration
 evolution; (2) \ourtool produces more accurate results than
 approaches designed to diagnose errors on a single program version;
-and (3) \ourtool outperforms two alternative approaches
+and (3) \ourtool outperforms two variants
 that use full slicing and only  a predicate's
 behavior change in error diagnosis, respectively.
 %using thin slicing and combining the behavioral
