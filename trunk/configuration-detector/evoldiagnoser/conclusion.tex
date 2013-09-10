@@ -32,7 +32,7 @@ with given subject programs.
 
 \item \textbf{Formulating guidance of error diagnosis.}
 An important question that is not answered in this paper
-is that how to automatically distinguish software bugs from 
+is how to automatically distinguish software bugs from 
 configuration errors, when a software system exhibits
 some undesired behavior. We plan to formulate guidance
 regarding when the user should give up on \ourtool
@@ -41,12 +41,13 @@ and assume the error is not related to a configuration option.
 \item \textbf{Improving configuration error reporting and fixing.}
 A good bug report for a configuration error should contain both the
 failing software state and its use-case scenario.
-When fixing a configuration error, there is no obviously ``correct'' way to
-build configuration logic. In addition, unlike fixing a bug once,
+%When fixing a configuration error, there is no obviously ``correct'' way to
+%build configuration logic. 
+Unlike fixing a bug once,
 every software user has to be informed of the right way to
 configure the system. Perhaps as a result, misconfigurations
 have been one of the dominant causes of system issues and
-are likely to continue so. To address these related problems,
+are likely to continue so~\cite{Yin:2011:ESC}. To address these related problems,
 we plan to further study existing software configuration errors
 to summarize error patterns, and then use machine learning
 techniques to synthesize good-quality error reports and fixes.
