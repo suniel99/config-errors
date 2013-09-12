@@ -2,11 +2,11 @@
 \begin{figure}[t]
 \textbf{Auxiliary functions:}
 
-getPredicates($\mathit{T}$): returns all executed predicates in the execution trace $\mathit{T}$.
+getPredicates($\mathit{T}$): return all executed predicates in the execution trace $\mathit{T}$.
 
-getAffectingOptions($\mathit{p}$, $\mathit{V}$): uses thin slicing~\cite{Sridharan:2007} to compute all configuration options that may affect predicate $\mathit{p}$ in the software version $\mathit{V}$. 
+getAffectingOptions($\mathit{p}$, $\mathit{V}$): use thin slicing~\cite{Sridharan:2007} to compute all configuration options that may affect predicate $\mathit{p}$ in the software version $\mathit{V}$. 
 
-getExecutedStmtNum($\mathit{p}$, $\mathit{V}$, $\mathit{T}$): return the number of executed statements (controlled by predicate $\mathit{p}$) in trace $\mathit{T}$ from software version $\mathit{V}$.
+getExecutedStmtNum($\mathit{p}$, $\mathit{V}$, $\mathit{T}$): return the number of executed statements (controlled by predicate $\mathit{p}$) in trace $\mathit{T}$ from the software version $\mathit{V}$.
 
 %\vspace{1mm}
 
@@ -28,7 +28,7 @@ deviation($\mathit{p_{1}}$, $\mathit{T_1}$, $\mathit{p_{2}}$, $\mathit{T_2}$):\\
 
 \quad a map of matched statements between $\mathit{V_{old}}$ and $\mathit{V_{new}}$ : $\mathit{stmtMap}$.
 
-\textbf{Output}: {a ranked list of likely root cause configuration options}
+\textbf{Output}: {a ranked list of likely root-cause configuration options}
 
 \vspace{1mm}
 
@@ -57,7 +57,7 @@ recommendOptions($\mathit{V_{old}}$, $\mathit{V_{new}}$, $\mathit{T_{old}}$, $\m
 \vspace{-2mm}
 \end{algorithmic}
 \caption{Algorithm for recommending configuration options.
-Method deviation is a helper method to compute the deviation
+Function deviation is a helper function to compute the deviation
 value between two predicates $\mathit{p_1}$ and $\mathit{p_2}$, and function $\phi$
 used in deviation is defined in Section~\ref{sec:identify_diff}.
 \label{fig:recommend}

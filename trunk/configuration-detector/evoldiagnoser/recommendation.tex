@@ -8,7 +8,7 @@
 \input{diagalgorithm.tex}
 
 In this step, \ourtool attributes the control flow differences
-to one or more root cause configuration options.
+to one or more root-cause configuration options.
 The key idea is to identify configuration options that
 may affect the behaviorally-deviated predicates, and then rank
 these options by
@@ -97,13 +97,13 @@ and 13--16).
 Finally, \ourtool ranks all affecting configuration options
 in decreasing order by weight, outputting a ranked list of suspicious
 options that might be responsible for the
-behavior differences (line 18). 
+behavioral differences (line 18). 
 
 In \ourtool, if two configuration options have the
 same weights, \ourtool prefers the configuration option
 affecting more statements in its thin slice. This heuristic
 is based on the intuition that configuration options affecting
-more statements seem more likely to be relevant to the behavior
+more statements seem more likely to be relevant to the behavioral
 differences.
 
 %In the output list, if an option affects 

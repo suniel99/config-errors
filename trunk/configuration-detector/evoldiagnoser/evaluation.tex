@@ -8,9 +8,9 @@ the following research questions:
 \vspace{-2mm}
 
 \begin{enumerate}
-\item How accurate is \ourtool in identifying the root
-cause configuration options? That is, what is the rank of the
-actual root cause configuration option in \ourtool's output (Section~\ref{sec:accuracy})?
+\item How accurate is \ourtool in identifying the root-cause
+configuration options? That is, what is the rank of the
+actual root-cause configuration option in \ourtool's output (Section~\ref{sec:accuracy})?
 
 \item How long does it take for \ourtool to diagnose
 a configuration error (Section~\ref{sec:timecost})?
@@ -149,7 +149,7 @@ and the largest one (Randoop's trace) is 140MB
 When using \ourtool to diagnose a configuration error, we manually specify
 the initialization statement of each configuration option as
 the seed for thin slicing. This manual, one-time-cost step took around
-30 minutes on average per subject program. After that,
+10 minutes on average per subject program. After that,
 \ourtool works in a fully-automatic way: it 
 analyzes two program versions and two execution traces,
 and outputs a ranked list of configuration options.
@@ -164,12 +164,12 @@ running Windows 7.
 \label{sec:accuracy}
 
 As shown in Table~\ref{tab:errors}, \ourtool is highly effective
-in identifying the root cause configuration options that should
+in identifying the root-cause configuration options that should
 be changed in the new program version. The average rank of
-the root cause in \ourtool's output is 1.8. For 6 errors, the root
-cause configuration option ranks first in \ourtool's output;
-for 1 error, the root cause configuration option ranks third
-in \ourtool's output; and the root cause option ranks sixth
+the root cause in \ourtool's output is 1.8. For 6 errors, the
+root-cause configuration option ranks first in \ourtool's output;
+for 1 error, the root-cause configuration option ranks third
+in \ourtool's output; and the root-cause option ranks sixth
 for the remaining error. The primary reason is \ourtool's
 ability to identify the behaviorally-deviated predicates with
 substantial impacts through execution trace comparison.
@@ -232,7 +232,7 @@ rather than the size of the subject program.
 \vspace{1mm}
 \noindent \textbf{\textit{Summary.}} \ourtool
 recommends configuration options for diagnosing
-configuration errors with acceptable time cost.
+configuration errors with reasonable time cost.
 
 \begin{table}[t]
 \vspace{1mm}
@@ -265,8 +265,8 @@ configuration errors with acceptable time cost.
 performance. The ``Run-time Slowdown'' column
 shows the cost of reproducing the error in
 an \ourtool-instrumented version of the subject program.
-The ``\ourtool time (seconds)'' column shows
-the time took by \ourtool to diagnose configuration errors.
+The ``\ourtool time (s)'' column shows
+the time took by \ourtool to diagnose configuration errors in seconds.
 Column ``Slicing'' includes the cost of computing
 thin slices on both old and new program versions.
 %For both columns, the mean is the geometric mean. 
@@ -279,6 +279,10 @@ thin slices on both old and new program versions.
 
 This section compares \ourtool with two existing approaches,
 called \prevtool~\cite{Zhang:2013:ADS} and \conftool~\cite{Rabkin:2011:PPC}.
+We chose \prevtool and \conftool because
+they are two recent techniques and are also among the most
+precise configuration error diagnosis techniques in the literature.
+
 
 \noindent\textbf{\prevtoolnoxspace}, proposed in our previous work~\cite{Zhang:2013:ADS},
 is an automated
@@ -335,7 +339,7 @@ the new software version that exhibits \textit{undesired} behavior
 is working exactly as \textit{designed}. In other words, the execution
 trace obtained by running the new program version is still
 \textit{correct}. Therefore, just comparing execution traces obtained
-from the new program version fails to identify
+from the new program version is not effective in identifying
 the ``abnormal'' behavior. By contrast, \ourtool compares execution
 traces from two different versions and directly reasons about the
 execution differences. Second, \prevtool only focuses on
@@ -393,7 +397,7 @@ error diagnosis techniques designed for a \textit{single}
 program version achieve less accurate results in
 %cannot be directly applied to 
 diagnosing configuration errors introduced in software evolution.
-\ourtool reasons about the behavior differences between
+\ourtool reasons about the behavioral differences between
 two program versions, and produces more accurate results.
 
 
@@ -404,7 +408,7 @@ two program versions, and produces more accurate results.
 \setlength{\tabcolsep}{1.10\tabcolsep}
 \begin{tabular}{|l|c|c|c|}
 \hline
- Error ID. & \multicolumn{3}{|c|}{Rank of the Root Cause Configuration Option}  \\
+ Error ID. & \multicolumn{3}{|c|}{Rank of the Root-Cause Configuration Option}  \\
 \cline{2-4}
  Program & \ourtool & Full Slicing & Predicate Behavior  \\
  \hline
@@ -500,7 +504,7 @@ evaluation result to approximate such potential impacts.
 \noindent \textbf{\textit{Summary.}} Full slicing
 includes too many irrelevant program statements due to its
 conservatism; and only using a predicate's behavior
-change is not enough to identify the root cause configuration options.
+change is not enough to identify the root-cause configuration options.
 \ourtool, using thin slicing and considering both
 the predicate behavior change and the impacted statements,
 is a better choice in diagnosing configuration errors.

@@ -6,7 +6,7 @@ control flow differences between them. \ourtool focuses on the
 recorded behavior of each predicate.
 First, it statically
 matches each predicate in the old
-source code execution trace to its counterpart in the new source code
+source code to its counterpart in the new source code
 (Section~\ref{sec:match_predicate}).
 Then, it identifies all predicates that
 behave differently across the execution traces (Section~\ref{sec:identify_diff}).
@@ -20,7 +20,7 @@ For each predicate recorded in the old execution trace,
 its possibly-updated counterpart.
 The predicate-matching process proceeds in two steps.
 First, \ourtool finds corresponding methods.
-Then, \ourtool matches predicates within matching methods.
+Then, \ourtool matches predicates within matched methods.
 
 To match methods, \ourtool uses
 the first of these two strategies that succeeds:

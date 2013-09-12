@@ -3,7 +3,7 @@
 \label{sec:introduction}
 
 Many modern software systems are configurable.
-Configuration options let users
+Configuration options permit users to
 customize their behavior. This flexibility has a cost:
 a small configuration error might lead to hard-to-diagnose
 behaviors.
@@ -11,7 +11,7 @@ behaviors.
 %error can be both time-consuming and furstrating.
 
 Software configuration errors are errors in which
-the application code and the input are correct, but the software is
+the software code and the input are correct, but the software is
 misconfigured so that it does not behave
 as desired by the end-user. Such errors may lead
 the software to crash,
@@ -55,7 +55,7 @@ The user needed deep understanding about the
 exhibited symptom,  and had to re-install kernel modules and
 also modified configuration option values in
 several places to get it to work~\cite{Yin:2011:ESC}.
-Techniques helping escape to from the ``configuration hell''
+Techniques helping escape from the ``configuration hell''
 are highly demanded~\cite{googleconf}.
 
 Unlike software bugs,
@@ -79,8 +79,8 @@ systems (Section~\ref{sec:study}), and
 found configuration changes in \textit{every} studied
 version of \textit{each} system. In many 
 cases, directly reusing the existing configuration
-for the old version for the new
-version can lead the software to exhibit \textit{undesired} behaviors,
+for the old version can lead the new software version
+to exhibit \textit{undesired} behaviors,
 even if the software is working exactly as \textit{designed}.
 
 
@@ -179,7 +179,7 @@ and then reason about the control flow differences to
 identify configuration options that
 might cause such differences. It uses
 three steps, as illustrated in Figure~\ref{fig:overview},  to link the undesired
-behavior to specific root cause configuration options:
+behavior to specific root-cause configuration options:
 
 \vspace{-2mm}
 
@@ -251,7 +251,7 @@ demonstrate the different behaviors on two versions.
 version as an approximate oracle to
 reason about the undesired behavior on the new version.
 
-\item \textbf{It determines likely root cause options}.
+\item \textbf{It determines likely root-cause options}.
 Many error diagnosis and debugging techniques~\cite{dd, autoflow}
 primarily focus on
 determining \textit{what} causes the undesired behaviors, e.g.,
@@ -312,7 +312,7 @@ traditional full slicing~\cite{Horwitz:1988} to reason about
 root-cause configuration options. Second, we showed that 
 \ourtool outperforms an alternative approach
 that solely uses predicate behavior change to reason about
-the root cause configuration options.
+the root-cause configuration options.
 
 
 
@@ -333,8 +333,8 @@ are frequent and persistent during software evolution (Section~\ref{sec:study}).
 \item \textbf{Technique.} We present a technique to diagnose
 configuration errors for evolving software. Our technique
 uses dynamic profiling, execution trace comparison, and
-static analysis to link certain undesired behaviors to a
-specific responsible configuration option (Section~\ref{sec:technique}).
+static analysis to link certain undesired behaviors to
+specific responsible configuration options (Section~\ref{sec:technique}).
 
 \item \textbf{Implementation.} We implemented our technique
 in a tool, called \ourtool, for Java software (Section~\ref{sec:implementation}).
