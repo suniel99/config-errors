@@ -375,6 +375,15 @@ public class WALAUtils {
 			  String javaClassName =  Utils.translateSlashToDot(jvmClassName.substring(1, jvmClassName.length() - 1));
 			  return javaClassName + "." + name + sig;
 		  }
+		
+		public static String getFullMethodNameNoSig(MethodData d) {
+			  String name = d.getName();
+			  String jvmClassName = d.getClassType();
+			  Utils.checkTrue(jvmClassName.startsWith("L"));
+			  Utils.checkTrue(jvmClassName.endsWith(";"));
+			  String javaClassName =  Utils.translateSlashToDot(jvmClassName.substring(1, jvmClassName.length() - 1));
+			  return javaClassName + "." + name;
+		  }
 	    
 	    //utilities for ir
 	    public static String getAllIRAsString(CGNode node) {

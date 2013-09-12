@@ -24,7 +24,8 @@ public class ConfTracer {
 	        @Override
 	        public void run() {
 	                System.out.println("----------dumping traces to files-------");
-	                synchronized(traceMap) {
+	                synchronized(traceMap)
+	                {
 	                	StringBuilder sb = new StringBuilder();
 	                	for(String key : traceMap.keySet()) {
 		                	sb.append(key + AbstractInstrumenter.SEP + traceMap.get(key));
