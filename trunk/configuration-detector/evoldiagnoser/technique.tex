@@ -17,9 +17,14 @@ Properties API, and the Windows Registry.
 \subsection{Overview}
 
 \ourtool is based on two key insights. First,
-a program's control flow, rather than data flow, often propagates the majority of
-the effects of a configuration option and determines
-a program's execution path.
+a program's control flow, rather than data flow,
+often propagates the majority of
+the effects of a configuration option.
+In other words, a configuration option is mainly used
+as a ``flag'' that affects the program behavior by
+changing the runtime execution path.
+% and determines
+%a program's execution path.
 Second, the control flow differences of two execution
 traces can approximate the program behavioral differences
 of two versions, and provide evidence
