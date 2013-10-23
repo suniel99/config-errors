@@ -31,6 +31,24 @@ public abstract class AbstractInstrumenter {
 	  public static String SUB_SEP = "%%"; //not used for context separation
 	  public static String INDEX_SEP = "_index_";
 	  
+	  public void simpleTraverse(String inputJar) throws Exception {
+		  System.out.println("start instrumentating");
+		  instrumenter = new OfflineInstrumenter();
+		  instrumenter.addInputElement(inputJar);
+		  instrumenter.setPassUnmodifiedClasses(true);
+	      instrumenter.beginTraversal();
+	      ClassInstrumenter ci;
+	      //do the instrumentation
+	      while ((ci = instrumenter.nextClass()) != null) {
+	    	  try {
+	             doClass(ci, null);
+	    	  } catch (Throwable e) {
+	    		  e.printStackTrace();
+	    		  continue;
+	    	  }
+	      }
+	  }
+	  
 	  public void instrument(String inputElement, String outputJar) throws Exception {
 		  System.out.println("start instrumentating");
 	      instrumenter = new OfflineInstrumenter();
