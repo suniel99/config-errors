@@ -55,6 +55,12 @@ public class CodeAnalyzer {
 		this.iSlicer = new IterativeSlicer(this);
 	}
 	
+	public void buildClassHierarchy() {
+		System.out.println("Using exclusion file: " + this.slicer.getExclusionFile());
+		this.slicer.buildScope();
+		this.slicer.buildClassHierarchy();
+	}
+	
 	public void buildAnalysis() {
 		this.slicer.buildAnalysis();
 	}
