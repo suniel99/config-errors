@@ -18,8 +18,9 @@ public class TestInstrumentPrograms extends TestCase {
 	}
 	
 	public static String jmeter_29_sigmap = "jmeter-2.9-sigmap.txt";
+	public static String jmeter29InputJar = "D:\\research\\confevol\\subject-programs\\jmeter\\apache-jmeter-2.9\\lib\\ext\\original\\ApacheJMeter_core.jar";
 	public void testJMeter29() {
-		String inputJar = "D:\\research\\confevol\\subject-programs\\jmeter\\apache-jmeter-2.9\\lib\\ext\\original\\ApacheJMeter_core.jar";
+		String inputJar = jmeter29InputJar;
 		String outputJar = "D:\\research\\confevol\\subject-programs\\jmeter\\apache-jmeter-2.9\\lib\\ext\\ApacheJMeter_core-instrumetned.jar";
 		this.doInstrumentation(inputJar, outputJar, false, jmeter_29_sigmap);
 		InstrumentStats.writeInstrumentedPositions("./tmp-output-folder/inst_points.txt");
@@ -115,8 +116,9 @@ public class TestInstrumentPrograms extends TestCase {
     }
     
     public static String javalanche_40 = "javalanche-0.4.0-sigmap.txt";
+    public static String javalanche40InputJar = "D:\\research\\confevol\\subject-programs\\javalanche\\versions\\javalanche\\javalanche-0.4.0-bin\\lib\\original\\javalanche-0.4.jar"; 
     public void testJavalanche040() {
-    	String inputJarFile = "D:\\research\\confevol\\subject-programs\\javalanche\\versions\\javalanche\\javalanche-0.4.0-bin\\lib\\original\\javalanche-0.4.jar";
+    	String inputJarFile = javalanche40InputJar;
     	String outputJarFile = "D:\\research\\confevol\\subject-programs\\javalanche\\versions\\javalanche\\javalanche-0.4.0-bin\\lib\\javalanche-0.4-instrumented.jar";
     	this.doInstrumentation(inputJarFile, outputJarFile, Arrays.asList(javalanche_pkgs), false, javalanche_40);
     }

@@ -1003,14 +1003,14 @@ public class TestParseExecInstructionInfo extends TestCase {
 	public void testMergePredicateInJavalanche() {
 		Collection<String> oldFiles = TraceRepository.getJavalancheOldPredicateFiles();
 		String mergedFile = TraceRepository.oldPredicateMerged;
-		this.mergePredicates(oldFiles, mergedFile);
+		mergePredicates(oldFiles, mergedFile);
 		
 		mergedFile = TraceRepository.newPredicateMerged;
 		Collection<String> newFiles = TraceRepository.getJavalancheNewPredicateFiles();
-		this.mergePredicates(newFiles, mergedFile);
+		mergePredicates(newFiles, mergedFile);
 	}
 	
-	private void mergePredicates(Collection<String> files, String mergedFile) {
+	public static void mergePredicates(Collection<String> files, String mergedFile) {
 		Map<String, Integer> freqMap = new LinkedHashMap<String, Integer>();
 		Map<String, Integer> evalMap = new LinkedHashMap<String, Integer>();
 		for(String file : files) {

@@ -8,6 +8,8 @@ public class TestComparingRandoopGoodBadTraces extends TestCase {
 	
 	public static String badRun = "./experiments/randoop-database/bad-nano-xml-100s-pruned.txt";
 	
+	public static String badRunICSE14 = "./experiments/randoop-database/trace_dump_randoop_treemap_icse14.txt";
+	
 	public static String gentestsHelp = "./experiments/randoop-database/gentests_help-pruned.txt";
 	public static String graph = "./experiments/randoop-database/good_graph_trace-60s-pruned.txt";
 	public static String arraylist = "./experiments/randoop-database/good-arraylist-60s-pruned.txt";

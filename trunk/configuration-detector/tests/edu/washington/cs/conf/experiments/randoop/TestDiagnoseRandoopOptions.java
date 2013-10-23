@@ -48,8 +48,17 @@ public class TestDiagnoseRandoopOptions extends TestCase {
 		System.out.println("elapsed: " + (end - start) / 1000);
 	}
 	
+	//Use this for experiment
 	public void testDiagnoseSimilar() {
 		testDiagnoseSimilar(false);
+	}
+	
+	//Use this for comparing with ConfSuggester
+	public void testConfSuggester() {
+		String tmp = TestComparingRandoopGoodBadTraces.badRun;
+		TestComparingRandoopGoodBadTraces.badRun = TestComparingRandoopGoodBadTraces.badRunICSE14;
+		this.testDiagnoseSimilar();
+		TestComparingRandoopGoodBadTraces.badRun = tmp;
 	}
 	
 	public void testDiagnoseSimilar_ErrorReport() {
