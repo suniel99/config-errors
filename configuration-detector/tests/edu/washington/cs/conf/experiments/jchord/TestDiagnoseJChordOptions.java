@@ -57,4 +57,17 @@ public class TestDiagnoseJChordOptions extends TestCase {
 		MainAnalyzer.doFiltering = false;
 	}
 	
+	//for ICSE'14
+	public void testConfSuggester() {
+//		String badRunTrace = "./experiments/jchord-database/trace_dump_ssa_icse14.txt";
+		String badRunTrace = "./experiments/jchord-database/trace_dump_print_icse14.txt";
+		String[] goodRunTraceArray = TestComparingJChordTraces.db;
+		ConfEntityRepository repo = ChordExpUtils.getChordRepository();
+		
+		MainAnalyzer.doFiltering = true;
+		MainAnalyzer.diagnoseConfigErrors(badRunTrace, goodRunTraceArray, repo,
+				null, null, null);
+		MainAnalyzer.doFiltering = false;
+	}
+	
 }

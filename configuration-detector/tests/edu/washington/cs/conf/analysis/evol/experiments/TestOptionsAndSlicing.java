@@ -165,16 +165,7 @@ public class TestOptionsAndSlicing extends TestCase {
 	}
 	
 	public void testJMeterNewOptions() {
-		ConfEntityRepository rep = EvolConfOptionRepository.jmeterNewConfs();
-		rep.initializeTypesInConfEntities(CodeAnalyzerRepository.getNewJMeterPath());
-		rep.showAll();
-		
-		CodeAnalyzer newCoder = CodeAnalyzerRepository.getJMeterNewAnalyzer();
-		newCoder.buildAnalysis();
-		//use additional seeds
-		newCoder.slicer.setAddSliceSeedFromGet(true);
-		//memorize the output
-		Collection<ConfPropOutput> outputs = CommonUtils.getConfPropOutputs(newCoder.slicer, rep, false);
+		Collection<ConfPropOutput> outputs = getJMeterNewConfPropOutput();
 		for(ConfPropOutput output : outputs) {
 			System.out.println(output.getConfEntity());
 			System.out.println("   number of statements: " + output.statements.size());
@@ -185,6 +176,20 @@ public class TestOptionsAndSlicing extends TestCase {
 		
 		String saveFileName = EvolConfOptionRepository.jmeterNewCacheFile;
 		saveAndCheckSlicingResult(saveFileName, outputs);
+	}
+	
+	public static Collection<ConfPropOutput>  getJMeterNewConfPropOutput() {
+		ConfEntityRepository rep = EvolConfOptionRepository.jmeterNewConfs();
+		rep.initializeTypesInConfEntities(CodeAnalyzerRepository.getNewJMeterPath());
+		rep.showAll();
+		
+		CodeAnalyzer newCoder = CodeAnalyzerRepository.getJMeterNewAnalyzer();
+		newCoder.buildAnalysis();
+		//use additional seeds
+		newCoder.slicer.setAddSliceSeedFromGet(true);
+		//memorize the output
+		Collection<ConfPropOutput> outputs = CommonUtils.getConfPropOutputs(newCoder.slicer, rep, false);
+		return outputs;
 	}
 	
 	public void testJChordOldOptions() {
@@ -273,6 +278,21 @@ public class TestOptionsAndSlicing extends TestCase {
 	}
 	
 	public void testJavalancheNewOptions() {
+		Collection<ConfPropOutput> outputs = getJavalancheNewPropOutputs();
+		for(ConfPropOutput output : outputs) {
+			System.out.println(output.getConfEntity());
+			System.out.println("   number of statements: " + output.statements.size());
+			for(IRStatement irs : output.statements) {
+			    System.out.println("   " + irs);
+			}
+		}
+		
+		String saveFileName = EvolConfOptionRepository.javalancheNewCacheFile;
+		saveAndCheckSlicingResult(saveFileName, outputs);
+	}
+	
+	
+	public static Collection<ConfPropOutput> getJavalancheNewPropOutputs() {
 		ConfEntityRepository rep = EvolConfOptionRepository.javalancheNewConfs();
 		rep.initializeTypesInConfEntities(CodeAnalyzerRepository.getJavalancheNewPath());
 		rep.showAll();
@@ -295,16 +315,7 @@ public class TestOptionsAndSlicing extends TestCase {
 		System.out.println(ic);
 		
 		Collection<ConfPropOutput> outputs = CommonUtils.getConfPropOutputs(coder.slicer, rep, false);
-		for(ConfPropOutput output : outputs) {
-			System.out.println(output.getConfEntity());
-			System.out.println("   number of statements: " + output.statements.size());
-			for(IRStatement irs : output.statements) {
-			    System.out.println("   " + irs);
-			}
-		}
-		
-		String saveFileName = EvolConfOptionRepository.javalancheNewCacheFile;
-		saveAndCheckSlicingResult(saveFileName, outputs);
+		return outputs;
 	}
 	
 	public void testCheckJavalancheSlicing() {

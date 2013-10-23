@@ -13,6 +13,8 @@ public class TestComparingWekaTraces extends TestCase {
 	    CommonUtils.compareTraceDistance(goodRunTrace, badRunTrace, DistanceType.INTERPRODUCT, 0.16477811f);
 	}
 	
+	static String laborBadRun = "./experiments/weka-database/bad-labor.txt";
+	
 	//other traces
 	static String dir = "./experiments/weka-database/";
 	

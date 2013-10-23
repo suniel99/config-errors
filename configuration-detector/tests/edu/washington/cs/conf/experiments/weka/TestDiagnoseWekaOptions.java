@@ -43,6 +43,13 @@ public class TestDiagnoseWekaOptions extends TestCase {
 		System.out.println("eclapsed: " + ((float)end - (float)start)/1000);
 	}
 	
+	public void testConfSuggester() {
+		String tmp = TestComparingWekaTraces.laborBadRun;
+		TestComparingWekaTraces.laborBadRun = "./experiments/weka-database/trace_dump_weka_icse14.txt";
+		testDiagnoseAllProfiles();
+		TestComparingWekaTraces.laborBadRun = tmp;
+	}
+	
 	public void testDiagnoseSimilar_ErrorReport() {
 		this.confSlices = TestSliceWekaConfigOptions.getWekaConfOutputs();
 		this.testDiagnoseSimilar();
@@ -75,7 +82,8 @@ public class TestDiagnoseWekaOptions extends TestCase {
 		//TestSliceWekaConfigOptions.getWekaConfOutputs();
 	
 	public void diagnoseWeka(SelectionStrategy strategy) {
-		String badRunTrace = "./experiments/weka-database/bad-labor.txt";
+		String badRunTrace = TestComparingWekaTraces.laborBadRun;
+			//"./experiments/weka-database/bad-labor.txt";
 		Collection<String> goodRunTraces = Arrays.asList(TestComparingWekaTraces.db);
 		ConfEntityRepository repo = WekaExpUtils.getWekaRepository();
 		

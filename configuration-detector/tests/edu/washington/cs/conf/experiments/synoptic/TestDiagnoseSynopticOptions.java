@@ -43,6 +43,13 @@ public class TestDiagnoseSynopticOptions extends TestCase {
 		MainAnalyzer.doFiltering = false;
 	}
 	
+	public void testConfSuggester() {
+		String tmp = TestComparingSynopticTraces.badRunTrace;
+		TestComparingSynopticTraces.badRunTrace = "./experiments/synoptic-database/trace_dump_synoptic_icse2014.txt";
+		this.testDiagnoseSimilarity();
+		TestComparingSynopticTraces.badRunTrace = tmp;
+	}
+	
 	public void test1() {
 		String goodRunTrace = "./experiments/synoptic-database/2pc_3nodes_100tx_bad-injected.txt";
 	    String badRunTrace = "./experiments/synoptic-database/2pc_3nodes_100tx_good.txt";
