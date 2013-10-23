@@ -138,6 +138,10 @@ public class ConfigurationSlicer {
 		this.exclusionFile = fileName;
 	}
 	
+	public String getExclusionFile() {
+		return this.exclusionFile;
+	}
+	
 	public void setEntrypoints(Iterable<Entrypoint> entrypoints) {
 		this.entrypoints = entrypoints;
 	}
