@@ -1,5 +1,6 @@
 
-\documentclass{sig-alternate-issta}
+%\documentclass{sig-alternate-issta}
+\documentclass{sig-alternate}
 \usepackage{multirow}
 \usepackage{fancyheadings}
 \usepackage{algorithmic}
@@ -26,9 +27,9 @@
 
 % Add line between figure and text
 \makeatletter
-\def\topfigrule{\kern3\p@ \hrule \kern -3.4\p@} % the \hrule is .4pt high
-\def\botfigrule{\kern-3\p@ \hrule \kern 2.6\p@} % the \hrule is .4pt high
-\def\dblfigrule{\kern3\p@ \hrule \kern -3.4\p@} % the \hrule is .4pt high
+%\def\topfigrule{\kern3\p@ \hrule \kern -3.4\p@} % the \hrule is .4pt high
+%\def\botfigrule{\kern-3\p@ \hrule \kern 2.6\p@} % the \hrule is .4pt high
+%\def\dblfigrule{\kern3\p@ \hrule \kern -3.4\p@} % the \hrule is .4pt high
 \makeatother
 % If there is a line, you can get away with reducing the separation between
 % figures and text.  Don't do this without the line, though.
@@ -84,7 +85,7 @@
 
 \newcommand{\preitemizespace}{\vspace{-1mm}}
 
-\renewcommand{\captionfont}{\small\bf}
+%\renewcommand{\captionfont}{\small\bf}
 
 
 
@@ -107,6 +108,10 @@
 \hyphenation{Wohl-stadt-er Conf-Sug-gest-er}
 
 \begin{document}
+
+\conferenceinfo{ICSE}{'14, May 31 - June 7, 2014, Hyderabad, India}
+\CopyrightYear{14}
+\crdata{978-1-4503-2756-5/14/05}
 
 \clubpenalty = 10000
 \widowpenalty = 10000
@@ -147,13 +152,13 @@
 
 %\balance
 
-\begin{comment}
+%\begin{comment}
 \section{Acknowledgements}
 
 We thank Lingming Zhang for providing the  configuration error in Javalanche and the helpful discussion about using Javalanche. This
 work was supported in part by NSF grants
 CCF-1016701 and CCF-0963757.
-\end{comment}
+%\end{comment}
 
 \balance
 

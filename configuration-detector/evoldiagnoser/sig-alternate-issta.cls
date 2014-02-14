@@ -599,7 +599,7 @@
  \let\maketitle\relax
  \let\@maketitle\relax
  \gdef\@thanks{}\gdef\@author{}\gdef\@title{}\gdef\@subtitle{}\let\thanks\relax
-% \@copyrightspace
+\@copyrightspace
 }
 
 %% CHANGES ON NEXT LINES
