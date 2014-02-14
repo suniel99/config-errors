@@ -1,0 +1,44 @@
+A definition of software configuration errors uses a circular definition of the
+software that is misconfigured in the second paragraph of the introduction
+
+The authors do not tell us what configuration options should be changed, they
+try to determine root causes of configuration bugs.
+
+ Table 3 is somewhat unclear
+- the first row specifies that the change type is Bugs and the description
+says: "Fix existing bugs." Does it mean that fixing some bug led to changes in
+configurations or that some implemented configuration was a bug? What is the
+"initialization statement of each configuration?"
+
+Sentence we did not select only errors that Confsuggester works well" is
+incomprehensible. The authors should fix all imprecisions and bad grammar
+before the paper appears at a venue like ICSE.
+
+ I expected that the authors would give a formal
+definition of the similary between statements, and they justify their
+definition, give examples, and experimentally evaluate how similar different
+statements are using their algorithm. Unfortunately, there is neither intuition
+nor justification as to why the similarity algorithm works. The reader is asked
+to believe that the authors made a good choice.
+
+ In section 5.1 the authors say that they evaluated
+all configuration errors that they could reproduce. Isn't it a threat to
+validity? Second, what are the precision and recall of this algorithm? How many
+false positives and false negatives does it issue that programmers have to deal
+with?
+
+However, I was a bit
+unsure about the selection of the configuration errors described in
+Section 5.1.1: did you only find 7 configuration errors with the
+described procedure in these 6 programs, or did you select 7 errors from
+a larger set of errors identified? In the latter case the selection
+criteria should be described.
+
+
+ This, of course, means that
+parts of code involving wholesale code changes will create issues. This is
+discussed briefly, but I would like to have seen a more detailed discussion of
+the interaction of configuration changes and areas of code undergoing
+significant modification. The results suggest the approach is adequate, but the
+statistics are quite small.
+
