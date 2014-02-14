@@ -30,7 +30,7 @@ changes to recommend configuration options (Section~\ref{sec:alternative}).
 \subsection{Subject Programs}
 
 We evaluated \ourtool on \subjnum Java programs
-listed in Table~\ref{tab:subjects}.
+listed in Figure~\ref{tab:subjects}.
 The first 5 subject programs are the 5 Java programs
 studied in Section~\ref{sec:study},
 and the remaining subject program is Javalanche~\cite{javalanche},
@@ -59,7 +59,7 @@ provided us a configuration error he encountered when using Javalanche.
 
 \newcommand{\averagerank}{1.8\xspace}
 
-\begin{table}[t]
+\begin{figure}[t]
 \vspace{1mm}
 \centering
 \small{
@@ -86,7 +86,7 @@ Column ``\#Options'' shows the number of configuration options
 supported in the new program version.
 }
 }
-\end{table}
+\end{figure}
 
 \subsubsection{Configuration Errors}
 
@@ -95,15 +95,15 @@ supported in the new program version.
 
 For the 5 Java programs studied in Section~\ref{sec:study},
 we manually exanimated all deleted and modified configuration
-options listed in Table~\ref{tab:options}. For each
+options listed in Figure~\ref{tab:options}. For each
 change, based on our own understanding, we wrote a test driver to cover
 it, and then checked whether the test driver
 could reveal different behaviors on two versions.
 For those 5 programs, we collected 7 errors as listed in
-Table~\ref{tab:errors} (the first 7 errors).
+Figure~\ref{tab:errors} (the first 7 errors).
 For the Javalanche program, we reproduced the configuration
 error reported by the user.
-In Table~\ref{tab:errors}, errors \#3 and \#4
+In Figure~\ref{tab:errors}, errors \#3 and \#4
 can be reproduced together in a single execution, and each of the other
 errors is reproduced in one execution.
 
@@ -163,7 +163,7 @@ running Windows 7.
 \subsubsection{Accuracy}
 \label{sec:accuracy}
 
-As shown in Table~\ref{tab:errors}, \ourtool is highly effective
+As shown in Figure~\ref{tab:errors}, \ourtool is highly effective
 in identifying the root-cause configuration options that should
 be changed in the new program version. The average rank of
 the root cause in \ourtool's output is 1.8. For 6 errors, the
@@ -199,7 +199,7 @@ We measured \ourtool's performance in two ways:
 the performance overhead introduced by instrumentation
 when demonstrating the configuration error,
 and the time cost of recommending configuration options.
-Table~\ref{tab:performance} shows the results.
+Figure~\ref{tab:performance} shows the results.
 
 The performance overhead to demonstrate the error
 varies among programs. The current implementation
@@ -234,7 +234,7 @@ rather than the size of the subject program.
 recommends configuration options for diagnosing
 configuration errors with reasonable time cost.
 
-\begin{table}[t]
+\begin{figure}[t]
 \vspace{1mm}
 \centering
 \small{
@@ -272,7 +272,7 @@ thin slices on both old and new program versions.
 %For both columns, the mean is the geometric mean. 
 }
 }
-\end{table}
+\end{figure}
 
 \subsubsection{Comparison with Two Existing Approaches}
 \label{sec:existing}
@@ -321,12 +321,12 @@ program control flow and data flow, and treats a configuration option
 as a root cause if its value may flow to a crashing point.
 Since \conftool cannot diagnose non-crashing errors, we
 can only apply it to diagnose the crashing error in
-Weka (error\#2 in Table~\ref{tab:errors}).
+Weka (error\#2 in Figure~\ref{tab:errors}).
 
 
 \vspace{1mm}
 \noindent \textbf{\textit{Results.}}
-Columns ``\prevtool'' and ``\conftool'' in Table~\ref{tab:errors} show
+Columns ``\prevtool'' and ``\conftool'' in Figure~\ref{tab:errors} show
 the experimental results.
 %\todo{show the results here}
 
@@ -401,7 +401,7 @@ diagnosing configuration errors introduced in software evolution.
 two program versions, and produces more accurate results.
 
 
-\begin{table}[t]
+\begin{figure}[t]
 \vspace{1mm}
 \centering
 \small{
@@ -431,7 +431,7 @@ two program versions, and produces more accurate results.
 \Caption{{\label{tab:choices} 
 Experimental results of evaluating two design choices
 of \ourtool. Column ``\ourtool'' shows \ourtool's
-results, taken from Table~\ref{tab:errors}.
+results, taken from Figure~\ref{tab:errors}.
 Column ``Full Slicing'' shows the results of replacing
 thin slicing with full slicing in \ourtool.
 ``\n'' means the technique does not identify the actual
@@ -441,7 +441,7 @@ When computing the average rank, each ``\n'' is treated
 as half of the number of configuration options.
 }
 }
-\end{table}
+\end{figure}
 
 \subsubsection{Evaluating Two Design Choices}
 \label{sec:alternative}
@@ -456,7 +456,7 @@ the traditional full slicing~\cite{Horwitz:1988}.
 This variant changes the getAffectingOptions
 auxiliary function in Figure~\ref{fig:recommend}, by using full slicing to compute all
 configuration options that may affect a predicate.
-Table~\ref{tab:choices} (Column ``Full Slicing'') shows the results.
+Figure~\ref{tab:choices} (Column ``Full Slicing'') shows the results.
 
 
 \ourtool achieves substantially less accurate results when
@@ -480,7 +480,7 @@ that only uses the predicate behavior change to diagnose errors.
 This variant 
 changes the getExecutedStmtNum auxiliary function in
 Figure~\ref{fig:recommend}, by making it always return 1.
-Table~\ref{tab:choices} (Column ``Predicate Behavior'') shows
+Figure~\ref{tab:choices} (Column ``Predicate Behavior'') shows
 the results. 
 
 
