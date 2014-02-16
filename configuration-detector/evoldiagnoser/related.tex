@@ -52,9 +52,10 @@ of the same program that include functional changes.
 %\todo{missing above the work of semantic trace analysis,
 %some of tao wang's work}
 
-When a regression failure occurs, developers need
-to understand its root cause. To localize the
-failure, many techniques have been developed to identify the
+%When a regression failure occurs, developers need
+%to understand its root cause. To localize the
+%failure, 
+Many techniques have been developed to identify the
 failure-inducing changes for evolving
 software~\cite{Banerjee:2010:GID, r2fix, Qi:2009:DAD, Hoffman:2009:STA}.
 For example, Delta Debugging aims to find a minimal
@@ -65,23 +66,24 @@ test to ease comprehension for developers.
 \ourtool differs from these techniques in three aspects.
 First, existing techniques focus on helping software developers
 localize a bug, while \ourtool targets software
-configuration errors that are fixable by software end-users.
+configuration errors fixable by software end-users.
 As we have discussed in Section~\ref{sec:tech_discuss},
 configuration errors are fundamentally different than regression bugs.
 They are mostly user-driven and do not indicate problems in the source
 code. Second, most of the existing techniques identify
 \textit{what} (e.g., a snippet of code) causes the
 regression bug, but do not answer
-the more challenging question of \textit{how} (e.g., which
+the question of \textit{how} (e.g., which
 configuration option should a user change?) to
 fix the error. By contrast, \ourtool
 explicitly guides users to suspicious configuration options.
 Third, most of the regression failure localization
 techniques~\cite{dd} require 
 a testing oracle for automated correctness checking. However,
-such oracles are often absent in practice. A typical
-software end-user should not be expected to invest
-the time and effort to create an oracle.
+such oracles are often absent in practice.
+%A typical
+%software end-user should not be expected to invest
+%the time and effort to create an oracle.
 By contrast, \ourtool eliminates this requirement by
 approximating the software behavioral difference as the control
 flow differences.
@@ -102,16 +104,16 @@ to the problem of configuration error diagnosis~\cite{Attariyan:2008:UCD,
 Whitaker:2004:CDS, Wang:2004:AMT, rangefix,
 Attariyan:2010:ACT, Rabkin:2011:PPC, keller:conferr}.
 For example, Chronus~\cite{Whitaker:2004:CDS} relies
-on a user-provided testing oracle to check the behavior
-of the system, and uses
+on a user-provided testing oracle to check the system behavior,
+and uses
 virtual machine checkpoint and binary search to find the
 point in time where the program behavior
 switched from correct to incorrect. AutoBash~\cite{Su:2007:AIC}
 fixes a misconfiguration by using
 OS-level speculative execution to try possible
 configurations, examine their effects, and roll them back when necessary.
-PeerPressure~\cite{Wang:2004:AMT} 
-uses statistical methods to compare
+PeerPressure~\cite{Wang:2004:AMT} statistically
+compares
 configuration states in the Windows Registry on different machines.
 When a registry entry value on a machine exhibiting erroneous behavior differs
 from the value usually chosen by other machines, PeerPressure
@@ -124,9 +126,10 @@ possible configuration error diagnoses for every possible crashing point
 in a program. 
 
 \ourtool is significantly different from the existing approaches.
-First, most previous approaches are not cognizant of software evolution;
-they focus exclusively on a single software
-version~\cite{Attariyan:2008:UCD, Whitaker:2004:CDS, 
+First, most previous approaches are not cognizant of software evolution
+%they focus exclusively on a single software
+%version
+~\cite{Attariyan:2008:UCD, Whitaker:2004:CDS, 
 Attariyan:2010:ACT, Rabkin:2011:PPC}. By contrast, \ourtool focuses
 on configuration errors introduced by software evolution between
 two software versions. Further, most techniques
@@ -135,23 +138,25 @@ assertion failure~\cite{Attariyan:2008:UCD, Whitaker:2004:CDS,
 Attariyan:2010:ACT, Rabkin:2011:PPC}, while \ourtool supports diagnosing both
 crashing and non-crashing errors.
 Second, several approaches~\cite{Attariyan:2010:ACT, Whitaker:2004:CDS}
-assume the existence of a testing oracle that can 
-check whether the software functions correctly. However, as we discussed
-before, a testing oracle is often not available, and it
-is infeasible to expect end-users to provide it.
+assume the existence of a testing oracle.
+%that can check whether the software functions correctly. 
+However, as we discussed
+before, a testing oracle is often not available.
+%, and it
+%is infeasible to expect end-users to provide it.
 %By contrast, our technique eliminates this assumption by
 %comparing two execution traces to reason about the control flow differences
 %between them. 
 Third, several techniques~\cite{Whitaker:2004:CDS, Su:2007:AIC} require alterations
 to the underlying operating system or runtime environment
-in order to diagnose a configuration error. Compared with
+for configuration error diagnosis. Compared with
 the platform-independent offline instrumentation used
 in \ourtool, switching to use a new OS or runtime may be
 too impractical for many ordinary end-users.
 Fourth, approaches like
 PeerPressure~\cite{Wang:2004:AMT} and RangeFixer~\cite{rangefix}
 benefit from the known schema of the Windows Registry and
-feature models, but cannot help diagnose configuration errors
+feature models, but cannot diagnose configuration errors
 that lie outside these specific domains. Our technique
 of analyzing the execution traces is more general.
 
@@ -175,7 +180,8 @@ goals. They primarily focus on reducing the burden of
 configuration management and preventing certain errors from
 happening, or creating test suites to find new errors in
 a configurable software system earlier, but cannot
-diagnose an exhibited configuration error. By contrast, our \ourtool technique
+diagnose an exhibited configuration error during software evolution.
+By contrast, \ourtool 
 links the behavioral differences to a small number
 of configuration options, and explicitly guides software end-users
 to the root causes.

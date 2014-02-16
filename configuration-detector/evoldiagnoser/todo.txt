@@ -27,6 +27,7 @@ validity? Second, what are the precision and recall of this algorithm? How many
 false positives and false negatives does it issue that programmers have to deal
 with?
 
+
 However, I was a bit
 unsure about the selection of the configuration errors described in
 Section 5.1.1: did you only find 7 configuration errors with the
