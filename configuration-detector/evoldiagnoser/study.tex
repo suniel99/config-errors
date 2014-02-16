@@ -85,8 +85,8 @@ for the selected versions.
 }
 \vspace{-2mm}
 \Caption{{\label{tab:options} The total number of new, deleted,
-and modified configuration options for each subject program
-in the studied versions.
+and modified configuration options for each subject program.
+%in the studied versions.
 %\todo{Are the added options interesting from the point of view of this
 %  paper?  They never contribute to configuration errors, do they?  If so,
 %  explain.  If not, remove them from all the tables.}
@@ -121,7 +121,8 @@ Reliability & Improve reliability or performance\\
 \vspace{-2mm}
 \Caption{{\label{tab:conftypes} Types
 of configuration changes identified in our
-study from the subject programs in Figure~\ref{tab:subjects}.}
+study from the subject programs in Figure~\ref{tab:subjects}.
+}
 }
 \end{figure}
 
@@ -154,7 +155,7 @@ study from the subject programs in Figure~\ref{tab:subjects}.}
 }
 \vspace{-2mm}
 \Caption{{\label{tab:categories} The number of configuration changes of
-each type (Figure~\ref{tab:conftypes}).}}
+each type.}}
 \end{figure}
 
 
@@ -210,7 +211,12 @@ Figure~\ref{tab:options} summarizes the identified
 configuration changes for each subject program.
 Figure~\ref{tab:categories} further classifies the
 configuration changes into four categories shown
-in Figure~\ref{tab:conftypes} (each change belongs to a single category).
+in Figure~\ref{tab:conftypes}
+(each change belongs to a single category)\footnote{
+The ``Bugs'' change type in Figure~\ref{tab:conftypes}
+represents that fixing some bugs lead to changes in
+configurations rather than fixing some buggy configurations.
+}. \todo{add a footnote above}
 
 
 As shown in Figure~\ref{tab:options}, configuration changes occur
@@ -223,18 +229,18 @@ due to space limits).
 As shown in Figure~\ref{tab:categories},
 feature-related configuration changes are the largest group across
 all subject programs. These changes include
-adding new configuration options to customize a program's
-functionality, deleting existing options, or modifying the default
+adding new configuration options, deleting existing options, or modifying the default
 value of an option. 
 
 Configuration evolution can have unexpected impact on
 program behavior. After configuration changes, reusing
 the existing configuration for an old software version
 may yield a misconfiguration, causing different results
-on the new version.  As described in Section~\ref{sec:evaluation},
-our evaluation focused on deleted and modified options.
-Adding new configuration options is less likely to cause
-a configuration error.
+on the new version.  The detailed evaluation is
+described in Section~\ref{sec:evaluation}.
+%our evaluation focused on deleted and modified options.
+%Adding new configuration options is less likely to cause
+%a configuration error.
 %, since most of the added options are
 %used in new software features, which are not available in
 %the old version. Some newly added options are introduced

@@ -27,7 +27,7 @@ matchStatements($\mathit{m_{old}}$, $\mathit{m_{new}}$, $\mathit{lh}$)\\
 \WHILE{$\mathit{stack}$ is not empty}
 \STATE $\langle$$\mathit{stmt_{old}}$, $\mathit{stmt_{new}}$$\rangle$ $\leftarrow$ $\mathit{stack}$.pop()
 %\IF{$\mathit{stmt_{old}}$ or $\mathit{stmt_{new}}$ has already been matched}
-\IF{$\mathit{matchedStmts}$.keys().contains($\mathit{stmt_{old}}$) \\ \quad || $\mathit{matchedStmts}$.values().contains($\mathit{stmt_{new}}$)}
+\IF{$\mathit{matchedStmts}$.keys().contains($\mathit{stmt_{old}}$) \\ \quad $||$ $\mathit{matchedStmts}$.values().contains($\mathit{stmt_{new}}$)}
 \STATE \textbf{continue}
 \ENDIF
 \STATE $\mathit{matchedPair}$ $\leftarrow$ null

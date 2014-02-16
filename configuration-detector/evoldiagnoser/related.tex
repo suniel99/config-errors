@@ -56,7 +56,7 @@ of the same program that include functional changes.
 %to understand its root cause. To localize the
 %failure, 
 Many techniques have been developed to identify the
-failure-inducing changes for evolving
+failure-inducing code changes for evolving
 software~\cite{Banerjee:2010:GID, r2fix, Qi:2009:DAD, Hoffman:2009:STA}.
 For example, Delta Debugging aims to find a minimal
 subset of changes that still makes the test fail~\cite{dd}.
@@ -125,35 +125,32 @@ ConfAnalyzer~\cite{Rabkin:2011:PPC} uses dynamic information flow analysis to pr
 possible configuration error diagnoses for every possible crashing point
 in a program. 
 
+\todo{I made following paragraph more concise}
 \ourtool is significantly different from the existing approaches.
-First, most previous approaches are not cognizant of software evolution
-%they focus exclusively on a single software
-%version
-~\cite{Attariyan:2008:UCD, Whitaker:2004:CDS, 
-Attariyan:2010:ACT, Rabkin:2011:PPC}. By contrast, \ourtool focuses
-on configuration errors introduced by software evolution between
-two software versions. Further, most techniques
-can only diagnose configuration errors that lead to a crash or
+First, \ourtool is cognizant of software evolution while
+most previous approaches do not~\cite{Attariyan:2008:UCD, Whitaker:2004:CDS, 
+Attariyan:2010:ACT, Rabkin:2011:PPC}.  Second,
+\ourtool supports diagnosing both crashing and non-crashing errors while
+most techniques can only diagnose configuration errors that lead to a crash or
 assertion failure~\cite{Attariyan:2008:UCD, Whitaker:2004:CDS, 
-Attariyan:2010:ACT, Rabkin:2011:PPC}, while \ourtool supports diagnosing both
-crashing and non-crashing errors.
-Second, several approaches~\cite{Attariyan:2010:ACT, Whitaker:2004:CDS}
-assume the existence of a testing oracle.
+Attariyan:2010:ACT, Rabkin:2011:PPC}.
+Third, unlike several approaches~\cite{Attariyan:2010:ACT, Whitaker:2004:CDS},
+\ourtool does not assume the existence of a testing oracle.
 %that can check whether the software functions correctly. 
-However, as we discussed
-before, a testing oracle is often not available.
+%However, as we discussed
+%before, a testing oracle is often not available.
 %, and it
 %is infeasible to expect end-users to provide it.
 %By contrast, our technique eliminates this assumption by
 %comparing two execution traces to reason about the control flow differences
 %between them. 
-Third, several techniques~\cite{Whitaker:2004:CDS, Su:2007:AIC} require alterations
-to the underlying operating system or runtime environment
-for configuration error diagnosis. Compared with
-the platform-independent offline instrumentation used
-in \ourtool, switching to use a new OS or runtime may be
-too impractical for many ordinary end-users.
-Fourth, approaches like
+Fourth, \ourtool uses platform-independent offline instrumentation
+and requires no alternation
+to the underlying operating system or runtime environment. This
+differs from existing OS-level diagnosis techniques~\cite{Whitaker:2004:CDS, Su:2007:AIC}.
+%in \ourtool, switching to use a new OS or runtime may be
+%too impractical for many ordinary end-users.
+Fifth, approaches like
 PeerPressure~\cite{Wang:2004:AMT} and RangeFixer~\cite{rangefix}
 benefit from the known schema of the Windows Registry and
 feature models, but cannot diagnose configuration errors

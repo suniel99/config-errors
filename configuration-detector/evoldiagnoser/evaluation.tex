@@ -95,14 +95,15 @@ supported in the new program version.
 
 For the 5 Java programs studied in Section~\ref{sec:study},
 we manually examined all deleted and modified configuration
-options listed in Figure~\ref{tab:options}. For each
+options listed in Figure~\ref{tab:options}. (The added
+configuration options are unlikely to cause a misconfiguration.) For each
 change, based on our own understanding, we wrote a test driver to cover
 it, and then checked whether the test driver
 could reveal different behaviors on two versions.
 For those 5 programs, we collected 7 errors as listed in
 Figure~\ref{tab:errors} (the first 7 errors).
-For the Javalanche program, we reproduced the configuration
-error reported by the user.
+For the Javalanche program, we reproduced the reported configuration
+error.
 In Figure~\ref{tab:errors}, errors \#3 and \#4
 can be reproduced together in a single execution, and each of the other
 errors is reproduced in one execution.
@@ -110,8 +111,8 @@ errors is reproduced in one execution.
 Our methodology of collecting
 configuration errors is different from what was used in
 collecting software regression bugs in the literature~\cite{dd, autoflow}.
-Differing from configuration errors,
-software regression bugs often can be found in well-maintained
+%Differing from configuration errors,
+Software regression bugs often can be found in well-maintained
 bug databases. By contrast, finding recorded configuration errors
 is much harder, mainly because most configuration errors have not been
 documented rigorously~\cite{Yin:2011:ESC}. Usually, after a
@@ -119,7 +120,7 @@ session of code changes, when regression tests pass, developers
 may treat the software behaviors as having been validated. Further,
 because the software misconfigurations are user-driven,
 the ``fixes'' may be recorded simply as pointers
-to manuals and best-practice documents. 
+to manuals or other documents. 
 
 \todo{add this paragraph to clarify reviewers' concern}
 We evaluated all configuration errors that we can find and reproduce;
@@ -309,7 +310,7 @@ execution traces.
 For the remaining two subject programs (JMeter and
 Javalanche), we manually built an execution trace database
 for each of them by running correct examples from their user manuals.
-The built databases contain 6 and 8
+The databases contain 6 and 8
 execution traces for JMeter and Javalanche, respectively.
 
 \vspace{1mm}
@@ -548,7 +549,7 @@ different observations.
 
 \noindent \textbf{\textit{Experimental conclusions.}}
 We have three chief findings. (1) \ourtool is highly effective
-in diagnosing configuration errors introduced by configuration
+in diagnosing configuration errors introduced by software 
 evolution; (2) \ourtool produces more accurate results than
 approaches designed to diagnose errors on a single program version;
 and (3) \ourtool outperforms two variants
