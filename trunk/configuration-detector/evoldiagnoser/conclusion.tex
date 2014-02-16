@@ -1,11 +1,11 @@
 \section{Conclusion and Future Work}
 \label{sec:conclusion}
 
-Software evolution often causes software systems to
-exhibit undesired behaviors.
-When they do, identifying the root causes
-can be challenging, especially when software's
-behavior depends on a wide range of configuration options.
+%Software evolution often causes software systems to
+%exhibit undesired behaviors.
+%When they do, identifying the root causes
+%can be challenging, especially when software's
+%behavior depends on a wide range of configuration options.
 
 This paper describes \ourtool, a technique to help software
 users to troubleshoot configuration errors. \ourtool
@@ -18,8 +18,21 @@ can accurately identify the root causes of
 The source code of \ourtool is publicly available
 at: \url{http://config-errors.googlecode.com}.
 
+As future work, we plan a user study to evaluate
+\ourtool's usefulness to end-users. A challenge
+will be finding study participants who are familiar
+with given subject programs.
+We also plan to develop techniques to
+automatically distinguish software bugs from 
+configuration errors, when a software system exhibits
+some undesired behavior.
+Such techniques can help formulate guidance
+regarding when the user should give up on \ourtool
+and assume the error is not related to a configuration option.
+
 %We consider \ourtool as one step towards improving
 %the diagnosability of configurable software systems.
+\begin{comment}
 Future work should focus on the following directions:
 
 \vspace{-2mm}
@@ -53,3 +66,4 @@ to summarize error patterns, and then use machine learning
 techniques to synthesize good-quality error reports and fixes.
 
 \end{itemize}
+\end{comment}

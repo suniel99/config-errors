@@ -2,18 +2,19 @@
 \section{Introduction}
 \label{sec:introduction}
 
-Many modern software systems are configurable.
-Configuration options permit users to
+Many modern software systems support %are configurable.
+a range of configuration options for users to
 customize their behavior. This flexibility has a cost:
 a small configuration error might lead to hard-to-diagnose
 behaviors.
 %when something goes wrong, diagnosing a configuration
 %error can be both time-consuming and furstrating.
 
+\todo{I edit the following definition}
 Software configuration errors are errors in which
-the software code and the input are correct, but the software is
-misconfigured so that it does not behave
-as desired by the end-user. Such errors may lead
+the software code and the input are correct, but the incorrect
+values is used for certain configuration options so that the software does not behave
+as desired. Such errors may lead
 the software to crash,
 produce erroneous output, or simply perform poorly.
 In practice, software configuration
@@ -133,7 +134,8 @@ a user first demonstrates the different
 behaviors on two \ourtool-instrumented
 JMeter versions. Then, \ourtool analyzes the
 recorded execution traces produced by the two instrumented
-versions, and outputs a ranked list of root-cause configuration options.
+versions, and outputs a ranked list of suspcious configuration options
+that may need to be changed.
 At the top of the list is the
 \CodeIn{output\_format} option with a default value of \CodeIn{CSV}
 in version 2.9.
@@ -185,11 +187,11 @@ behavior to specific root-cause configuration options:
 
 \begin{itemize}
 
-\vspace{-1mm}
+%\vspace{-1mm}
 
 \item \textbf{Instrumentation and Profiling.} \ourtool
-instruments both old and new program versions by inserting
-code to monitor the execution of each statement as well as the
+instruments both old and new program versions by 
+monitoring the execution of each statement as well as the
 evaluation result of every predicate. Then, it asks users to
 demonstrate the different behaviors on the two instrumented
 program versions. 
@@ -199,7 +201,7 @@ program versions.
 
 \item \textbf{Execution Trace Comparison.}
 \ourtool analyzes the two execution traces to identify
-the control flow differences. In particular, \ourtool
+the control flow differences. \ourtool
 identifies program predicates that behave
 differently between two versions. These
 behaviorally-deviated predicates and their
@@ -260,8 +262,8 @@ question of \textit{how} to fix the undesired behaviors
 unanswered.  Users must manually inspect the analysis
 report to infer
 the root cause, e.g., a configuration option,
-of the unexpected behaviors 
-based on their expertise and knowledge of the software.
+of the unexpected behaviors .
+%based on their expertise and knowledge of the software.
 By contrast, \ourtool makes reports in terms that 
 end-users can act on:  it explicitly guides users to specific
 configuration options that may fix the error.
@@ -332,13 +334,14 @@ are frequent and persistent during software evolution (Section~\ref{sec:study}).
 
 \item \textbf{Technique.} We present a technique to diagnose
 configuration errors for evolving software. Our technique
-uses dynamic profiling, execution trace comparison, and
-static analysis to link certain undesired behaviors to
+%uses dynamic profiling, execution trace comparison, and
+%static analysis to
+links certain undesired behaviors to
 specific responsible configuration options (Section~\ref{sec:technique}).
 
 \item \textbf{Implementation.} We implemented our technique
 in a tool, called \ourtool, for Java software (Section~\ref{sec:implementation}).
-It is publicly available as open source at \url{http://config-errors.googlecode.com}.
+It is publicly available at \url{http://config-errors.googlecode.com}.
 
 \item \textbf{Evaluation.} We applied \ourtool to \errornum configuration
 errors from \subjnum configurable software systems,
