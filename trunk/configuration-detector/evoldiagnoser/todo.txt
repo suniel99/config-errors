@@ -14,12 +14,6 @@ Sentence we did not select only errors that Confsuggester works well" is
 incomprehensible. The authors should fix all imprecisions and bad grammar
 before the paper appears at a venue like ICSE.
 
- I expected that the authors would give a formal
-definition of the similary between statements, and they justify their
-definition, give examples, and experimentally evaluate how similar different
-statements are using their algorithm. Unfortunately, there is neither intuition
-nor justification as to why the similarity algorithm works. The reader is asked
-to believe that the authors made a good choice.
 
  In section 5.1 the authors say that they evaluated
 all configuration errors that they could reproduce. Isn't it a threat to
