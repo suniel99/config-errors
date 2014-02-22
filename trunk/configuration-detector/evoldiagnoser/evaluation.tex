@@ -535,7 +535,18 @@ are not caused by software regression bugs, as all regression
 tests between two versions pass. Applying \ourtool to a buggy
 program version may yield a different result.
 Third, \ourtool's effectiveness depends on the effectiveness of the
-predicate matching algorithm. It may yield less
+predicate matching algorithm.
+%% Here is how "12%" was calculated from the data of Figure~\ref{tab:experiment-sub}:
+% (average
+% (/ 1893 18571.0)
+% (/ 1458  275035.0)
+% (/ 1658  19153.0)
+% (/ 3085  26617.0)
+% (/ 3264  91979.0)
+% (/  9261  25144.0))
+In our experiments, on average 12\% of lines changed between the program
+versions.
+\ourtool may yield less
 useful results for programs with significant code changes.
 However, different algorithms can be plugged into \ourtool.
 Fourth, our evaluation only compared \ourtool with two other
