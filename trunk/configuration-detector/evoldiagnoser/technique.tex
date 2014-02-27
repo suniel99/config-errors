@@ -83,23 +83,23 @@ The problem addressed in this paper is significantly different
 than the traditional regression bug localization problem~\cite{dd, autoflow}.
 A regression bug occurs when developers have made a mistake,
 which causes the software to violate its specification after a session of code changes.
-By contrast, in our problem, the software behavior on the new version
+By contrast, in our context, the software behavior on the new version
 is still as \textit{designed} by the developers
 but \textit{undesired} by the users. 
 %\ourtool addresses
 %this problem from a specific angel by recommending configuration options
 %to fix the undesired behavior.
-Further, compared to
+%Further, compared to
 %writing correct code,
-regression bugs introduced by software developers,
+%regression bugs introduced by software developers,
 %software configuration lies in the gray zone between
 %software developers and software users.
-the responsibility for creating
-correct configurations lies with both developers and end-users; the developer should create
-intuitive configuration logic
-and convey configuration knowledge to users
-effectively. This shared responsibility makes diangosing configuration errors
-different than localization a regression bug.
+%the responsibility for creating
+%correct configurations lies with both developers and end-users; the developer should create
+%intuitive configuration logic
+%and convey configuration knowledge to users
+%effectively. This shared responsibility makes diangosing configuration errors
+%different than localization a regression bug.
 %makes recommending configuration options
 %different than localizing a regression bug, and causes many existing
 %techniques to be inapplicable. We discuss related techniques below
@@ -112,10 +112,11 @@ different than localization a regression bug.
 \noindent \textbf{\textit{Why not use a dynamic analysis to recommend
 configuration options?}}
 \ourtool uses thin slicing to statically identify responsible configuration
-options for a behaviorally-deviated predicate. Another possible way is to use a pure
-dynamic analysis to assess the causality of how a configuration option
-may affect the control flow. State-of-the-art
-techniques such as Delta Debugging~\cite{dd}, value replacement~\cite{failuredoc},
+options for a behaviorally-deviated predicate. An alternative is to
+use a pure
+dynamic analysis to assess how a configuration option
+may affect the control flow. 
+Techniques such as Delta Debugging~\cite{dd}, value replacement~\cite{failuredoc},
 and dual slicing~\cite{Sumner:2013:CCE}
 use a similar idea: they repeatedly replace a variable value with other alternatives,
 and then re-execute the program to check whether the outcome is desired.
@@ -155,9 +156,9 @@ configuration options that can change the functional behaviors of
 the target program.
 % rather than the underlying OS
 %or runtime system. 
-Configuration options that essentially affect the underlying
+Configuration options that affect the underlying
 OS or runtime system, such as the \CodeIn{-Xmx} option used to
 specify JVM's heap size when launching a Java program,
-are not supported in \ourtool.
+are not supported by \ourtool.
 
 %  LocalWords:  Xmx JVM's

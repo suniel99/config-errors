@@ -59,10 +59,9 @@ predicate (or null if the predicate cannot be matched).
 \vspace{1mm}
 \noindent \textbf{Statement-matching algorithm.}
 The algorithm in Figure~\ref{fig:matching} is inspired by
-a well-established program differencing algorithm, called
-JDiff~\cite{Apiwattanapong:2004}. The original JDiff
+the JDiff program differencing algorithm~\cite{Apiwattanapong:2004}. The original JDiff
 algorithm is based on a method-level representation
-(called hammocks) that models the object-oriented features.\
+(called hammocks) that models object-oriented features.\
 It works in a hierarchical way by first identifying matched
 classes and then matched method pairs, and uses
 textual similarity to compare two program statements. By contrast, our
