@@ -39,14 +39,15 @@ statements controlled by a predicate (Section~\ref{sec:rootcause}).
 \vspace{-1mm}
 
 After instrumentation, \ourtool asks the user to demonstrate the different
-behaviors on the two instrumented program versions, by using
+behaviors on the two instrumented program versions, using
 the same input and configuration. Demonstration is
 one of the simplest ways for an end-user to describe her problem;
 and it is easier than writing specifications or scripts of any form.
+%a better way is to count the basic block numbers
 
 Executing the instrumented program produces an execution trace,
 which consists of a sequence of executed statements as well
-as the evaluation result of each predicate.
+as the execution count and evaluation result of each predicate.
 The execution trace captured by \ourtool is by no means complete
 in recording the full program behavior; it only
 captures the control flows a program is taking. As demonstrated
