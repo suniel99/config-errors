@@ -25,10 +25,10 @@ as a ``flag'' that affects the program behavior by
 changing the runtime execution path.
 % and determines
 %a program's execution path.
-Second, the control flow differences of two execution
-traces can approximate the program behavioral differences
-of two versions, and provide evidence
-for which parts of the program might be behaving
+Second, the control flow differences between two execution
+traces approximate the behavioral differences
+of two versions; they provide evidence
+about which parts of the program are behaving
 abnormally and why.
 %undesirably.
 
@@ -43,9 +43,9 @@ In the first step, \ourtool asks the
 user to demonstrate the different behaviors, using the same input and
 configuration, on two \ourtool-instrumented program versions
 (Section~\ref{sec:profiling}).
-Then, \ourtool analyzes the two execution traces produced
-by user demonstration, and identifies the control flow differences between
-them. In particular, \ourtool identifies program predicates
+Then, \ourtool identifies the control flow differences between
+the two execution traces produced by user demonstration.
+In particular, \ourtool identifies program predicates
 that behave differently across the two executions
 (Section~\ref{sec:comparison}).
 After that, \ourtool uses a lightweight dependence
