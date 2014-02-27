@@ -5,15 +5,14 @@
 Many modern software systems support %are configurable.
 a range of configuration options for users to
 customize their behavior. This flexibility has a cost:
-a small configuration error might lead to hard-to-diagnose
+a small configuration error may cause hard-to-diagnose
 behaviors.
 %when something goes wrong, diagnosing a configuration
 %error can be both time-consuming and furstrating.
 
-\todo{I edit the following definition}
 Software configuration errors are errors in which
-the software code and the input are correct, but the incorrect
-values is used for certain configuration options so that the software does not behave
+the software code and the input are correct, but the an incorrect
+value is used for a configuration option so that the software does not behave
 as desired. Such errors may lead
 the software to crash,
 produce erroneous output, or simply perform poorly.
@@ -24,7 +23,7 @@ errors are \textit{prevalent}, \textit{severe}, and
 
 %In many modern software systems, configuration errors have been
 %the dominant cause of problems~\cite{}.
-A recent analysis of Yahoo's mission-critical Zookeeper service
+\textbf{Prevalent.} A recent analysis of Yahoo's mission-critical Zookeeper service
 showed that software misconfigurations accounted for
 the majority of all user-visible failures~\cite{bft}.
 Configuration-related issues caused about 31\% of all
@@ -34,31 +33,32 @@ arise not due to bugs in the software, but bugs in the
 configuration settings (i.e., configuration errors)
 that control the software~\cite{googleconf}.
 
-Not only are configuration errors prevalent, they
-can have high, sometimes disastrous impacts. For example,
+\textbf{Severe.}
+Configuration errors can have disastrous impacts. For example,
 an outage in Facebook due to
 an incorrect configuration value left the website 
 inaccessible for about 2 hours~\cite{fbout}. 
 The entire \CodeIn{.se} domain of Sweden was unavailable
 for about 1 hour, due to a DNS misconfiguration problem~\cite{sedown}.
-On July 26 2012, 
-a misconfiguration made 
+A misconfiguration made 
 Microsoft's public cloud platform, Azure,
 unavailable for about two and a half hours~\cite{msdown}.
-Such incidents affected millions of users.
+Each such incident affected millions of users.
 
-Furthermore, configuration errors are difficult to diagnose. 
+\textbf{Hard to debug.}
+Configuration errors are difficult to diagnose. 
 They usually require great expertise to understand
 the error root causes. For example, a
 configuration error in the CentOS kernel prevented
-a user from mounting a newly-created file system.
+a user from mounting a newly-created file system~\cite{Yin:2011:ESC}.
 The user needed deep understanding about the
 exhibited symptom,  and had to re-install kernel modules and
 also modify configuration option values in
-several places to get it to work~\cite{Yin:2011:ESC}.
-Techniques helping escape from the ``configuration hell''
+several places to get it to work.
+Techniques to help escape from ``configuration hell''
 are highly demanded~\cite{googleconf}.
 
+\textbf{Actionable.}
 Unlike software bugs,
 which can only be fixed by experienced software developers, fixing a software
 configuration error is \textit{actionable} for software end-users
@@ -66,10 +66,10 @@ or system administrators. These users are not the software developers,
 and cannot access (much less understand)
 %do not have the right expertise to understand (or even access to)
 the source code;  but they can fix a configuration error by simply changing
-values of certain configuration options.
+the values of certain configuration options.
 
 
-\vspace{-1mm}
+%\vspace{-1mm}
 \subsection{Configuration Evolution}
 \label{sec:evolerror}
 
@@ -79,8 +79,8 @@ We studied \studysubjnum real-world configurable software
 systems (Section~\ref{sec:study}), and
 found configuration changes in \textit{every} studied
 version of \textit{each} system. In many 
-cases, directly reusing the existing configuration
-for the old version can lead the new software version
+cases, reusing the old version's configuration
+can lead the new software version
 to exhibit \textit{undesired} behaviors,
 even if the software is working exactly as \textit{designed}.
 
@@ -118,7 +118,7 @@ However, after upgrading to version 2.9,
 the same command saves the testing report
 in a CSV file. Further, all JMeter regression tests pass 
 on the updated version.  The new JMeter version
-just behaves as \textit{designed} but \textit{differently}
+behaves as \textit{designed} but \textit{differently}
 than a user was expecting.
 
 
@@ -142,7 +142,7 @@ in version 2.9.
 To resolve this problem, users only need to change
 its value to \CodeIn{XML}.
 
-\vspace{-1mm}
+%\vspace{-1mm}
 
 \subsection{Configuration Option Recommendation}
 
@@ -152,7 +152,7 @@ reproducing the error, recommending which specific
 configuration option is responsible for the undesired
 behavior, and determining a better value for the
 configuration option to fix the error. \ourtool addresses
-the second task: recommending the root-cause configuration options.
+the second task: recommending the root-cause configuration option.
 %a configuration error.
 
 \ourtool specifically focuses on software configuration errors and
@@ -183,16 +183,16 @@ might cause such differences. It uses
 three steps, as illustrated in Figure~\ref{fig:overview},  to link the undesired
 behavior to specific root-cause configuration options:
 
-\vspace{-2mm}
+%\vspace{-2mm}
 
 \begin{itemize}
 
 %\vspace{-1mm}
 
 \item \textbf{Instrumentation and Profiling.} \ourtool
-instruments both old and new program versions by 
-monitoring the execution of each statement as well as the
-evaluation result of every predicate. Then, it asks users to
+instruments both the old and new program versions to
+monitor the execution of each statement as well as the
+evaluation result of every predicate. Then, it asks the user to
 demonstrate the different behaviors on the two instrumented
 program versions. 
 %User demonstration produces two execution
@@ -203,7 +203,7 @@ program versions.
 \ourtool analyzes the two execution traces to identify
 the control flow differences. \ourtool
 identifies program predicates that behave
-differently between two versions. These
+differently between the two versions. These
 behaviorally-deviated predicates and their
 affected program statements
 provide evidence about what parts of a program might
@@ -218,7 +218,7 @@ Finally, it outputs a ranked list of suspicious options to the users.
 
 \end{itemize}
 
-\vspace{-1mm}
+%\vspace{-1mm}
 
 Compared to existing error diagnosis
 techniques~\cite{Wang:2004:AMT, Rabkin:2011:PPC, Whitaker:2004:CDS,
@@ -226,10 +226,10 @@ Zhang:2013:ADS, Attariyan:2010:ACT, Su:2007:AIC, Attariyan:2008:UCD, xray
 }, \ourtool differs in four
 key aspects:
 
-\vspace{-1mm}
+%\vspace{-1mm}
 
 \begin{itemize}
-\vspace{-1mm}
+%\vspace{-1mm}
 \item \textbf{It diagnoses configuration errors caused by software evolution}.
 Most existing configuration error diagnosis techniques
 identify errors from a single program
@@ -237,8 +237,8 @@ version~\cite{Wang:2004:AMT, Rabkin:2011:PPC, Whitaker:2004:CDS,
 Zhang:2013:ADS, Attariyan:2010:ACT, Su:2007:AIC, Attariyan:2008:UCD, xray}.
 By contrast, \ourtool is cognizant of software evolution and
 works on two different versions of the same program. 
-It uses the desired behavior on the old software version
-as a baseline with which to compare new program behavior against, and only
+It uses the desired behavior of the old software version
+as a baseline against which to compare new program behavior, and only
 reasons about the behavioral differences.
 
 \item \textbf{It requires no testing oracle}.
@@ -249,7 +249,7 @@ software not working?''\ by writing a testing
 oracle to check the software behavior. By contrast,
 \ourtool only requires users to
 demonstrate the different behaviors on two versions.
-\ourtool uses the execution trace produced on the old
+\ourtool uses the execution trace produced by the old
 version as an approximate oracle to
 reason about the undesired behavior on the new version.
 
@@ -259,10 +259,9 @@ primarily focus on
 determining \textit{what} causes the undesired behaviors, e.g.,
 a snippet of code --- they leave the more challenging
 question of \textit{how} to fix the undesired behaviors
-unanswered.  Users must manually inspect the analysis
+unanswered.  The user must manually inspect the analysis
 report to infer
-the root cause, e.g., a configuration option,
-of the unexpected behaviors .
+the root cause, e.g., a configuration option.
 %based on their expertise and knowledge of the software.
 By contrast, \ourtool makes reports in terms that 
 end-users can act on:  it explicitly guides users to specific
@@ -284,12 +283,12 @@ from \subjnum open-source configurable Java software systems.
 We used \ourtool to recommend configuration options whose values
 can be changed to fix each error.
 \ourtool successfully recommended correct configuration options
-for all \errornum errors. In 6 errors, the correct option was \ourtool's first
-suggestion. In 1 error, the correct option was
+for all \errornum errors. For 6 errors, the correct option was \ourtool's first
+suggestion. For 1 error, the correct option was
 \ourtool's third suggestion. The root cause of the remaining
 error was \ourtool's sixth suggestion. \ourtool is fast enough for practical use,
 taking less than \avgtime minutes,
-on average, to diagnose one configuration error.
+on average, to diagnose each configuration error.
 \ourtool's accuracy and speed make it a promising technique.
 
 
@@ -326,17 +325,17 @@ the root-cause configuration options.
 This paper makes the following main contributions:
 
 \begin{itemize}
-\vspace{-3mm}
+%\vspace{-3mm}
 \item \textbf{Study of configuration changes.} We describe an empirical
 study of \studysubjnum configurable software systems.
 Our study indicates that configuration changes
-are frequent and persistent during software evolution (Section~\ref{sec:study}).
+are frequent during software evolution (Section~\ref{sec:study}).
 
 \item \textbf{Technique.} We present a technique to diagnose
 configuration errors for evolving software. Our technique
 %uses dynamic profiling, execution trace comparison, and
 %static analysis to
-links certain undesired behaviors to
+links undesired behaviors to
 specific responsible configuration options (Section~\ref{sec:technique}).
 
 \item \textbf{Implementation.} We implemented our technique
@@ -350,3 +349,5 @@ The results show the accuracy and efficiency of \ourtool (Section~\ref{sec:evalu
 \end{itemize}
 
 %  LocalWords:  Zookeeper misconfigurations se DNS JMeter jmeter CSV
+
+\newpage
