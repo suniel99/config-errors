@@ -14,9 +14,9 @@ As software evolves, its behavior must be validated.
 Regression test selection~\cite{regression}
 indicates which tests need to be executed for a changed
 program.  Program differencing techniques~\cite{Giroux:2006:DIF, Xing:2005:UAO, Thummalapenta:2010:ESM, Kim:2013, Jin:2012:BRF,Nguyen:2010:RBF,Dig:2006:ADR, Kamiya:2002:CMT, Dagenais:2008}
-identify changes between two program versions,
+identify changes between two program versions
 and present the change list to developers for inspection.
-Related, change impact analysis techniques~\cite{STVR:STVR1475}, which
+Change impact analysis techniques~\cite{STVR:STVR1475}, which
 are often built on top of program differencing
 techniques, identify not only the changes, but also
 code fragments that are affected by the changes. 
@@ -45,17 +45,17 @@ such as a software revision history~\cite{frameworkevolution}.
 
 Nagarajan et al.~\cite{4362621} developed a technique to match
 control flows of two program versions running with
-the same input. Differing from \ourtool, their
+the same input. Different from \ourtool, their
 work assumes semantically-equivalent program versions (e.g., optimized
 and unoptimized), while \ourtool compares two versions
-of the same program that include functional changes. 
+that include functional changes. 
 %\todo{missing above the work of semantic trace analysis,
 %some of tao wang's work}
 
 %When a regression failure occurs, developers need
 %to understand its root cause. To localize the
 %failure, 
-Many techniques have been developed to identify the
+Many techniques have been developed to identify
 failure-inducing code changes for evolving
 software~\cite{Banerjee:2010:GID, r2fix, Qi:2009:DAD, Hoffman:2009:STA}.
 For example, Delta Debugging aims to find a minimal
@@ -99,7 +99,7 @@ flow differences.
 Software configuration errors are time-consuming
 and frustrating to diagnose. To reduce the time and human
 effort needed to troubleshoot software misconfigurations,
-several prior research efforts have applied different techniques
+prior research has applied different techniques
 to the problem of configuration error diagnosis~\cite{Attariyan:2008:UCD, 
 Whitaker:2004:CDS, Wang:2004:AMT, rangefix,
 Attariyan:2010:ACT, Rabkin:2011:PPC, keller:conferr}.
@@ -125,10 +125,10 @@ ConfAnalyzer~\cite{Rabkin:2011:PPC} uses dynamic information flow analysis to pr
 possible configuration error diagnoses for every possible crashing point
 in a program. 
 
-\todo{I made following paragraph more concise}
+%\todo{I made following paragraph more concise}
 \ourtool is significantly different from the existing approaches.
 First, \ourtool is cognizant of software evolution while
-most previous approaches do not~\cite{Attariyan:2008:UCD, Whitaker:2004:CDS, 
+most previous approaches are not~\cite{Attariyan:2008:UCD, Whitaker:2004:CDS, 
 Attariyan:2010:ACT, Rabkin:2011:PPC}.  Second,
 \ourtool supports diagnosing both crashing and non-crashing errors while
 most techniques can only diagnose configuration errors that lead to a crash or
@@ -172,15 +172,15 @@ the behavior of a configurable software
 system~\cite{Siegmund:2012:PPV, Qu:2008:CRT, SPLAT, Apel:2009:FLA, Shang:2013:ADB,
 Staats:2011:PTO}.
 
-Compared to \ourtool, existing techniques have rather different
+Compared to \ourtool, these techniques have rather different
 goals. They primarily focus on reducing the burden of
 configuration management and preventing certain errors from
 happening, or creating test suites to find new errors in
-a configurable software system earlier, but cannot
+a configurable software system earlier. They cannot
 diagnose an exhibited configuration error during software evolution.
 By contrast, \ourtool 
 links the behavioral differences to a small number
-of configuration options, and explicitly guides software end-users
+of configuration options and explicitly guides software end-users
 to the root causes.
 %how to fix a configuration error.
 
