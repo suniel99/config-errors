@@ -2,7 +2,9 @@
 \label{sec:study}
 
 In the software engineering literature, despite a rich body of
-software change analysis work~\cite{STVR:STVR1475, Dagenais:2008, Tao:2012:SEU}, 
+software change analysis work~\cite{Ying:2004:PSC,
+Zimmermann:2004, STVR:STVR1475, Dagenais:2008, Tao:2012:SEU,
+deSouza:2008:ESS}, 
 software configuration changes across multiple
 versions are less studied. Do configuration
 changes arise during software evolution in practice?
@@ -65,7 +67,7 @@ for the selected versions.
 \setlength{\tabcolsep}{.50\tabcolsep}
 \begin{tabular}{|l||c|c|c|c|}
 \hline
- Program & \#Added Options & \#Deleted Options& \#Modified Options\\
+ Program & \# Added Options & \# Deleted Options& \# Modified Options\\
  %&  Options &  Options&  Options \\
  \hline
  \hline
@@ -133,7 +135,7 @@ study from the subject programs in Figure~\ref{tab:subjects}.
 \setlength{\tabcolsep}{.50\tabcolsep}
 \begin{tabular}{|l|c|c|c|c|}
 \hline
- Program & \multicolumn{4}{|c|}{\textbf{\#Changed Configuration Options}} \\
+ Program & \multicolumn{4}{|c|}{\textbf{\# Changed Configuration Options}} \\
  \cline{2-5}
  & Bugs & Renaming & Features & Reliability \\
  \hline
@@ -168,7 +170,7 @@ study.
 % The \studysubjnum subjects contains
 % three C/C++ software systems and six Java software systems.
 MySQL~\cite{mysql}  is a popular relational database management
-system. Apache~\cite{apache} has been a dominant
+system. Apache~\cite{apache} has been the dominant
 HTTP server on the Internet since 1996. Firefox~\cite{firefox}
 is an open-source browser available on multiple platforms.
 Randoop~\cite{randoop} is an automated test generator for Java
@@ -177,7 +179,7 @@ learning algorithms. JChord~\cite{jchord} is a program analysis platform that
 enables users to design and implement static and
 dynamic program analyses for Java. Synoptic~\cite{synoptic} mines a
 finite state machine model representation of a system from
-logs. JMeter~\cite{jmeter} is a tool to load test functional
+logs. JMeter~\cite{jmeter} is a tool to load-test functional
 behavior and measure performance.
 Each program is highly configurable, and has evolved over
 a considerable amount of time for the selected versions ({2--6} years).
@@ -185,14 +187,14 @@ a considerable amount of time for the selected versions ({2--6} years).
 
 In our study, %rather than searching bug repositories,
 we manually examined the revision history of each subject program,
-and searched for a set of 5 keywords (``configuration option'',
+and searched for 5 keywords (``configuration option'',
 ``add option'', ``delete option'', ``rename option'', and ``change option'')
-in commit messages as well as in the change logs.
+in commit messages and as in the change logs.
 We searched 7022 commit messages and 28 change log entries, in
 which 422 commit messages and 28 change log entries were matched.
-For each match, we read the description of the change,
+For each match, we read the description of the change
 and the ``diff'' of the original file to check whether
-the change is made to a configuration option. We collected
+a configuration option is changed. We collected
 394 distinct configuration changes in total.
 %and the
 %changed file. This information indicated
@@ -214,9 +216,9 @@ configuration changes into four categories shown
 in Figure~\ref{tab:conftypes}
 (each change belongs to a single category)\footnote{
 The ``Bugs'' change type in Figure~\ref{tab:conftypes}
-represents that fixing some bugs lead to changes in
+represents that fixing some bugs led to changes in
 configurations rather than fixing some buggy configurations.
-}. \todo{add a footnote above}
+}. 
 
 
 As shown in Figure~\ref{tab:options}, configuration changes occur
@@ -232,12 +234,12 @@ all subject programs. These changes include
 adding new configuration options, deleting existing options, or modifying the default
 value of an option. 
 
-Configuration evolution can have unexpected impact on
+Configuration evolution can have unexpected impacts on
 program behavior. After configuration changes, reusing
-the existing configuration for an old software version
+an old configuration
 may yield a misconfiguration, causing different results
-on the new version.  The detailed evaluation is
-described in Section~\ref{sec:evaluation}.
+on the new version.  
+Section~\ref{sec:evaluation} shows concrete examples.
 %our evaluation focused on deleted and modified options.
 %Adding new configuration options is less likely to cause
 %a configuration error.
@@ -309,7 +311,7 @@ described in Section~\ref{sec:evaluation}.
 \subsection{Threats to Validity}
 
 Our findings apply in the context of our subject programs and methodology;
-they may not apply to arbitrary programs.
+they might not apply to arbitrary programs.
 
 The configuration changes identified by our methodology are
 certainly not complete. Our keyword search might have missed some configuration changes.
