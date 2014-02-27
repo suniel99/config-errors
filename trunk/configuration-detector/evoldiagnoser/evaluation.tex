@@ -34,7 +34,7 @@ listed in Figure~\ref{tab:subjects}.
 The first 5 subject programs are the 5 Java programs
 studied in Section~\ref{sec:study},
 and the remaining subject program is Javalanche~\cite{javalanche},
-which is a popular mutation testing framework.
+which is a mutation testing framework.
 
 We included Javalanche because one of its real users
 % we received a real
@@ -104,6 +104,8 @@ For those 5 programs, we collected 7 errors as listed in
 Figure~\ref{tab:errors} (the first 7 errors).
 For the Javalanche program, we reproduced the reported configuration
 error.
+We evaluated all configuration errors that we could find and reproduce;
+we did not select only errors on which \ourtool works well.
 In Figure~\ref{tab:errors}, errors \#3 and \#4
 can be reproduced together in a single execution, and each of the other
 errors is reproduced in one execution.
@@ -122,9 +124,6 @@ because the software misconfigurations are user-driven,
 the ``fixes'' may be recorded simply as pointers
 to manuals or other documents. 
 
-\todo{add this paragraph to clarify reviewers' concern}
-We evaluated all configuration errors that we can find and reproduce;
-we did not select only errors that \ourtool works well.
 
 %Therefore, in
 %our evaluation, we have to manually reproduce 
@@ -143,18 +142,19 @@ For each configuration error, we used the same
 input and configuration
 to reproduce the different behaviors on two instrumented versions.
 
-The average size of the execution traces by program instrumentation is 40MB,
-and the largest one (Randoop's trace) is 140MB
+The average size of the execution traces is 40MB,
+and the largest one (Randoop's trace) is 140MB.
 
 
 
 When using \ourtool to diagnose a configuration error, we manually specify
 the initialization statement of each configuration option as
-the seed for thin slicing. This manual, one-time-cost step took around
-10 minutes on average per subject program. After that,
+the seed for thin slicing. This manual, one-time-cost step took 
+20 minutes on average per subject program. After that,
 \ourtool works in a fully-automatic way: it 
 analyzes two program versions and two execution traces,
 and outputs a ranked list of configuration options.
+Future work could automate this manual step.
 
 Our experiments were run on a 2.67GHz Intel Core PC
 with 4GB physical memory (2GB was allocated for the JVM),
@@ -172,7 +172,7 @@ the root cause in \ourtool's output is 1.8. For 6 errors, the
 root-cause configuration option ranks first in \ourtool's output;
 for 1 error, the root-cause configuration option ranks third
 in \ourtool's output; and the root-cause option ranks sixth
-for the remaining error. The primary reason is \ourtool's
+for the remaining error. \ourtool is successful because of its
 ability to identify the behaviorally-deviated predicates with
 substantial impacts through execution trace comparison.
 The top-ranked deviated predicates often provide
@@ -209,6 +209,8 @@ imposes an average 8$\times$ and 12.8$\times$ slowdown in a
 \ourtool-instrumented old and new program version, respectively.
 This is due to \ourtool's inefficient instrumentation code that
 monitors the execution of every instruction.
+The overhead could be reduced by instrumentating
+at basic block granuarlity instead.
 Even so, except for two errors (errors \#5 and \#6) in\
 JChord,  all other errors can
 be reproduced in less than 30 seconds. Errors \#5 and \#6
@@ -225,8 +227,7 @@ error (including the time to compute thin slices
 and the time to suggest suspicious options). 
 Computing thin slices for all configuration options
 is non-trivial. However, this step is one-time cost
-per program and the computed results can
-be cached to share across runs. 
+per program and the results can be precomputed.
 The time used for suggesting configuration options
 is roughly proportional to the size of the execution trace
 rather than the size of the subject program.
@@ -268,8 +269,8 @@ performance. The ``Run-time Slowdown'' column
 shows the cost of reproducing the error in
 an \ourtool-instrumented version of the subject program.
 The ``\ourtool time (s)'' column shows
-the time took by \ourtool to diagnose configuration errors in seconds.
-Column ``Slicing'' includes the cost of computing
+the time taken by \ourtool to diagnose configuration errors in seconds.
+Column ``Slicing'' is the cost of computing
 thin slices on both old and new program versions.
 %For both columns, the mean is the geometric mean. 
 }
@@ -280,9 +281,8 @@ thin slices on both old and new program versions.
 \label{sec:existing}
 
 This section compares \ourtool with two existing approaches,
-called \prevtool~\cite{Zhang:2013:ADS} and \conftool~\cite{Rabkin:2011:PPC}.
-We chose \prevtool and \conftool because
-they are two recent techniques and are also among the most
+\prevtool~\cite{Zhang:2013:ADS} and \conftool~\cite{Rabkin:2011:PPC}.
+\prevtool and \conftool are among the most
 precise configuration error diagnosis techniques in the literature.
 
 
@@ -292,11 +292,10 @@ software configuration error diagnosis technique. %Unlike \ourtool,
 \prevtool is \textit{not} cognizant of
 software evolution, and it diagnoses configuration errors from
 a single program version.
-Besides, \prevtool differs from \ourtool from two key aspects:
-first, \prevtool assumes the existence of a set of correct execution
+\prevtool assumes the existence of a set of correct execution
 traces, which are used to compare against the undesired
 execution trace to identify the abnormal program parts.
-Second, when comparing the undesired execution trace with a
+When comparing the undesired execution trace with a
 correct execution trace, \prevtool only uses a predicate's deviation
 value to reason about the most suspicious options, while
 ignoring the statements controlled by a predicate's evaluation result. 
@@ -317,13 +316,13 @@ execution traces for JMeter and Javalanche, respectively.
 
 \noindent \textbf{\conftoolnoxspace}, proposed by Rabkin and
 Katz~\cite{Rabkin:2011:PPC}, is a lightweight
-static analysis technique to precompute diagnosis for a program.
+static configuration error diagnosis technique.
 \conftool tracks the flow of labeled objects through 
 program control flow and data flow, and treats a configuration option
 as a root cause if its value may flow to a crashing point.
 Since \conftool cannot diagnose non-crashing errors, we
 can only apply it to diagnose the crashing error in
-Weka (error\#2 in Figure~\ref{tab:errors}).
+Weka (error \#2 in Figure~\ref{tab:errors}).
 
 
 \vspace{1mm}
@@ -348,7 +347,7 @@ execution differences. Second, \prevtool only focuses on
 the predicate behavior changes, while ignoring the statements
 potentially impacted by the affected predicate. This makes
 \prevtool fail to distinguish predicates whose behavioral changes can
-have different impacts, and then output less accurate results.
+have different impacts.
 Section~\ref{sec:alternative} further evaluates this design
 choice, showing that considering the number of controlled statements
 can substantially increase the diagnosis accuracy.
@@ -366,15 +365,13 @@ are initialized and only one of them flows to the crashing point.
 %By contrast, \ourtool is capable to diagnose both crashing
 %and non-crashing errors.
 
-We did not compare \ourtool with other related
+\ourtool is not directly comparable to other related
 configuration error diagnosis approaches~\cite{Attariyan:2010:ACT,
-xray, Whitaker:2004:CDS, Su:2007:AIC, Wang:2004:AMT, rangefix},
-because it is hard to conduct a fair, end-to-end comparison.
+xray, Whitaker:2004:CDS, Su:2007:AIC, Wang:2004:AMT, rangefix}.
 Existing approaches target a rather
 different problem than \ourtool, or require different
 inputs than \ourtool. For example, 
-X-Ray~\cite{xray} can only diagnose
-performance-related configuration errors on a single
+X-Ray~\cite{xray} diagnoses configuration errors on a single
 program version.
 %Chronus~\cite{Whitaker:2004:CDS}
 %and AutoBash~\cite{Su:2007:AIC}
@@ -450,6 +447,8 @@ as half of the number of configuration options.
 
 This section evaluates two design choices in \ourtool.
 
+\vspace{1mm}
+
 \noindent \textbf{{Slicing algorithms.}} \ourtool
 uses thin slicing to identify configuration options
 whose values may affect a predicate. We next evaluate
@@ -469,7 +468,7 @@ are not pertinent to the task of error diagnosis. Linking them
 to the exhibited different behavior would degrade
 \ourtool's accuracy. Further, computing full slices is much
 more expensive than computing thin slices. 
-The full slicing algorithm (implemented in WALA) failed to scale
+WALA's full slicing algorithm failed to scale
 to two subject programs (JMeter and Javalanche).
 
 \vspace{1mm}
@@ -505,7 +504,7 @@ evaluation result to approximate such potential impacts.
 \vspace{1mm}
 \noindent \textbf{\textit{Summary.}} Full slicing
 includes too many irrelevant program statements due to its
-conservatism; and only using a predicate's behavior
+conservatism and only using a predicate's behavior
 change is not enough to identify the root-cause configuration options.
 \ourtool, using thin slicing and considering both
 the predicate behavior change and the impacted statements,
@@ -514,7 +513,6 @@ is a better choice in diagnosing configuration errors.
 \subsection{Discussion}
 
 \noindent \textbf{\textit{Threats to validity.}}
-\todo{make threats to validity more clear}
 There are several threats to validity of our evaluation.
 First, the \subjnum Java programs might not be representative, though some of them have been
 used in previous research. Likewise, the
@@ -530,23 +528,15 @@ requires changing values of two dependent configuration options.
 %configuration option is responsible for a given undesired behavior,
 %although it can diagnose two errors caused by two independent options
 %at a time (Section~\ref{sec:evaluation}).
-Second, in our evaluation, we assume the configuration errors
-are not caused by software regression bugs, as all regression
-tests between two versions pass. Applying \ourtool to a buggy
-program version may yield a different result.
+Second, our evaluation focused on configuration errors
+rather than software regression bugs, as all regression
+tests between two versions pass. We have not evaluated
+whether \ourtool would help users work around
+buggy program versions.
 Third, \ourtool's effectiveness depends on the effectiveness of the
-predicate matching algorithm.
-%% Here is how "12%" was calculated from the data of Figure~\ref{tab:experiment-sub}:
-% (average
-% (/ 1893 18571.0)
-% (/ 1458  275035.0)
-% (/ 1658  19153.0)
-% (/ 3085  26617.0)
-% (/ 3264  91979.0)
-% (/  9261  25144.0))
-In our experiments, on average 12\% of lines changed between the program
-versions.
-\ourtool may yield less
+predicate-matching algorithm. In our experiments,
+on average 12\% of lines are changed between the program
+versions. \ourtool may yield less
 useful results for programs with significant code changes.
 However, different algorithms can be plugged into \ourtool.
 Fourth, our evaluation only compared \ourtool with two other
