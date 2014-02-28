@@ -72,7 +72,7 @@ In Figure~\ref{fig:matching}, \ourtool first constructs the control
 flow graphs of two given methods (lines 2--3), then pushes their
 entry nodes (a synthetic node for each method) onto a worklist stack (line 5), which retains
 the next statement pair for comparison. The algorithm repeatedly
-pops each statement pair from the stack (line 7), and
+pops a statement pair from the stack (line 7) and
 decides whether the two statements are matched (line 12).  
 Each statement appears at most once in the result (lines 8--9).
 %To avoid infinite
@@ -88,8 +88,9 @@ $\mathit{s'}$ are field-accessing or method-invoking statements,
 the same field or method is accessed or invoked
 by both statements.
 %they access the same field or invoke the same method.
-We use such approximate matching since \ourtool directly works
-on bytecode rather than source code. The approximate matching
+%We use such approximate matching since \ourtool directly works
+%on bytecode rather than source code. 
+Such approximate matching
 tolerates small differences
 between two versions, such as changes to constant values.
 
@@ -118,14 +119,15 @@ between two versions.
 
 Given an execution trace $\mathit{T}$,
 \ourtool characterizes a predicate $\mathit{p}$'s behavior by how often
-it is evaluated (i.e., the number of observed executions),
+it is evaluated (i.e., the number of observed executions)
 and how often it evaluates to true (i.e., the ``true ratio'').
 The true ratio is an important characteristic of a predicate's behavior,
 but it is less dependable
 the fewer times the predicate has been executed.
 
-\ourtool uses a function $\phi$ to combine both true ratio
-and number of executions in a standard way by computing their harmonic mean.
+\ourtool combines the true ratio
+and number of executions by computing their harmonic mean.
+
 
 %characterize a predicate's behavior.
 %The $\phi$ metric combines sensitivity (informally, the need
@@ -134,7 +136,7 @@ and number of executions in a standard way by computing their harmonic mean.
 %As empirically demonstrated in our previous work~\cite{Zhang:2013:ADS},
 %the metric $\phi$ provides a good characterization of a predicate's behavior.
 
-\vspace{-2mm}
+\vspace{-3mm}
 
 \begin{equation*}
  \|\phi|(p, T)= \cfrac{2}{\frac{1}{\|trueRatio|(p, T)} + \frac{1}{\|totalExecNum|(p, T)}}
@@ -147,7 +149,7 @@ predicate $p$ that evaluated to true in $T$,
 and $\|totalExecNum|(p, T)$ returns the the total
 number of observed executions of predicate $p$ in $T$.
 To smooth corner cases, $\phi(p, T)$ returns 0, if a predicate $p$ is not executed in $T$ 
-(i.e., $\|totalExecNum|(p, T) = 0$), or
+(i.e., $\|totalExecNum|(p, T) = 0$) or
 a predicate $p$'s true ratio is 0 (i.e., $\|trueRatio|(p, T) = 0$).
 %and if a predicate $p$'s true ratio is 0, 
 %then $\phi(p, t)$ returns $1/\|totalExecNum|(p, t)$.
@@ -170,7 +172,7 @@ In Figure~\ref{fig:recommend}, the {deviation} function
  discards a predicate pair whose behavioral deviation value is less than
 a pre-defined threshold (line 2). This is for tolerating small non-determinism
 during program execution and
-making \ourtool only focus on predicates with substantial
+making \ourtool focus on predicates with substantial
 behavioral differences.
 
 The identified behaviorally-deviated predicates indicate different
