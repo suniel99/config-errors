@@ -15,7 +15,7 @@ these options by
 the deviation value (computed by the
 {deviation} function in Figure~\ref{fig:recommend})
 and the number of executed statements they control (computed
-by the {getExecutedStmtNum} auxiliary function in Figure~\ref{fig:recommend}).
+by the {get\-ExecutedStmtNum} auxiliary function in Figure~\ref{fig:recommend}).
 
 %\subsubsection{Attributing Trace Differences to Configuration Options}
 
@@ -24,9 +24,9 @@ a predicate, a straightforward way is to use program slicing~\cite{Weiser:1981}
 to compute a forward slice from the initialization statement
 of a configuration option, and then check whether the predicate is
 in the slice. Unfortunately, traditional
-full slicing~\cite{Weiser:1981} is infeasible due
-to its conservatism, such as the need of handling pointers
-and the need of following both data and control dependences.
+full slicing~\cite{Weiser:1981} would produce
+unusably large slices due
+to its conservatism. 
 %As been experimentally demonstrated in our
 %previous work~\cite{}, traditional full slicing includes
 %too much of the program, and can significantly affect an analysis's
@@ -37,24 +37,27 @@ To address this limitation, \ourtool uses thin slicing~\cite{Sridharan:2007}
 to identify configuration options that \textit{directly} affect
 a predicate. Different from traditional full slicing,
 thin slicing \textit{only} follows the data flow dependencies
-from the seed (i.e., the initialization statement of a
+from the slicing criterion (i.e., the initialization statement of a
 configuration option) and ignores control flow dependencies
-as well as uses of base pointers. This property separates
+as well as uses of base pointers. Using thin slicing, \ourtool separates
 pointer computations from the flow of configuration option
 values and naturally connects a configuration option with its
-directly affected statements. Section~\ref{sec:alternative}
-empirically demonstrates that traditional full slicing includes
-too much of the program, and is less accurate than
-thin slicing.
+affected statements by the data flow dependencies. Section~\ref{sec:alternative}
+empirically demonstrates that using traditional full slicing
+will decrease the precision of \ourtool.
+%too much of the program, and is less accurate than
+%thin slicing.
 
 
-To distinguish the likelihood of each configuration
-option being the root cause, \ourtool associates each
+To identify the root-cause configuration options,
+%as the root causes, likelihood of each configuration
+%option being the root cause,
+\ourtool associates each
 configuration option with a weight, which represents the strength of
 the causal relationship between the configuration option
 and the execution differences.
 A larger weight value indicates that a configuration option
-can potentially attributes more to the control
+potentially contributes more to the control
 flow differences as its value propagates in the program, and thus
 the configuration option is more likely to be the root cause.
 %which is the number
@@ -65,7 +68,7 @@ the configuration option is more likely to be the root cause.
 %by a behaviorally-different predicate, it is more likely
 %to be the root cause.
 
-Figure~\ref{fig:recommend} sketches the configuration option
+Figure~\ref{fig:recommend} presents the configuration option
 recommendation algorithm.
 For each behaviorally-deviated predicate in an execution trace,
 \ourtool first attributes the deviated behavior
@@ -99,7 +102,7 @@ in decreasing order by weight, outputting a ranked list of suspicious
 options that might be responsible for the
 behavioral differences (line 18). 
 
-In \ourtool, if two configuration options have the
+If two configuration options have the
 same weights, \ourtool prefers the configuration option
 affecting more statements in its thin slice. This heuristic
 is based on the intuition that configuration options affecting
