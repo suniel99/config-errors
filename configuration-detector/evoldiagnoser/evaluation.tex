@@ -104,8 +104,8 @@ For those 5 programs, we collected 7 errors as listed in
 Figure~\ref{tab:errors} (the first 7 errors).
 For the Javalanche program, we reproduced the reported configuration
 error.
-We evaluated all configuration errors that we could find and reproduce;
-we did not select only errors on which \ourtool works well.
+%We evaluated all configuration errors that we could find and reproduce;
+%we did not select only errors on which \ourtool works well.
 In Figure~\ref{tab:errors}, errors \#3 and \#4
 can be reproduced together in a single execution, and each of the other
 errors is reproduced in one execution.
@@ -149,7 +149,7 @@ and the largest one (Randoop's trace) is 140MB.
 
 When using \ourtool to diagnose a configuration error, we manually specify
 the initialization statement of each configuration option as
-the seed for thin slicing. This manual, one-time-cost step took 
+the thin slicing criterion. This manual, one-time-cost step took 
 20 minutes on average per subject program. After that,
 \ourtool works in a fully-automatic way: it 
 analyzes two program versions and two execution traces,
