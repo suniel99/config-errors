@@ -1233,9 +1233,9 @@
 \bibindent=0em
 \def\thebibliography#1{%
 \ifnum\addauflag=0\addauthorsection\global\addauflag=1\fi
-    \section*{%
+    \section{%
        {REFERENCES}
-%         \vskip -9pt  % GM July 2000 (for tighter spacing)
+         \vskip -9pt  % GM July 2000 (for tighter spacing)
         \@mkboth{{\refname}}{{\refname}}%
     }%
     \list{[\arabic{enumi}]}{%
