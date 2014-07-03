@@ -14,6 +14,10 @@ public class ConfValueTypeInferrer {
 		ClassName, FilePath, ClassPath, Regex, IPAddress,
 		CSV, StringFormat, Version, URL, Encoding,
 		Lang, DateTime, String};
+		
+    public static void main(String[] args) {
+    	System.out.println(ConfValueTypeInferrer.inferPossibleTypes("127.0.0.1"));
+    }
 
 	public static Set<ConfType> inferPossibleTypes(String value) {
 		
@@ -68,9 +72,9 @@ public class ConfValueTypeInferrer {
 		}
 		
 		//check if it is an IP address
-		if(value.split(".").length == 4) {
+		if(value.split("\\.").length == 4) {
 			try {
-				String[] splits = value.split(".");
+				String[] splits = value.split("\\.");
 				int i1 = Integer.parseInt(splits[0]);
 				int i2 = Integer.parseInt(splits[1]);
 				int i3 = Integer.parseInt(splits[2]);
@@ -107,10 +111,11 @@ public class ConfValueTypeInferrer {
 		
 		//check software version, like 1.1.1
 		//or class name
-		if(value.split(".").length > 1) {
-			String[] splits = value.split(".");
+		if(value.split("\\.").length > 1) {
+			String[] splits = value.split("\\.");
 			boolean allInteger = true;
 			boolean allPackName = true;
+			boolean hasEmpty = false;
 			for(String s : splits) {
 				try {
 					Integer.parseInt(s);
@@ -120,12 +125,15 @@ public class ConfValueTypeInferrer {
 				if(!isJavaIDs(s)) {
 					allPackName = false;
 				}
+				if(s.length() == 0) {
+					hasEmpty = true;
+				}
 			}
-			if(allInteger) {
+			if(allInteger && !hasEmpty) {
 			    types.add(ConfType.Version);
 			    return types;
 			}
-			if(!allPackName) {
+			if(!allPackName && !hasEmpty) {
 				types.add(ConfType.ClassName);
 				return types;
 			}
