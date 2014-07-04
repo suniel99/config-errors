@@ -1,4 +1,4 @@
-package edu.washington.cs.conf.mutation;
+package edu.washington.cs.conf.nlp;
 
 /**
  * This implements the bag of word model.
