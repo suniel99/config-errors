@@ -13,7 +13,7 @@ public class FilterPrintStream extends PrintStream {
 		register();
 	}
 	
-	static void register() {
+	public static void register() {
 		try {
 			System.setOut(new FilterPrintStream(System.out));
 		} catch (FileNotFoundException e) {

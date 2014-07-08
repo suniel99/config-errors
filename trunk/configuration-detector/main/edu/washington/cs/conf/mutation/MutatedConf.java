@@ -22,6 +22,14 @@ public class MutatedConf {
 		this.originalConfValue = originalConfValue;
 	}
 	
+	public String getMutatedConfOption() {
+		return this.mutatedConf;
+	}
+	
+	public String getMutatedConfValue() {
+		return this.mutatedConfValues.get(this.mutatedConf);
+	}
+	
 	//return command line like: -option1=value1 -option2=value2 ...
 	public String createCmdLine() {
 		StringBuilder sb = new StringBuilder();
