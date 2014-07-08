@@ -1,6 +1,6 @@
 package edu.washington.cs.conf.mutation;
 
-public abstract class ResultChecker {
+public abstract class ExecResultChecker {
 
 	public abstract boolean pass();
 	

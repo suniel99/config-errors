@@ -3,7 +3,7 @@ package edu.washington.cs.conf.mutation;
 import edu.washington.cs.conf.util.Utils;
 import junit.framework.TestResult;
 
-public class JUnitExecResultChecker extends ResultChecker {
+public class JUnitExecResultChecker extends ExecResultChecker {
 	
 	public final TestResult result;
 	
