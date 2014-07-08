@@ -11,6 +11,9 @@ public class ProgramRunner {
 	
 	//run a test script, and or run a test
 	//observe its output 
+	//1. junit
+	//2. example
+	//   get log4j
 
 	public static void main(String[] args) throws IOException {
 		System.out.println(System.getProperty("user.dir"));
