@@ -91,6 +91,16 @@ public class Utils {
 		}
 	}
 	
+	public static void setField(Class<?> clz, String fieldName, Object value) {
+		try {
+			Field f = clz.getDeclaredField(fieldName);
+			f.setAccessible(true);
+			f.set(null, value);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
 	public static boolean isIntegerValue(String value) {
 		try {
 			Integer.parseInt(value);
