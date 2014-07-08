@@ -11,6 +11,10 @@ public class MessageAnalyzer {
 	public static MessageAdequacy isMessageAdequate(String option, String message, UserManual manual) {
 		return new MessageAdequacy();
 	}
+	
+	public static String fetchErrorMessage(String logFile) {
+		throw new RuntimeException();
+	}
 }
 
 class MessageAdequacy {
