@@ -1,13 +1,19 @@
 package edu.washington.cs.conf.mutation;
 
 import java.io.IOException;
-
-import edu.washington.cs.conf.util.Command;
+import java.util.Collection;
 
 /**
  * Run a program with the mutated configuration
  * */
-public class ProgramRunner {
+public abstract class ProgramRunner {
+	
+	public abstract void setUpEnv();
+	
+	public abstract Collection<ExecResult> execute();
+	
+	public abstract void clearEnv();
+	
 	
 	//run a test script, and or run a test
 	//observe its output 
