@@ -30,6 +30,10 @@ public class MutatedConf {
 		return this.mutatedConfValues.get(this.mutatedConf);
 	}
 	
+	public String createCmdLineForMutatedOptions() {
+		return "-" + this.mutatedConf + "=" + this.mutatedConfValues.get(this.mutatedConf);
+	}
+	
 	//return command line like: -option1=value1 -option2=value2 ...
 	public String createCmdLine() {
 		StringBuilder sb = new StringBuilder();
