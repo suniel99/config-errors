@@ -9,7 +9,14 @@ import edu.washington.cs.conf.util.Files;
 
 public class FilterPrintStream extends PrintStream {
 	
-	static {
+//	static {
+//		register();
+//	}
+	
+	public static void register(String outputFile) {
+		if(outputFile != null) {
+		    file = new File(outputFile);
+		}
 		register();
 	}
 	
@@ -21,7 +28,12 @@ public class FilterPrintStream extends PrintStream {
 		}
 	}
 	
-	public static File file = new File("./output-redirect.txt");
+	public static void unregister() {
+		System.setOut(System.out);
+	}
+	
+	private static File defaultFile = new File("./output-redirect.txt");
+	public static File file = defaultFile;
 	public FilterPrintStream(PrintStream ps) throws FileNotFoundException {
 		super(ps);
 	}

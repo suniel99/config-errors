@@ -7,6 +7,12 @@ public class ExecResult {
 	private String message = null;
 	private String mutatedConfigOption = null;
 	
+	public ExecResult(String message, String mutatedConfigOption, boolean pass) {
+		this.message = message;
+		this.mutatedConfigOption = mutatedConfigOption;
+		this.pass = pass;
+	}
+	
 	public boolean pass() {
 		return pass;
 	}
