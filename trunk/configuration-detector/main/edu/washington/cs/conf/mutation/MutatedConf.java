@@ -22,6 +22,18 @@ public class MutatedConf {
 		this.originalConfValue = originalConfValue;
 	}
 	
+	//return command line like: -option1=value1 -option2=value2 ...
+	public String createCmdLine() {
+		StringBuilder sb = new StringBuilder();
+		for(String option : mutatedConfValues.keySet()) {
+			sb.append(" -");
+			sb.append(option);
+			sb.append("=");
+			sb.append(mutatedConfValues.get(option));
+		}
+		return sb.toString();
+	}
+	
 	public void writeToFile(String filePath) {
         StringBuilder sb = new StringBuilder();
 		
