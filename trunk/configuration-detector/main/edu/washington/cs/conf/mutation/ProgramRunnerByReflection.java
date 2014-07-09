@@ -9,30 +9,11 @@ import java.util.List;
 import edu.washington.cs.conf.util.Utils;
 
 public class ProgramRunnerByReflection extends ProgramRunner {
-
-	/**
-	 * Add some fields to store the commands: main class, and inputs
-	 * 
-	 * And mutated options
-	 * */
 	
 	public final List<ExecCommand> commands = new LinkedList<ExecCommand>();
 	
-	public final List<MutatedConf> mutatedConfigs = new LinkedList<MutatedConf>();
-	
-	private String outputFile = null;
-	
 	public void setCommands(Collection<ExecCommand> cmds) {
 		this.commands.addAll(cmds);
-	}
-	
-	public void setMutatedConfigs(Collection<MutatedConf> configs) {
-		this.mutatedConfigs.addAll(configs);
-	}
-	
-	public void setOutputFile(String outputFile) {
-		Utils.checkNotNull(outputFile);
-		this.outputFile = outputFile;
 	}
 	
 	@Override
@@ -94,35 +75,5 @@ public class ProgramRunnerByReflection extends ProgramRunner {
 	public void clearEnv() {
 		//TODO may need to call some method to clean it
 		
-	}
-}
-
-class ExecCommand {
-	/**
-	 * This should also be usable for executing scripts.
-	 * */
-	public final String mainMethod;
-	public final String[] args;
-	
-	//need some extension
-	
-	public ExecCommand(String mainMethod, String[] args) {
-		Utils.checkNotNull(mainMethod);
-		Utils.checkNoNull(args);
-		this.mainMethod = mainMethod;
-		this.args = args;
-	}
-	
-	@Override
-	public String toString() {
-		StringBuilder sb = new StringBuilder();
-		
-		sb.append(mainMethod);
-		sb.append(":");
-		for(String arg : args) {
-			sb.append(" " + arg + " ");
-		}
-		
-		return sb.toString();
 	}
 }

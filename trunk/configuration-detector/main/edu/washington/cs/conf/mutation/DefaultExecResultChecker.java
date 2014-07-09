@@ -22,12 +22,13 @@ public class DefaultExecResultChecker extends ExecResultChecker {
 		return this.executeOralceChecking(oracleCheckingMethod);
 	}
 	
-	private boolean executeOralceChecking(String method) {
+	//like a script to check the result
+	private boolean executeOralceChecking(String methodSig) {
 		
 		//execute it reflectively
-		int lastIndex = method.lastIndexOf(".");
-		String className = method.substring(0, lastIndex);
-		String methodName = method.substring(lastIndex + 1);
+		int lastIndex = methodSig.lastIndexOf(".");
+		String className = methodSig.substring(0, lastIndex);
+		String methodName = methodSig.substring(lastIndex + 1);
 		
 		boolean result = false;
 		try {
