@@ -64,4 +64,9 @@ public class MutatedConf {
 		
 		Files.writeToFileNoExp(sb.toString(), filePath);
 	}
+	
+	@Override
+	public String toString() {
+		return "mutate: " + this.mutatedConf + " with value: " + mutatedConfValues.get(this.mutatedConf);
+	}
 }

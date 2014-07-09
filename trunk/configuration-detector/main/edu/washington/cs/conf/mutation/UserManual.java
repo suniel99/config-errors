@@ -30,11 +30,19 @@ public class UserManual {
 			String optionName = line.substring(0, index);
 			String description = (index + SPLIT.length() == line.length() - 1)
 			    ? "" : line.substring(index + SPLIT.length());
-			Utils.checkTrue(!options.containsKey(optionName), "Already contain: " + optionName);
-			//add to the option map
-			options.put(optionName, description);
+			this.addOptionDescription(optionName, description);
 		}
 		
+	}
+	
+	UserManual() {
+		
+	}
+	
+	void addOptionDescription(String optionName, String description) {
+		Utils.checkTrue(!options.containsKey(optionName), "Already contain: " + optionName);
+		//add to the option map
+		options.put(optionName, description);
 	}
 	
 	public String getDescription(String option) {
