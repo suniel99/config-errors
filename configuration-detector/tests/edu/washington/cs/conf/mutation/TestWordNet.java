@@ -12,6 +12,7 @@ import edu.mit.jwi.item.ISynset;
 import edu.mit.jwi.item.IWord;
 import edu.mit.jwi.item.IWordID;
 import edu.mit.jwi.item.POS;
+import edu.washington.cs.conf.nlp.WordNetReader;
 
 import junit.framework.TestCase;
 
