@@ -2,12 +2,31 @@ package edu.washington.cs.conf.mutation;
 
 import java.io.IOException;
 import java.util.Collection;
+import java.util.LinkedList;
+import java.util.List;
+
+import edu.washington.cs.conf.util.Utils;
 
 /**
  * Run a program with the mutated configuration
  * */
 public abstract class ProgramRunner {
+
 	
+	public final List<MutatedConf> mutatedConfigs = new LinkedList<MutatedConf>();
+	protected String outputFile = null;
+	
+	
+	public void setMutatedConfigs(Collection<MutatedConf> configs) {
+		this.mutatedConfigs.addAll(configs);
+	}
+	
+	public void setOutputFile(String outputFile) {
+		Utils.checkNotNull(outputFile);
+		this.outputFile = outputFile;
+	}
+	
+	//methods that should be inherited
 	public abstract void setUpEnv();
 	
 	public abstract Collection<ExecResult> execute();

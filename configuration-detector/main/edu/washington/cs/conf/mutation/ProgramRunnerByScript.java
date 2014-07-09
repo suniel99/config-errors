@@ -25,6 +25,10 @@ public class ProgramRunnerByScript extends ProgramRunner {
 
 	}
 
+	/**
+	 * String dir = "E:\\conf-vul\\programs\\jetty\\jetty-distribution-9.2.1.v20140609";
+	 * String script = "startjetty.bat";
+	 * */
 	@Override
 	public Collection<ExecResult> execute() {
 		Utils.checkTrue(System.getProperty("os.name").startsWith("Windows"),
@@ -35,6 +39,8 @@ public class ProgramRunnerByScript extends ProgramRunner {
 			String dir = cmd.dir;
 			String script = cmd.script;
 			for(MutatedConf conf : this.mutatedConfigs) {
+				this.setConfigFile(conf);
+				
 				//run the script
 				List<String> args = Arrays.asList(new String[]{"cmd.exe", "/C", script});
 				ProcessBuilder pb = new ProcessBuilder(args);
@@ -56,12 +62,30 @@ public class ProgramRunnerByScript extends ProgramRunner {
 					stdOutputThread.start();
 					
 					//TODO make the threads join?
+//					Thread.sleep(2000);
+//					p.destroy();
+//					stdInputThread.interrupt();
+//					stdOutputThread.interrupt();
 				} catch (Throwable e) {
 					throw new RuntimeException(e);
 				}
+				
+				//create the result here, ExecResult
+				//TODO
+				
+				
+				this.revertConfigFile(conf);
 			}
 		}
-		return null;
+		return results;
+	}
+	
+	private void setConfigFile(MutatedConf conf) {
+		
+	}
+	
+	private void revertConfigFile(MutatedConf conf) {
+		
 	}
 
 	@Override
@@ -107,8 +131,15 @@ public class ProgramRunnerByScript extends ProgramRunner {
 			stdInputThread.start();
 			stdOutputThread.start();
 			
+			Thread.sleep(2000);
+			p.destroy();
+			stdInputThread.interrupt();
+			stdOutputThread.interrupt();
 
 		} catch (IOException e1) {
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		} finally  {
 			System.out.println("Destroy the process..");
 //			p.destroy();

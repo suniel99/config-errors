@@ -19,6 +19,7 @@ public class MessageAnalyzer {
 
 class MessageAdequacy {
 	
+	//TODO analyze the text to decide its adequacy
 	public boolean isAdequate() {
 		return false;
 	}
