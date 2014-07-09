@@ -12,13 +12,22 @@ public class DetectionWorkflow {
 	
 	private UserManual manual = null;
 	
-	public DetectionWorkflow(Class<? extends ProgramRunner> clz) {
-		try {
-			runner = clz.newInstance();
-		} catch (Exception e) {
-			System.out.println("Cannot instantiate class: " + clz);
-			e.printStackTrace();
-		}
+	public DetectionWorkflow() {
+		//empty
+	}
+	
+//	public DetectionWorkflow(Class<? extends ProgramRunner> clz) {
+//		try {
+//			runner = clz.newInstance();
+//		} catch (Exception e) {
+//			System.out.println("Cannot instantiate class: " + clz);
+//			e.printStackTrace();
+//		}
+//	}
+	
+	public void setProgramRunner(ProgramRunner runner) {
+		Utils.checkNotNull(runner);
+		this.runner = runner;
 	}
 	
 	public void setUserManual(UserManual manual) {
@@ -27,12 +36,16 @@ public class DetectionWorkflow {
 	}
 
 	public void detect() {
-		//the basic workflow
+		Utils.checkNotNull(runner);
+		Utils.checkNotNull(reporter);
+		
 		runner.setUpEnv();
 		
 		//collect the results
 		Collection<ExecResult> execResults = runner.execute();
+		System.out.println("number of exec results: " + execResults.size());
 		for(ExecResult result : execResults) {
+//			System.out.println(result);
 			//analyze it and generate the report
 			if(result.pass()) {
 				continue; //do nothing
@@ -48,6 +61,7 @@ public class DetectionWorkflow {
 			}
 		}
 		
+		System.out.println("Number of messages in report: " + reporter.size());
 		runner.clearEnv();
 	}
 	

@@ -20,7 +20,7 @@ public class MessageAnalyzer {
 class MessageAdequacy {
 	
 	public boolean isAdequate() {
-		return true;
+		return false;
 	}
 	
 }

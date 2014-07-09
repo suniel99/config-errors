@@ -10,7 +10,7 @@ public class ExecResultManager {
 	private static ExecResultChecker oracleChecker = null;
 	
 	public static ExecResult createExecResult(
-			MainClassAndArgs cmd, MutatedConf conf,
+			ExecCommand cmd, MutatedConf conf,
 			Throwable e, String logFile) {
 		
 		//how to analyze the log file and create ExecResult object
@@ -19,6 +19,9 @@ public class ExecResultManager {
 		boolean pass = oracleChecker.pass();
 		String message = oracleChecker.fetchMessage();
 		
-		return new ExecResult(message, conf.getMutatedConfOption(),pass);
+		//create the exec result object
+		ExecResult result = new ExecResult(message, conf.getMutatedConfOption(),pass);
+		
+		return result;
 	}
 }

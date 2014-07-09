@@ -1,5 +1,7 @@
 package edu.washington.cs.conf.mutation;
 
+import edu.washington.cs.conf.util.Utils;
+
 //encapsulate the execution result
 public class ExecResult {
 
@@ -7,10 +9,21 @@ public class ExecResult {
 	private String message = null;
 	private String mutatedConfigOption = null;
 	
+	private ExecCommand cmd = null; //optional keep the execution context
+	
 	public ExecResult(String message, String mutatedConfigOption, boolean pass) {
 		this.message = message;
 		this.mutatedConfigOption = mutatedConfigOption;
 		this.pass = pass;
+	}
+	
+	public void setCommand(ExecCommand cmd) {
+		Utils.checkNotNull(cmd);
+		this.cmd = cmd;
+	}
+	
+	public ExecCommand getCommand() {
+		return this.cmd;
 	}
 	
 	public boolean pass() {
@@ -23,5 +36,10 @@ public class ExecResult {
 	
 	public String getMutatedOption() {
 		return this.mutatedConfigOption;
+	}
+	
+	@Override
+	public String toString() {
+		return "mutated: " + this.mutatedConfigOption + ", message: " + message + ", pass: " + pass;
 	}
 }

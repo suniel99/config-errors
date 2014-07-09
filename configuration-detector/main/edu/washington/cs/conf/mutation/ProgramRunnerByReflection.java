@@ -16,13 +16,13 @@ public class ProgramRunnerByReflection extends ProgramRunner {
 	 * And mutated options
 	 * */
 	
-	public final List<MainClassAndArgs> commands = new LinkedList<MainClassAndArgs>();
+	public final List<ExecCommand> commands = new LinkedList<ExecCommand>();
 	
 	public final List<MutatedConf> mutatedConfigs = new LinkedList<MutatedConf>();
 	
 	private String outputFile = null;
 	
-	public void setCommands(Collection<MainClassAndArgs> cmds) {
+	public void setCommands(Collection<ExecCommand> cmds) {
 		this.commands.addAll(cmds);
 	}
 	
@@ -43,10 +43,13 @@ public class ProgramRunnerByReflection extends ProgramRunner {
 	@Override
 	public Collection<ExecResult> execute() {
 		Collection<ExecResult> results = new LinkedList<ExecResult>();
-		for(MainClassAndArgs cmd : this.commands) {
+		for(ExecCommand cmd : this.commands) {
 			String mainClass = cmd.mainMethod;
 			String[] mainArgs = cmd.args;
 			for(MutatedConf conf : this.mutatedConfigs) {
+				
+//				System.out.println(cmd + " + " + conf);
+				
 				//create the arg list
 				List<String> argList = new LinkedList<String>();
 				argList.addAll(Arrays.asList(mainArgs));
@@ -62,9 +65,15 @@ public class ProgramRunnerByReflection extends ProgramRunner {
 					
 					Throwable error = null;
 					try {
-				        meth.invoke(null, argList.toArray());
+						String[] args = argList.toArray(new String[0]);
+						Object argObj = args;
+//						System.out.println(argList);
+				        meth.invoke(null, argObj);
 					} catch (Throwable e) {
-						error = e; //keep the error
+						error = e.getCause(); //get the cause of the error
+						Utils.checkNotNull(error);
+						System.err.println("Error: " + error.getClass() + ", " + error.getMessage());
+//						e.printStackTrace();
 					}
 				    //unregister it
 				    FilterPrintStream.unregister();
@@ -88,13 +97,32 @@ public class ProgramRunnerByReflection extends ProgramRunner {
 	}
 }
 
-class MainClassAndArgs {
+class ExecCommand {
+	/**
+	 * This should also be usable for executing scripts.
+	 * */
 	public final String mainMethod;
 	public final String[] args;
-	public MainClassAndArgs(String mainMethod, String[] args) {
+	
+	//need some extension
+	
+	public ExecCommand(String mainMethod, String[] args) {
 		Utils.checkNotNull(mainMethod);
 		Utils.checkNoNull(args);
 		this.mainMethod = mainMethod;
 		this.args = args;
+	}
+	
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		
+		sb.append(mainMethod);
+		sb.append(":");
+		for(String arg : args) {
+			sb.append(" " + arg + " ");
+		}
+		
+		return sb.toString();
 	}
 }

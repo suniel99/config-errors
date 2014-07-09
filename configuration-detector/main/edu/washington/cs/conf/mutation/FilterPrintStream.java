@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.PrintStream;
 
 import edu.washington.cs.conf.util.Files;
+import edu.washington.cs.conf.util.Globals;
 
 public class FilterPrintStream extends PrintStream {
 	
@@ -20,16 +21,21 @@ public class FilterPrintStream extends PrintStream {
 		register();
 	}
 	
+	private static PrintStream stdOut = System.out;
+	private static PrintStream stdErr = System.err;
+	
 	public static void register() {
 		try {
 			System.setOut(new FilterPrintStream(System.out));
+			System.setErr(new FilterPrintStream(System.err));
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
 	}
 	
 	public static void unregister() {
-		System.setOut(System.out);
+		System.setOut(stdOut);
+		System.setErr(stdErr);
 	}
 	
 	private static File defaultFile = new File("./output-redirect.txt");
@@ -48,6 +54,11 @@ public class FilterPrintStream extends PrintStream {
 		}
 		// pass along to actual console output
 		super.print(s);
+	}
+	
+	@Override
+	public void println(String s) {
+		print(s + Globals.lineSep);
 	}
 	
 	public static void main(String[] args) throws FileNotFoundException {
