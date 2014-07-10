@@ -60,7 +60,7 @@ public class ProgramRunnerByReflection extends ProgramRunner {
 				    FilterPrintStream.unregister();
 				    
 				    //create an execution result
-				    ExecResult result = ExecResultManager.createExecResult(cmd, conf, error, this.outputFile);
+				    ExecResult result = ExecResultManager.createReflectionExecResult(cmd, conf, error, this.outputFile);
 				    results.add(result);
 				} catch (Exception e) {
 					e.printStackTrace();

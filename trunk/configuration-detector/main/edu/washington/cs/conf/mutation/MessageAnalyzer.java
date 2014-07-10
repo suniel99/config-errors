@@ -1,5 +1,7 @@
 package edu.washington.cs.conf.mutation;
 
+import java.io.File;
+
 //check if the error message is adaquate
 public class MessageAnalyzer {
 
@@ -12,7 +14,7 @@ public class MessageAnalyzer {
 		return new MessageAdequacy();
 	}
 	
-	public static String fetchErrorMessage(String logFile) {
+	public static String fetchErrorMessage(File logFile) {
 		throw new RuntimeException();
 	}
 }
