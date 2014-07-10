@@ -36,7 +36,9 @@ public class ProgramRunnerByReflection extends ProgramRunner {
 				argList.addAll(Arrays.asList(mainArgs));
 				try {
 					//add the additional params to the arg list
-					argList.add(conf.createCmdLineForMutatedOptions());
+					for(String arg : conf.createCmdLineAsArgs()) {
+						argList.add(arg);
+					}
 					//invoke the main method
 					Class<?> clz = Class.forName(mainClass);
 					Method meth = clz.getMethod("main", String[].class);
