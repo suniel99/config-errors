@@ -39,10 +39,11 @@ public class DetectionWorkflow {
 		Utils.checkNotNull(runner);
 		Utils.checkNotNull(reporter);
 		
-		runner.setUpEnv();
-		
 		//collect the results
+		runner.setUpEnv();
 		Collection<ExecResult> execResults = runner.execute();
+		runner.clearEnv();
+		
 		System.out.println("number of exec results: " + execResults.size());
 		for(ExecResult result : execResults) {
 //			System.out.println(result);
@@ -62,7 +63,7 @@ public class DetectionWorkflow {
 		}
 		
 		System.out.println("Number of messages in report: " + reporter.size());
-		runner.clearEnv();
+		
 	}
 	
 	public ReportGenerator getReport() {

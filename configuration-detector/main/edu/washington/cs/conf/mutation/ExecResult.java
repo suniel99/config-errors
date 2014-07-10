@@ -10,6 +10,7 @@ public class ExecResult {
 	private String mutatedConfigOption = null;
 	
 	private ExecCommand cmd = null; //optional keep the execution context
+	private ScriptCommand script = null; //optional keep the execution script
 	
 	public ExecResult(String message, String mutatedConfigOption, boolean pass) {
 		this.message = message;
@@ -22,8 +23,17 @@ public class ExecResult {
 		this.cmd = cmd;
 	}
 	
-	public ExecCommand getCommand() {
+	public void setScriptCommand(ScriptCommand cmd) {
+		Utils.checkNotNull(cmd);
+		this.script = cmd;
+	}
+	
+	public ExecCommand getExecCommand() {
 		return this.cmd;
+	}
+	
+	public ScriptCommand getScriptCommand() {
+		return this.script;
 	}
 	
 	public boolean pass() {

@@ -9,6 +9,7 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
+import edu.washington.cs.conf.util.Globals;
 import edu.washington.cs.conf.util.Utils;
 
 public class ProgramRunnerByScript extends ProgramRunner {
@@ -28,6 +29,8 @@ public class ProgramRunnerByScript extends ProgramRunner {
 	/**
 	 * String dir = "E:\\conf-vul\\programs\\jetty\\jetty-distribution-9.2.1.v20140609";
 	 * String script = "startjetty.bat";
+	 * 
+	 * http://stackoverflow.com/questions/14981435/how-do-i-stop-jetty
 	 * */
 	@Override
 	public Collection<ExecResult> execute() {
@@ -39,7 +42,7 @@ public class ProgramRunnerByScript extends ProgramRunner {
 			String dir = cmd.dir;
 			String script = cmd.script;
 			for(MutatedConf conf : this.mutatedConfigs) {
-				this.setConfigFile(conf);
+				this.setupConfigEnv(conf);
 				
 				//run the script
 				List<String> args = Arrays.asList(new String[]{"cmd.exe", "/C", script});
@@ -48,43 +51,46 @@ public class ProgramRunnerByScript extends ProgramRunner {
 				pb.redirectErrorStream(true);
 				try {
 				    Process p = pb.start();
-				    final BufferedReader stdInput = new BufferedReader(new InputStreamReader(
+				    final BufferedReader stdOutput = new BufferedReader(new InputStreamReader(
 							p.getInputStream()), 8 * 1024);
 					final BufferedReader stdError = new BufferedReader(new InputStreamReader(
 							p.getErrorStream()));
 					
 					//get the input and output
-					BufferReaderThread stdInputThread = new BufferReaderThread(stdInput, "");
-					BufferReaderThread stdOutputThread = new BufferReaderThread(stdError, "");
+					BufferReaderThread stdOutputThread = new BufferReaderThread(stdOutput, "");
+					BufferReaderThread stdErrorThread = new BufferReaderThread(stdError, "");
 					
 					//get the input and output
-					stdInputThread.start();
 					stdOutputThread.start();
+					stdErrorThread.start();
 					
 					//TODO make the threads join?
 //					Thread.sleep(2000);
 //					p.destroy();
 //					stdInputThread.interrupt();
 //					stdOutputThread.interrupt();
+					
+					String outputMsg = stdOutputThread.getMessage();
+					String errorMsg = stdErrorThread.getMessage();
+					String message = outputMsg + Globals.lineSep + errorMsg;
+					
+					ExecResult result = ExecResultManager.createScriptExecResult(cmd, conf, message);
+				    results.add(result);
 				} catch (Throwable e) {
 					throw new RuntimeException(e);
 				}
 				
-				//create the result here, ExecResult
-				//TODO
-				
-				
-				this.revertConfigFile(conf);
+				this.revertConfigEnv(conf);
 			}
 		}
 		return results;
 	}
 	
-	private void setConfigFile(MutatedConf conf) {
+	private void setupConfigEnv(MutatedConf conf) {
 		
 	}
 	
-	private void revertConfigFile(MutatedConf conf) {
+	private void revertConfigEnv(MutatedConf conf) {
 		
 	}
 
@@ -128,13 +134,23 @@ public class ProgramRunnerByScript extends ProgramRunner {
 			BufferReaderThread stdInputThread = new BufferReaderThread(stdInput, "Standard input");
 			BufferReaderThread stdOutputThread = new BufferReaderThread(stdError, "Standard output");
 			
-			stdInputThread.start();
-			stdOutputThread.start();
+
+			stdInputThread.setDaemon(true);
+			stdOutputThread.setDaemon(true);
+			
+//			stdInputThread.start();
+//			stdOutputThread.start();
 			
 			Thread.sleep(2000);
 			p.destroy();
-			stdInputThread.interrupt();
-			stdOutputThread.interrupt();
+//			stdInputThread.stop();
+//			stdOutputThread.stop();
+			
+//			stdInputThread.join(2000);
+//			stdOutputThread.join(2000);
+			
+			
+			System.out.println(stdInputThread.getMessage());
 
 		} catch (IOException e1) {
 		} catch (InterruptedException e) {

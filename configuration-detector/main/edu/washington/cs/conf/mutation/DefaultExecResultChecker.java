@@ -1,5 +1,6 @@
 package edu.washington.cs.conf.mutation;
 
+import java.io.File;
 import java.lang.reflect.Method;
 
 import edu.washington.cs.conf.util.Utils;
@@ -7,8 +8,12 @@ import edu.washington.cs.conf.util.Utils;
 
 public class DefaultExecResultChecker extends ExecResultChecker {
 
-	public DefaultExecResultChecker(Throwable e, String logFile) {
+	public DefaultExecResultChecker(Throwable e, File logFile) {
 		super(e, logFile);
+	}
+	
+	public DefaultExecResultChecker(String message) {
+		super(null, message);
 	}
 
 	@Override
