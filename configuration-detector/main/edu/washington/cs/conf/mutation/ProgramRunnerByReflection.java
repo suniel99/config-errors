@@ -6,6 +6,7 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
+import edu.washington.cs.conf.util.Files;
 import edu.washington.cs.conf.util.Utils;
 
 public class ProgramRunnerByReflection extends ProgramRunner {
@@ -42,9 +43,12 @@ public class ProgramRunnerByReflection extends ProgramRunner {
 					//invoke the main method
 					Class<?> clz = Class.forName(mainClass);
 					Method meth = clz.getMethod("main", String[].class);
-					//register the direct file
+					//register the redirect file
 					Utils.checkNotNull(this.outputFile);
 					FilterPrintStream.register(this.outputFile);
+					
+					//clear the output file
+					Files.writeToFileNoExp("", this.outputFile);
 					
 					Throwable error = null;
 					try {

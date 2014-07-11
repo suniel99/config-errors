@@ -3,6 +3,7 @@ package edu.washington.cs.conf.mutation;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import edu.washington.cs.conf.util.Files;
 import edu.washington.cs.conf.util.Globals;
@@ -11,17 +12,21 @@ import edu.washington.cs.conf.util.Utils;
 public class MutatedConf {
 
 	private final Map<String, String> mutatedConfValues;
+	private final Set<String> onOffOptions;
 	private final String mutatedConf;
 	private final String originalConfValue;
 	
 	public static String PREFIX="-";
 	
-	public MutatedConf(Map<String, String> confValues, String mutatedConf, String originalConfValue) {
+	public MutatedConf(Map<String, String> confValues, Set<String> onOffOptions,
+			String mutatedConf, String originalConfValue) {
 		Utils.checkNotNull(confValues);
+		Utils.checkNotNull(onOffOptions);
 		Utils.checkNotNull(mutatedConf);
 		Utils.checkNotNull(originalConfValue);
 		
 		this.mutatedConfValues = confValues;
+		this.onOffOptions = onOffOptions;
 		this.mutatedConf = mutatedConf;
 		this.originalConfValue = originalConfValue;
 	}
@@ -44,15 +49,27 @@ public class MutatedConf {
 		return PREFIX + this.mutatedConf + "=" + this.mutatedConfValues.get(this.mutatedConf);
 	}
 	
-	//return command line like: -option1=value1 -option2=value2 ...
+	//return command line like: -option1 value1 -option2 value2 ...
+	@Deprecated
 	public String createCmdLine() {
 		StringBuilder sb = new StringBuilder();
 		for(String option : mutatedConfValues.keySet()) {
-			sb.append(" ");
-			sb.append(PREFIX);
-			sb.append(option);
-			sb.append(" ");
-			sb.append(mutatedConfValues.get(option));
+			String v = mutatedConfValues.get(option); 
+			if(this.onOffOptions.contains(option)) {
+				Utils.checkTrue(v.toLowerCase().equals("true") || v.toLowerCase().equals("false"));
+				if(v.toLowerCase().equals("true")) {
+					sb.append(" ");
+					sb.append(PREFIX);
+					sb.append(option);
+				}
+			} else {
+			    //process other normal options
+				sb.append(" ");
+				sb.append(PREFIX);
+				sb.append(option);
+				sb.append(" ");
+				sb.append(v);
+			}
 		}
 		return sb.toString();
 	}
@@ -61,11 +78,23 @@ public class MutatedConf {
 		List<String> list = new ArrayList<String>();
 		
 		for(String option : mutatedConfValues.keySet()) {
-			list.add(PREFIX + option);
+			//PREFIX here is like: -, --, or nothing, user-settable
 			String v = mutatedConfValues.get(option); 
-			if(!v.equals("")) {
-				list.add(v);
+			
+			if(this.onOffOptions.contains(option)) {
+				Utils.checkTrue(v.toLowerCase().equals("true") || v.toLowerCase().equals("false"));
+				if(v.toLowerCase().equals("true")) {
+					list.add(PREFIX + option);
+				}
+			} else {
+			    //process other normal options
+			    list.add(PREFIX + option);
+			    //empty value
+			    if(!v.equals("")) {
+				    list.add(v);
+			    }
 			}
+			
 		}
 		
 		return list.toArray(new String[0]);

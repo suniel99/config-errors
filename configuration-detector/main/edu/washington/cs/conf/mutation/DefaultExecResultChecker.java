@@ -38,9 +38,10 @@ public class DefaultExecResultChecker extends ExecResultChecker {
 		boolean result = false;
 		try {
 			Class<?> clz = Class.forName(className);
-			Method m = clz.getDeclaredMethod(methodName);
+			Method m = clz.getDeclaredMethod(methodName, String.class);
+			Utils.checkNotNull(m);
 			//may need to check the method signature
-			Object object = m.invoke(null);
+			Object object = m.invoke(null, this.logFile.getAbsolutePath());
 			result = (Boolean)object;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -58,7 +59,30 @@ public class DefaultExecResultChecker extends ExecResultChecker {
 		if(pass()) {
 			return null;
 		}
-		String message = MessageAnalyzer.fetchErrorMessage(super.logFile);
+		
+		String methodSig = this.messageFetchingMethod;
+		if(methodSig == null) {
+			return null;
+		}
+		
+		int lastIndex = methodSig.lastIndexOf(".");
+		String className = methodSig.substring(0, lastIndex);
+		String methodName = methodSig.substring(lastIndex + 1);
+		
+		String message = null;
+		try {
+			Class<?> clz = Class.forName(className);
+			Method m = clz.getDeclaredMethod(methodName, String.class);
+			Utils.checkNotNull(m);
+			Utils.checkTrue(m.getReturnType().equals(String.class));
+			//may need to check the method signature
+			Object object = m.invoke(null, this.logFile.getAbsolutePath());
+			message = (String)object; //it must have a return type of String
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new RuntimeException(e);
+		}
+		
 		return message;
 	}
 

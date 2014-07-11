@@ -8,7 +8,8 @@ public abstract class ExecResultChecker {
 
 	protected Throwable e;
 	protected File logFile;
-	protected String oracleCheckingMethod;
+	protected String oracleCheckingMethod = null;
+	protected String messageFetchingMethod = null;
 	protected String message;
 	
 	//check whether the result is desired or not
@@ -26,6 +27,11 @@ public abstract class ExecResultChecker {
 	public void setOracleCheckingMethod(String method) {
 		Utils.checkNotNull(method);
 		this.oracleCheckingMethod = method;
+	}
+	
+	public void setMessageFetchingMethod(String method) {
+		Utils.checkNotNull(method);
+		this.messageFetchingMethod = method;
 	}
 	
 	public abstract boolean pass();

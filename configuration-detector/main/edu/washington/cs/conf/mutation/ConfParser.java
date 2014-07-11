@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
@@ -14,11 +15,16 @@ import edu.washington.cs.conf.util.Utils;
 //parse a property file
 public class ConfParser {
 
-	private final String propertyFile;
+	private String propertyFile = null;
 	
 	//store the key-value pair, and key-type pair
 	private final Map<String, String> valueMap = new LinkedHashMap<String, String>();
 	private final Map<String, Set<ConfType>> typeMap = new LinkedHashMap<String, Set<ConfType>>();
+	//an on/off option does not require a concrete value after it
+	//like: --verbose
+	private final Set<String> onOffOptions = new LinkedHashSet<String>();
+	
+	public ConfParser() {}
 	
 	public ConfParser(String propertyFile) {
 		Utils.checkNotNull(propertyFile);
@@ -35,8 +41,25 @@ public class ConfParser {
 		return valueMap.keySet();
 	}
 	
+	public Set<String> getOnOffOptions() {
+		return this.onOffOptions;
+	}
+	
 	public Set<ConfType> getTypes(String confOption) {
 		return typeMap.get(confOption);
+	}
+	
+	public void addConfOption(String optionName, String optionValue, boolean isOnOff) {
+		Utils.checkTrue(!valueMap.containsKey(optionName));
+		if(isOnOff) {
+			Utils.checkTrue(optionValue.toLowerCase().equals("true")
+					|| optionValue.toLowerCase().equals("false"));
+			this.onOffOptions.add(optionName);
+		}
+		this.valueMap.put(optionName, optionValue);
+		//parse the type as we did in parseFile
+		Set<ConfType> type = ConfValueTypeInferrer.inferPossibleTypes(optionValue.toString());
+		this.typeMap.put(optionValue, type);
 	}
 	
 	//assuming at least one type for an option
@@ -48,10 +71,14 @@ public class ConfParser {
 		return valueMap.get(confOption);
 	}
 	
+	public boolean isOnOffOption(String confOption) {
+		return this.onOffOptions.contains(confOption);
+	}
+	
 	//parse into a set key-value pairs
 	public void parseFile() {
+		Utils.checkNotNull(propertyFile);
 		Properties prop = new Properties();
-		 
     	try {
             //load a properties file
     		prop.load(new FileInputStream(this.propertyFile));
@@ -60,6 +87,7 @@ public class ConfParser {
             	Object value = prop.get(key);
             	Set<ConfType> type = ConfValueTypeInferrer.inferPossibleTypes(value.toString());
             	
+            	Utils.checkTrue(!valueMap.containsKey(key.toString()));
             	valueMap.put(key.toString(), value.toString());
             	typeMap.put(key.toString(), type);
             	
