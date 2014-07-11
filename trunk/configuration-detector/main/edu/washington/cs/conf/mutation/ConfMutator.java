@@ -5,6 +5,7 @@ import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import edu.washington.cs.conf.mutation.ConfValueTypeInferrer.ConfType;
 import edu.washington.cs.conf.util.Files;
@@ -42,8 +43,10 @@ public class ConfMutator {
 					continue;
 				}
 			    Map<String, String> optionValues = this.parser.getOptionValueMap();
+			    Set<String> onOffOptions = this.parser.getOnOffOptions();
 			    optionValues.put(optionName, mutatedValue); //mutated the value
-			    MutatedConf mutatedConf = new MutatedConf(optionValues, optionName, origValue);
+			    MutatedConf mutatedConf = new MutatedConf(optionValues, onOffOptions,
+			    		optionName, origValue);
 			    //add to the list
 			    mutatedConfList.add(mutatedConf);
 			}
