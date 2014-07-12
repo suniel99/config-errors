@@ -7,7 +7,6 @@ split-percentage:66
 preserve-order:
 s: 1
 m:
-l:
 d:
 p: 0
 z:

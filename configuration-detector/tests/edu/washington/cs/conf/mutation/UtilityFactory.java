@@ -1,6 +1,7 @@
 package edu.washington.cs.conf.mutation;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.Map;
@@ -36,8 +37,8 @@ public class UtilityFactory {
 		map.put("conf1", "value1");
 		map.put("conf2", "value2");
 		
-		MutatedConf conf1 = new MutatedConf(map, "conf1", "value1-m");
-		MutatedConf conf2 = new MutatedConf(map, "conf2", "value2-m");
+		MutatedConf conf1 = new MutatedConf(map, Collections.EMPTY_SET, "conf1", "value1-m");
+		MutatedConf conf2 = new MutatedConf(map, Collections.EMPTY_SET, "conf2", "value2-m");
 		
 		confs.add(conf1);
 		confs.add(conf2);
