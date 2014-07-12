@@ -11,6 +11,8 @@ import junit.framework.TestCase;
 import edu.washington.cs.conf.mutation.ConfMutator;
 import edu.washington.cs.conf.mutation.ConfParser;
 import edu.washington.cs.conf.mutation.ExecCommand;
+import edu.washington.cs.conf.mutation.ExecResult;
+import edu.washington.cs.conf.mutation.ExecResultManager;
 import edu.washington.cs.conf.mutation.MutatedConf;
 import edu.washington.cs.conf.mutation.ProgramRunnerByReflection;
 
@@ -47,6 +49,7 @@ public class CreateWekaConfig extends TestCase {
 		}
 	}
 	
+	//XX need to figure out the good way
 	public void testRunZeroRReflectively() {
 		ConfMutator mutator = new ConfMutator(sample_config);
 		List<MutatedConf> mutatedConfs = mutator.mutateConfFile();
@@ -60,7 +63,14 @@ public class CreateWekaConfig extends TestCase {
 		runner.setCommands(cmds);
 		runner.setOutputFile("./weka_output.txt");
 		
-		runner.execute();
+		ExecResultManager.setOracleCheckingMethod(WekaCheckingMethods.wekaCheckingMethod);
+		ExecResultManager.setMessageFetchingMethod(WekaCheckingMethods.wekaMsgFetchingMethod);
+		
+		Collection<ExecResult> results = runner.execute();
+		System.out.println("Execution results: " + results.size());
+		for(ExecResult result : results) {
+			System.out.println("   " + result.pass() + ", message; " + result.getMessage());
+		}
 	}
 	
 }
