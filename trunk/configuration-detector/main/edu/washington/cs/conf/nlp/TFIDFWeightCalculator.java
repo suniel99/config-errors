@@ -23,7 +23,7 @@ public class TFIDFWeightCalculator {
 	public TFIDFWeightCalculator(Collection<String> coll) {
 		this.wordLine = new LinkedList<String[]>();
 		for(String s : coll) {
-			String[] words = extractWords(s);
+			String[] words = NLPUtils.extractWords(s);
 			wordLine.add(words);
 		}
 //		System.out.println("Line number: " + wordLine.size());
@@ -89,14 +89,4 @@ public class TFIDFWeightCalculator {
 	private Float valueForNonExistence() {
 		return 0.0f;
 	}
-	
-	//need to filter away common words
-	private String[] extractWords(String line) {
-		String[] words = line.split("\\s+");
-		for(int i = 0; i < words.length; i++) {
-			words[i] = words[i].toLowerCase();
-		}
-		return words;
-	}
-	
 }
