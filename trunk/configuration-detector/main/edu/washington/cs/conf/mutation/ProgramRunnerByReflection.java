@@ -47,7 +47,7 @@ public class ProgramRunnerByReflection extends ProgramRunner {
 					Utils.checkNotNull(this.outputFile);
 					FilterPrintStream.register(this.outputFile);
 					
-					//clear the output file
+					//XXX clear the output file
 					Files.writeToFileNoExp("", this.outputFile);
 					
 					Throwable error = null;

@@ -55,7 +55,7 @@ public class DetectionWorkflow {
 			String option = result.getMutatedOption();
 			String message = result.getMessage();
 			//check the adequancy of the error message
-			MessageAdequacy adequancy = MessageAnalyzer.isMessageAdequate(option, message, manual);
+			MessageAdequacy adequancy = MessageAnalyzer.isMessageAdequate(result, manual);
 			if(!adequancy.isAdequate()) {
 				//generate a report
 				reporter.addToReport(adequancy, result);

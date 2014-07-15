@@ -47,7 +47,10 @@ public class ExecResultManager {
 		String message = oracleChecker.fetchMessage();
 		
 		//create the exec result object
-		ExecResult result = new ExecResult(message, conf.getMutatedConfOption(), pass);
+		ExecResult result = new ExecResult(message, conf.getMutatedConfOption(),
+				conf.getMutatedConfValue(), pass);
+		result.setCommand(cmd);
+		result.setUsedConfigs(conf.getMutatedConfOptions());
 		
 		return result;
 	}
@@ -61,7 +64,8 @@ public class ExecResultManager {
 		String message = oracleChecker.fetchMessage();
 		
 		//create the exec result object
-		ExecResult result = new ExecResult(message, conf.getMutatedConfOption(), pass);
+		ExecResult result = new ExecResult(message, conf.getMutatedConfOption(),
+				conf.getMutatedConfValue(), pass);
 		
 		return result;
 	}
