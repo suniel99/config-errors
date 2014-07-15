@@ -1,5 +1,6 @@
 package edu.washington.cs.conf.mutation;
 
+import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -52,5 +53,9 @@ public class UserManual {
 	
 	public Set<String> getAllOptions() {
 		return this.options.keySet();
+	}
+	
+	public Collection<String> getAllTextDesc() {
+		return this.options.values();
 	}
 }
