@@ -1,6 +1,7 @@
 package edu.washington.cs.conf.mutation;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -37,6 +38,12 @@ public class MutatedConf {
 		PREFIX = prefix;
 	}
 	
+	public Map<String, String> getMutatedConfOptions() {
+		Map<String, String> copy = new LinkedHashMap<String, String>();
+		copy.putAll(this.mutatedConfValues);
+		return copy;
+	}
+	
 	public String getMutatedConfOption() {
 		return this.mutatedConf;
 	}
@@ -50,6 +57,7 @@ public class MutatedConf {
 	}
 	
 	//return command line like: -option1 value1 -option2 value2 ...
+	//this is only used in the test code for convenience
 	@Deprecated
 	public String createCmdLine() {
 		StringBuilder sb = new StringBuilder();
@@ -74,6 +82,9 @@ public class MutatedConf {
 		return sb.toString();
 	}
 	
+	/**
+	 * Create command line arguments for reflection execution
+	 * */
 	public String[] createCmdLineAsArgs() {
 		List<String> list = new ArrayList<String>();
 		
@@ -92,6 +103,61 @@ public class MutatedConf {
 			    //empty value
 			    if(!v.equals("")) {
 				    list.add(v);
+			    }
+			}
+			
+		}
+		
+		return list.toArray(new String[0]);
+	}
+	
+	/**
+	 * The baseCmds that must appear in each execution.
+	 * */
+	
+	public String[] createCmdLinesAsArgs(Map<String, String> baseOptions) {
+       List<String> list = new ArrayList<String>();
+	
+       String mutatedValue = this.mutatedConfValues.get(this.mutatedConf);
+       boolean isBaseOptionMutated = baseOptions.keySet().contains(this.mutatedConf);
+       
+       if(isBaseOptionMutated) {
+    	   boolean isOnOff = this.onOffOptions.contains(this.mutatedConf);
+    	   if(isOnOff) {
+    		   Utils.checkTrue(mutatedValue.toLowerCase().equals("true")
+    				   || mutatedValue.toLowerCase().equals("false"));
+				if(mutatedValue.toLowerCase().equals("true")) {
+					list.add(PREFIX + mutatedValue);
+				}
+    	   } else {
+			    list.add(PREFIX + mutatedConf);
+			    if(!mutatedValue.equals("")) {
+				    list.add(mutatedValue);
+			    }
+    	   }
+       }
+       
+       //add all base options
+	   for(String baseOption : baseOptions.keySet()) {
+			boolean isOnOff = this.onOffOptions.contains(baseOption);
+			String baseOptionValue = baseOptions.get(baseOption);
+			//PREFIX here is like: -, --, or nothing, user-settable
+			if(this.mutatedConf.equals(baseOption)) {
+				//already processed above
+				continue;
+			}
+			//continue to process
+			if(isOnOff) {
+				Utils.checkTrue(baseOptionValue.toLowerCase().equals("true")
+						|| baseOptionValue.toLowerCase().equals("false"));
+				if(baseOptionValue.toLowerCase().equals("true")) {
+					list.add(PREFIX + baseOption);
+				}
+			} else {
+				list.add(PREFIX + baseOption);
+			    //empty value
+			    if(!baseOptionValue.equals("")) {
+				    list.add(baseOptionValue);
 			    }
 			}
 			

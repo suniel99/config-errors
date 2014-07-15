@@ -20,6 +20,9 @@ public class DTTracer {
 	public static final String WRITE = "WRITE";
 	public static final String SEP = "#";
 	
+	public static final String ME_START = "ME_START";
+	public static final String ME_END = "ME_END";
+	
 	private String dir = "./dt-output-folder";
 	
 	public void traceMethodEntry(String methodName) {
