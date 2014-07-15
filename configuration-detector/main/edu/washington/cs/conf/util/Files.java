@@ -203,6 +203,17 @@ public final class Files {
 	  }
   }
   
+  //append the file from source to dest
+  public static void appendFile(String sourceFile, String destFile) {
+	  String content = Files.readWholeAsString(sourceFile);
+	  try {
+	      Files.writeToFile(Globals.lineSep, destFile, true);
+	      Files.writeToFile(content, destFile, true);
+	  } catch (Throwable e) {
+		  throw new RuntimeException(e);
+	  }
+  }
+  
   //all file must be text file
   public static String mergeFiles(String[] sourceFiles, String destFile) throws IOException {
 	  for(String fName : sourceFiles) {
@@ -262,6 +273,10 @@ public final class Files {
 
   public static void writeToFile(String s, String fileName) throws IOException {
     writeToFile(s, fileName, false);
+  }
+  
+  public static void emptyFileNoExp(String fileName) {
+	  writeToFileNoExp("", fileName);
   }
   
   public static void writeToFileNoExp(String s, String fileName)  {
