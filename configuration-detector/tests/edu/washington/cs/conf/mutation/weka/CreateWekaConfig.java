@@ -4,8 +4,10 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import junit.framework.TestCase;
 import edu.washington.cs.conf.mutation.ConfMutator;
@@ -50,6 +52,7 @@ public class CreateWekaConfig extends TestCase {
 	}
 	
 	//XX need to figure out the good way
+	//NEED TO GET IT RIGHT
 	public void testRunZeroRReflectively() {
 		ConfMutator mutator = new ConfMutator(sample_config);
 		List<MutatedConf> mutatedConfs = mutator.mutateConfFile();
@@ -70,7 +73,40 @@ public class CreateWekaConfig extends TestCase {
 		System.out.println("Execution results: " + results.size());
 		for(ExecResult result : results) {
 			System.out.println("   " + result.pass() + ", message; " + result.getMessage());
+			System.out.println("        " + result);
+			System.out.println("        Used configs: " + result.dumpCmdWithConfigs());
 		}
 	}
 	
+	public void testRunZeroRReflectively_WithBaseOptions() {
+		ConfMutator mutator = new ConfMutator(sample_config);
+		List<MutatedConf> mutatedConfs = mutator.mutateConfFile();
+		
+		Collection<ExecCommand> cmds = new LinkedList<ExecCommand>();
+		cmds.add(new ExecCommand(main_zeror, new String[0]));
+		
+		ProgramRunnerByReflection runner = new ProgramRunnerByReflection();
+		
+		runner.setMutatedConfigs(mutatedConfs);
+		runner.setCommands(cmds);
+		runner.setOutputFile("./weka_output.txt");
+		
+		//XXX the base options that must appear in each conf mutation
+		Map<String, String> baseOptions = new LinkedHashMap<String, String>();
+		//"-p", "2",  "-t", "./subjects/weka/weather.arff"
+		baseOptions.put("p", "2");
+		baseOptions.put("t", "./subjects/weka/weather.arff");
+		runner.setBaseOptions(baseOptions);
+		
+		ExecResultManager.setOracleCheckingMethod(WekaCheckingMethods.wekaCheckingMethod);
+		ExecResultManager.setMessageFetchingMethod(WekaCheckingMethods.wekaMsgFetchingMethod);
+		
+		Collection<ExecResult> results = runner.execute();
+		System.out.println("Execution results: " + results.size());
+		for(ExecResult result : results) {
+			System.out.println("   " + result.pass() + ", message; " + result.getMessage());
+			System.out.println("        " + result);
+			System.out.println("        Used configs: " + result.dumpCmdWithConfigs());
+		}
+	}
 }
