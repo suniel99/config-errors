@@ -121,7 +121,9 @@ public class MutatedConf {
        String mutatedValue = this.mutatedConfValues.get(this.mutatedConf);
        boolean isBaseOptionMutated = baseOptions.keySet().contains(this.mutatedConf);
        
-       if(isBaseOptionMutated) {
+       //if base option is not mutated, we need to add that mutated option
+       //otherwise, ignore the mutated option, and we add each base option value later
+       if(!isBaseOptionMutated) {
     	   boolean isOnOff = this.onOffOptions.contains(this.mutatedConf);
     	   if(isOnOff) {
     		   Utils.checkTrue(mutatedValue.toLowerCase().equals("true")
@@ -141,11 +143,6 @@ public class MutatedConf {
 	   for(String baseOption : baseOptions.keySet()) {
 			boolean isOnOff = this.onOffOptions.contains(baseOption);
 			String baseOptionValue = baseOptions.get(baseOption);
-			//PREFIX here is like: -, --, or nothing, user-settable
-			if(this.mutatedConf.equals(baseOption)) {
-				//already processed above
-				continue;
-			}
 			//continue to process
 			if(isOnOff) {
 				Utils.checkTrue(baseOptionValue.toLowerCase().equals("true")
