@@ -20,16 +20,23 @@ public class TFIDFWeightCalculator {
 	
 	private Map<String, Float> idfValueMap = new LinkedHashMap<String, Float>();
 	
+	private List<String> origCopy = new LinkedList<String>();
+	
 	public TFIDFWeightCalculator(Collection<String> coll) {
+		Utils.checkNotNull(coll);
 		this.wordLine = new LinkedList<String[]>();
 		for(String s : coll) {
 			String[] words = NLPUtils.extractWords(s);
 			wordLine.add(words);
 		}
+		this.origCopy.addAll(coll);
 //		System.out.println("Line number: " + wordLine.size());
 	}
 	
 	public void computeTFIDFValues() {
+		//clear existing result
+		this.idfValueMap.clear();
+		
 		//then count if the word appears in a sentence
 		Map<String, Integer> allWordsFreq = new LinkedHashMap<String, Integer>();
 		for(String[] ws : wordLine) {
@@ -73,6 +80,10 @@ public class TFIDFWeightCalculator {
 			}
 		}
 		return c;
+	}
+	
+	public List<String> getOriginalText() {
+		return this.origCopy;
 	}
 	
 	public Set<String> getAllWords() {

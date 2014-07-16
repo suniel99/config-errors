@@ -9,5 +9,15 @@ public class NLPUtils {
 		}
 		return words;
 	}
+
+	public static int countFreq(String w, String[] words) {
+		int c = 0;
+		for(String word : words) {
+			if(w.equals(word)) {
+				c++;
+			}
+		}
+		return c;
+	}
 	
 }
