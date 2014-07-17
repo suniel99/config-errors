@@ -5,6 +5,8 @@ import java.io.BufferedReader;
 import edu.washington.cs.conf.util.Globals;
 
 public class BufferReaderThread extends Thread {
+	
+	public static boolean THREAD_VERBOSE = false;
 
 	public final BufferedReader reader;
 	public final String title;
@@ -20,10 +22,14 @@ public class BufferReaderThread extends Thread {
 	@Override
 	public void run() {
 		String s = null;
-		System.out.println(title);
+		if(THREAD_VERBOSE) {
+		    System.out.println(title);
+		}
 		try {
 		    while ((s = this.reader.readLine()) != null) {
-			    System.out.println(s);
+		    	if(THREAD_VERBOSE) {
+			        System.out.println("in thread: " + s);
+		    	}
 			    sb.append(s);
 			    sb.append(Globals.lineSep);
 		    }
