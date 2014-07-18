@@ -27,11 +27,11 @@ public abstract class ProgramRunner {
 	}
 	
 	//methods that should be inherited
-	public abstract void setUpEnv();
+	public void setUpEnv() {}
 	
 	public abstract Collection<ExecResult> execute();
 	
-	public abstract void clearEnv();
+	public void clearEnv() {}
 	
 	
 	//run a test script, and or run a test

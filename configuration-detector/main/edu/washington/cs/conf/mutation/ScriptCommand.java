@@ -21,6 +21,17 @@ public class ScriptCommand {
 		this.args.addAll(args);
 	}
 	
+	public String getExecutable() {
+		StringBuilder sb = new StringBuilder();
+		sb.append(script);
+		for(String arg : args) {
+			sb.append(" ");
+			sb.append(arg);
+		}
+		
+		return sb.toString();
+	}
+	
 	@Override
 	public String toString() {
 		return "Script: " + dir + Globals.fileSep + script + " " + args;

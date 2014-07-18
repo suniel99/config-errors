@@ -39,11 +39,6 @@ public class ProgramRunnerByReflection extends ProgramRunner {
 	public void setBaseOptions(Map<String, String> baseOptions) {
 		this.baseOptions.putAll(baseOptions);
 	}
-	
-	@Override
-	public void setUpEnv() {
-		//TODO may need to call some method to set it
-	}
 
 	@Override
 	public Collection<ExecResult> execute() {
@@ -103,11 +98,5 @@ public class ProgramRunnerByReflection extends ProgramRunner {
 			}
 		}
 		return results;
-	}
-
-	@Override
-	public void clearEnv() {
-		//TODO may need to call some method to clean it
-		
 	}
 }
