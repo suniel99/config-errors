@@ -28,7 +28,7 @@ public class FileMover {
 
 	//move the original configuration file to a backup file
 	//move the mutated file to replace the original configuration file
-	public void setMutatedConfFile() {
+	public void setUpMutatedConfFile() {
 		try {
 			Files.copyFile(this.originalFile, this.tmpFile);
 			Files.copyFile(this.mutatedFile, this.originalFile);
@@ -39,7 +39,7 @@ public class FileMover {
 	
 	//move the backup original configuration file to the original place
 	//then delete the tmpFile
-	public void restoreMutatedConfFile() {
+	public void restoreOriginalConfFile() {
 		try {
 			Files.copyFile(this.tmpFile, this.originalFile);
 			//delte the tmp file
@@ -56,7 +56,7 @@ public class FileMover {
 		String originalFilePath = "./sample-config-files-after-mutated/mutated-11-jmeter.properties";
 		String mutatedFilePath = "./sample-config-files-after-mutated/mutated-10-jmeter.properties";
 		FileMover mover = new FileMover(originalFilePath, mutatedFilePath);
-		mover.setMutatedConfFile();
-		mover.restoreMutatedConfFile();
+		mover.setUpMutatedConfFile();
+		mover.restoreOriginalConfFile();
 	}
 }

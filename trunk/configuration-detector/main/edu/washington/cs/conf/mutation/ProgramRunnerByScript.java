@@ -9,21 +9,23 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
+import edu.washington.cs.conf.util.Files;
 import edu.washington.cs.conf.util.Globals;
 import edu.washington.cs.conf.util.Utils;
 
 public class ProgramRunnerByScript extends ProgramRunner {
 
     public final List<ScriptCommand> commands = new LinkedList<ScriptCommand>();
+    
+    private String configFileLocation = null;
 	
 	public void setCommands(Collection<ScriptCommand> cmds) {
 		this.commands.addAll(cmds);
 	}
 	
-	@Override
-	public void setUpEnv() {
-		// TODO do that later
-
+	public void setConfigFile(String configFileLocation) {
+		Utils.checkNotNull(configFileLocation);
+		this.configFileLocation = configFileLocation;
 	}
 
 	/**
@@ -40,12 +42,14 @@ public class ProgramRunnerByScript extends ProgramRunner {
 		Collection<ExecResult> results = new LinkedList<ExecResult>();
 		for(ScriptCommand cmd : this.commands) {
 			String dir = cmd.dir;
-			String script = cmd.script;
+			String executable = cmd.getExecutable();
 			for(MutatedConf conf : this.mutatedConfigs) {
 				this.setupConfigEnv(conf);
+				//construct the command to run
+				List<String> args = Arrays.asList(new String[]{"cmd.exe", "/C", executable});
+				System.out.println("Running: " + args);
 				
-				//run the script
-				List<String> args = Arrays.asList(new String[]{"cmd.exe", "/C", script});
+				//create a process builder and set the target file
 				ProcessBuilder pb = new ProcessBuilder(args);
 				pb.directory(new File(dir));
 				pb.redirectErrorStream(true);
@@ -57,22 +61,24 @@ public class ProgramRunnerByScript extends ProgramRunner {
 							p.getErrorStream()));
 					
 					//get the input and output
-					BufferReaderThread stdOutputThread = new BufferReaderThread(stdOutput, "");
-					BufferReaderThread stdErrorThread = new BufferReaderThread(stdError, "");
+					BufferReaderThread stdOutputThread = new BufferReaderThread(stdOutput, "Output:");
+					BufferReaderThread stdErrorThread = new BufferReaderThread(stdError, "Error:");
 					
 					//get the input and output
 					stdOutputThread.start();
 					stdErrorThread.start();
 					
-					//TODO make the threads join?
-//					Thread.sleep(2000);
-//					p.destroy();
-//					stdInputThread.interrupt();
-//					stdOutputThread.interrupt();
+					//wait until these two thread finish
+					stdOutputThread.join();
+					stdErrorThread.join();
 					
+					//dump the error messages
 					String outputMsg = stdOutputThread.getMessage();
 					String errorMsg = stdErrorThread.getMessage();
 					String message = outputMsg + Globals.lineSep + errorMsg;
+					
+					System.out.println("error message/ : ");
+					System.out.println(message);
 					
 					ExecResult result = ExecResultManager.createScriptExecResult(cmd, conf, message);
 				    results.add(result);
@@ -86,81 +92,28 @@ public class ProgramRunnerByScript extends ProgramRunner {
 		return results;
 	}
 	
+	//write the mutated configuration to the configuration file
+
+	private FileMover mover = null;
 	private void setupConfigEnv(MutatedConf conf) {
-		
+		if(this.configFileLocation != null) {
+			Utils.checkTrue(mover == null);
+			//create a file to store the mutated configuration options
+			String mutatedConfigFile = this.configFileLocation + "-mutated";
+			Files.createIfNotExistNoExp(mutatedConfigFile);
+			conf.writeToFile(mutatedConfigFile);
+			//initialize the mover
+			mover = new FileMover(this.configFileLocation, mutatedConfigFile);
+			mover.setUpMutatedConfFile();
+		}
 	}
 	
+	//revert the original configuration file
 	private void revertConfigEnv(MutatedConf conf) {
-		
-	}
-
-	@Override
-	public void clearEnv() {
-		// TODO do that later
-
-	}
-
-	// test launching commands
-	public static void main(String[] args) throws IOException {
-
-//		Process p = null;
-		try {
-			
-			//Process proc = rt.exec("cmd /c start cmd.exe /K \"cd " + locaction);
-			
-			String dir = "E:\\conf-vul\\programs\\jetty\\jetty-distribution-9.2.1.v20140609";
-			String script = "startjetty.bat";
-			
-//			ProcessBuilder pb = new ProcessBuilder(script);
-			ProcessBuilder pb = new ProcessBuilder(Arrays.asList(new String[]
-                {"cmd.exe", "/C", script}));
-			pb.directory(new File(dir));
-			pb.redirectErrorStream(true);
-			final Process p = pb.start();
-			
-			
-			//encapsulate the below in a thread
-			
-			
-			
-			// Process p =
-			// Runtime.getRuntime().exec("cmd /C dir E:\\conf-vul\\programs\\jetty\\jetty-distribution-9.2.1.v20140609\\");
-//			Process p = Runtime.getRuntime().exec("cmd /C " + dir + script);
-			final BufferedReader stdInput = new BufferedReader(new InputStreamReader(
-					p.getInputStream()), 8 * 1024);
-			final BufferedReader stdError = new BufferedReader(new InputStreamReader(
-					p.getErrorStream()));
-			
-			BufferReaderThread stdInputThread = new BufferReaderThread(stdInput, "Standard input");
-			BufferReaderThread stdOutputThread = new BufferReaderThread(stdError, "Standard output");
-			
-
-			stdInputThread.setDaemon(true);
-			stdOutputThread.setDaemon(true);
-			
-//			stdInputThread.start();
-//			stdOutputThread.start();
-			
-			Thread.sleep(2000);
-			p.destroy();
-//			stdInputThread.stop();
-//			stdOutputThread.stop();
-			
-//			stdInputThread.join(2000);
-//			stdOutputThread.join(2000);
-			
-			
-			System.out.println(stdInputThread.getMessage());
-
-		} catch (IOException e1) {
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} finally  {
-			System.out.println("Destroy the process..");
-//			p.destroy();
+		if(this.configFileLocation != null) {
+			Utils.checkNotNull(mover);
+			mover.restoreOriginalConfFile();
+			mover = null; //clear the file mover
 		}
-
-		System.out.println("Done");
 	}
 }

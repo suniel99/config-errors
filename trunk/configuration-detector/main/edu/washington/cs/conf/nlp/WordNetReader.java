@@ -1,5 +1,7 @@
 package edu.washington.cs.conf.nlp;
 
+//need to parse the wordnet data manually
+
 import java.io.File;
 import java.net.URL;
 import java.util.Collection;

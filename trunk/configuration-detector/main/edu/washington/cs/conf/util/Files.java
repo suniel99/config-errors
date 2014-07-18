@@ -72,6 +72,14 @@ public final class Files {
 	    }
 	}
   
+  public static boolean createIfNotExistNoExp(String path) {
+	  try {
+		  return createIfNotExist(path);
+	  } catch (IOException e) {
+		  throw new RuntimeException(e);
+	  }
+  }
+  
   public static boolean createIfNotExist(String path) throws IOException {
 	  return createIfNotExist(new File(path));
   }
