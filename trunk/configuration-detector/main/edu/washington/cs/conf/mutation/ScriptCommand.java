@@ -21,6 +21,7 @@ public class ScriptCommand {
 		this.args.addAll(args);
 	}
 	
+	//return the executable command line, like jmeter -n "input.txt" ...
 	public String getExecutable() {
 		StringBuilder sb = new StringBuilder();
 		sb.append(script);
