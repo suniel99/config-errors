@@ -144,21 +144,32 @@ public class ValueGenerator {
 
 	//see the suffix, .xml, .log, .txt
 	public List<String> generateAbsFilePaths(String currValue) {
+		int max_num = this.max_file_num;
 		String dir = System.getProperty("user.dir");
 		File d = new File(dir);
 		File[] files = d.listFiles();
 		List<String> list = new ArrayList<String>();
 		for(File f : files) {
+			if(max_num < 0) {
+				break;
+			}
+			max_num --;
 			list.add(f.getAbsolutePath());
 		}
 		return list;
 	}
 	
+	private int max_file_num = 3;
 	public List<String> generateRelFilePaths(String currValue) {
+		int max_num = this.max_file_num;
 		File d = new File(".");
 		File[] files = d.listFiles();
 		List<String> list = new ArrayList<String>();
 		for(File f : files) {
+			if(max_num < 0) {
+				break;
+			}
+			max_num --;
 			list.add(f.getPath());
 		}
 		return list;

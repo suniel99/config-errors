@@ -60,6 +60,10 @@ public class ExecResultManager {
 		
 		oracleChecker = new DefaultExecResultChecker(inputMessage);
 		
+		//set two reflection calls
+		oracleChecker.setOracleCheckingMethod(oracleCheckingMethod);
+		oracleChecker.setMessageFetchingMethod(messageFetchingMethod);
+		
 		boolean pass = oracleChecker.pass();
 		String message = oracleChecker.fetchMessage();
 		

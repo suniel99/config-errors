@@ -14,6 +14,8 @@ import edu.washington.cs.conf.util.Globals;
 import edu.washington.cs.conf.util.Utils;
 
 public class ProgramRunnerByScript extends ProgramRunner {
+	
+	public static boolean VERBOSE = false;
 
     public final List<ScriptCommand> commands = new LinkedList<ScriptCommand>();
     
@@ -38,6 +40,10 @@ public class ProgramRunnerByScript extends ProgramRunner {
 	public Collection<ExecResult> execute() {
 		Utils.checkTrue(System.getProperty("os.name").startsWith("Windows"),
 				"Only support windows now!");
+		if(VERBOSE) {
+			System.out.println("Num of commands: " + this.commands.size());
+			System.out.println("Num of confs: " + this.mutatedConfigs.size());
+		}
 		
 		Collection<ExecResult> results = new LinkedList<ExecResult>();
 		for(ScriptCommand cmd : this.commands) {
@@ -47,7 +53,9 @@ public class ProgramRunnerByScript extends ProgramRunner {
 				this.setupConfigEnv(conf);
 				//construct the command to run
 				List<String> args = Arrays.asList(new String[]{"cmd.exe", "/C", executable});
-				System.out.println("Running: " + args);
+				if(VERBOSE) {
+				    System.out.println("Running: " + args);
+				}
 				
 				//create a process builder and set the target file
 				ProcessBuilder pb = new ProcessBuilder(args);
@@ -77,8 +85,10 @@ public class ProgramRunnerByScript extends ProgramRunner {
 					String errorMsg = stdErrorThread.getMessage();
 					String message = outputMsg + Globals.lineSep + errorMsg;
 					
-					System.out.println("error message/ : ");
-					System.out.println(message);
+					if(VERBOSE) {
+					    System.out.println("console message/ : ");
+					    System.out.println(message);
+					}
 					
 					ExecResult result = ExecResultManager.createScriptExecResult(cmd, conf, message);
 				    results.add(result);
@@ -107,7 +117,7 @@ public class ProgramRunnerByScript extends ProgramRunner {
 			mover.setUpMutatedConfFile();
 		}
 	}
-	
+
 	//revert the original configuration file
 	private void revertConfigEnv(MutatedConf conf) {
 		if(this.configFileLocation != null) {

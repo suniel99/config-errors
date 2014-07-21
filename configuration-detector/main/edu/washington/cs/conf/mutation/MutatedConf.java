@@ -52,6 +52,10 @@ public class MutatedConf {
 		return this.mutatedConfValues.get(this.mutatedConf);
 	}
 	
+	public String getOriginalValue() {
+		return this.originalConfValue;
+	}
+	
 	public String createCmdLineForMutatedOptions() {
 		return PREFIX + this.mutatedConf + "=" + this.mutatedConfValues.get(this.mutatedConf);
 	}
