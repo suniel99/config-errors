@@ -6,6 +6,8 @@ import java.io.File;
 import java.net.URL;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.Set;
 
 import edu.mit.jwi.Dictionary;
@@ -41,7 +43,13 @@ public class WordNetReader {
 		return new POS[]{POS.NOUN, POS.ADJECTIVE, POS.ADVERB, POS.VERB};
 	}
 	
+	//cach the info to speed up
+	static private Map<String, Collection<String>> cache = new LinkedHashMap<String, Collection<String>>();
+	
 	public static Collection<String> getSyn(String aWord) {
+		if(cache.containsKey(aWord)) {
+			return cache.get(aWord);
+		}
 		Set<String> words = new HashSet<String>();
 		//get the dictionary
 		IDictionary dict = getDict();
@@ -50,17 +58,26 @@ public class WordNetReader {
 		    if(idxWord == null) {
 		    	continue;
 		    }
-		    IWordID wordID = idxWord.getWordIDs().get(0) ; // 1st meaning
-		    IWord word = dict.getWord (wordID);
-		    ISynset synset = word.getSynset ();
-		    // iterate over words associated with the synset
-		    for( IWord w : synset.getWords ()) {
-			    if(w.getLemma().equals(aWord)) {
-				    continue;
+		    for(int index = 0; index < idxWord.getWordIDs().size(); index++) {
+		    	IWordID wordID = idxWord.getWordIDs().get(index) ; // 1st meaning
+			    IWord word = dict.getWord (wordID);
+			    ISynset synset = word.getSynset ();
+			    // iterate over words associated with the synset
+			    for( IWord w : synset.getWords ()) {
+				    if(w.getLemma().equals(aWord)) {
+					    continue;
+				    }
+				    String synWord = w.getLemma();
+				    //replace _ by a space
+				    synWord = synWord.replace('_', ' ');
+				    words.add(synWord);
 			    }
-			    words.add(w.getLemma());
 		    }
+		    
 		}
+		
+		//put in the cache
+		cache.put(aWord, words);
 		
 		return words;
 	}
