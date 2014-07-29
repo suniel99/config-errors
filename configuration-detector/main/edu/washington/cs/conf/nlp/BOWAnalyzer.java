@@ -1,6 +1,7 @@
 package edu.washington.cs.conf.nlp;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -10,6 +11,8 @@ import edu.washington.cs.conf.util.Utils;
  * This implements the bag of word model.
  * */
 public class BOWAnalyzer {
+	
+	private boolean useWordNet = false;
 
 	//with the use of tf-idf
 	public final TFIDFWeightCalculator tfidf;
@@ -20,6 +23,10 @@ public class BOWAnalyzer {
 		Utils.checkNotNull(tfidf);
 		this.tfidf = tfidf;
 		this.tfidf.computeTFIDFValues();
+	}
+	
+	public void setWordNet(boolean wordnet) {
+		this.useWordNet = wordnet;
 	}
 	
 	public Float computeSimilarity(String s1, String s2) {
@@ -51,6 +58,24 @@ public class BOWAnalyzer {
 	}
 	
 	private Float maxSim(String word, Set<String> words) {
-		return words.contains(word) ? 1.0f : 0.0f;
+		if(words.contains(word)) {
+			return 1.0f;
+		}
+		if(!this.useWordNet) {
+			return 0.0f;
+		}
+		//check wordnet to see if any synonym of word is in the words set
+		Collection<String> synonyms = WordNetReader.getSyn(word);
+		
+		//check if there is any intersection
+		boolean overlap = false;
+		for(String syn : synonyms) {
+			if(words.contains(syn)) {
+				overlap = true;
+				break;
+			}
+		}
+		
+		return overlap ? 1.0f : 0.0f;
 	}
 }
