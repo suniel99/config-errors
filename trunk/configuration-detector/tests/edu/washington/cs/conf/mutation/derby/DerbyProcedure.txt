@@ -1,0 +1,6 @@
+user manual:
+http://db.apache.org/derby/docs/10.10/getstart/getstartderby.pdf
+
+create a derby.properties file under the folder where the database is launched
+
+put all properties there

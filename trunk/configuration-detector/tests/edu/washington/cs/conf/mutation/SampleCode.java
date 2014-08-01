@@ -13,6 +13,16 @@ public class SampleCode {
 		throw new RuntimeException("so bad!");
 	}
 	
+	public static void sleep() {
+		try {
+			System.out.println("start zzzz....");
+			Thread.sleep(10000);
+			System.out.println("wake up ....");
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+	}
+	
 	
 	public static void main(String[] args) {
 		if(args.length == 0) {
@@ -20,6 +30,8 @@ public class SampleCode {
 		} else {
 			if(args[0].equals("bad")) {
 			    bad();
+			} else if(args[0].equals("sleep")) {
+				sleep();
 			} else {
 				good();
 			}
