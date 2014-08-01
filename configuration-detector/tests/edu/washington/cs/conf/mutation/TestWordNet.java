@@ -38,7 +38,7 @@ public class TestWordNet extends TestCase {
 //		for( IWord w : synset.getWords ())
 //		   System.out.println( "=>" + w.getLemma ());
 		
-		System.out.println(WordNetReader.getSyn("crash"));
+		System.out.println(WordNetReader.getSyn("software"));
 	}
 	
 }

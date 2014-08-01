@@ -17,5 +17,4 @@ public class JMeterCheckingMethods {
 		System.out.println("fetching error msg ...");
 		return null;
 	}
-	
 }
