@@ -64,7 +64,7 @@ public class ProgramRunnerByReflection extends ProgramRunner {
 					}
 					//invoke the main method
 					Class<?> clz = Class.forName(mainClass);
-					Method meth = clz.getMethod("main", String[].class);
+					Method mainMethod = clz.getMethod("main", String[].class);
 					//register the redirect file
 					Utils.checkNotNull(this.outputFile);
 					FilterPrintStream.register(this.outputFile);
@@ -78,13 +78,14 @@ public class ProgramRunnerByReflection extends ProgramRunner {
 						String[] args = argList.toArray(new String[0]);
 						Object argObj = args;
 //						System.out.println(argList);
-				        meth.invoke(null, argObj);
+				        mainMethod.invoke(null, argObj);
 					} catch (Throwable e) {
 						error = e.getCause(); //get the cause of the error
 						Utils.checkNotNull(error);
 						System.err.println("Error: " + error.getClass() + ", " + error.getMessage());
 //						e.printStackTrace();
 					}
+					
 				    //unregister it
 				    FilterPrintStream.unregister();
 				    

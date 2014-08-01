@@ -13,6 +13,8 @@ import edu.washington.cs.conf.util.Utils;
 public class BOWAnalyzer {
 	
 	private boolean useWordNet = false;
+	
+	private boolean useAugmented = false;
 
 	//with the use of tf-idf
 	public final TFIDFWeightCalculator tfidf;
@@ -27,6 +29,10 @@ public class BOWAnalyzer {
 	
 	public void setWordNet(boolean wordnet) {
 		this.useWordNet = wordnet;
+	}
+	
+	public void setAugmented(boolean augmented) {
+		this.useAugmented = augmented;
 	}
 	
 	public Float computeSimilarity(String s1, String s2) {
@@ -61,6 +67,7 @@ public class BOWAnalyzer {
 		if(words.contains(word)) {
 			return 1.0f;
 		}
+		
 		if(!this.useWordNet) {
 			return 0.0f;
 		}
@@ -75,6 +82,19 @@ public class BOWAnalyzer {
 				break;
 			}
 		}
+		
+		if(overlap) {
+			return 1.0f;
+		}
+		
+		if(!this.useAugmented) {
+			return 0.0f;
+		}
+		
+		//then use the augmented wordnet part
+		//the task specific
+		//if there is some synonym, then return true, otherwise, return false;
+		overlap = TaskSpecificSynonyms.hasSynonym(word, words);
 		
 		return overlap ? 1.0f : 0.0f;
 	}

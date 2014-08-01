@@ -46,9 +46,12 @@ public class ExecResultManager {
 		boolean pass = oracleChecker.pass();
 		String message = oracleChecker.fetchMessage();
 		
+		//figure out the status here
+		Status status = createStatus(conf, pass);
+		
 		//create the exec result object
 		ExecResult result = new ExecResult(message, conf.getMutatedConfOption(),
-				conf.getMutatedConfValue(), pass);
+				conf.getMutatedConfValue(), status);
 		result.setCommand(cmd);
 		result.setUsedConfigs(conf.getMutatedConfOptions());
 		
@@ -67,10 +70,21 @@ public class ExecResultManager {
 		boolean pass = oracleChecker.pass();
 		String message = oracleChecker.fetchMessage();
 		
+		//figure out the status here
+		Status status = createStatus(conf, pass);
+		
 		//create the exec result object
 		ExecResult result = new ExecResult(message, conf.getMutatedConfOption(),
-				conf.getMutatedConfValue(), pass);
+				conf.getMutatedConfValue(), status);
 		
 		return result;
+	}
+	
+	private static Status createStatus(MutatedConf conf, boolean pass) {
+		if(!conf.mustFail()) {
+			return pass ? Status.Pass : Status.Fail; 
+		} else {
+			return pass ? Status.Fail : Status.Pass;
+		}
 	}
 }

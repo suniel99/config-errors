@@ -19,6 +19,8 @@ public class MutatedConf {
 	
 	public static String PREFIX="-";
 	
+	private boolean mustFail = false;
+	
 	public MutatedConf(Map<String, String> confValues, Set<String> onOffOptions,
 			String mutatedConf, String originalConfValue) {
 		Utils.checkNotNull(confValues);
@@ -36,6 +38,14 @@ public class MutatedConf {
 	//or "" (empty space)
 	public static void setConfPrefix(String prefix) {
 		PREFIX = prefix;
+	}
+	
+	public void setMustFail(boolean fail) {
+		this.mustFail = fail;
+	}
+	
+	public boolean mustFail() {
+		return this.mustFail;
 	}
 	
 	public Map<String, String> getMutatedConfOptions() {

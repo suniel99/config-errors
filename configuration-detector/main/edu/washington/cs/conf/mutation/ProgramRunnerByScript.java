@@ -76,6 +76,7 @@ public class ProgramRunnerByScript extends ProgramRunner {
 					stdOutputThread.start();
 					stdErrorThread.start();
 					
+					//FIXME This suppose the threads will finish
 					//wait until these two thread finish
 					stdOutputThread.join();
 					stdErrorThread.join();
