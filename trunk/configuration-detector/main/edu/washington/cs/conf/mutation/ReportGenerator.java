@@ -25,6 +25,10 @@ public class ReportGenerator {
 		
 	}
 	
+	public Collection<Pair<MessageAdequacy, ExecResult>> getCategorizedReports() {
+		throw new RuntimeException();
+	}
+	
 	public int size() {
 		return data.size();
 	}

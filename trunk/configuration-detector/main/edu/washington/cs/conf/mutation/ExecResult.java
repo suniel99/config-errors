@@ -5,10 +5,12 @@ import java.util.Map;
 
 import edu.washington.cs.conf.util.Utils;
 
+enum Status {Pass, Fail, Hang, Init}
+
 //encapsulate the execution result
 public class ExecResult {
 
-	private boolean pass = false;
+	private Status status = Status.Init;
 	private String message = null;
 	private String mutatedConfigOption = null;
 	private String mutatedValue = null;
@@ -20,11 +22,12 @@ public class ExecResult {
 	private Map<String, String> usedConfigs = null;
 	
 	public ExecResult(String message, String mutatedConfigOption,
-			String mutatedValue, boolean pass) {
+			String mutatedValue, Status status) {
+		Utils.checkTrue(status != Status.Init);
 		this.message = message;
 		this.mutatedConfigOption = mutatedConfigOption;
 		this.mutatedValue = mutatedValue;
-		this.pass = pass;
+		this.status = status;
 	}
 	
 	public void setCommand(ExecCommand cmd) {
@@ -51,8 +54,12 @@ public class ExecResult {
 		return this.script;
 	}
 	
+	public Status getStatus() {
+		return this.status;
+	}
+	
 	public boolean pass() {
-		return pass;
+		return this.status == Status.Pass;
 	}
 	
 	public String getMessage() {
@@ -83,6 +90,6 @@ public class ExecResult {
 	@Override
 	public String toString() {
 		return "mutated: " + this.mutatedConfigOption + ", with value: " + this.mutatedValue +  
-		    ", message: " + message + ", pass: " + pass;
+		    ", message: " + message + ", status: " + this.status;
 	}
 }
