@@ -9,6 +9,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -167,6 +168,24 @@ public class Utils {
 			if(!f.exists()) {
 				throw new RuntimeException("The entry: " + entry + " does not exist.");
 			}
+		}
+	}
+	
+	public static Method getMainMethod(String className) {
+		try {
+			Class<?> clz = Class.forName(className);
+			return getMainMethod(clz);
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+			throw new RuntimeException(e);
+		}
+	}
+	
+	public static Method getMainMethod(Class<?> clz) {
+		try {
+			return clz.getMethod("main", String[].class);
+		} catch (Throwable e) {
+			throw new RuntimeException(e);
 		}
 	}
 	
