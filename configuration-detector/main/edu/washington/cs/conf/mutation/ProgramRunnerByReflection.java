@@ -74,17 +74,20 @@ public class ProgramRunnerByReflection extends ProgramRunner {
 					Files.emptyFileNoExp(this.outputFile);
 					
 					Throwable error = null;
-					try {
-						String[] args = argList.toArray(new String[0]);
-						Object argObj = args;
-//						System.out.println(argList);
-				        mainMethod.invoke(null, argObj);
-					} catch (Throwable e) {
-						error = e.getCause(); //get the cause of the error
-						Utils.checkNotNull(error);
-						System.err.println("Error: " + error.getClass() + ", " + error.getMessage());
-//						e.printStackTrace();
-					}
+					error = ReflectionExecutor.executeReflectionCode(mainMethod, argList);
+					
+//					
+//					try {
+//						String[] args = argList.toArray(new String[0]);
+//						Object argObj = args;
+////						System.out.println(argList);
+//				        mainMethod.invoke(null, argObj);
+//					} catch (Throwable e) {
+//						error = e.getCause(); //get the cause of the error
+//						Utils.checkNotNull(error);
+//						System.err.println("Error: " + error.getClass() + ", " + error.getMessage());
+////						e.printStackTrace();
+//					}
 					
 				    //unregister it
 				    FilterPrintStream.unregister();
