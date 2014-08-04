@@ -21,12 +21,32 @@ public class ConfMutator {
 	
 	private final ValueGenerator valueGenerator = new ValueGenerator();
 	
+	private boolean addNonExistentOption = true;
+	
 	//mutate each part of the configuration property file, and output
 	//the mutated results to disk
 	
 	public ConfMutator(String filePath) {
 		this.parser = new ConfParser(filePath);
 		this.parser.parseFile();
+	}
+	
+	public void setNonExistentOption(boolean add) {
+		this.addNonExistentOption = add;
+	}
+	
+	//insert a non-existent configuration option
+	public MutatedConf createNonExistentConf() {
+		String nonExistentConf = "NO_EXISTENT_CONF_OPTION";
+		String nonExistentValue = "NO_EXISTENT_VALUE";
+		
+		Map<String, String> confValues = parser.getOptionValueMap();
+		confValues.put(nonExistentConf, nonExistentValue);
+		
+		Set<String> onOffOptions = parser.getOnOffOptions();
+		String originalValue = "NO_VALUE"; //there is no original value
+		
+		return new MutatedConf(confValues, onOffOptions, nonExistentConf, originalValue);
 	}
 	
 	public List<MutatedConf> mutateConfFile() {
@@ -51,6 +71,13 @@ public class ConfMutator {
 			    mutatedConfList.add(mutatedConf);
 			}
 		}
+		
+		//add the non-existent conf options
+		if(this.addNonExistentOption) {
+			MutatedConf nonExistent = this.createNonExistentConf();
+			mutatedConfList.add(nonExistent);
+		}
+		
 		return mutatedConfList;
 	}
 	
