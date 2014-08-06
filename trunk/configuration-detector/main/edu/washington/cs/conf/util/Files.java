@@ -305,6 +305,14 @@ public final class Files {
     }        
   }
 
+  public static void appendToFile(String s, String fileName) {
+	  try {
+		  writeToFile(s, fileName, true);
+	  } catch (Throwable e) {
+		  throw new RuntimeException(e);
+	  }
+  }
+  
   public static void writeToFile(String s, String fileName, Boolean append) throws IOException {
     writeToFile(s, new File(fileName), append);
   }

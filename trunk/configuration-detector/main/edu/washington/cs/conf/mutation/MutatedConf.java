@@ -17,7 +17,7 @@ public class MutatedConf {
 	private final ConfFileParser parser;
 	
 	private final String mutatedConf;
-	private final int mutatedIndex;
+	private final int mutatedLineIndex;
 	private final String mutatedValue;
 	
 	public static String PREFIX="-";
@@ -33,18 +33,19 @@ public class MutatedConf {
 	}
 	
 	//index is 0 ~ -1
-	public MutatedConf(ConfFileParser parser, String mutatedConf, String mutatedValue, int index) {
+	public MutatedConf(ConfFileParser parser, String mutatedConf, String mutatedValue, int lineIndex) {
 		Utils.checkNotNull(parser);
 		Utils.checkNotNull(mutatedConf);
 		Utils.checkNotNull(mutatedValue);
-		Utils.checkTrue(index >= -1);
+		Utils.checkTrue(lineIndex >= -1);
 		this.parser = parser;
 		this.mutatedConf = mutatedConf;
 		this.mutatedValue = mutatedValue;
-		this.mutatedIndex = index;
-		if(index != -1) {
-		    Utils.checkTrue(this.parser.getConfOptionNames().size() > index);
-		    Utils.checkTrue(this.parser.getConfOptionNames().get(index).equals(this.mutatedConf));
+		this.mutatedLineIndex = lineIndex;
+		if(lineIndex != -1) { //-1 means a new added non-existent option
+		    Utils.checkTrue(this.parser.getAllConfLines().size() > lineIndex);
+		    Utils.checkTrue(this.parser.getAllConfLines().get(lineIndex).trim().startsWith(this.mutatedConf),
+		    		mutatedConf + "=>" + mutatedValue + "@" + lineIndex);
 		}
 	}
 	
@@ -86,13 +87,13 @@ public class MutatedConf {
 	}
 	
 	public Collection<String> getOriginalValues() {
-		Utils.checkTrue(this.mutatedIndex != -1);
+		Utils.checkTrue(this.mutatedLineIndex != -1);
 		return this.parser.getConfValues(this.mutatedConf);
 	}
 	
 	public String getOriginalValue() {
-		Utils.checkTrue(this.mutatedIndex != -1);
-		return this.parser.getConfValues(this.mutatedConf).get(this.mutatedIndex);
+		Utils.checkTrue(this.mutatedLineIndex != -1);
+		return this.parser.getConfValues(this.mutatedConf).get(this.mutatedLineIndex);
 	}
 	
 	public String createCmdLineForMutatedOptions() {
@@ -132,8 +133,7 @@ public class MutatedConf {
 		List<String> list = new ArrayList<String>();
 		
 		List<String> optionList = this.parser.getConfOptionNames();
-		for(int index = 0; index < optionList.size(); index++) {
-			String option = optionList.get(index);
+		for(String option : optionList) {
 			//PREFIX here is like: -, --, or nothing, user-settable
 			String v = option.equals(this.mutatedConf) ? this.mutatedValue : this.getOriginalValue(); 
 			
@@ -209,12 +209,11 @@ public class MutatedConf {
 	
 	public void writeToFile(String filePath) {
         StringBuilder sb = new StringBuilder();
-		
         List<String> lines = this.parser.getAllConfLines();
         
         for(int index = 0; index < lines.size(); index++) {
         	String line = lines.get(index);
-        	if(index == this.mutatedIndex) {
+        	if(index == this.mutatedLineIndex) {
         		Utils.checkTrue(line.trim().startsWith(this.mutatedConf));
         		sb.append("## originally: " + line);
         		sb.append(Globals.lineSep);

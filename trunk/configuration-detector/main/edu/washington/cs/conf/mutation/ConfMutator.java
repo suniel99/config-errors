@@ -2,6 +2,7 @@ package edu.washington.cs.conf.mutation;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -40,7 +41,7 @@ public class ConfMutator {
 	}
 	
 	//insert a non-existent configuration option
-	public MutatedConf createNonExistentConf() {
+	MutatedConf createNonExistentConf() {
 		String nonExistentConf = "NO_EXISTENT_CONF_OPTION";
 		String nonExistentValue = "NO_EXISTENT_VALUE";
 		
@@ -49,20 +50,16 @@ public class ConfMutator {
 	
 	public List<MutatedConf> mutateConfFile() {
 		List<MutatedConf> mutatedConfList = new LinkedList<MutatedConf>();
-		List<String> confNameList = this.parser.getConfOptionNames();
-		for(int index = 0; index < confNameList.size(); index++) {
-			String optionName = confNameList.get(index);
-			String origValue = this.parser.getConfOptionValue(index);
-			List<String> mutatedValues = this.createMutatedValues(optionName);
-			Utils.removeRedundant(mutatedValues);
-			//set the mutated optionName
-//			System.out.println("size of mutated values: " + mutatedValues.size());
+		
+		int totalLineNum = this.parser.getAllConfLines().size();
+		for(int lineIndex = 0; lineIndex < totalLineNum; lineIndex ++) {
+			if(!this.parser.isConfigLine(lineIndex)) {
+				continue;
+			}
+			String optionName = this.parser.getConfOptionName(lineIndex);
+			Set<String> mutatedValues = this.createMutatedValues(optionName);
 			for(String mutatedValue : mutatedValues) {
-				//if the mutated value is the same as the original one
-				if(mutatedValue.equals(origValue)) {
-					continue;
-				}
-			    MutatedConf mutatedConf = new MutatedConf(this.parser, optionName, mutatedValue, index);
+			    MutatedConf mutatedConf = new MutatedConf(this.parser, optionName, mutatedValue, lineIndex);
 			    //add to the list
 			    mutatedConfList.add(mutatedConf);
 			}
@@ -79,23 +76,26 @@ public class ConfMutator {
 	
 	//start to mutate the read conf file
 	//produce a list of values
-	List<String> createMutatedValues(String optionName) {
-		List<String> arrayList = new ArrayList<String>();
+	Set<String> createMutatedValues(String optionName) {
+		Set<String> valueSet = new LinkedHashSet<String>();
 		
 		//start to mutate
 		Set<ConfType> types = this.parser.getTypes(optionName);
-		List<String> confValues = this.parser.getConfValues(optionName);
+		Set<String> confValues = new LinkedHashSet<String>(this.parser.getConfValues(optionName));
 		for(ConfType type : types) {
 			List<Object> mutatedValues = this.valueGenerator.generateMutatedValues(confValues, type);
 			for(Object v : mutatedValues) {
-				arrayList.add(v.toString());
+				if(confValues.contains(v.toString())) {
+					continue;
+				}
+				valueSet.add(v.toString());
 			}
 		}
 //		System.out.println("Mutating: " + optionName + ", type: " + type);
 //		System.out.println(" Original value: " + currValue);
 //		System.out.println(" Mutated values: " + mutatedValues);
 //		
-		return arrayList;
+		return valueSet;
 	}
 	
 	@Deprecated
