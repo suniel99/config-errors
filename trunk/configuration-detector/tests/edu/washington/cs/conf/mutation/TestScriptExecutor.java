@@ -37,13 +37,14 @@ public class TestScriptExecutor extends TestCase {
 		String dir = "E:\\conf-vul\\programs\\jetty\\jetty-distribution-9.2.1.v20140609\\demo-base";
 		
 		BufferReaderThread.THREAD_VERBOSE = true;
+		BufferReaderThread.WRITE_TO_FILE = true;
 		
-		for(int i = 0; i < 10; i++) {
+		for(int i = 0; i < 2; i++) {
 		    List<String> args = Arrays.asList(
 				"cmd.exe", "/C",
 				"java", "-DSTOP.PORT=8080", "-DSTOP.KEY=stop_jetty", "-jar", "../start.jar"
 				);
-		    ScriptExecutor.timelimit = 6000;
+		    ScriptExecutor.timelimit = 10000;
 		    ScriptExecOutcome outcome = ScriptExecutor.executeScriptWithThread(args, dir);
 		    System.out.println(outcome);
 		
