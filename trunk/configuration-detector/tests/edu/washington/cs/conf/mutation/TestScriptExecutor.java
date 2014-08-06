@@ -33,4 +33,41 @@ public class TestScriptExecutor extends TestCase {
 		System.out.println(outcome);
 	}
 	
+	public void testJetty() {
+		String dir = "E:\\conf-vul\\programs\\jetty\\jetty-distribution-9.2.1.v20140609\\demo-base";
+		
+		BufferReaderThread.THREAD_VERBOSE = true;
+		
+		for(int i = 0; i < 10; i++) {
+		    List<String> args = Arrays.asList(
+				"cmd.exe", "/C",
+				"java", "-DSTOP.PORT=8080", "-DSTOP.KEY=stop_jetty", "-jar", "../start.jar"
+				);
+		    ScriptExecutor.timelimit = 6000;
+		    ScriptExecOutcome outcome = ScriptExecutor.executeScriptWithThread(args, dir);
+		    System.out.println(outcome);
+		
+		    args = Arrays.asList(
+				"cmd.exe", "/C",
+				"java", "-DSTOP.PORT=8080", "-DSTOP.KEY=stop_jetty", "-jar", "../start.jar", "--stop"
+				);
+		    outcome = ScriptExecutor.executeScriptWithThread(args, dir);
+		    System.out.println(outcome);
+		
+		}
+	}
+	
+	public void testDerby() {
+		String dir = "E:\\conf-vul\\programs\\derby\\db-derby-10.10.1.1-bin\\derbytutor";
+		List<String> args = Arrays.asList(
+				"cmd.exe", "/C",
+				"java", "-jar", "..\\lib\\derbyrun.jar",
+				"ij", "connection.txt"
+				);
+		ScriptExecutor.timelimit = 1000000;
+		ScriptExecOutcome outcome = ScriptExecutor.executeScriptWithThread(args, dir);
+		System.out.println(outcome);
+//		System.exit(1);
+	}
+	
 }
