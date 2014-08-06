@@ -28,7 +28,7 @@ public class BufferReaderThread extends Thread {
 		try {
 		    while ((s = this.reader.readLine()) != null) {
 		    	if(THREAD_VERBOSE) {
-			        System.out.println("in thread: " + s);
+			        System.out.println(s + Globals.lineSep);
 		    	}
 			    sb.append(s);
 			    sb.append(Globals.lineSep);

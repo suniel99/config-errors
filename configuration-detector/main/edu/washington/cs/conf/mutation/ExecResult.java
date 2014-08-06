@@ -19,7 +19,9 @@ public class ExecResult {
 	private ScriptCommand script = null; //optional keep the execution script
 	
 	//keep track of all used configs
-	private Map<String, String> usedConfigs = null;
+//	private Map<String, String> usedConfigs = null;
+//	private String mutatedConf = null;
+//	private String mutatedValue = null;
 	
 	public ExecResult(String message, String mutatedConfigOption,
 			String mutatedValue, Status status) {
@@ -40,11 +42,12 @@ public class ExecResult {
 		this.script = cmd;
 	}
 	
-	public void setUsedConfigs(Map<String, String> configMap) {
-		Utils.checkNotNull(configMap);
-		this.usedConfigs = new LinkedHashMap<String, String>();
-		this.usedConfigs.putAll(configMap);
-	}
+//	public void setUsedConfigs(String mutatedConf, String mutatedValue) {
+//		Utils.checkNotNull(mutatedConf);
+//		Utils.checkNotNull(mutatedValue);
+//		this.mutatedConf = mutatedConf;
+//		this.mutatedValue = mutatedValue;
+//	}
 	
 	public ExecCommand getExecCommand() {
 		return this.cmd;
@@ -81,9 +84,9 @@ public class ExecResult {
 		} else if (this.script != null) {
 			throw new RuntimeException("Not implemented yet.");
 		}
-		if(usedConfigs != null) {
-		    sb.append(this.usedConfigs.toString());
-		}
+//		if(this.mutatedConf!= null) {
+//		    sb.append(this.mutatedConf + "=" + this.mutatedValue);
+//		}
 		return sb.toString();
 	}
 	
