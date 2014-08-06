@@ -95,4 +95,19 @@ public class TestUtils extends TestCase {
 				new File(JarUtils.TRACER_FILE),
 				new File("./output-tracer.jar"));
 	}
+	
+	public void testMatchingStackTrace() {
+		List<String> lists = Arrays.asList(
+				"first part",
+				
+				"java.lang.reflect.InvocationTargetException",
+				"at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)",
+				"at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:57)",
+				"at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)",
+				
+				"Other parts"
+				);
+		
+		System.out.println(Utils.matchStacktrace(lists));
+	}
 }
