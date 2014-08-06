@@ -21,11 +21,19 @@ public class ConfFileParser {
 	private final List<String> lines;
 	
 	//the configuration keys
-	List<String> keys = new ArrayList<String>();
-	Map<String, List<Integer>> keyIndex = new LinkedHashMap<String, List<Integer>>();
-	List<String> values = new ArrayList<String>();
+	private List<String> confNameList = new ArrayList<String>();
+	//a configuration name --> a list of line index
+	//a configuration may appear multiple times in a file
+	private Map<String, List<Integer>> lineIndexMap = new LinkedHashMap<String, List<Integer>>();
+	private List<String> confValueList = new ArrayList<String>();
+	
+	//for fast query
+	//line number to conf name
+	private Map<Integer, String> confNameMap = new LinkedHashMap<Integer, String>();
+	private Map<Integer, String> confValueMap = new LinkedHashMap<Integer, String>();
 	
 	//types of each option
+	//a configuration name --> a set of possible types
 	final Map<String, Set<ConfType>> typeMap = new LinkedHashMap<String, Set<ConfType>>();
 	
 	//an on/off option does not require a concrete value after it
@@ -46,18 +54,31 @@ public class ConfFileParser {
 		return this.lines;
 	}
 	
+	public boolean isConfigLine(int lineIndex) {
+		boolean isConfig = this.confNameMap.containsKey(lineIndex);
+		if(isConfig) {
+			Utils.checkTrue(this.confValueMap.containsKey(lineIndex));
+		} else {
+			Utils.checkTrue(!this.confValueMap.containsKey(lineIndex));
+		}
+		return isConfig;
+	}
+	
+	@Deprecated
 	public List<String> getConfOptionNames() {
-		return this.keys;
+		return this.confNameList;
 	}
 	
+	@Deprecated
 	public List<String> getConfOptionValues() {
-		return this.values;
+		return this.confValueList;
 	}
 	
-	public String getConfOptionValue(int index) {
-		Utils.checkTrue(index >= 0 && index < this.values.size());
-		return this.values.get(index);
+	public String getConfOptionName(int lineIndex) {
+		Utils.checkTrue(this.confNameMap.containsKey(lineIndex));
+		return this.confNameMap.get(lineIndex);
 	}
+
 	
 	public Set<String> getOnOffOptions() {
 		return this.onOffOptions;
@@ -69,15 +90,21 @@ public class ConfFileParser {
 	
 	public List<String> getConfValues(String optionName) {
 		List<String> values = new LinkedList<String>();
-		List<Integer> indices = this.keyIndex.get(optionName);
-		for(Integer index : indices) {
-			values.add(this.values.get(index));
+		List<Integer> indices = this.lineIndexMap.get(optionName);
+		for(Integer lineIndex : indices) {
+			String confValue = this.getConfOptionValue(optionName, lineIndex);
+			values.add(confValue);
 		}
 		return values;
 	}
 	
-	public List<Integer> getConfOptionIndices(String optionName) {
-		return this.keyIndex.get(optionName);
+	public String getConfOptionValue(String optionName, int lineIndex) {
+		Utils.checkTrue(optionName.equals(this.confNameMap.get(lineIndex)));
+		return this.confValueMap.get(lineIndex);
+	}
+	
+	public List<Integer> getConfOptionLineIndices(String optionName) {
+		return this.lineIndexMap.get(optionName);
 	}
 	
 	public boolean isOnOffOption(String optionName) {
@@ -86,32 +113,34 @@ public class ConfFileParser {
 	
 	public void parse() {
 		//parse each line
-		for(int index = 0; index < lines.size(); index++) {
-			String line = lines.get(index).trim();
-			if(line.equals("")) {
-				continue;
-			}
-			if(line.startsWith("#")) {
+		for(int lineIndex = 0; lineIndex < lines.size(); lineIndex++) {
+			String line = lines.get(lineIndex).trim();
+			//skip empty line
+			if(line.equals("") || line.startsWith("#")) {
 				continue;
 			}
 			//parse it
 			int splitIndex = line.indexOf("=");
-			String key = splitIndex == -1 ? line : line.substring(0, splitIndex).trim();
-			String value = splitIndex == -1 ? "" : line.substring(splitIndex + 1).trim();
+			String confName = splitIndex == -1 ? line : line.substring(0, splitIndex).trim();
+			String confValue = splitIndex == -1 ? "" : line.substring(splitIndex + 1).trim();
 			//add to the internal data structure
-			if(!keyIndex.containsKey(key)) {
-				keyIndex.put(key, new ArrayList<Integer>());
+			if(!lineIndexMap.containsKey(confName)) {
+				lineIndexMap.put(confName, new ArrayList<Integer>());
 			}
-			keyIndex.get(key).add(index);
-			keys.add(key);
-			values.add(value);
+			lineIndexMap.get(confName).add(lineIndex);
+			confNameList.add(confName);
+			confValueList.add(confValue);
+			
+			//add to the conf map
+			this.confNameMap.put(lineIndex, confName);
+			this.confValueMap.put(lineIndex, confValue);
 			
 			//infer the possible types
-			Set<ConfType> types = ConfValueTypeInferrer.inferPossibleTypes(value);
-			if(!this.typeMap.containsKey(key)) {
-				this.typeMap.put(key, new LinkedHashSet<ConfType>());
+			Set<ConfType> types = ConfValueTypeInferrer.inferPossibleTypes(confValue);
+			if(!this.typeMap.containsKey(confName)) {
+				this.typeMap.put(confName, new LinkedHashSet<ConfType>());
 			}
-			this.typeMap.get(key).addAll(types);
+			this.typeMap.get(confName).addAll(types);
 		}
 	}
 	

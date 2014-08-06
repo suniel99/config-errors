@@ -27,6 +27,8 @@ import java.util.Random;
 import java.util.Set;
 import java.util.Map.Entry;
 import java.util.Vector;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -381,6 +383,18 @@ public class Utils {
 			}
 		}
 		return false;
+	}
+	
+	public static boolean matchStacktrace(Collection<String> logs) {
+		String regex = "^.+Exception[^\\n]+[[\\s]+at .+]+";
+		StringBuilder sb = new StringBuilder();
+		for(String line : logs) {
+			sb.append(line);
+//			sb.append("\n");
+		}
+		Pattern pattern = Pattern.compile(regex);
+		Matcher matcher = pattern.matcher(sb.toString());
+		return matcher.find();
 	}
 	
 	public static String reverseCase(String text) {

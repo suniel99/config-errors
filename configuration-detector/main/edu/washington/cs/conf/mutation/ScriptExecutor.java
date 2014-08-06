@@ -20,7 +20,7 @@ public class ScriptExecutor {
 		}
 	}
 	
-	static ScriptExecOutcome executeScriptWithThread(List<String> args, String dir) {
+	public static ScriptExecOutcome executeScriptWithThread(List<String> args, String dir) {
 		ScriptRunnerThread thread = new ScriptRunnerThread(args, dir);
 		try {
 			thread.start();
@@ -30,6 +30,7 @@ public class ScriptExecutor {
 //				thread.stop(); //the only way to stop a thread
 				//re-turn the time exceed exception
 				ScriptExecOutcome hangOutcome = new ScriptExecOutcome(null, null, new TimeoutExceeded());
+								
 				return hangOutcome;
 			}
 		} catch (java.lang.InterruptedException e) {
@@ -54,9 +55,9 @@ public class ScriptExecutor {
 
 			// get the input and output
 			BufferReaderThread stdOutputThread = new BufferReaderThread(
-					stdOutput, "Output:");
+					stdOutput, "Output-Stream");
 			BufferReaderThread stdErrorThread = new BufferReaderThread(
-					stdError, "Error:");
+					stdError, "Error-Stream");
 
 			// get the input and output
 			stdOutputThread.start();
