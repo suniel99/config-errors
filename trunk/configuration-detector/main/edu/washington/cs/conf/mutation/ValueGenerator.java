@@ -3,8 +3,12 @@ package edu.washington.cs.conf.mutation;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.LinkedHashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
+import java.util.Set;
 
 import edu.washington.cs.conf.mutation.ConfValueTypeInferrer.ConfType;
 import edu.washington.cs.conf.util.Files;
@@ -29,6 +33,17 @@ public class ValueGenerator {
 		return Utils.reverseCase(currValue);
 	}
 	
+	public List<Object> generateMutatedValues(Collection<String> currValues, ConfType type) {
+		Set<Object> set = new LinkedHashSet<Object>();
+		
+		for(String currValue : currValues) {
+			set.addAll(generateMutatedValues(currValue, type));
+		}
+		
+		List<Object> retObjs = new LinkedList<Object>(set);
+		return retObjs;
+	}
+	
 	public List<Object> generateMutatedValues(String currValue, ConfType type) {
 		List<Object> list = new ArrayList<Object>();
 		
@@ -40,6 +55,7 @@ public class ValueGenerator {
 			list.addAll(this.generateAbsFilePaths(currValue));
 			list.addAll(this.generateRelFilePaths(currValue));
 			list.add(this.generateNonExistentFilePath());
+			list.add(this.generateNoPermissionFilePath());
 		} else if (type.equals(ConfType.Encoding)) {
 			list.addAll(this.generateEncodingValues(currValue));
 		} else if (type.equals(ConfType.Lang)) {
@@ -48,6 +64,7 @@ public class ValueGenerator {
 			list.addAll(this.generateIPAddresses(currValue));
 		} else if (type.equals(ConfType.URL)) {
 			list.addAll(this.generateURLs(currValue));
+			list.add(generateNonExistentURL());
 		} else if (type.equals(ConfType.ClassName)) {
 			list.addAll(this.generateClassNameValue(currValue));
 			list.add(this.generateNonExistentClassName(currValue));
@@ -141,11 +158,15 @@ public class ValueGenerator {
 		return Arrays.asList("www.google.com", "http://cs.washington.edu",
 				"www.cnn.com");
 	}
+	
+	public String generateNonExistentURL() {
+		return "www.foobar-foobar.com";
+	}
 
 	//see the suffix, .xml, .log, .txt
 	public List<String> generateAbsFilePaths(String currValue) {
 		int max_num = this.max_file_num;
-		String dir = System.getProperty("user.dir");
+		String dir = "C:\\Users\\szhang\\Documents\\my_docs\\test"; //System.getProperty("user.dir");
 		File d = new File(dir);
 		File[] files = d.listFiles();
 		List<String> list = new ArrayList<String>();
@@ -178,6 +199,10 @@ public class ValueGenerator {
     public String generateNonExistentFilePath() {
 	    return "/foo/bar";	
 	}
+    
+    public String generateNoPermissionFilePath() {
+    	return "C:\\Users\\szhang\\Documents\\my_docs\\test\\test.py";
+    }
 
 //	
 //	

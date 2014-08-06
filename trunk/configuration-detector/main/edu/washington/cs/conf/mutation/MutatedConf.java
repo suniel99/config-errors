@@ -1,6 +1,7 @@
 package edu.washington.cs.conf.mutation;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -11,27 +12,40 @@ import edu.washington.cs.conf.util.Globals;
 import edu.washington.cs.conf.util.Utils;
 
 public class MutatedConf {
-
-	private final Map<String, String> mutatedConfValues;
-	private final Set<String> onOffOptions;
+	
+	
+	private final ConfFileParser parser;
+	
 	private final String mutatedConf;
-	private final String originalConfValue;
+	private final int mutatedIndex;
+	private final String mutatedValue;
 	
 	public static String PREFIX="-";
 	
-	private boolean mustFail = false;
+	private Status intendedBehavior = Status.Pass;
 	
-	public MutatedConf(Map<String, String> confValues, Set<String> onOffOptions,
-			String mutatedConf, String originalConfValue) {
-		Utils.checkNotNull(confValues);
-		Utils.checkNotNull(onOffOptions);
+//	public MutatedConf(ConfFileParser parser, String mutatedConf, String mutatedValue) {
+//		this(parser, mutatedConf, mutatedValue, -1); //-1 means the new option
+//	}
+	
+	public static MutatedConf createNonExistentMutatedConf(ConfFileParser parser, String mutatedConf, String mutatedValue) {
+		return new MutatedConf(parser, mutatedConf, mutatedValue, -1);
+	}
+	
+	//index is 0 ~ -1
+	public MutatedConf(ConfFileParser parser, String mutatedConf, String mutatedValue, int index) {
+		Utils.checkNotNull(parser);
 		Utils.checkNotNull(mutatedConf);
-		Utils.checkNotNull(originalConfValue);
-		
-		this.mutatedConfValues = confValues;
-		this.onOffOptions = onOffOptions;
+		Utils.checkNotNull(mutatedValue);
+		Utils.checkTrue(index >= -1);
+		this.parser = parser;
 		this.mutatedConf = mutatedConf;
-		this.originalConfValue = originalConfValue;
+		this.mutatedValue = mutatedValue;
+		this.mutatedIndex = index;
+		if(index != -1) {
+		    Utils.checkTrue(this.parser.getConfOptionNames().size() > index);
+		    Utils.checkTrue(this.parser.getConfOptionNames().get(index).equals(this.mutatedConf));
+		}
 	}
 	
 	//by default, it is "-", sometimes, it might be "--"
@@ -40,61 +54,76 @@ public class MutatedConf {
 		PREFIX = prefix;
 	}
 	
-	public void setMustFail(boolean fail) {
-		this.mustFail = fail;
+	public void setIntendedBehavior(Status behavior) {
+		Utils.checkTrue(behavior != Status.Init);
+		this.intendedBehavior = behavior;
 	}
 	
-	public boolean mustFail() {
-		return this.mustFail;
+	public boolean shouldFail() {
+		return this.intendedBehavior == Status.Fail;
 	}
 	
-	public Map<String, String> getMutatedConfOptions() {
-		Map<String, String> copy = new LinkedHashMap<String, String>();
-		copy.putAll(this.mutatedConfValues);
-		return copy;
+	public boolean shouldHang() {
+		return this.intendedBehavior == Status.Hang;
 	}
+	
+	public boolean shouldPass() {
+		return this.intendedBehavior == Status.Pass;
+	}
+	
+//	public Map<String, String> getMutatedConfOptions() {
+//		Map<String, String> copy = new LinkedHashMap<String, String>();
+//		copy.putAll(this.mutatedConfValues);
+//		return copy;
+//	}
 	
 	public String getMutatedConfOption() {
 		return this.mutatedConf;
 	}
 	
 	public String getMutatedConfValue() {
-		return this.mutatedConfValues.get(this.mutatedConf);
+		return this.mutatedValue;
+	}
+	
+	public Collection<String> getOriginalValues() {
+		Utils.checkTrue(this.mutatedIndex != -1);
+		return this.parser.getConfValues(this.mutatedConf);
 	}
 	
 	public String getOriginalValue() {
-		return this.originalConfValue;
+		Utils.checkTrue(this.mutatedIndex != -1);
+		return this.parser.getConfValues(this.mutatedConf).get(this.mutatedIndex);
 	}
 	
 	public String createCmdLineForMutatedOptions() {
-		return PREFIX + this.mutatedConf + "=" + this.mutatedConfValues.get(this.mutatedConf);
+		return PREFIX + this.mutatedConf + "=" + this.mutatedValue;
 	}
 	
 	//return command line like: -option1 value1 -option2 value2 ...
 	//this is only used in the test code for convenience
-	@Deprecated
-	public String createCmdLine() {
-		StringBuilder sb = new StringBuilder();
-		for(String option : mutatedConfValues.keySet()) {
-			String v = mutatedConfValues.get(option); 
-			if(this.onOffOptions.contains(option)) {
-				Utils.checkTrue(v.toLowerCase().equals("true") || v.toLowerCase().equals("false"));
-				if(v.toLowerCase().equals("true")) {
-					sb.append(" ");
-					sb.append(PREFIX);
-					sb.append(option);
-				}
-			} else {
-			    //process other normal options
-				sb.append(" ");
-				sb.append(PREFIX);
-				sb.append(option);
-				sb.append(" ");
-				sb.append(v);
-			}
-		}
-		return sb.toString();
-	}
+//	@Deprecated
+//	public String createCmdLine() {
+//		StringBuilder sb = new StringBuilder();
+//		for(String option : mutatedConfValues.keySet()) {
+//			String v = mutatedConfValues.get(option); 
+//			if(this.onOffOptions.contains(option)) {
+//				Utils.checkTrue(v.toLowerCase().equals("true") || v.toLowerCase().equals("false"));
+//				if(v.toLowerCase().equals("true")) {
+//					sb.append(" ");
+//					sb.append(PREFIX);
+//					sb.append(option);
+//				}
+//			} else {
+//			    //process other normal options
+//				sb.append(" ");
+//				sb.append(PREFIX);
+//				sb.append(option);
+//				sb.append(" ");
+//				sb.append(v);
+//			}
+//		}
+//		return sb.toString();
+//	}
 	
 	/**
 	 * Create command line arguments for reflection execution
@@ -102,11 +131,13 @@ public class MutatedConf {
 	public String[] createCmdLineAsArgs() {
 		List<String> list = new ArrayList<String>();
 		
-		for(String option : mutatedConfValues.keySet()) {
+		List<String> optionList = this.parser.getConfOptionNames();
+		for(int index = 0; index < optionList.size(); index++) {
+			String option = optionList.get(index);
 			//PREFIX here is like: -, --, or nothing, user-settable
-			String v = mutatedConfValues.get(option); 
+			String v = option.equals(this.mutatedConf) ? this.mutatedValue : this.getOriginalValue(); 
 			
-			if(this.onOffOptions.contains(option)) {
+			if(this.parser.getOnOffOptions().contains(option)) {
 				Utils.checkTrue(v.toLowerCase().equals("true") || v.toLowerCase().equals("false"));
 				if(v.toLowerCase().equals("true")) {
 					list.add(PREFIX + option);
@@ -128,17 +159,16 @@ public class MutatedConf {
 	/**
 	 * The baseCmds that must appear in each execution.
 	 * */
-	
 	public String[] createCmdLinesAsArgs(Map<String, String> baseOptions) {
        List<String> list = new ArrayList<String>();
 	
-       String mutatedValue = this.mutatedConfValues.get(this.mutatedConf);
+       String mutatedValue = this.mutatedValue;
        boolean isBaseOptionMutated = baseOptions.keySet().contains(this.mutatedConf);
        
        //if base option is not mutated, we need to add that mutated option
        //otherwise, ignore the mutated option, and we add each base option value later
        if(!isBaseOptionMutated) {
-    	   boolean isOnOff = this.onOffOptions.contains(this.mutatedConf);
+    	   boolean isOnOff = this.parser.getOnOffOptions().contains(this.mutatedConf);
     	   if(isOnOff) {
     		   Utils.checkTrue(mutatedValue.toLowerCase().equals("true")
     				   || mutatedValue.toLowerCase().equals("false"));
@@ -155,7 +185,7 @@ public class MutatedConf {
        
        //add all base options
 	   for(String baseOption : baseOptions.keySet()) {
-			boolean isOnOff = this.onOffOptions.contains(baseOption);
+			boolean isOnOff = this.parser.getOnOffOptions().contains(baseOption);
 			String baseOptionValue = baseOptions.get(baseOption);
 			//continue to process
 			if(isOnOff) {
@@ -180,17 +210,21 @@ public class MutatedConf {
 	public void writeToFile(String filePath) {
         StringBuilder sb = new StringBuilder();
 		
-		for(String option : mutatedConfValues.keySet()) {
-			//append comments
-			if(option.equals(mutatedConf)) {
-			    sb.append("##--");
-			    sb.append("original value: " + originalConfValue);
-			    sb.append(Globals.lineSep);
-			}
-			sb.append(option);
-			sb.append("=");
-			sb.append(mutatedConfValues.get(option));
-			sb.append(Globals.lineSep);
+        List<String> lines = this.parser.getAllConfLines();
+        
+        for(int index = 0; index < lines.size(); index++) {
+        	String line = lines.get(index);
+        	if(index == this.mutatedIndex) {
+        		Utils.checkTrue(line.trim().startsWith(this.mutatedConf));
+        		sb.append("## originally: " + line);
+        		sb.append(Globals.lineSep);
+        		sb.append(this.mutatedConf);
+        		sb.append("=");
+        		sb.append(this.mutatedValue);
+        	} else {
+        		sb.append(line);
+        	}
+        	sb.append(Globals.lineSep);
 		}
 		
 		Files.writeToFileNoExp(sb.toString(), filePath);
@@ -198,6 +232,6 @@ public class MutatedConf {
 	
 	@Override
 	public String toString() {
-		return "mutate: " + this.mutatedConf + " with value: " + mutatedConfValues.get(this.mutatedConf);
+		return "mutate: " + this.mutatedConf + " with value: " + this.mutatedValue;
 	}
 }

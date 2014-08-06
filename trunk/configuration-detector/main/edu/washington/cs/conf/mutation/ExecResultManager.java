@@ -53,7 +53,7 @@ public class ExecResultManager {
 		ExecResult result = new ExecResult(message, conf.getMutatedConfOption(),
 				conf.getMutatedConfValue(), status);
 		result.setCommand(cmd);
-		result.setUsedConfigs(conf.getMutatedConfOptions());
+//		result.setUsedConfigs(conf.getMutatedConfOptions());
 		
 		return result;
 	}
@@ -81,7 +81,7 @@ public class ExecResultManager {
 	}
 	
 	private static Status createStatus(MutatedConf conf, boolean pass) {
-		if(!conf.mustFail()) {
+		if(!conf.shouldFail()) {
 			return pass ? Status.Pass : Status.Fail; 
 		} else {
 			return pass ? Status.Fail : Status.Pass;
