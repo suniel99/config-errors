@@ -1,0 +1,41 @@
+Bad messages:
+
+1.
+--start-log-file: to a non-existed file
+
+2.
+--module=rewrite => --module=rewrite
+
+3.
+threads.min = 10  (the server hangs)
+change to negative number
+
+4.
+bad message
+java -DSTOP.KEY = stop_jetty -jar ../start.jar --stop
+(just dump numberformat exception)
+
+launch jetty by: java -DSTOP.PORT = 8080 -DSTOP.KEY = stop_jetty -jar ../start.jar
+then the following command leads to a bad message:
+java -DSTOP.KEY = stop_jetty -jar ../start.jar   (it misses -DSTOP.PORT = 8080)
+
+5.
+jetty.dump.start=true (if we change true to tttrue, a typo)
+jetty will supersede it with false
+
+
+------------------------
+
+
+
+Good messages:
+
+1. 
+--write-module-graph= file (if the file already exists, if will dump an exception)
+However the exception still contains good information:
+java.nio.file.FileAlreadyExistsException: E:\xx\
+
+2.
+launch jetty by: java -DSTOP.PORT = 8080 -DSTOP.KEY = stop_jetty -jar ../start.jar
+then the following command leads to a bad message:
+java -DSTOP.PORT = 8000 -DSTOP.KEY = stop_jetty -jar ../start.jar   (it mispecified -DSTOP.PORT = 8000)

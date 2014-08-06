@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import edu.washington.cs.conf.mutation.ConfFileParser;
 import edu.washington.cs.conf.mutation.ConfMutator;
 import edu.washington.cs.conf.mutation.ExecResult;
 import edu.washington.cs.conf.mutation.ExecResultManager;
@@ -39,9 +40,9 @@ public class TestJMeterExamples extends TestCase {
 		
 		//set the configs
 		Collection<MutatedConf> configs = new LinkedList<MutatedConf>();
-		Map<String, String> options = new LinkedHashMap<String, String>();
-		Set<String> onOffs = new LinkedHashSet<String>();
-		MutatedConf conf = new MutatedConf(options, onOffs, "", "");
+		ConfFileParser parser = new ConfFileParser(Arrays.asList("a=1", "b=2"));
+		
+		MutatedConf conf = new MutatedConf(parser, "a", "2", 0);
 		configs.add(conf);
 		
 		//create a runner

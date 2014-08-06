@@ -10,8 +10,8 @@ import java.util.List;
 import java.util.Map;
 
 import junit.framework.TestCase;
+import edu.washington.cs.conf.mutation.ConfFileParser;
 import edu.washington.cs.conf.mutation.ConfMutator;
-import edu.washington.cs.conf.mutation.ConfParser;
 import edu.washington.cs.conf.mutation.ExecCommand;
 import edu.washington.cs.conf.mutation.ExecResult;
 import edu.washington.cs.conf.mutation.ExecResultManager;
@@ -30,9 +30,15 @@ public class TestWekaConfigExamples extends TestCase {
 	public static String main_zeror = "weka.classifiers.rules.ZeroR";
 	
 	public void testParseSampleConfig() {
-		ConfParser parser = new ConfParser(sample_config);
-		parser.parseFile();
-		System.out.println(parser.getOptionValueMap());
+//		ConfParser parser = new ConfParser(sample_config);
+//		parser.parseFile();
+//		System.out.println(parser.getOptionValueMap());
+		
+		ConfFileParser reader = new ConfFileParser(sample_config);
+		reader.parse();
+		reader.dumpFile();
+		System.out.println(reader.getConfOptionNames());
+		System.out.println(reader.getConfOptionValues());
 	}
 	
 	public void testMutateSampleConfig() throws ClassNotFoundException, SecurityException, NoSuchMethodException, IllegalArgumentException, IllegalAccessException, InvocationTargetException {
@@ -42,7 +48,7 @@ public class TestWekaConfigExamples extends TestCase {
 		System.out.println(mutatedConfs.size());
 		
 		for(MutatedConf mutatedConf : mutatedConfs) {
-			System.out.println(mutatedConf.createCmdLine());
+//			System.out.println(mutatedConf.createCmdLine());
 			System.out.println("   " + Arrays.asList(mutatedConf.createCmdLineAsArgs()));
 			
 			String mainClass = main_zeror;
