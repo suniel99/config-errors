@@ -4,3 +4,8 @@ http://db.apache.org/derby/docs/10.10/getstart/getstartderby.pdf
 create a derby.properties file under the folder where the database is launched
 
 put all properties there
+
+go to the folder:
+E:\conf-vul\programs\derby\db-derby-10.10.1.1-bin\derbytutor
+
+java -jar ..\lib\derbyrun.jar ij connection.txt

@@ -207,8 +207,8 @@ public class MutatedConf {
 		return list.toArray(new String[0]);
 	}
 	
-	public void writeToFile(String filePath) {
-        StringBuilder sb = new StringBuilder();
+	public String getMutatedContent() {
+		StringBuilder sb = new StringBuilder();
         List<String> lines = this.parser.getAllConfLines();
         
         for(int index = 0; index < lines.size(); index++) {
@@ -225,8 +225,12 @@ public class MutatedConf {
         	}
         	sb.append(Globals.lineSep);
 		}
-		
-		Files.writeToFileNoExp(sb.toString(), filePath);
+		return sb.toString();
+	}
+	
+	public void writeToFile(String filePath) {
+        String content = this.getMutatedContent();
+		Files.writeToFileNoExp(content, filePath);
 	}
 	
 	@Override

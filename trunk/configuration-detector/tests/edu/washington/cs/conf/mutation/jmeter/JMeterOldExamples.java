@@ -19,13 +19,15 @@ import edu.washington.cs.conf.mutation.ScriptCommand;
 import junit.framework.TestCase;
 
 //by running from command line
-public class TestJMeterExamples extends TestCase {
+@Deprecated
+public class JMeterOldExamples extends TestCase {
 
 	//dir: E:\conf-vul\programs\jmeter\apache-jmeter-2.9\bin
 	//command: jmeter -n -t ../threadgroup.jmx -l ../output.jtl -j ../testplan.log
 	String dir = "E:\\conf-vul\\programs\\jmeter\\apache-jmeter-2.9\\bin";
 	String script = "jmeter";
 	
+	@Deprecated
 	public void testRunSimpleExample() {
 		Collection<ScriptCommand> cmds = new LinkedList<ScriptCommand>();
 		//create a command
