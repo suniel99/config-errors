@@ -9,6 +9,8 @@ import edu.washington.cs.conf.util.Utils;
 
 public class ScriptExecutor {
 	
+	public static String name = "Default-";
+	
 	public static boolean useThread = true;
 	public static int timelimit = 5000; //milli second
 	
@@ -55,9 +57,9 @@ public class ScriptExecutor {
 
 			// get the input and output
 			BufferReaderThread stdOutputThread = new BufferReaderThread(
-					stdOutput, "Output-Stream");
+					stdOutput, name + "Output-Stream");
 			BufferReaderThread stdErrorThread = new BufferReaderThread(
-					stdError, "Error-Stream");
+					stdError, name + "Error-Stream");
 
 			// get the input and output
 			stdOutputThread.start();

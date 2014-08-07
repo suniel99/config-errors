@@ -246,6 +246,10 @@ public final class Files {
 	  return destFile;
   }
   
+  public static void copyFileNoExp(String srcFilePath, String destFilePath) {
+	  copyFileNoExp(new File(srcFilePath), new File(destFilePath));
+  }
+  
   public static void copyFileNoExp(File sourceFile, File destFile) {
 	  try {
 		  copyFile(sourceFile, destFile);
