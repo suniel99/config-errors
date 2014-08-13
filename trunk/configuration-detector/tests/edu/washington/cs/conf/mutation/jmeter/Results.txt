@@ -1,0 +1,9 @@
+1.
+jmeter-server -H my.proxy.server -P 8000
+
+(change -P xxx, no error message)
+
+2.
+the reported example, change the report
+
+3.
