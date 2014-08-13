@@ -74,6 +74,30 @@ public class TestJMeterConfigOptions extends TestCase {
 		Files.copyFileNoExp(backupFilePath, config_file_1);
 	}
 	
+	public void testExample_2() {
+		
+		for(int i = 0; i < 5; i++) {
+		    List<String> args = Arrays.asList("cmd.exe", "/C", "jmeter-server",
+				"-H", "my.proxy.server", "-P", "8000");
+		    ScriptExecutor.timelimit = 10000;
+		    ScriptExecOutcome outcome = ScriptExecutor.executeScriptWithThread(
+				args, dir);
+		    System.out.println(outcome);
+		
+		    ScriptExecutor.stopProcess();
+		
+		    killJava();
+		}
+//		System.exit(1);
+	}
+	
+	public static void killJava() {
+		List<String> args = Arrays.asList("cmd.exe", "/C", "KILLJAVA.bat");
+		ScriptExecutor.timelimit = 1000;
+		ScriptExecOutcome outcome = ScriptExecutor.executeScriptWithThread(
+				args, "E:\\conf-vul\\programs\\jmeter");
+	}
+	
 	@Deprecated
 	public void testSampleConfigFiles() {
 		ConfMutator mutator = new ConfMutator(config_file_1);

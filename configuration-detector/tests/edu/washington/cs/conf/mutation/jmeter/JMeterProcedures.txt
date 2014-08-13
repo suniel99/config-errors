@@ -1,5 +1,22 @@
 http://jmeter.apache.org/usermanual/get-started.html
 
+Note: You can define additional JMeter properties in the file defined by the
+JMeter property user.properties which has the default value user.properties .
+The file will be automatically loaded if it is found in the current directory
+or if it is found in the JMeter bin directory. Similarly, system.properties is
+used to update system properties.
+
+The command line options and properties files are processed in the following order:
+
+-p propfile
+jmeter.properties (or the file from the -p option) is then loaded
+-j logfile
+Logging is initialised
+user.properties is loaded
+system.properties is loaded
+all other command-line options are processed
+
+
 Go to folder:
 
 jmeter -n -t testplan.jmx -r [-Gprop=val] [-Gglobal.properties] [-Z]
