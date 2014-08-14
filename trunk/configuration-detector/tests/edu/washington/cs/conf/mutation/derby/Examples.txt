@@ -16,10 +16,14 @@ show tables
 see the derby.log file
 
 5. launch derby server
-java -jar %DERBY_HOME%\lib\derbyrun.jar ij
+java -jar %DERBY_HOME%\lib\derbyrun.jar server start
 
 6. shutdown derby server
 java -jar %DERBY_HOME%\lib\derbyrun.jar server
  shutdown
  
  7. some transactions
+ LOCK TABLE Flights IN SHARE MODE;
+ xxx
+ 
+ LOCK TABLE FlightAvailability IN EXCLUSIVE MODE;
