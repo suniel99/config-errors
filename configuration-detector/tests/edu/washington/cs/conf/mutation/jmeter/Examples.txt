@@ -12,13 +12,21 @@ shutdown
 4. building a web testing plan
 http://jmeter.apache.org/usermanual/build-web-test-plan.html
 
+jmeter -n -t ../testplans/WebTestingPlan.jmx -l ../output.jtl -j ../testplan.log
+
 (OK, URL rewriting examples)
 5. an advanced web testing plan
 http://jmeter.apache.org/usermanual/build-adv-web-test-plan.html
 
+jmeter -n -t ../testplans/URLRewritingExample.jmx -l ../output.jtl -j ../testplan.log
+
+
 (OK, need to launch mysql first, by mysqld -u root)
 6. a database testing plan
 http://jmeter.apache.org/usermanual/build-db-test-plan.html
+
+jmeter -n -t ../testplans/DBTestPlan.jmx -l ../output.jtl -j ../testplan.log
+
 
 (OK this command works)
 13. run the server
@@ -27,6 +35,8 @@ http://jmeter.apache.org/usermanual/build-db-test-plan.html
  (OK)
 7. ftp testing plan
 http://jmeter.apache.org/usermanual/build-ftp-test-plan.html
+
+jmeter -n -t ../testplans/FTPTestPlan.jmx -l ../output.jtl -j ../testplan.log
 
 
 -----------------
